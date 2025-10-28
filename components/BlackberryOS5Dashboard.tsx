@@ -100,17 +100,32 @@ export default function BlackberryOS5Dashboard() {
       }
     }, 15000);
 
-    // Battery simulation: charge when low, drain when high
+    // Battery simulation: drain until dead, power off, charge, power back on
     const batteryInterval = setInterval(() => {
       setBatteryLevel(prev => {
-        if (prev <= 20) {
+        if (prev <= 0) {
+          // Battery dead - power off and start charging
+          setPoweredOn(false);
           setIsCharging(true);
-          return Math.min(100, prev + 1); // Charge when low
+          return 1;
+        } else if (!poweredOn && prev < 10) {
+          // Charging while off - continue charging until 10%
+          return Math.min(10, prev + 1);
+        } else if (!poweredOn && prev >= 10) {
+          // Charged enough - power back on
+          setPoweredOn(true);
+          return prev;
+        } else if (prev <= 20 && poweredOn) {
+          // Low battery - start charging
+          setIsCharging(true);
+          return Math.min(100, prev + 1);
         } else if (prev >= 95) {
+          // Full battery - start draining
           setIsCharging(false);
-          return Math.max(5, prev - 1); // Drain when high
+          return Math.max(0, prev - 1);
         } else {
-          return isCharging ? Math.min(100, prev + 1) : Math.max(5, prev - 1);
+          // Normal charge/drain cycle
+          return isCharging ? Math.min(100, prev + 1) : Math.max(0, prev - 1);
         }
       });
     }, 3000); // Faster for demo (3 seconds)
@@ -128,7 +143,7 @@ export default function BlackberryOS5Dashboard() {
       clearInterval(batteryInterval);
       clearInterval(networkInterval);
     };
-  }, [networkType]);
+  }, [networkType, isCharging, poweredOn]);
 
   // Apps (portfolio routes) - mapping to existing HTM routes
   type App = { name: string; icon: React.ReactNode; path?: string; external?: boolean };
@@ -488,7 +503,7 @@ export default function BlackberryOS5Dashboard() {
 
           {/* Time and date display - BlackBerry OS style */}
           {poweredOn && (
-            <div className="relative z-10 px-3 pt-3 pb-2 text-white text-center">
+            <div className="relative z-10 px-3 pt-4 pb-4 text-white text-center">
               {/* Large centered time */}
               <div className="text-3xl font-light tabular-nums tracking-tight" style={{
                 textShadow: "0 2px 8px rgba(0, 0, 0, 0.6)"
@@ -537,7 +552,7 @@ export default function BlackberryOS5Dashboard() {
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
         <div className="px-4 pt-2 pb-4">
-          <div className="mx-auto flex items-center justify-stretch gap-0 text-white">
+          <div className="mx-auto flex items-center justify-stretch gap-0 text-white overflow-visible" style={{ padding: "0 2px" }}>
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -884,39 +899,81 @@ function HomeDockOverlay({
   navigateTo: (app: { name: string; icon: React.ReactNode; path?: string; external?: boolean }) => void;
   goMenu: () => void;
 }) {
+  const [touchStart, setTouchStart] = React.useState<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart === null) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+
+    if (Math.abs(diff) > 50) { // Swipe threshold
+      if (diff > 0) {
+        // Swipe left - next app
+        setSelectedDock((prev) => Math.min(dockApps.length - 1, prev + 1));
+      } else {
+        // Swipe right - previous app
+        setSelectedDock((prev) => Math.max(0, prev - 1));
+      }
+    }
+    setTouchStart(null);
+  };
+
   return (
-    <div className="absolute inset-0 flex items-end justify-center pb-5 px-3">
+    <div
+      className="absolute inset-0 flex items-end justify-center pb-5 px-3"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Bold-style bottom dock overlay */}
-      <div className="w-full max-w-[94%] rounded-none border border-white/15 bg-black/45 backdrop-blur-md shadow-[0_6px_28px_rgba(0,0,0,0.45)]">
-        {/* Hints at top of dock bar */}
-        <div className="px-3 pt-1 pb-0.5 text-center text-white/60 text-[10px] border-b border-white/10">
-          ▲ to open Menu • ◀▶ to pick • Enter=Open
+      <div className="w-full max-w-[94%] rounded-none border border-white/15 bg-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
+        {/* Hints at top of dock bar with gradient */}
+        <div className="px-3 pt-1.5 pb-1 text-center text-white/70 text-[10px] border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
+          <span className="opacity-80">▲ Menu</span>
+          <span className="mx-2 opacity-40">•</span>
+          <span className="opacity-80">◀▶ Navigate</span>
+          <span className="mx-2 opacity-40">•</span>
+          <span className="opacity-80">Enter/Tap=Open</span>
         </div>
-        <div className="grid grid-cols-5 gap-2 p-2">
+        <div className="grid grid-cols-5 gap-2.5 p-3">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-2",
+                "group relative flex flex-col items-center justify-center rounded-sm border p-2.5",
                 selectedDock === idx
-                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]"
-                  : "hover:border-white/25 hover:shadow-[0_0_12px_rgba(255,157,35,0.4)]",
-                "transition-all duration-300",
+                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35),0_0_20px_rgba(255,157,35,0.4)] bg-white/10"
+                  : "border-white/10 bg-white/5 hover:border-white/25 hover:shadow-[0_0_16px_rgba(255,157,35,0.3)] hover:bg-white/8",
+                "transition-all duration-300 active:scale-95",
               ].join(" ")}
               style={{
-                transform: selectedDock === idx ? "scale(1.05)" : "scale(1)"
+                transform: selectedDock === idx ? "scale(1.08) translateY(-2px)" : "scale(1)",
+                boxShadow: selectedDock === idx
+                  ? "0 0 0 2px rgba(255,157,35,0.35), 0 0 24px rgba(255,157,35,0.5), 0 4px 12px rgba(0,0,0,0.4)"
+                  : undefined
               }}
               onMouseEnter={() => setSelectedDock(idx)}
               onFocus={() => setSelectedDock(idx)}
               onClick={() => navigateTo(app)}
               aria-label={app.name}
             >
-              <div className={`h-8 w-8 transition-all duration-300 ${selectedDock === idx ? "brightness-125" : "group-hover:brightness-110"}`}>
+              <div className={`h-9 w-9 transition-all duration-300 ${
+                selectedDock === idx
+                  ? "brightness-125 drop-shadow-[0_0_8px_rgba(255,157,35,0.6)]"
+                  : "group-hover:brightness-110 group-hover:drop-shadow-[0_0_4px_rgba(255,157,35,0.3)]"
+              }`}>
                 {app.icon}
               </div>
-              <div className="mt-1 text-[10px] text-white/90 leading-none text-center">{app.name}</div>
+              <div className={`mt-1.5 text-[10px] leading-none text-center font-medium transition-all duration-300 ${
+                selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
+              }`}>
+                {app.name}
+              </div>
               {selectedDock === idx && (
-                <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_18px_rgba(255,157,35,0.35)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-sm ring-1 ring-[#ff9d23]/40 shadow-[inset_0_0_20px_rgba(255,157,35,0.25)]" />
               )}
             </button>
           ))}
@@ -982,18 +1039,20 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
       aria-label={label}
       className={`group flex flex-col items-center gap-1 flex-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
       style={{
-        transition: "all 0.3s ease"
+        transition: "all 0.3s ease",
+        overflow: "visible"
       }}
     >
       <div
         className="grid place-items-center h-12 w-full rounded-none border border-white/20 bg-gradient-to-br from-[#1b1b1b] to-[#0e0e0e] backdrop-blur-sm"
         style={{
           boxShadow: "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000",
-          transition: "all 0.3s ease"
+          transition: "all 0.3s ease",
+          overflow: "visible"
         }}
         onMouseEnter={(e) => {
           if (!disabled) {
-            e.currentTarget.style.boxShadow = "0 0 12px #ff9d23, inset 0 0 6px #111";
+            e.currentTarget.style.boxShadow = "0 0 16px #ff9d23, inset 0 0 6px #111";
             e.currentTarget.style.transform = "scale(1.05)";
           }
         }}
