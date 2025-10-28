@@ -1130,19 +1130,24 @@ function MenuGrid({
   setShowContext: (b: boolean) => void;
 }) {
   return (
-    <div className="absolute inset-0 top-16 bottom-8 px-4 py-4 overflow-y-auto overflow-x-hidden">
-      <div className="grid grid-cols-3 gap-4 select-none h-full" style={{ gridAutoRows: "1fr", padding: "4px" }}>
+    <div className="absolute inset-0 top-16 bottom-8 px-5 py-5 overflow-y-auto overflow-x-hidden">
+      <div className="grid grid-cols-3 gap-4 select-none" style={{ gridAutoRows: "minmax(120px, 1fr)" }}>
         {apps.map((app, idx) => (
           <button
             key={app.name}
             className={[
-              "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 backdrop-blur-sm",
-              selected === idx ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]" : "hover:border-white/25",
-              "transition-all",
+              "group relative flex flex-col items-center justify-center rounded-lg border p-4",
+              selected === idx
+                ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/60 shadow-[0_0_0_2px_rgba(255,157,35,0.4),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/15 to-white/10"
+                : "border-white/15 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:shadow-[0_0_18px_rgba(255,157,35,0.35)] hover:from-white/12 hover:to-white/8",
+              "transition-all duration-300 active:scale-95",
             ].join(" ")}
             style={{
-              // Add overflow visible for glow effect
-              overflow: "visible"
+              overflow: "visible",
+              transform: selected === idx ? "scale(1.05)" : "scale(1)",
+              boxShadow: selected === idx
+                ? "0 0 0 2px rgba(255,157,35,0.4), 0 0 28px rgba(255,157,35,0.6), 0 6px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
+                : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
             }}
             onMouseEnter={() => setSelected(idx)}
             onFocus={() => setSelected(idx)}
@@ -1153,10 +1158,20 @@ function MenuGrid({
             }}
             aria-label={app.name}
           >
-            <div className="h-10 w-10">{app.icon}</div>
-            <div className="mt-2 text-[10px] text-white/90 leading-none text-center">{app.name}</div>
+            <div className={`h-12 w-12 transition-all duration-300 ${
+              selected === idx
+                ? "brightness-130 drop-shadow-[0_0_10px_rgba(255,157,35,0.7)] scale-110"
+                : "brightness-100 group-hover:brightness-115 group-hover:drop-shadow-[0_0_6px_rgba(255,157,35,0.4)] group-hover:scale-105"
+            }`}>
+              {app.icon}
+            </div>
+            <div className={`mt-3 text-[11px] leading-none text-center font-semibold transition-all duration-300 ${
+              selected === idx ? "text-[#ff9d23] scale-105" : "text-white/90 group-hover:text-white"
+            }`}>
+              {app.name}
+            </div>
             {selected === idx && (
-              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_24px_rgba(255,157,35,0.35)]" />
+              <div className="pointer-events-none absolute inset-0 rounded-lg ring-1 ring-[#ff9d23]/50 shadow-[inset_0_0_24px_rgba(255,157,35,0.3)]" />
             )}
           </button>
         ))}
