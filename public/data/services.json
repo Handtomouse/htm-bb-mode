@@ -1,0 +1,56 @@
+[
+  {
+    "id": "brand",
+    "title": "Brand Systems",
+    "bullets": [
+      "Identity & toolkits",
+      "Design languages",
+      "Usage governance"
+    ]
+  },
+  {
+    "id": "content",
+    "title": "Content Systems",
+    "bullets": [
+      "Automation-ready formats",
+      "Playbooks",
+      "Evergreen assets"
+    ]
+  },
+  {
+    "id": "packaging",
+    "title": "Packaging",
+    "bullets": [
+      "Dielines & renders",
+      "Retail systems",
+      "3D mockups"
+    ]
+  },
+  {
+    "id": "strategy",
+    "title": "Creative Strategy",
+    "bullets": [
+      "Narrative arcs",
+      "Campaign territories",
+      "Positioning"
+    ]
+  },
+  {
+    "id": "webui",
+    "title": "Web / UI",
+    "bullets": [
+      "Prototypes",
+      "Micro-interactions",
+      "Shipping guidance"
+    ]
+  },
+  {
+    "id": "motion",
+    "title": "Showreel & Edits",
+    "bullets": [
+      "Cuts",
+      "Supers",
+      "Sound guidance"
+    ]
+  }
+]

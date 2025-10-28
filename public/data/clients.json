@@ -1,0 +1,13 @@
+[
+  { "name": "S'WICH", "sector": "Food & Beverage" },
+  { "name": "MapleMoon", "sector": "FMCG / Confectionery" },
+  { "name": "Jac+Jack", "sector": "Fashion / Retail" },
+  { "name": "Trood Pratt & Co.", "sector": "Professional Services" },
+  { "name": "Mix Family Group", "sector": "Hospitality" },
+  { "name": "Aura Therapeutics", "sector": "Health" },
+  { "name": "Palo Projects", "sector": "Arts" },
+  { "name": "Materre", "sector": "Wellness" },
+  { "name": "Betoota Collabs", "sector": "Media" },
+  { "name": "MyFlowerMan", "sector": "Retail" },
+  { "name": "Cape Lands", "sector": "IP / Prints" }
+]

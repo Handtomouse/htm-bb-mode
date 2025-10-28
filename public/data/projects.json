@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "swich-campaign-2025",
+    "title": "S'WICH — Summer Campaign",
+    "tags": ["Campaign", "Content", "Motion"],
+    "year": 2025,
+    "client": "S'WICH",
+    "summary": "Iconic summer homage spots across Sydney with a bag motif.",
+    "cover": "/images/projects/swich/cover.jpg",
+    "gallery": [
+      "/images/projects/swich/1.jpg",
+      "/images/projects/swich/2.jpg"
+    ],
+    "roles": ["Creative Direction", "Art Direction", "Edit"],
+    "deliverables": ["30s hero", "Cutdowns", "Stills"],
+    "external": {
+      "url": "https://eatswich.com.au"
+    }
+  }
+]

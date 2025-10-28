@@ -1,0 +1,9 @@
+[
+  {
+    "slug": "bb-notes-001",
+    "title": "Prototype log 001",
+    "date": "2025-10-28",
+    "summary": "First grid and dock slice.",
+    "content": "Initial scaffold complete. 12-tile navigation grid working with hash routing. Dock component implemented with 7-slot config and inline SVG icons. Design tokens applied across monospace aesthetic."
+  }
+]
