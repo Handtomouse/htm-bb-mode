@@ -648,8 +648,8 @@ export default function BlackberryOS5Dashboard() {
         <div className="h-3" />
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
-        <div className="px-4 pt-2 pb-4">
-          <div className="mx-auto flex items-center justify-stretch gap-0 text-white overflow-visible" style={{ padding: "0 2px" }}>
+        <div className="px-4 pt-2 pb-4" style={{ overflow: "visible" }}>
+          <div className="mx-auto flex items-center justify-stretch gap-0 text-white" style={{ padding: "0 4px", overflow: "visible" }}>
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -1071,7 +1071,7 @@ function HomeDockOverlay({
           <span className="mx-3 opacity-50">•</span>
           <span className="opacity-90 font-medium">Enter/Tap=Open</span>
         </div>
-        <div className="grid grid-cols-5 gap-3 p-3.5">
+        <div className="grid grid-cols-5 gap-4 p-4">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
@@ -1130,8 +1130,8 @@ function MenuGrid({
   setShowContext: (b: boolean) => void;
 }) {
   return (
-    <div className="absolute inset-0 top-16 bottom-8 px-5 py-5 overflow-y-auto overflow-x-hidden">
-      <div className="grid grid-cols-3 gap-4 select-none" style={{ gridAutoRows: "minmax(120px, 1fr)" }}>
+    <div className="absolute inset-0 top-16 bottom-8 px-6 py-6 overflow-y-auto" style={{ overflow: "visible" }}>
+      <div className="grid grid-cols-3 gap-5 select-none" style={{ gridAutoRows: "minmax(120px, 1fr)", padding: "8px" }}>
         {apps.map((app, idx) => (
           <button
             key={app.name}
