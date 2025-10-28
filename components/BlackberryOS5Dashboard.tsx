@@ -320,9 +320,9 @@ export default function BlackberryOS5Dashboard() {
       >
         {/* Top bezel */}
         <div className="px-4 pt-4 pb-2 flex items-center justify-between text-white/60 text-[11px]">
-          <div className="h-1.5 w-16 rounded-none bg-white/10" />
+          <div className={`h-1.5 w-16 rounded-none ${poweredOn ? "bg-white/10" : "bg-transparent"}`} />
           <div
-            className={`h-1.5 w-1.5 rounded-none ${poweredOn ? "bg-emerald-400/80 shadow-[0_0_8px_2px_rgba(16,185,129,0.6)]" : "bg-white/10"}`}
+            className={`h-1.5 w-1.5 rounded-none ${poweredOn ? "bg-emerald-400/80 shadow-[0_0_8px_2px_rgba(16,185,129,0.6)]" : "bg-transparent"}`}
             title="Notification LED"
           />
         </div>
@@ -340,25 +340,29 @@ export default function BlackberryOS5Dashboard() {
           />
 
           {/* Status bar */}
-          <div className="relative z-10 flex items-center justify-between text-[11px] text-white/90 px-3 py-2 bg-black/30">
-            <div className="flex items-center gap-2">
-              <SignalBars strength={4} />
-              <span className="tracking-wide">HTM</span>
+          {poweredOn && (
+            <div className="relative z-10 flex items-center justify-between text-[11px] text-white/90 px-3 py-2 bg-black/30">
+              <div className="flex items-center gap-2">
+                <SignalBars strength={4} />
+                <span className="tracking-wide">HTM</span>
+              </div>
+              <div className="font-semibold tabular-nums">{timeStr}</div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px]">3G</span>
+                <Battery level={82} charging={false} />
+              </div>
             </div>
-            <div className="font-semibold tabular-nums">{timeStr}</div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px]">3G</span>
-              <Battery level={82} charging={false} />
-            </div>
-          </div>
+          )}
 
           {/* Banner */}
-          <div className="relative z-10 px-3 pt-2 text-white">
-            <div className="text-xs opacity-80">{dateStr}</div>
-            <div className="mt-1 flex items-center gap-2 text-[11px] text-white/80">
-              <NotiDot /> <span>2 new updates</span> • <NotiDot /> <span>1 event</span>
+          {poweredOn && (
+            <div className="relative z-10 px-3 pt-2 text-white">
+              <div className="text-xs opacity-80">{dateStr}</div>
+              <div className="mt-1 flex items-center gap-2 text-[11px] text-white/80">
+                <NotiDot /> <span>2 new updates</span> • <NotiDot /> <span>1 event</span>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Main area */}
           {openApp !== null ? (
@@ -403,8 +407,8 @@ export default function BlackberryOS5Dashboard() {
         </div>
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
-        <div className="px-6 pt-2 pb-4">
-          <div className="mx-auto mt-2 grid grid-cols-5 items-center gap-2 text-white">
+        <div className="px-4 pt-2 pb-4">
+          <div className="mx-auto mt-2 flex items-center justify-stretch gap-0 text-white">
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -422,8 +426,6 @@ export default function BlackberryOS5Dashboard() {
               <PixelPowerIcon />
             </HwButton>
           </div>
-          {/* When OFF: dim non-power controls visually */}
-          {!poweredOn && <div className="absolute inset-x-0 bottom-4 px-6 pointer-events-none"><div className="grid grid-cols-5 gap-2 opacity-40" /></div>}
         </div>
       </div>
 
@@ -743,39 +745,34 @@ function HomeDockOverlay({
   goMenu: () => void;
 }) {
   return (
-    <div className="absolute inset-0">
-      {/* breathing space */}
-      <div className="absolute inset-x-0 top-14 bottom-20" />
-
+    <div className="absolute inset-0 flex items-end justify-center pb-5 px-3">
       {/* Bold-style bottom dock overlay */}
-      <div className="absolute left-0 right-0 bottom-5 px-3">
-        <div className="mx-auto max-w-[94%] rounded-none border border-white/15 bg-black/45 backdrop-blur-md shadow-[0_6px_28px_rgba(0,0,0,0.45)]">
-          <div className="grid grid-cols-5 gap-2 p-2">
-            {dockApps.map((app, idx) => (
-              <button
-                key={app.name}
-                className={[
-                  "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-2",
-                  selectedDock === idx
-                    ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]"
-                    : "hover:border-white/25",
-                  "transition-all",
-                ].join(" ")}
-                onMouseEnter={() => setSelectedDock(idx)}
-                onFocus={() => setSelectedDock(idx)}
-                onClick={() => navigateTo(app)}
-                aria-label={app.name}
-              >
-                <div className="h-8 w-8">{app.icon}</div>
-                <div className="mt-1 text-[10px] text-white/90 leading-none text-center">{app.name}</div>
-                {selectedDock === idx && (
-                  <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_18px_rgba(255,157,35,0.35)]" />
-                )}
-              </button>
-            ))}
-          </div>
-          <div className="px-3 pb-1 text-center text-white/60 text-[10px]">Up/Menu = All apps</div>
+      <div className="w-full max-w-[94%] rounded-none border border-white/15 bg-black/45 backdrop-blur-md shadow-[0_6px_28px_rgba(0,0,0,0.45)]">
+        <div className="grid grid-cols-5 gap-2 p-2">
+          {dockApps.map((app, idx) => (
+            <button
+              key={app.name}
+              className={[
+                "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-2",
+                selectedDock === idx
+                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]"
+                  : "hover:border-white/25",
+                "transition-all",
+              ].join(" ")}
+              onMouseEnter={() => setSelectedDock(idx)}
+              onFocus={() => setSelectedDock(idx)}
+              onClick={() => navigateTo(app)}
+              aria-label={app.name}
+            >
+              <div className="h-8 w-8">{app.icon}</div>
+              <div className="mt-1 text-[10px] text-white/90 leading-none text-center">{app.name}</div>
+              {selectedDock === idx && (
+                <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_18px_rgba(255,157,35,0.35)]" />
+              )}
+            </button>
+          ))}
         </div>
+        <div className="px-3 pb-1 text-center text-white/60 text-[10px]">Up/Menu = All apps</div>
       </div>
     </div>
   );
@@ -795,42 +792,79 @@ function MenuGrid({
   setShowContext: (b: boolean) => void;
 }) {
   return (
-    <div className="relative z-10 grid grid-cols-3 gap-3 px-4 pt-4 pb-10 select-none">
-      {apps.map((app, idx) => (
-        <button
-          key={app.name}
-          className={[
-            "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-3 backdrop-blur-sm",
-            selected === idx ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]" : "hover:border-white/25",
-            "transition-all",
-          ].join(" ")}
-          onMouseEnter={() => setSelected(idx)}
-          onFocus={() => setSelected(idx)}
-          onClick={() => navigateTo(app)}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            setShowContext(true);
-          }}
-          aria-label={app.name}
-        >
-          <div className="h-10 w-10">{app.icon}</div>
-          <div className="mt-2 text-[11px] text-white/90 leading-none text-center">{app.name}</div>
-          {selected === idx && (
-            <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_24px_rgba(255,157,35,0.35)]" />
-          )}
-        </button>
-      ))}
+    <div className="relative z-10 flex items-center justify-center min-h-full px-4 py-8">
+      <div className="grid grid-cols-3 gap-4 select-none w-full max-w-[90%]">
+        {apps.map((app, idx) => (
+          <button
+            key={app.name}
+            className={[
+              "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-4 backdrop-blur-sm",
+              selected === idx ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]" : "hover:border-white/25",
+              "transition-all",
+            ].join(" ")}
+            onMouseEnter={() => setSelected(idx)}
+            onFocus={() => setSelected(idx)}
+            onClick={() => navigateTo(app)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              setShowContext(true);
+            }}
+            aria-label={app.name}
+          >
+            <div className="h-11 w-11">{app.icon}</div>
+            <div className="mt-2 text-[11px] text-white/90 leading-none text-center">{app.name}</div>
+            {selected === idx && (
+              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_24px_rgba(255,157,35,0.35)]" />
+            )}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
 
 function HwButton({ children, label, onClick, disabled, className }: { children: React.ReactNode; label: string; onClick: () => void; disabled?: boolean; className?: string }) {
   return (
-    <button onClick={onClick} aria-label={label} className={`group flex flex-col items-center gap-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}>
-      <div className="grid place-items-center h-10 w-10 rounded-none border border-white/10 bg-white/5 backdrop-blur-sm">
-        {children}
+    <button
+      onClick={onClick}
+      aria-label={label}
+      className={`group flex flex-col items-center gap-1 flex-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
+      style={{
+        transition: "all 0.3s ease"
+      }}
+    >
+      <div
+        className="grid place-items-center h-12 w-full rounded-none border border-white/20 bg-gradient-to-br from-[#1b1b1b] to-[#0e0e0e] backdrop-blur-sm"
+        style={{
+          boxShadow: "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000",
+          transition: "all 0.3s ease"
+        }}
+        onMouseEnter={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.boxShadow = "0 0 12px #ff9d23, inset 0 0 6px #111";
+            e.currentTarget.style.transform = "scale(1.05)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
+        onMouseDown={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.transform = "scale(0.93)";
+          }
+        }}
+        onMouseUp={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.transform = "scale(1.05)";
+          }
+        }}
+      >
+        <div className="h-8 w-8 transition-all duration-300 group-hover:[&_svg_rect]:fill-[#ff9d23] group-hover:[&_svg_rect]:stroke-[#ff9d23] group-hover:[&_svg_g]:fill-[#ff9d23] group-hover:[&_svg_g]:stroke-[#ff9d23]">
+          {children}
+        </div>
       </div>
-      <div className="text-[10px] leading-none opacity-70">{label}</div>
+      <div className="text-[9px] leading-none opacity-70 mt-0.5">{label}</div>
     </button>
   );
 }
