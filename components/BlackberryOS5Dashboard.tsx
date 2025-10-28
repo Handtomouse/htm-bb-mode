@@ -67,6 +67,8 @@ export default function BlackberryOS5Dashboard() {
   const [showContext, setShowContext] = useState(false);
   const [poweredOn, setPoweredOn] = useState(true);
   const [openApp, setOpenApp] = useState<string | null>(null); // Track which app is open
+  const [showKeyboardHelp, setShowKeyboardHelp] = useState(false); // Keyboard shortcuts overlay
+  const [isLocked, setIsLocked] = useState(false); // Lock screen state
 
   // Time/UI state
   const [now, setNow] = useState(new Date());
@@ -259,13 +261,71 @@ export default function BlackberryOS5Dashboard() {
     setToast(null);
   };
 
+  // Auto-lock after inactivity (2 minutes)
+  useEffect(() => {
+    let lockTimer: NodeJS.Timeout;
+    const resetLockTimer = () => {
+      clearTimeout(lockTimer);
+      if (poweredOn && !isLocked) {
+        lockTimer = setTimeout(() => {
+          setIsLocked(true);
+        }, 120000); // 2 minutes
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("mousemove", resetLockTimer);
+      window.addEventListener("keydown", resetLockTimer);
+      window.addEventListener("touchstart", resetLockTimer);
+      resetLockTimer();
+
+      return () => {
+        clearTimeout(lockTimer);
+        window.removeEventListener("mousemove", resetLockTimer);
+        window.removeEventListener("keydown", resetLockTimer);
+        window.removeEventListener("touchstart", resetLockTimer);
+      };
+    }
+  }, [poweredOn, isLocked]);
+
   // Keyboard navigation (disabled when OFF)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Keyboard help overlay
+      if (e.key === "?" && poweredOn && !isLocked) {
+        setShowKeyboardHelp(prev => !prev);
+        e.preventDefault();
+        return;
+      }
+
+      // Close keyboard help
+      if (showKeyboardHelp && e.key === "Escape") {
+        setShowKeyboardHelp(false);
+        e.preventDefault();
+        return;
+      }
+
+      // Lock screen - unlock with L key
+      if (isLocked) {
+        if (e.key.toLowerCase() === "l") {
+          setIsLocked(false);
+          e.preventDefault();
+        }
+        return;
+      }
+
       if (!poweredOn) {
         if (e.key.toLowerCase() === "p") togglePower();
         return;
       }
+
+      // Lock with L key
+      if (e.key.toLowerCase() === "l" && e.shiftKey) {
+        setIsLocked(true);
+        e.preventDefault();
+        return;
+      }
+
       // If an app is open, ESC/Backspace closes it
       if (openApp !== null) {
         if (["Escape", "Backspace"].includes(e.key)) {
@@ -361,7 +421,7 @@ export default function BlackberryOS5Dashboard() {
       window.addEventListener("keydown", onKey);
       return () => window.removeEventListener("keydown", onKey);
     }
-  }, [poweredOn, openApp, openAppIndex, showContext, mode, selectedMenu, rows, COLUMNS, apps.length, dockApps.length]);
+  }, [poweredOn, openApp, openAppIndex, showContext, mode, selectedMenu, rows, COLUMNS, apps.length, dockApps.length, showKeyboardHelp, isLocked]);
 
   // Time strings (only render on client to avoid hydration mismatch)
   const timeStr = mounted ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--";
@@ -539,6 +599,34 @@ export default function BlackberryOS5Dashboard() {
           )}
 
 
+          {/* LOCK SCREEN */}
+          {isLocked && poweredOn && (
+            <div
+              className="absolute inset-0 bg-black/95 backdrop-blur-lg grid place-items-center"
+              aria-label="Device locked"
+              onTouchStart={(e) => {
+                const startY = e.touches[0].clientY;
+                const handleTouchMove = (moveEvent: TouchEvent) => {
+                  const currentY = moveEvent.touches[0].clientY;
+                  if (startY - currentY > 100) { // Swipe up to unlock
+                    setIsLocked(false);
+                  }
+                };
+                document.addEventListener('touchmove', handleTouchMove, { once: true });
+              }}
+            >
+              <div className="text-center px-6">
+                <div className="text-6xl mb-4 animate-pulse">🔒</div>
+                <div className="text-2xl font-light text-white mb-2">{timeStr}</div>
+                <div className="text-sm text-white/60 mb-6">{dateStr}</div>
+                <div className="text-xs text-white/40 mt-8 flex flex-col gap-2">
+                  <div className="animate-pulse">Swipe up to unlock</div>
+                  <div className="opacity-60">Press L to unlock</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* POWER OFF OVERLAY (full screen OFF) */}
           {!poweredOn && (
             <div className="absolute inset-0 bg-black grid place-items-center" aria-label="Device off">
@@ -611,6 +699,42 @@ export default function BlackberryOS5Dashboard() {
             <div className="p-4 text-[13px] leading-relaxed text-white/90">
               <p className="mb-3">No route configured for <span className="font-semibold">{apps[openAppIndex].name}</span>. Replace with a page or handler.</p>
               <button className="mt-2 px-3 py-1.5 rounded-none bg-white/10 hover:bg-white/20 border border-white/15" onClick={() => setOpenAppIndex(null)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Keyboard Shortcuts Overlay */}
+      {showKeyboardHelp && poweredOn && !isLocked && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50" onClick={() => setShowKeyboardHelp(false)}>
+          <div className="w-full max-w-md rounded-sm border border-white/20 bg-black/90 text-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">⌨️</span>
+                <span className="font-mono text-sm uppercase font-semibold">Keyboard Shortcuts</span>
+              </div>
+              <button className="opacity-70 hover:opacity-100 text-lg" onClick={() => setShowKeyboardHelp(false)}>✕</button>
+            </div>
+            <div className="p-4 space-y-3 max-h-96 overflow-y-auto">
+              {[
+                { keys: "Arrow Keys", desc: "Navigate apps/icons" },
+                { keys: "Enter / Space", desc: "Open selected app" },
+                { keys: "Escape / Backspace", desc: "Go back / Close app" },
+                { keys: "M", desc: "Open menu" },
+                { keys: "H", desc: "Go to home screen" },
+                { keys: "P", desc: "Power on/off" },
+                { keys: "Shift + L", desc: "Lock screen" },
+                { keys: "L", desc: "Unlock screen" },
+                { keys: "?", desc: "Show/hide this help" },
+              ].map((shortcut, idx) => (
+                <div key={idx} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+                  <span className="font-mono text-xs font-semibold" style={{ color: ACCENT }}>{shortcut.keys}</span>
+                  <span className="text-xs text-white/70">{shortcut.desc}</span>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-2 border-t border-white/10 bg-gradient-to-t from-white/5 to-transparent">
+              <div className="text-[10px] text-white/40 text-center">Press ? or Esc to close</div>
             </div>
           </div>
         </div>
@@ -931,11 +1055,11 @@ function HomeDockOverlay({
       {/* Bold-style bottom dock overlay */}
       <div className="w-full max-w-[94%] rounded-none border border-white/15 bg-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
         {/* Hints at top of dock bar with gradient */}
-        <div className="px-3 pt-1.5 pb-1 text-center text-white/70 text-[10px] border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
+        <div className="px-3 pt-2 pb-1.5 text-center text-white/70 text-[10px] border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent tracking-wider">
           <span className="opacity-80">▲ Menu</span>
-          <span className="mx-2 opacity-40">•</span>
+          <span className="mx-3 opacity-40">•</span>
           <span className="opacity-80">◀▶ Navigate</span>
-          <span className="mx-2 opacity-40">•</span>
+          <span className="mx-3 opacity-40">•</span>
           <span className="opacity-80">Enter/Tap=Open</span>
         </div>
         <div className="grid grid-cols-5 gap-2.5 p-3">
