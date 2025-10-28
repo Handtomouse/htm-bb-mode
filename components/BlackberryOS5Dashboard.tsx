@@ -66,6 +66,7 @@ export default function BlackberryOS5Dashboard() {
   const [openAppIndex, setOpenAppIndex] = useState<number | null>(null);
   const [showContext, setShowContext] = useState(false);
   const [poweredOn, setPoweredOn] = useState(true);
+  const [openApp, setOpenApp] = useState<string | null>(null); // Track which app is open
 
   // Time/UI state
   const [now, setNow] = useState(new Date());
@@ -113,14 +114,32 @@ export default function BlackberryOS5Dashboard() {
   const COLUMNS = 3;
   const rows = Math.ceil(apps.length / COLUMNS);
 
-  // Navigation
+  // Navigation - open apps inside BB device instead of routing
   const navigateTo = (app: App) => {
-    if (app.path) {
-      if (app.external) {
-        window.open(app.path, "_blank");
-      } else {
-        router.push(app.path);
-      }
+    if (app.external) {
+      window.open(app.path, "_blank");
+      return;
+    }
+
+    // Map app names to internal app identifiers
+    const appMap: Record<string, string> = {
+      "Work": "portfolio",
+      "Clients": "clients",
+      "Message": "notes",
+      "About": "about",
+      "Settings": "settings",
+      "Contact": "contact",
+      "Showreel": "showreel",
+      "Favourites": "favourites",
+      "Games": "games",
+      "Wormhole": "web",
+      "Donate": "donate"
+    };
+
+    const appId = appMap[app.name];
+    if (appId) {
+      setOpenApp(appId);
+      setMode("home"); // Reset to home mode when opening app
     } else {
       setOpenAppIndex(apps.findIndex((a) => a.name === app.name));
     }
@@ -140,16 +159,23 @@ export default function BlackberryOS5Dashboard() {
     if (!poweredOn) return;
     setShowContext(false);
     setOpenAppIndex(null);
+    setOpenApp(null); // Close any open app
     setMode("home");
   };
   const goMenu = () => {
     if (!poweredOn) return;
     setShowContext(false);
     setOpenAppIndex(null);
+    setOpenApp(null); // Close any open app
     setMode("menu");
   };
   const goBack = () => {
     if (!poweredOn) return;
+    // Priority: close app > close fallback modal > close context > return to home from menu
+    if (openApp !== null) {
+      setOpenApp(null); // Close current app
+      return;
+    }
     if (openAppIndex !== null) {
       setOpenAppIndex(null);
       return;
@@ -167,6 +193,7 @@ export default function BlackberryOS5Dashboard() {
     setPoweredOn((p) => !p);
     setShowContext(false);
     setOpenAppIndex(null);
+    setOpenApp(null); // Close any open app
     setToast(null);
   };
 
@@ -175,6 +202,14 @@ export default function BlackberryOS5Dashboard() {
     const onKey = (e: KeyboardEvent) => {
       if (!poweredOn) {
         if (e.key.toLowerCase() === "p") togglePower();
+        return;
+      }
+      // If an app is open, ESC/Backspace closes it
+      if (openApp !== null) {
+        if (["Escape", "Backspace"].includes(e.key)) {
+          setOpenApp(null);
+          e.preventDefault();
+        }
         return;
       }
       if (openAppIndex !== null) {
@@ -264,7 +299,7 @@ export default function BlackberryOS5Dashboard() {
       window.addEventListener("keydown", onKey);
       return () => window.removeEventListener("keydown", onKey);
     }
-  }, [poweredOn, openAppIndex, showContext, mode, selectedMenu, rows, COLUMNS, apps.length, dockApps.length]);
+  }, [poweredOn, openApp, openAppIndex, showContext, mode, selectedMenu, rows, COLUMNS, apps.length, dockApps.length]);
 
   // Time strings (only render on client to avoid hydration mismatch)
   const timeStr = mounted ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--";
@@ -326,7 +361,10 @@ export default function BlackberryOS5Dashboard() {
           </div>
 
           {/* Main area */}
-          {mode === "home" ? (
+          {openApp !== null ? (
+            // App is open - render content inside BB screen
+            <AppContent appId={openApp} />
+          ) : mode === "home" ? (
             <HomeDockOverlay
               apps={apps}
               dockApps={dockApps}
@@ -348,7 +386,11 @@ export default function BlackberryOS5Dashboard() {
           {/* Hints */}
           {poweredOn && (
             <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10">
-              {mode === "home" ? "▲ to open Menu • ◀▶ to pick • Enter=Open" : "Arrows to move • Enter=Open • Esc=Home • M=Context"}
+              {openApp !== null
+                ? "Back=Close • Scroll to view content"
+                : mode === "home"
+                ? "▲ to open Menu • ◀▶ to pick • Enter=Open"
+                : "Arrows to move • Enter=Open • Esc=Home • M=Context"}
             </div>
           )}
 
@@ -441,6 +483,250 @@ export default function BlackberryOS5Dashboard() {
 // =====================
 // Subcomponents
 // =====================
+
+// AppContent - renders page content inside BB screen
+function AppContent({ appId }: { appId: string }) {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+
+    // Load data for portfolio, clients, services, notes
+    if (appId === "portfolio") {
+      fetch("/data/projects.json")
+        .then(res => res.json())
+        .then(data => {
+          setData(data);
+          setLoading(false);
+        });
+    } else if (appId === "clients") {
+      fetch("/data/clients.json")
+        .then(res => res.json())
+        .then(data => {
+          setData(data);
+          setLoading(false);
+        });
+    } else if (appId === "notes") {
+      fetch("/data/posts.json")
+        .then(res => res.json())
+        .then(data => {
+          setData(data);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [appId]);
+
+  // Scrollable container that fills the BB screen (below status bar, above hints)
+  return (
+    <div className="absolute left-0 right-0 top-[72px] bottom-[32px] overflow-y-auto bg-black/40 backdrop-blur-sm">
+      <div className="p-4">
+        {loading ? (
+          <div className="text-white/60 text-sm">Loading...</div>
+        ) : appId === "portfolio" ? (
+          <PortfolioContent projects={data} />
+        ) : appId === "clients" ? (
+          <ClientsContent clients={data} />
+        ) : appId === "notes" ? (
+          <NotesContent posts={data} />
+        ) : appId === "about" ? (
+          <PlaceholderContent title="About" />
+        ) : appId === "settings" ? (
+          <PlaceholderContent title="Settings" />
+        ) : appId === "contact" ? (
+          <PlaceholderContent title="Contact" />
+        ) : appId === "showreel" ? (
+          <PlaceholderContent title="Showreel" />
+        ) : appId === "favourites" ? (
+          <PlaceholderContent title="Favourites" />
+        ) : appId === "games" ? (
+          <PlaceholderContent title="Games" />
+        ) : appId === "web" ? (
+          <PlaceholderContent title="Wormhole" />
+        ) : appId === "donate" ? (
+          <PlaceholderContent title="Donate" />
+        ) : (
+          <PlaceholderContent title="Unknown App" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Content components for each app
+function PortfolioContent({ projects }: { projects: any[] }) {
+  const [filter, setFilter] = useState<string>("all");
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    projects.forEach((p: any) => p.tags?.forEach((t: string) => tags.add(t)));
+    return ["all", ...Array.from(tags).sort()];
+  }, [projects]);
+
+  const filtered = filter === "all" ? projects : projects.filter((p: any) => p.tags?.includes(filter));
+
+  return (
+    <div>
+      <h1 className="mb-3 font-mono text-2xl uppercase text-white">
+        <span style={{ color: ACCENT }}>/</span> PORTFOLIO
+      </h1>
+
+      {/* Filter */}
+      <div className="mb-4 flex flex-wrap gap-2">
+        {allTags.map((tag) => (
+          <button
+            key={tag}
+            onClick={() => setFilter(tag)}
+            className={`px-2 py-1 font-mono text-xs uppercase border ${
+              filter === tag
+                ? "bg-white/20 border-white/40 text-white"
+                : "border-white/20 text-white/70 hover:border-white/40"
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+
+      {/* Projects */}
+      <div className="space-y-3">
+        {filtered.map((project: any) => (
+          <div
+            key={project.slug}
+            className="border border-white/15 bg-white/5 p-3 hover:border-white/30 transition-all"
+          >
+            <h2 className="font-mono text-sm uppercase text-white mb-1">{project.title}</h2>
+            <div className="text-xs text-white/60 mb-2">
+              {project.client} • {project.year}
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {project.tags?.map((tag: string) => (
+                <span key={tag} className="font-mono text-[10px] uppercase" style={{ color: ACCENT }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filtered.length === 0 && (
+        <div className="py-8 text-center text-white/40 text-sm">No projects found</div>
+      )}
+    </div>
+  );
+}
+
+function ClientsContent({ clients }: { clients: any[] }) {
+  const featured = clients.filter((c: any) => c.featured);
+  const others = clients.filter((c: any) => !c.featured);
+
+  return (
+    <div>
+      <h1 className="mb-3 font-mono text-2xl uppercase text-white">
+        <span style={{ color: ACCENT }}>/</span> CLIENTS
+      </h1>
+
+      {/* Featured */}
+      {featured.length > 0 && (
+        <div className="mb-6">
+          <h2 className="mb-3 font-mono text-sm uppercase text-white/60">Featured</h2>
+          <div className="space-y-2">
+            {featured.map((client: any) => (
+              <div
+                key={client.name}
+                className="border border-white/15 bg-white/5 p-3 hover:border-white/30 transition-all"
+              >
+                <h3 className="font-mono text-sm uppercase text-white mb-1">{client.name}</h3>
+                <div className="text-xs text-white/60 mb-1">{client.sector}</div>
+                <div className="font-mono text-[10px]" style={{ color: ACCENT }}>
+                  {client.projects} PROJECT{client.projects !== 1 ? "S" : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Others */}
+      {others.length > 0 && (
+        <div>
+          <h2 className="mb-3 font-mono text-sm uppercase text-white/60">All Clients</h2>
+          <div className="space-y-2">
+            {others.map((client: any) => (
+              <div
+                key={client.name}
+                className="border border-white/15 bg-white/5 p-2 hover:border-white/30 transition-all"
+              >
+                <h3 className="font-mono text-xs uppercase text-white">{client.name}</h3>
+                <div className="text-[10px] text-white/60">{client.sector}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NotesContent({ posts }: { posts: any[] }) {
+  return (
+    <div>
+      <h1 className="mb-3 font-mono text-2xl uppercase text-white">
+        <span style={{ color: ACCENT }}>/</span> NOTES
+      </h1>
+
+      <div className="space-y-4">
+        {posts.map((post: any) => (
+          <article
+            key={post.slug}
+            className="border-b border-white/15 pb-4 last:border-0"
+          >
+            <h2 className="font-mono text-sm uppercase text-white mb-1 hover:opacity-80">
+              {post.title}
+            </h2>
+            <div className="font-mono text-[10px] text-white/50 mb-2">
+              {new Date(post.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
+            <p className="text-xs leading-relaxed text-white/70 mb-2">{post.excerpt}</p>
+            <div className="flex flex-wrap gap-1">
+              {post.tags?.map((tag: string) => (
+                <span key={tag} className="font-mono text-[10px] uppercase" style={{ color: ACCENT }}>
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </article>
+        ))}
+
+        {posts.length === 0 && (
+          <div className="py-8 text-center text-white/40 text-sm">No posts yet</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PlaceholderContent({ title }: { title: string }) {
+  return (
+    <div>
+      <h1 className="mb-3 font-mono text-2xl uppercase text-white">
+        <span style={{ color: ACCENT }}>/</span> {title}
+      </h1>
+      <div className="border border-white/15 bg-white/5 p-4">
+        <p className="text-sm text-white/70 leading-relaxed">
+          This app is coming soon. Check back later for updates.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function HomeDockOverlay({
   apps,
   dockApps,
