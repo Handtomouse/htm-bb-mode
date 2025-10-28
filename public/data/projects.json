@@ -1,6 +1,6 @@
 [
   {
-    "slug": "swich-campaign-2025",
+    "slug": "swich-summer-2025",
     "title": "S'WICH — Summer Campaign",
     "tags": ["Campaign", "Content", "Motion"],
     "year": 2025,
@@ -9,12 +9,172 @@
     "cover": "/images/projects/swich/cover.jpg",
     "gallery": [
       "/images/projects/swich/1.jpg",
-      "/images/projects/swich/2.jpg"
+      "/images/projects/swich/2.jpg",
+      "/images/projects/swich/3.jpg"
     ],
     "roles": ["Creative Direction", "Art Direction", "Edit"],
     "deliverables": ["30s hero", "Cutdowns", "Stills"],
+    "description": "A vibrant summer campaign celebrating S'WICH's iconic presence across Sydney. Shot at key locations with a distinctive bag motif running throughout the narrative.",
+    "impact": [
+      "2.3M organic impressions across social",
+      "Featured in AdNews 'Campaigns of the Month'",
+      "15% increase in foot traffic to flagship stores"
+    ],
     "external": {
       "url": "https://eatswich.com.au"
     }
+  },
+  {
+    "slug": "maplemoon-rebrand",
+    "title": "MapleMoon — Brand Identity",
+    "tags": ["Branding", "Identity", "Packaging"],
+    "year": 2024,
+    "client": "MapleMoon",
+    "summary": "Complete rebrand for artisan confectionery with whimsical packaging system.",
+    "cover": "/images/projects/maplemoon/cover.jpg",
+    "gallery": [
+      "/images/projects/maplemoon/1.jpg",
+      "/images/projects/maplemoon/2.jpg",
+      "/images/projects/maplemoon/3.jpg",
+      "/images/projects/maplemoon/4.jpg"
+    ],
+    "roles": ["Brand Strategy", "Visual Identity", "Packaging Design"],
+    "deliverables": ["Logo system", "Packaging suite", "Brand guidelines"],
+    "description": "A playful yet sophisticated identity system for MapleMoon's premium confectionery range. The design celebrates craft and whimsy while maintaining shelf presence.",
+    "impact": [
+      "Launched in 120+ specialty retailers nationally",
+      "Shortlisted for AGDA Design Awards",
+      "40% increase in wholesale orders post-rebrand"
+    ]
+  },
+  {
+    "slug": "jac-jack-aw24",
+    "title": "Jac+Jack — AW24 Campaign",
+    "tags": ["Fashion", "Photography", "Campaign"],
+    "year": 2024,
+    "client": "Jac+Jack",
+    "summary": "Minimalist autumn/winter lookbook shot in raw industrial spaces.",
+    "cover": "/images/projects/jacjack/cover.jpg",
+    "gallery": [
+      "/images/projects/jacjack/1.jpg",
+      "/images/projects/jacjack/2.jpg",
+      "/images/projects/jacjack/3.jpg"
+    ],
+    "roles": ["Creative Direction", "Photography", "Art Direction"],
+    "deliverables": ["Lookbook", "Campaign imagery", "Social assets"],
+    "description": "A stripped-back campaign emphasizing texture and form through industrial architecture. Shot on location across Sydney's manufacturing precincts.",
+    "impact": [
+      "Featured in Vogue Australia online",
+      "1.8M reach across brand channels",
+      "Best-selling seasonal launch to date"
+    ]
+  },
+  {
+    "slug": "betoota-collabs",
+    "title": "Betoota — Collaboration Suite",
+    "tags": ["Content", "Strategy", "Branded"],
+    "year": 2024,
+    "client": "Betoota Collabs",
+    "summary": "Multi-brand content partnerships with Australia's satirical news leader.",
+    "cover": "/images/projects/betoota/cover.jpg",
+    "gallery": [
+      "/images/projects/betoota/1.jpg",
+      "/images/projects/betoota/2.jpg"
+    ],
+    "roles": ["Content Strategy", "Creative Partner", "Production"],
+    "deliverables": ["Branded content series", "Social campaigns", "Video assets"],
+    "description": "Strategic content partnerships across multiple brands, blending Betoota's distinctive voice with client messaging in authentic, engaging formats.",
+    "impact": [
+      "5M+ combined impressions",
+      "Average engagement rate 8.2% (3x industry standard)",
+      "3 campaigns shortlisted for Mumbrella Awards"
+    ]
+  },
+  {
+    "slug": "materre-wellness",
+    "title": "Materre — Brand Launch",
+    "tags": ["Branding", "Web", "Content"],
+    "year": 2024,
+    "client": "Materre",
+    "summary": "Holistic brand and digital experience for wellness retreat.",
+    "cover": "/images/projects/materre/cover.jpg",
+    "gallery": [
+      "/images/projects/materre/1.jpg",
+      "/images/projects/materre/2.jpg",
+      "/images/projects/materre/3.jpg"
+    ],
+    "roles": ["Brand Strategy", "Web Design", "Content Direction"],
+    "deliverables": ["Brand identity", "Website", "Content library"],
+    "description": "A grounded, earth-connected identity for Materre's wellness sanctuary. The system emphasizes natural materials, space, and intentionality.",
+    "impact": [
+      "Fully booked 6 months in advance within 8 weeks of launch",
+      "Featured in Broadsheet Melbourne",
+      "Site performance score: 98/100"
+    ]
+  },
+  {
+    "slug": "cape-lands-ip",
+    "title": "Cape Lands — Print Series",
+    "tags": ["IP", "Art Direction", "Print"],
+    "year": 2023,
+    "client": "Cape Lands",
+    "summary": "Limited edition print series celebrating Australian coastal landscapes.",
+    "cover": "/images/projects/capelands/cover.jpg",
+    "gallery": [
+      "/images/projects/capelands/1.jpg",
+      "/images/projects/capelands/2.jpg",
+      "/images/projects/capelands/3.jpg"
+    ],
+    "roles": ["Art Direction", "Photography", "Production"],
+    "deliverables": ["12-print series", "Packaging", "Exhibition materials"],
+    "description": "A photographic study of Australia's southern coastline, printed on archival stock. The series explores light, form, and the relationship between land and sea.",
+    "impact": [
+      "Sold out within 72 hours",
+      "Exhibited at Olsen Gallery, Sydney",
+      "Commissioned for corporate collections"
+    ]
+  },
+  {
+    "slug": "myflowerman-refresh",
+    "title": "MyFlowerMan — Digital Refresh",
+    "tags": ["Web", "UX", "Ecommerce"],
+    "year": 2024,
+    "client": "MyFlowerMan",
+    "summary": "Streamlined ecommerce experience with focus on seasonal ranges.",
+    "cover": "/images/projects/myflowerman/cover.jpg",
+    "gallery": [
+      "/images/projects/myflowerman/1.jpg",
+      "/images/projects/myflowerman/2.jpg"
+    ],
+    "roles": ["UX Design", "Web Development", "Photography"],
+    "deliverables": ["Shopify site", "Photography library", "Seasonal templates"],
+    "description": "A complete digital overhaul emphasizing seasonal availability and sustainable sourcing. Clean interface with rich photography showcasing product quality.",
+    "impact": [
+      "35% increase in conversion rate",
+      "Average order value up 22%",
+      "Mobile traffic conversion improved 40%"
+    ]
+  },
+  {
+    "slug": "mix-family-venues",
+    "title": "Mix Family Group — Venue System",
+    "tags": ["Branding", "Signage", "Experience"],
+    "year": 2023,
+    "client": "Mix Family Group",
+    "summary": "Unified identity system across hospitality portfolio.",
+    "cover": "/images/projects/mix/cover.jpg",
+    "gallery": [
+      "/images/projects/mix/1.jpg",
+      "/images/projects/mix/2.jpg",
+      "/images/projects/mix/3.jpg"
+    ],
+    "roles": ["Brand Architecture", "Environmental Design", "Creative Direction"],
+    "deliverables": ["Master brand guidelines", "Venue signage", "Collateral suite"],
+    "description": "A flexible identity architecture that unifies Mix Family Group's diverse venues while allowing individual personality. Applied across signage, menus, and communications.",
+    "impact": [
+      "Implemented across 8 venues",
+      "Brand recognition increased 65% in target demographics",
+      "Featured in Hospitality Magazine"
+    ]
   }
 ]

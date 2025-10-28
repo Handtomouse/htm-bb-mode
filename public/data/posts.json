@@ -1,9 +1,37 @@
 [
   {
-    "slug": "bb-notes-001",
-    "title": "Prototype log 001",
-    "date": "2025-10-28",
-    "summary": "First grid and dock slice.",
-    "content": "Initial scaffold complete. 12-tile navigation grid working with hash routing. Dock component implemented with 7-slot config and inline SVG icons. Design tokens applied across monospace aesthetic."
+    "slug": "building-systems-not-just-brands",
+    "title": "Building Systems, Not Just Brands",
+    "date": "2025-01-15",
+    "tags": ["Strategy", "Process", "Thinking"],
+    "excerpt": "Why we focus on creating frameworks and systems rather than one-off solutions. The case for investing in infrastructure over individual outputs."
+  },
+  {
+    "slug": "blackberry-os-portfolio",
+    "title": "Why We Built This on BlackBerry OS5",
+    "date": "2025-01-08",
+    "tags": ["Meta", "Design", "Web"],
+    "excerpt": "The thinking behind our retro device interface. Nostalgia as a design tool, and why constraint breeds creativity."
+  },
+  {
+    "slug": "content-velocity",
+    "title": "Content Velocity vs. Content Quality",
+    "date": "2024-12-20",
+    "tags": ["Content", "Strategy", "Production"],
+    "excerpt": "Balancing speed and craft in 2025. How we structure production to maintain quality at scale without burning out."
+  },
+  {
+    "slug": "anti-portfolio",
+    "title": "The Anti-Portfolio",
+    "date": "2024-11-30",
+    "tags": ["Process", "Thinking", "Business"],
+    "excerpt": "Work we turned down, and why. Sometimes the most important decisions are about what you don't do."
+  },
+  {
+    "slug": "working-with-creators",
+    "title": "Working With Creators (Not Influencers)",
+    "date": "2024-10-15",
+    "tags": ["Content", "Collaboration", "Strategy"],
+    "excerpt": "The shift from influencer marketing to genuine creator partnerships. What works, what doesn't, and where we see this going."
   }
 ]

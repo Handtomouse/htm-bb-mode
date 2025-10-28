@@ -1,56 +1,90 @@
 [
   {
-    "id": "brand",
-    "title": "Brand Systems",
-    "bullets": [
-      "Identity & toolkits",
-      "Design languages",
-      "Usage governance"
+    "title": "Brand Strategy",
+    "category": "Strategy",
+    "description": "Foundation work that defines positioning, voice, and visual direction. We dig into what makes your brand distinct and build systems that scale.",
+    "deliverables": [
+      "Brand positioning & architecture",
+      "Naming & verbal identity",
+      "Competitor analysis & market positioning",
+      "Brand guidelines & tone of voice"
     ]
   },
   {
-    "id": "content",
-    "title": "Content Systems",
-    "bullets": [
-      "Automation-ready formats",
-      "Playbooks",
-      "Evergreen assets"
+    "title": "Visual Identity",
+    "category": "Design",
+    "description": "Complete visual systems from logos to layout principles. We create flexible, ownable identities that work across all touchpoints.",
+    "deliverables": [
+      "Logo design & mark systems",
+      "Typography & color systems",
+      "Pattern libraries & graphic assets",
+      "Brand guidelines & templates"
     ]
   },
   {
-    "id": "packaging",
-    "title": "Packaging",
-    "bullets": [
-      "Dielines & renders",
-      "Retail systems",
-      "3D mockups"
+    "title": "Campaign Creative",
+    "category": "Creative",
+    "description": "Concept-driven campaigns across channels. We develop big ideas and see them through to execution, from stills to motion.",
+    "deliverables": [
+      "Campaign strategy & concept",
+      "Art direction & creative direction",
+      "Photography & motion production",
+      "Social & digital asset suites"
     ]
   },
   {
-    "id": "strategy",
-    "title": "Creative Strategy",
-    "bullets": [
-      "Narrative arcs",
-      "Campaign territories",
-      "Positioning"
+    "title": "Content Production",
+    "category": "Creative",
+    "description": "End-to-end content creation for brands that need consistent quality at scale. Photography, video, copywriting, and art direction.",
+    "deliverables": [
+      "Photography (product, lifestyle, editorial)",
+      "Video production & editing",
+      "Copywriting & content strategy",
+      "Asset management & delivery"
     ]
   },
   {
-    "id": "webui",
-    "title": "Web / UI",
-    "bullets": [
-      "Prototypes",
-      "Micro-interactions",
-      "Shipping guidance"
+    "title": "Web & Digital",
+    "category": "Design",
+    "description": "Custom websites and digital experiences built for performance and delight. From portfolio sites to ecommerce, we handle design through deployment.",
+    "deliverables": [
+      "UX research & information architecture",
+      "Interface design & prototyping",
+      "Development (Next.js, Shopify, custom)",
+      "Performance optimization & hosting"
     ]
   },
   {
-    "id": "motion",
-    "title": "Showreel & Edits",
-    "bullets": [
-      "Cuts",
-      "Supers",
-      "Sound guidance"
+    "title": "Packaging Design",
+    "category": "Design",
+    "description": "Shelf-ready packaging systems that balance craft with commercial requirements. From concept to production-ready files.",
+    "deliverables": [
+      "Structural design & prototyping",
+      "Label & packaging graphics",
+      "Print production & vendor liaison",
+      "Sustainability considerations"
+    ]
+  },
+  {
+    "title": "Art Direction",
+    "category": "Creative",
+    "description": "Visual leadership across campaigns, shoots, and brand activations. We bring concepts to life through considered creative direction.",
+    "deliverables": [
+      "Shoot concepting & moodboarding",
+      "Location scouting & casting",
+      "On-set art direction",
+      "Post-production oversight"
+    ]
+  },
+  {
+    "title": "Branded Content",
+    "category": "Strategy",
+    "description": "Content partnerships and collaborations that feel native, not forced. We work with publishers, creators, and platforms to amplify brand stories.",
+    "deliverables": [
+      "Content strategy & partnership development",
+      "Creator briefing & collaboration",
+      "Production & editorial oversight",
+      "Distribution & amplification"
     ]
   }
 ]

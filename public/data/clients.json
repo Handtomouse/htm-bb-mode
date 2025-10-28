@@ -1,13 +1,69 @@
 [
-  { "name": "S'WICH", "sector": "Food & Beverage" },
-  { "name": "MapleMoon", "sector": "FMCG / Confectionery" },
-  { "name": "Jac+Jack", "sector": "Fashion / Retail" },
-  { "name": "Trood Pratt & Co.", "sector": "Professional Services" },
-  { "name": "Mix Family Group", "sector": "Hospitality" },
-  { "name": "Aura Therapeutics", "sector": "Health" },
-  { "name": "Palo Projects", "sector": "Arts" },
-  { "name": "Materre", "sector": "Wellness" },
-  { "name": "Betoota Collabs", "sector": "Media" },
-  { "name": "MyFlowerMan", "sector": "Retail" },
-  { "name": "Cape Lands", "sector": "IP / Prints" }
+  {
+    "name": "S'WICH",
+    "sector": "Food & Beverage",
+    "projects": 3,
+    "featured": true,
+    "logo": "/images/clients/swich.svg"
+  },
+  {
+    "name": "MapleMoon",
+    "sector": "FMCG / Confectionery",
+    "projects": 2,
+    "featured": true,
+    "logo": "/images/clients/maplemoon.svg"
+  },
+  {
+    "name": "Jac+Jack",
+    "sector": "Fashion / Retail",
+    "projects": 4,
+    "featured": true,
+    "logo": "/images/clients/jacjack.svg"
+  },
+  {
+    "name": "Betoota Collabs",
+    "sector": "Media",
+    "projects": 6,
+    "featured": true,
+    "logo": "/images/clients/betoota.svg"
+  },
+  {
+    "name": "Materre",
+    "sector": "Wellness",
+    "projects": 2,
+    "featured": true,
+    "logo": "/images/clients/materre.svg"
+  },
+  {
+    "name": "Mix Family Group",
+    "sector": "Hospitality",
+    "projects": 5,
+    "featured": true,
+    "logo": "/images/clients/mix.svg"
+  },
+  {
+    "name": "Trood Pratt & Co.",
+    "sector": "Professional Services",
+    "projects": 1
+  },
+  {
+    "name": "Aura Therapeutics",
+    "sector": "Health",
+    "projects": 2
+  },
+  {
+    "name": "Palo Projects",
+    "sector": "Arts",
+    "projects": 3
+  },
+  {
+    "name": "MyFlowerMan",
+    "sector": "Retail",
+    "projects": 2
+  },
+  {
+    "name": "Cape Lands",
+    "sector": "IP / Prints",
+    "projects": 1
+  }
 ]
