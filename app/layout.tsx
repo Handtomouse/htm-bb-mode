@@ -1,4 +1,5 @@
 import { VT323 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const vt323 = VT323({
@@ -30,6 +31,7 @@ export default function RootLayout({
       </head>
       <body className={`${vt323.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
