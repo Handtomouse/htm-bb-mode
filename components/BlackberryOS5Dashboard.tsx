@@ -73,6 +73,12 @@ export default function BlackberryOS5Dashboard() {
   const [toast, setToast] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  // Top bar state
+  const [signalStrength, setSignalStrength] = useState(4);
+  const [batteryLevel, setBatteryLevel] = useState(82);
+  const [networkType, setNetworkType] = useState<"3G" | "4G" | "5G" | "WiFi">("3G");
+  const [showBatteryTooltip, setShowBatteryTooltip] = useState(false);
+
   // Refs
   const screenRef = useRef<HTMLDivElement | null>(null);
 
@@ -82,6 +88,36 @@ export default function BlackberryOS5Dashboard() {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
+
+  // Simulate dynamic signal and network changes
+  useEffect(() => {
+    // Randomly fluctuate signal every 10-20 seconds
+    const signalInterval = setInterval(() => {
+      const change = Math.random();
+      if (change > 0.7) {
+        setSignalStrength(prev => Math.max(1, Math.min(4, prev + (Math.random() > 0.5 ? 1 : -1))));
+      }
+    }, 15000);
+
+    // Slowly drain battery (1% every 2 minutes)
+    const batteryInterval = setInterval(() => {
+      setBatteryLevel(prev => Math.max(5, prev - 1));
+    }, 120000);
+
+    // Occasionally cycle network types
+    const networkInterval = setInterval(() => {
+      const types: Array<"3G" | "4G" | "5G" | "WiFi"> = ["3G", "4G", "5G", "WiFi"];
+      const current = types.indexOf(networkType);
+      const next = types[(current + 1) % types.length];
+      setNetworkType(next);
+    }, 30000);
+
+    return () => {
+      clearInterval(signalInterval);
+      clearInterval(batteryInterval);
+      clearInterval(networkInterval);
+    };
+  }, [networkType]);
 
   // Apps (portfolio routes) - mapping to existing HTM routes
   type App = { name: string; icon: React.ReactNode; path?: string; external?: boolean };
@@ -340,11 +376,20 @@ export default function BlackberryOS5Dashboard() {
           />
           {/* Moving static overlay */}
           <div
-            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            className="absolute inset-0 opacity-[0.06] pointer-events-none"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' /%3E%3C/svg%3E")`,
               backgroundSize: "200px 200px",
               animation: "staticMove 8s linear infinite"
+            }}
+          />
+          {/* Rotating square pattern overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.08] pointer-events-none"
+            style={{
+              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 157, 35, 0.15) 35px, rgba(255, 157, 35, 0.15) 37px),
+                               repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0, 140, 255, 0.1) 35px, rgba(0, 140, 255, 0.1) 37px)`,
+              animation: "rotatePattern 20s linear infinite"
             }}
           />
           <style>{`
@@ -355,29 +400,72 @@ export default function BlackberryOS5Dashboard() {
               75% { transform: translate(-5%, 5%); }
               100% { transform: translate(0, 0); }
             }
+            @keyframes rotatePattern {
+              0% { transform: rotate(0deg) scale(1.5); }
+              100% { transform: rotate(360deg) scale(1.5); }
+            }
           `}</style>
 
-          {/* Status bar */}
+          {/* Status bar - enhanced with animations */}
           {poweredOn && (
-            <div className="relative z-10 flex items-center justify-between text-[11px] text-white/90 px-3 py-2 bg-black/30">
+            <div
+              className="relative z-10 flex items-center justify-between text-[11px] text-white/90 px-3 py-2 bg-black/30 transition-all duration-500"
+              style={{
+                boxShadow: signalStrength >= 3 ? "0 0 8px rgba(0, 255, 100, 0.2)" : signalStrength >= 2 ? "0 0 8px rgba(255, 200, 0, 0.2)" : "0 0 8px rgba(255, 50, 50, 0.2)"
+              }}
+            >
               <div className="flex items-center gap-2">
-                <SignalBars strength={4} />
-                <span className="tracking-wide">HTM</span>
+                <SignalBars strength={signalStrength as 0 | 1 | 2 | 3 | 4} />
+                <span className="tracking-wide font-semibold" style={{
+                  textShadow: "0 0 4px rgba(255, 157, 35, 0.3)",
+                  transition: "all 0.3s ease"
+                }}>HTM</span>
               </div>
-              <div className="font-semibold tabular-nums">{timeStr}</div>
+              <div
+                className="font-semibold tabular-nums transition-all duration-300"
+                style={{
+                  textShadow: "0 0 6px rgba(255, 255, 255, 0.4)"
+                }}
+              >
+                {timeStr}
+              </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px]">3G</span>
-                <Battery level={82} charging={false} />
+                <span
+                  className="text-[10px] font-bold px-1 rounded-sm transition-all duration-500"
+                  style={{
+                    backgroundColor: networkType === "5G" ? "rgba(0, 255, 0, 0.2)" :
+                                    networkType === "4G" ? "rgba(0, 200, 255, 0.2)" :
+                                    networkType === "WiFi" ? "rgba(255, 157, 35, 0.2)" : "rgba(150, 150, 150, 0.2)",
+                    border: `1px solid ${networkType === "5G" ? "#00ff00" :
+                                         networkType === "4G" ? "#00c8ff" :
+                                         networkType === "WiFi" ? "#ff9d23" : "#999"}`,
+                    textShadow: "0 0 4px rgba(255, 255, 255, 0.5)"
+                  }}
+                >
+                  {networkType}
+                </span>
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowBatteryTooltip(true)}
+                  onMouseLeave={() => setShowBatteryTooltip(false)}
+                >
+                  <Battery level={batteryLevel} charging={false} />
+                  {showBatteryTooltip && (
+                    <div className="absolute -bottom-6 right-0 bg-black/90 text-white text-[9px] px-2 py-0.5 rounded whitespace-nowrap z-50">
+                      {batteryLevel}%
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
-          {/* Banner */}
+          {/* Banner with animated notifications */}
           {poweredOn && (
             <div className="relative z-10 px-3 pt-2 text-white">
-              <div className="text-xs opacity-80">{dateStr}</div>
+              <div className="text-xs opacity-80 transition-opacity duration-300">{dateStr}</div>
               <div className="mt-1 flex items-center gap-2 text-[11px] text-white/80">
-                <NotiDot /> <span>2 new updates</span> • <NotiDot /> <span>1 event</span>
+                <NotiDot pulse /> <span>2 new updates</span> • <NotiDot pulse /> <span>1 event</span>
               </div>
             </div>
           )}
@@ -414,9 +502,12 @@ export default function BlackberryOS5Dashboard() {
           )}
         </div>
 
+        {/* Gap between screen and hardware */}
+        <div className="h-3" />
+
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
         <div className="px-4 pt-2 pb-4">
-          <div className="mx-auto mt-2 flex items-center justify-stretch gap-0 text-white">
+          <div className="mx-auto flex items-center justify-stretch gap-0 text-white">
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -887,8 +978,30 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
 // =====================
 // Icons & Glyphs
 // =====================
-function NotiDot() {
-  return <span className="inline-block h-1.5 w-1.5 align-middle" style={{ backgroundColor: ACCENT }} />;
+function NotiDot({ pulse = false }: { pulse?: boolean }) {
+  return (
+    <span
+      className={`inline-block h-1.5 w-1.5 align-middle ${pulse ? "animate-pulse" : ""}`}
+      style={{
+        backgroundColor: ACCENT,
+        boxShadow: pulse ? `0 0 8px ${ACCENT}` : "none",
+        animation: pulse ? "notiPulse 2s ease-in-out infinite" : "none"
+      }}
+    >
+      <style>{`
+        @keyframes notiPulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.3);
+            opacity: 0.7;
+          }
+        }
+      `}</style>
+    </span>
+  );
 }
 
 function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
