@@ -1071,21 +1071,20 @@ function HomeDockOverlay({
           <span className="mx-3 opacity-50">•</span>
           <span className="opacity-90 font-medium">Enter/Tap=Open</span>
         </div>
-        <div className="grid grid-cols-5 gap-4 p-4">
+        <div className="grid grid-cols-5 gap-5 p-5">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-md border p-3",
+                "group relative flex flex-col items-center justify-center rounded-lg border-2 p-3.5",
                 selectedDock === idx
-                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/60 bg-gradient-to-b from-white/15 to-white/10"
-                  : "border-white/15 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/25 hover:from-white/10 hover:to-white/7",
+                  ? "border-[#ff9d23]/80 bg-gradient-to-b from-white/15 to-white/10"
+                  : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7",
                 "transition-all duration-300 active:scale-95",
               ].join(" ")}
               style={{
-                transform: selectedDock === idx ? "scale(1.05) translateY(-2px)" : "scale(1)",
                 boxShadow: selectedDock === idx
-                  ? "0 0 0 2px rgba(255,157,35,0.4), 0 0 20px rgba(255,157,35,0.5), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)"
+                  ? "0 0 0 2px rgba(255,157,35,0.3), 0 0 16px rgba(255,157,35,0.4), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)"
                   : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
               }}
               onMouseEnter={() => setSelectedDock(idx)}
@@ -1095,18 +1094,18 @@ function HomeDockOverlay({
             >
               <div className={`h-10 w-10 transition-all duration-300 ${
                 selectedDock === idx
-                  ? "brightness-125 drop-shadow-[0_0_8px_rgba(255,157,35,0.6)] scale-105"
-                  : "brightness-100 group-hover:brightness-110 group-hover:drop-shadow-[0_0_4px_rgba(255,157,35,0.3)]"
+                  ? "brightness-125 drop-shadow-[0_0_8px_rgba(255,157,35,0.5)]"
+                  : "brightness-100 group-hover:brightness-110"
               }`}>
                 {app.icon}
               </div>
-              <div className={`mt-2 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
+              <div className={`mt-2.5 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
                 selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}
               </div>
               {selectedDock === idx && (
-                <div className="pointer-events-none absolute inset-0 rounded-md ring-1 ring-[#ff9d23]/50 shadow-[inset_0_0_20px_rgba(255,157,35,0.25)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-lg shadow-[inset_0_0_18px_rgba(255,157,35,0.2)]" />
               )}
             </button>
           ))}
