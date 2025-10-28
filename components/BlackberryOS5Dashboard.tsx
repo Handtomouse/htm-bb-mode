@@ -645,7 +645,7 @@ export default function BlackberryOS5Dashboard() {
         </div>
 
         {/* Gap between screen and hardware */}
-        <div className="h-3" />
+        <div className="h-5" />
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
         <div className="px-6 pt-3 pb-5">
@@ -1057,7 +1057,7 @@ function HomeDockOverlay({
 
   return (
     <div
-      className="absolute inset-0 flex items-end justify-center pb-5 px-3"
+      className="absolute inset-0 flex items-end justify-center pb-6 px-3"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
