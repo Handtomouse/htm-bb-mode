@@ -332,7 +332,7 @@ export default function BlackberryOS5Dashboard() {
               dockApps={dockApps}
               selectedDock={selectedDock}
               setSelectedDock={setSelectedDock}
-              open={(idx: number) => setOpenAppIndex(idx)}
+              navigateTo={navigateTo}
               goMenu={goMenu}
             />
           ) : (
@@ -340,7 +340,7 @@ export default function BlackberryOS5Dashboard() {
               apps={apps}
               selected={selectedMenu}
               setSelected={setSelectedMenu}
-              open={(idx: number) => setOpenAppIndex(idx)}
+              navigateTo={navigateTo}
               setShowContext={setShowContext}
             />
           )}
@@ -446,14 +446,14 @@ function HomeDockOverlay({
   dockApps,
   selectedDock,
   setSelectedDock,
-  open,
+  navigateTo,
   goMenu,
 }: {
-  apps: { name: string; icon: React.ReactNode }[];
-  dockApps: { name: string; icon: React.ReactNode }[];
+  apps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
+  dockApps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
   selectedDock: number;
   setSelectedDock: React.Dispatch<React.SetStateAction<number>>;
-  open: (idx: number) => void;
+  navigateTo: (app: { name: string; icon: React.ReactNode; path?: string; external?: boolean }) => void;
   goMenu: () => void;
 }) {
   return (
@@ -477,13 +477,7 @@ function HomeDockOverlay({
                 ].join(" ")}
                 onMouseEnter={() => setSelectedDock(idx)}
                 onFocus={() => setSelectedDock(idx)}
-                onClick={() => {
-                  const fullIndex = apps.findIndex((a) => a.name === app.name);
-                  if (fullIndex >= 0) {
-                    // Home dock opens via parent handler: open(index) then parent decides
-                    open(fullIndex);
-                  }
-                }}
+                onClick={() => navigateTo(app)}
                 aria-label={app.name}
               >
                 <div className="h-8 w-8">{app.icon}</div>
@@ -505,13 +499,13 @@ function MenuGrid({
   apps,
   selected,
   setSelected,
-  open,
+  navigateTo,
   setShowContext,
 }: {
-  apps: { name: string; icon: React.ReactNode }[];
+  apps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
   selected: number;
   setSelected: React.Dispatch<React.SetStateAction<number>>;
-  open: (idx: number) => void;
+  navigateTo: (app: { name: string; icon: React.ReactNode; path?: string; external?: boolean }) => void;
   setShowContext: (b: boolean) => void;
 }) {
   return (
@@ -526,7 +520,7 @@ function MenuGrid({
           ].join(" ")}
           onMouseEnter={() => setSelected(idx)}
           onFocus={() => setSelected(idx)}
-          onClick={() => open(idx)}
+          onClick={() => navigateTo(app)}
           onContextMenu={(e) => {
             e.preventDefault();
             setShowContext(true);
