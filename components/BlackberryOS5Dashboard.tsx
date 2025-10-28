@@ -329,7 +329,7 @@ export default function BlackberryOS5Dashboard() {
 
         {/* Screen */}
         <div ref={screenRef} className="mx-4 rounded-none overflow-hidden ring-1 ring-white/15 relative aspect-[3/4.6]">
-          {/* Wallpaper */}
+          {/* Wallpaper with static effect */}
           <div
             className="absolute inset-0"
             style={{
@@ -338,6 +338,24 @@ export default function BlackberryOS5Dashboard() {
                                repeating-linear-gradient(0deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 8px)`,
             }}
           />
+          {/* Moving static overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' /%3E%3C/svg%3E")`,
+              backgroundSize: "200px 200px",
+              animation: "staticMove 8s linear infinite"
+            }}
+          />
+          <style>{`
+            @keyframes staticMove {
+              0% { transform: translate(0, 0); }
+              25% { transform: translate(-5%, -5%); }
+              50% { transform: translate(-10%, 0); }
+              75% { transform: translate(-5%, 5%); }
+              100% { transform: translate(0, 0); }
+            }
+          `}</style>
 
           {/* Status bar */}
           {poweredOn && (
@@ -387,22 +405,6 @@ export default function BlackberryOS5Dashboard() {
             />
           )}
 
-          {/* Hints - only show when powered on, position at very bottom of screen */}
-          {poweredOn && mode === "home" && openApp === null && (
-            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10 z-20">
-              ▲ to open Menu • ◀▶ to pick • Enter=Open
-            </div>
-          )}
-          {poweredOn && mode === "menu" && openApp === null && (
-            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10 z-20">
-              Arrows to move • Enter=Open • Esc=Home • M=Context
-            </div>
-          )}
-          {poweredOn && openApp !== null && (
-            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10 z-20">
-              Back=Close • Scroll to view content
-            </div>
-          )}
 
           {/* POWER OFF OVERLAY (full screen OFF) */}
           {!poweredOn && (
@@ -754,6 +756,10 @@ function HomeDockOverlay({
     <div className="absolute inset-0 flex items-end justify-center pb-5 px-3">
       {/* Bold-style bottom dock overlay */}
       <div className="w-full max-w-[94%] rounded-none border border-white/15 bg-black/45 backdrop-blur-md shadow-[0_6px_28px_rgba(0,0,0,0.45)]">
+        {/* Hints at top of dock bar */}
+        <div className="px-3 pt-1 pb-0.5 text-center text-white/60 text-[10px] border-b border-white/10">
+          ▲ to open Menu • ◀▶ to pick • Enter=Open
+        </div>
         <div className="grid grid-cols-5 gap-2 p-2">
           {dockApps.map((app, idx) => (
             <button
@@ -778,7 +784,6 @@ function HomeDockOverlay({
             </button>
           ))}
         </div>
-        <div className="px-3 pb-1 text-center text-white/60 text-[10px]">Up/Menu = All apps</div>
       </div>
     </div>
   );
@@ -798,8 +803,8 @@ function MenuGrid({
   setShowContext: (b: boolean) => void;
 }) {
   return (
-    <div className="absolute inset-0 top-16 bottom-8 px-3 py-3 overflow-y-auto">
-      <div className="grid grid-cols-3 gap-3 select-none h-full" style={{ gridAutoRows: "1fr" }}>
+    <div className="absolute inset-0 top-16 bottom-8 px-4 py-4 overflow-y-auto overflow-x-hidden">
+      <div className="grid grid-cols-3 gap-4 select-none h-full" style={{ gridAutoRows: "1fr", padding: "4px" }}>
         {apps.map((app, idx) => (
           <button
             key={app.name}
@@ -808,6 +813,10 @@ function MenuGrid({
               selected === idx ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]" : "hover:border-white/25",
               "transition-all",
             ].join(" ")}
+            style={{
+              // Add overflow visible for glow effect
+              overflow: "visible"
+            }}
             onMouseEnter={() => setSelected(idx)}
             onFocus={() => setSelected(idx)}
             onClick={() => navigateTo(app)}
