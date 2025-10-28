@@ -387,14 +387,20 @@ export default function BlackberryOS5Dashboard() {
             />
           )}
 
-          {/* Hints */}
-          {poweredOn && (
-            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10">
-              {openApp !== null
-                ? "Back=Close • Scroll to view content"
-                : mode === "home"
-                ? "▲ to open Menu • ◀▶ to pick • Enter=Open"
-                : "Arrows to move • Enter=Open • Esc=Home • M=Context"}
+          {/* Hints - only show when powered on, position at very bottom of screen */}
+          {poweredOn && mode === "home" && openApp === null && (
+            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10 z-20">
+              ▲ to open Menu • ◀▶ to pick • Enter=Open
+            </div>
+          )}
+          {poweredOn && mode === "menu" && openApp === null && (
+            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10 z-20">
+              Arrows to move • Enter=Open • Esc=Home • M=Context
+            </div>
+          )}
+          {poweredOn && openApp !== null && (
+            <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 text-[10px] text-white/60 bg-black/30 border-t border-white/10 z-20">
+              Back=Close • Scroll to view content
             </div>
           )}
 
@@ -792,13 +798,13 @@ function MenuGrid({
   setShowContext: (b: boolean) => void;
 }) {
   return (
-    <div className="relative z-10 flex items-center justify-center min-h-full px-4 py-8">
-      <div className="grid grid-cols-3 gap-4 select-none w-full max-w-[90%]">
+    <div className="absolute inset-0 top-16 bottom-8 px-3 py-3 overflow-y-auto">
+      <div className="grid grid-cols-3 gap-3 select-none h-full" style={{ gridAutoRows: "1fr" }}>
         {apps.map((app, idx) => (
           <button
             key={app.name}
             className={[
-              "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-4 backdrop-blur-sm",
+              "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 backdrop-blur-sm",
               selected === idx ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]" : "hover:border-white/25",
               "transition-all",
             ].join(" ")}
@@ -811,8 +817,8 @@ function MenuGrid({
             }}
             aria-label={app.name}
           >
-            <div className="h-11 w-11">{app.icon}</div>
-            <div className="mt-2 text-[11px] text-white/90 leading-none text-center">{app.name}</div>
+            <div className="h-10 w-10">{app.icon}</div>
+            <div className="mt-2 text-[10px] text-white/90 leading-none text-center">{app.name}</div>
             {selected === idx && (
               <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_24px_rgba(255,157,35,0.35)]" />
             )}
@@ -979,19 +985,56 @@ function PixelPowerIcon() {
   );
 }
 function TrackpadMetal() {
-  const outer: React.CSSProperties = { background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)", borderRadius: 0, padding: 3 };
-  const inner: React.CSSProperties = {
-    width: "100%", height: "100%", borderRadius: 0, border: "3px solid #6c6c6c",
+  // Metallic trackpad based on Enhanced_BESTSOFAR_Styled 2.html
+  const container: React.CSSProperties = {
+    background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
+    borderRadius: "16px",
+    padding: "4px",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    animation: "pulseGlow 4s infinite ease-in-out"
+  };
+
+  const metalButton: React.CSSProperties = {
+    width: "100%",
+    height: "100%",
+    borderRadius: "12px",
     background: "radial-gradient(circle at 40% 30%, #1a1a1a 0%, #111 100%)",
-    boxShadow: "inset -2px -2px 6px rgba(255,255,255,0.1), inset 2px 2px 6px rgba(0,0,0,0.6)", position: "relative"
+    border: "4px solid #6c6c6c",
+    boxShadow: "inset -4px -4px 12px rgba(255, 255, 255, 0.1), inset 4px 4px 12px rgba(0, 0, 0, 0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    transition: "transform 0.2s ease"
   };
+
   const shine: React.CSSProperties = {
-    position: "absolute", inset: 0, borderRadius: 0,
-    background: "radial-gradient(circle at 40% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)", pointerEvents: "none"
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    borderRadius: "12px",
+    background: "radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 60%)",
+    pointerEvents: "none"
   };
+
   return (
-    <div style={outer} className="h-full w-full">
-      <div style={inner}><div style={shine} /></div>
+    <div style={container}>
+      <div style={metalButton}>
+        <div style={shine} />
+      </div>
+      <style>{`
+        @keyframes pulseGlow {
+          0% { box-shadow: 0 0 25px rgba(255, 157, 35, 0.15); }
+          50% { box-shadow: 0 0 45px rgba(255, 157, 35, 0.3); }
+          100% { box-shadow: 0 0 25px rgba(255, 157, 35, 0.15); }
+        }
+      `}</style>
     </div>
   );
 }
