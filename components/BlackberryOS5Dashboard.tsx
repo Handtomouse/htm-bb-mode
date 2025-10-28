@@ -1062,9 +1062,9 @@ function HomeDockOverlay({
       onTouchEnd={handleTouchEnd}
     >
       {/* Bold-style bottom dock overlay */}
-      <div className="w-full max-w-[94%] rounded-md border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05)]">
+      <div className="w-full max-w-[94%] rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05)]">
         {/* Hints at top of dock bar with gradient */}
-        <div className="px-4 pt-2.5 pb-2 text-center text-white/80 text-[10px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest rounded-t-md">
+        <div className="px-4 pt-2.5 pb-2 text-center text-white/80 text-[10px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
           <span className="opacity-90 font-medium">▲ Menu</span>
           <span className="mx-3 opacity-50">•</span>
           <span className="opacity-90 font-medium">◀▶ Navigate</span>
@@ -1099,7 +1099,7 @@ function HomeDockOverlay({
               }`}>
                 {app.icon}
               </div>
-              <div className={`mt-2.5 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
+              <div className={`mt-3.5 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
                 selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}
