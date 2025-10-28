@@ -78,6 +78,7 @@ export default function BlackberryOS5Dashboard() {
   const [batteryLevel, setBatteryLevel] = useState(82);
   const [networkType, setNetworkType] = useState<"3G" | "4G" | "5G" | "WiFi">("3G");
   const [showBatteryTooltip, setShowBatteryTooltip] = useState(false);
+  const [isCharging, setIsCharging] = useState(false);
 
   // Refs
   const screenRef = useRef<HTMLDivElement | null>(null);
@@ -99,10 +100,20 @@ export default function BlackberryOS5Dashboard() {
       }
     }, 15000);
 
-    // Slowly drain battery (1% every 2 minutes)
+    // Battery simulation: charge when low, drain when high
     const batteryInterval = setInterval(() => {
-      setBatteryLevel(prev => Math.max(5, prev - 1));
-    }, 120000);
+      setBatteryLevel(prev => {
+        if (prev <= 20) {
+          setIsCharging(true);
+          return Math.min(100, prev + 1); // Charge when low
+        } else if (prev >= 95) {
+          setIsCharging(false);
+          return Math.max(5, prev - 1); // Drain when high
+        } else {
+          return isCharging ? Math.min(100, prev + 1) : Math.max(5, prev - 1);
+        }
+      });
+    }, 3000); // Faster for demo (3 seconds)
 
     // Occasionally cycle network types
     const networkInterval = setInterval(() => {
@@ -341,6 +352,44 @@ export default function BlackberryOS5Dashboard() {
   const timeStr = mounted ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--";
   const dateStr = mounted ? now.toLocaleDateString([], { weekday: "short", day: "2-digit", month: "short", year: "numeric" }) : "Loading...";
 
+  // Dynamic wallpaper colors based on time of day
+  const getWallpaperColors = () => {
+    const hour = now.getHours();
+    if (hour >= 5 && hour < 8) {
+      // Dawn: purple and pink
+      return {
+        primary: "rgba(120, 50, 150, 0.85)",
+        secondary: "rgba(255, 100, 150, 0.4)"
+      };
+    } else if (hour >= 8 && hour < 12) {
+      // Morning: bright blue
+      return {
+        primary: "rgba(9, 20, 40, 0.85)",
+        secondary: "rgba(0, 180, 255, 0.25)"
+      };
+    } else if (hour >= 12 && hour < 17) {
+      // Afternoon: warm blue
+      return {
+        primary: "rgba(20, 40, 80, 0.85)",
+        secondary: "rgba(100, 200, 255, 0.2)"
+      };
+    } else if (hour >= 17 && hour < 20) {
+      // Evening: orange and purple
+      return {
+        primary: "rgba(40, 20, 60, 0.9)",
+        secondary: "rgba(255, 140, 0, 0.3)"
+      };
+    } else {
+      // Night: deep blue
+      return {
+        primary: "rgba(5, 10, 25, 0.95)",
+        secondary: "rgba(0, 80, 180, 0.15)"
+      };
+    }
+  };
+
+  const wallpaperColors = getWallpaperColors();
+
   // =====================
   // Render
   // =====================
@@ -365,12 +414,12 @@ export default function BlackberryOS5Dashboard() {
 
         {/* Screen */}
         <div ref={screenRef} className="mx-4 rounded-none overflow-hidden ring-1 ring-white/15 relative aspect-[3/4.6]">
-          {/* Wallpaper with static effect */}
+          {/* Wallpaper with static effect - time-based colors */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 transition-colors duration-[3000ms]"
             style={{
-              backgroundImage: `radial-gradient(150%_120% at 50% 20%, rgba(9,20,40,0.85), rgba(0,0,0,0.95)),
-                               linear-gradient(135deg, rgba(0,140,255,0.18), rgba(0,0,0,0) 60%),
+              backgroundImage: `radial-gradient(150%_120% at 50% 20%, ${wallpaperColors.primary}, rgba(0,0,0,0.95)),
+                               linear-gradient(135deg, ${wallpaperColors.secondary}, rgba(0,0,0,0) 60%),
                                repeating-linear-gradient(0deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 8px)`,
             }}
           />
@@ -426,10 +475,10 @@ export default function BlackberryOS5Dashboard() {
                   onMouseEnter={() => setShowBatteryTooltip(true)}
                   onMouseLeave={() => setShowBatteryTooltip(false)}
                 >
-                  <Battery level={batteryLevel} charging={false} />
+                  <Battery level={batteryLevel} charging={isCharging} />
                   {showBatteryTooltip && (
                     <div className="absolute -bottom-6 right-0 bg-black/90 text-white text-[9px] px-2 py-0.5 rounded whitespace-nowrap z-50">
-                      {batteryLevel}%
+                      {batteryLevel}% {isCharging && "⚡"}
                     </div>
                   )}
                 </div>
@@ -570,9 +619,14 @@ export default function BlackberryOS5Dashboard() {
 function AppContent({ appId }: { appId: string }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    setFadeIn(false);
+
+    // Trigger fade-in after a brief delay
+    const fadeTimer = setTimeout(() => setFadeIn(true), 50);
 
     // Load data for portfolio, clients, services, notes
     if (appId === "portfolio") {
@@ -599,11 +653,17 @@ function AppContent({ appId }: { appId: string }) {
     } else {
       setLoading(false);
     }
+
+    return () => clearTimeout(fadeTimer);
   }, [appId]);
 
   // Scrollable container that fills the BB screen (below status bar, above hints)
   return (
-    <div className="absolute left-0 right-0 top-[72px] bottom-[32px] overflow-y-auto bg-black/40 backdrop-blur-sm">
+    <div
+      className={`absolute left-0 right-0 top-[72px] bottom-[32px] overflow-y-auto bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+        fadeIn ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div className="p-4">
         {loading ? (
           <div className="text-white/60 text-sm">Loading...</div>
@@ -840,15 +900,20 @@ function HomeDockOverlay({
                 "group relative flex flex-col items-center justify-center rounded-none border border-white/10 bg-white/5 p-2",
                 selectedDock === idx
                   ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35)]"
-                  : "hover:border-white/25",
-                "transition-all",
+                  : "hover:border-white/25 hover:shadow-[0_0_12px_rgba(255,157,35,0.4)]",
+                "transition-all duration-300",
               ].join(" ")}
+              style={{
+                transform: selectedDock === idx ? "scale(1.05)" : "scale(1)"
+              }}
               onMouseEnter={() => setSelectedDock(idx)}
               onFocus={() => setSelectedDock(idx)}
               onClick={() => navigateTo(app)}
               aria-label={app.name}
             >
-              <div className="h-8 w-8">{app.icon}</div>
+              <div className={`h-8 w-8 transition-all duration-300 ${selectedDock === idx ? "brightness-125" : "group-hover:brightness-110"}`}>
+                {app.icon}
+              </div>
               <div className="mt-1 text-[10px] text-white/90 leading-none text-center">{app.name}</div>
               {selectedDock === idx && (
                 <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/30 shadow-[inset_0_0_18px_rgba(255,157,35,0.35)]" />
@@ -1006,11 +1071,24 @@ function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
 
 function Battery({ level = 50, charging = false }: { level?: number; charging?: boolean }) {
   const pct = Math.max(0, Math.min(100, level));
+  const color = pct < 20 ? "#ef4444" : charging ? "#fbbf24" : "#22c55e";
+
   return (
-    <div className="relative h-3 w-6 rounded-none border border-white/70">
+    <div className={`relative h-3 w-6 rounded-none border border-white/70 ${charging ? "animate-pulse" : ""}`}>
       <div className="absolute -right-1 top-0.5 h-2 w-0.5 bg-white/70" />
-      <div className="h-full" style={{ width: `${pct}%`, background: pct < 20 ? "#ef4444" : "#22c55e" }} />
-      {charging && <div className="absolute inset-0 grid place-items-center text-[9px]">⚡️</div>}
+      <div
+        className={`h-full transition-all duration-300 ${charging ? "animate-pulse" : ""}`}
+        style={{
+          width: `${pct}%`,
+          background: charging ? `linear-gradient(90deg, ${color} 0%, #fde047 100%)` : color,
+          boxShadow: charging ? `0 0 6px ${color}` : "none"
+        }}
+      />
+      {charging && (
+        <div className="absolute inset-0 grid place-items-center text-[9px] animate-pulse">
+          ⚡️
+        </div>
+      )}
     </div>
   );
 }
