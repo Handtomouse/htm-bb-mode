@@ -532,19 +532,19 @@ export default function BlackberryOS5Dashboard() {
 
           {/* Status bar - BlackBerry OS style */}
           {poweredOn && (
-            <div className="relative z-10 flex items-center justify-between text-[10px] text-white px-3 py-1.5 bg-gradient-to-b from-black/60 to-black/40">
+            <div className="relative z-10 flex items-center justify-between text-[10px] text-white px-4 py-2 bg-gradient-to-b from-black/70 via-black/60 to-black/50 border-b border-white/5">
               {/* Left: Sound + Signal */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <VolumeIcon />
                 <SignalBars strength={signalStrength as 0 | 1 | 2 | 3 | 4} />
               </div>
 
               {/* Center: Carrier name */}
-              <div className="font-normal tracking-wide">HTM</div>
+              <div className="font-semibold tracking-widest text-[11px]">HTM</div>
 
               {/* Right: Network + Battery */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-normal">{networkType}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-sm bg-white/10">{networkType}</span>
                 <div
                   className="relative"
                   onMouseEnter={() => setShowBatteryTooltip(true)}
@@ -552,8 +552,8 @@ export default function BlackberryOS5Dashboard() {
                 >
                   <Battery level={batteryLevel} charging={isCharging} />
                   {showBatteryTooltip && (
-                    <div className="absolute -bottom-6 right-0 bg-black/90 text-white text-[9px] px-2 py-0.5 rounded whitespace-nowrap z-50">
-                      {batteryLevel}% {isCharging && "⚡"}
+                    <div className="absolute -bottom-7 right-0 bg-black/95 text-white text-[9px] px-2 py-1 rounded-sm whitespace-nowrap z-50 border border-white/20 shadow-lg">
+                      {batteryLevel}% {isCharging && "⚡ Charging"}
                     </div>
                   )}
                 </div>
@@ -563,15 +563,24 @@ export default function BlackberryOS5Dashboard() {
 
           {/* Time and date display - BlackBerry OS style */}
           {poweredOn && (
-            <div className="relative z-10 px-3 pt-4 pb-4 text-white text-center">
+            <div className="relative z-10 px-4 pt-5 pb-5 text-white text-center bg-gradient-to-b from-transparent via-black/10 to-transparent">
               {/* Large centered time */}
-              <div className="text-3xl font-light tabular-nums tracking-tight" style={{
-                textShadow: "0 2px 8px rgba(0, 0, 0, 0.6)"
+              <div className="text-4xl font-extralight tabular-nums tracking-tight mb-1" style={{
+                textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
               }}>
                 {timeStr}
               </div>
               {/* Date below */}
-              <div className="text-xs mt-1 opacity-90">{dateStr}</div>
+              <div className="text-xs mt-2 opacity-80 tracking-wide font-medium">{dateStr}</div>
+              {/* Notifications indicator */}
+              {mounted && (
+                <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] text-white/50">
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                    <span>No notifications</span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -1053,51 +1062,51 @@ function HomeDockOverlay({
       onTouchEnd={handleTouchEnd}
     >
       {/* Bold-style bottom dock overlay */}
-      <div className="w-full max-w-[94%] rounded-none border border-white/15 bg-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
+      <div className="w-full max-w-[94%] rounded-md border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05)]">
         {/* Hints at top of dock bar with gradient */}
-        <div className="px-3 pt-2 pb-1.5 text-center text-white/70 text-[10px] border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent tracking-wider">
-          <span className="opacity-80">▲ Menu</span>
-          <span className="mx-3 opacity-40">•</span>
-          <span className="opacity-80">◀▶ Navigate</span>
-          <span className="mx-3 opacity-40">•</span>
-          <span className="opacity-80">Enter/Tap=Open</span>
+        <div className="px-4 pt-2.5 pb-2 text-center text-white/80 text-[10px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
+          <span className="opacity-90 font-medium">▲ Menu</span>
+          <span className="mx-3 opacity-50">•</span>
+          <span className="opacity-90 font-medium">◀▶ Navigate</span>
+          <span className="mx-3 opacity-50">•</span>
+          <span className="opacity-90 font-medium">Enter/Tap=Open</span>
         </div>
-        <div className="grid grid-cols-5 gap-2.5 p-3">
+        <div className="grid grid-cols-5 gap-3 p-3.5">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-sm border p-2.5",
+                "group relative flex flex-col items-center justify-center rounded-md border p-3",
                 selectedDock === idx
-                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23] shadow-[0_0_0_2px_rgba(255,157,35,0.35),0_0_20px_rgba(255,157,35,0.4)] bg-white/10"
-                  : "border-white/10 bg-white/5 hover:border-white/25 hover:shadow-[0_0_16px_rgba(255,157,35,0.3)] hover:bg-white/8",
+                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/60 shadow-[0_0_0_2px_rgba(255,157,35,0.4),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/15 to-white/10"
+                  : "border-white/15 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:shadow-[0_0_18px_rgba(255,157,35,0.35)] hover:from-white/12 hover:to-white/8",
                 "transition-all duration-300 active:scale-95",
               ].join(" ")}
               style={{
-                transform: selectedDock === idx ? "scale(1.08) translateY(-2px)" : "scale(1)",
+                transform: selectedDock === idx ? "scale(1.1) translateY(-3px)" : "scale(1)",
                 boxShadow: selectedDock === idx
-                  ? "0 0 0 2px rgba(255,157,35,0.35), 0 0 24px rgba(255,157,35,0.5), 0 4px 12px rgba(0,0,0,0.4)"
-                  : undefined
+                  ? "0 0 0 2px rgba(255,157,35,0.4), 0 0 28px rgba(255,157,35,0.6), 0 6px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
+                  : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
               }}
               onMouseEnter={() => setSelectedDock(idx)}
               onFocus={() => setSelectedDock(idx)}
               onClick={() => navigateTo(app)}
               aria-label={app.name}
             >
-              <div className={`h-9 w-9 transition-all duration-300 ${
+              <div className={`h-10 w-10 transition-all duration-300 ${
                 selectedDock === idx
-                  ? "brightness-125 drop-shadow-[0_0_8px_rgba(255,157,35,0.6)]"
-                  : "group-hover:brightness-110 group-hover:drop-shadow-[0_0_4px_rgba(255,157,35,0.3)]"
+                  ? "brightness-130 drop-shadow-[0_0_10px_rgba(255,157,35,0.7)] scale-110"
+                  : "brightness-100 group-hover:brightness-115 group-hover:drop-shadow-[0_0_6px_rgba(255,157,35,0.4)] group-hover:scale-105"
               }`}>
                 {app.icon}
               </div>
-              <div className={`mt-1.5 text-[10px] leading-none text-center font-medium transition-all duration-300 ${
-                selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
+              <div className={`mt-2 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
+                selectedDock === idx ? "text-[#ff9d23] scale-105" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}
               </div>
               {selectedDock === idx && (
-                <div className="pointer-events-none absolute inset-0 rounded-sm ring-1 ring-[#ff9d23]/40 shadow-[inset_0_0_20px_rgba(255,157,35,0.25)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-md ring-1 ring-[#ff9d23]/50 shadow-[inset_0_0_24px_rgba(255,157,35,0.3)]" />
               )}
             </button>
           ))}
