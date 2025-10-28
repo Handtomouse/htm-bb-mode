@@ -406,44 +406,21 @@ export default function BlackberryOS5Dashboard() {
             }
           `}</style>
 
-          {/* Status bar - enhanced with animations */}
+          {/* Status bar - BlackBerry OS style */}
           {poweredOn && (
-            <div
-              className="relative z-10 flex items-center justify-between text-[11px] text-white/90 px-3 py-2 bg-black/30 transition-all duration-500"
-              style={{
-                boxShadow: signalStrength >= 3 ? "0 0 8px rgba(0, 255, 100, 0.2)" : signalStrength >= 2 ? "0 0 8px rgba(255, 200, 0, 0.2)" : "0 0 8px rgba(255, 50, 50, 0.2)"
-              }}
-            >
-              <div className="flex items-center gap-2">
+            <div className="relative z-10 flex items-center justify-between text-[10px] text-white px-3 py-1.5 bg-gradient-to-b from-black/60 to-black/40">
+              {/* Left: Sound + Signal */}
+              <div className="flex items-center gap-1.5">
+                <VolumeIcon />
                 <SignalBars strength={signalStrength as 0 | 1 | 2 | 3 | 4} />
-                <span className="tracking-wide font-semibold" style={{
-                  textShadow: "0 0 4px rgba(255, 157, 35, 0.3)",
-                  transition: "all 0.3s ease"
-                }}>HTM</span>
               </div>
-              <div
-                className="font-semibold tabular-nums transition-all duration-300"
-                style={{
-                  textShadow: "0 0 6px rgba(255, 255, 255, 0.4)"
-                }}
-              >
-                {timeStr}
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-[10px] font-bold px-1 rounded-sm transition-all duration-500"
-                  style={{
-                    backgroundColor: networkType === "5G" ? "rgba(0, 255, 0, 0.2)" :
-                                    networkType === "4G" ? "rgba(0, 200, 255, 0.2)" :
-                                    networkType === "WiFi" ? "rgba(255, 157, 35, 0.2)" : "rgba(150, 150, 150, 0.2)",
-                    border: `1px solid ${networkType === "5G" ? "#00ff00" :
-                                         networkType === "4G" ? "#00c8ff" :
-                                         networkType === "WiFi" ? "#ff9d23" : "#999"}`,
-                    textShadow: "0 0 4px rgba(255, 255, 255, 0.5)"
-                  }}
-                >
-                  {networkType}
-                </span>
+
+              {/* Center: Carrier name */}
+              <div className="font-normal tracking-wide">HTM</div>
+
+              {/* Right: Network + Battery */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-normal">{networkType}</span>
                 <div
                   className="relative"
                   onMouseEnter={() => setShowBatteryTooltip(true)}
@@ -460,13 +437,17 @@ export default function BlackberryOS5Dashboard() {
             </div>
           )}
 
-          {/* Banner with animated notifications */}
+          {/* Time and date display - BlackBerry OS style */}
           {poweredOn && (
-            <div className="relative z-10 px-3 pt-2 text-white">
-              <div className="text-xs opacity-80 transition-opacity duration-300">{dateStr}</div>
-              <div className="mt-1 flex items-center gap-2 text-[11px] text-white/80">
-                <NotiDot pulse /> <span>2 new updates</span> • <NotiDot pulse /> <span>1 event</span>
+            <div className="relative z-10 px-3 pt-3 pb-2 text-white text-center">
+              {/* Large centered time */}
+              <div className="text-3xl font-light tabular-nums tracking-tight" style={{
+                textShadow: "0 2px 8px rgba(0, 0, 0, 0.6)"
+              }}>
+                {timeStr}
               </div>
+              {/* Date below */}
+              <div className="text-xs mt-1 opacity-90">{dateStr}</div>
             </div>
           )}
 
@@ -1001,6 +982,15 @@ function NotiDot({ pulse = false }: { pulse?: boolean }) {
         }
       `}</style>
     </span>
+  );
+}
+
+function VolumeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="opacity-90">
+      <path d="M8 3L5 6H2v4h3l3 3V3z" fill="currentColor" />
+      <path d="M11 5c.5.5.8 1.2.8 2s-.3 1.5-.8 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   );
 }
 
