@@ -1076,7 +1076,7 @@ function HomeDockOverlay({
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-lg border-2 p-3.5",
+                "group relative flex flex-col items-center justify-center rounded-lg border-2 p-4 min-h-[100px]",
                 selectedDock === idx
                   ? "border-[#ff9d23]/80 bg-gradient-to-b from-white/15 to-white/10"
                   : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7",
