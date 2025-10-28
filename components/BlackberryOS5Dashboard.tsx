@@ -70,12 +70,14 @@ export default function BlackberryOS5Dashboard() {
   // Time/UI state
   const [now, setNow] = useState(new Date());
   const [toast, setToast] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   // Refs
   const screenRef = useRef<HTMLDivElement | null>(null);
 
-  // Clock tick
+  // Mount and clock tick
   useEffect(() => {
+    setMounted(true);
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -264,9 +266,9 @@ export default function BlackberryOS5Dashboard() {
     }
   }, [poweredOn, openAppIndex, showContext, mode, selectedMenu, rows, COLUMNS, apps.length, dockApps.length]);
 
-  // Time strings
-  const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  const dateStr = now.toLocaleDateString([], { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
+  // Time strings (only render on client to avoid hydration mismatch)
+  const timeStr = mounted ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--";
+  const dateStr = mounted ? now.toLocaleDateString([], { weekday: "short", day: "2-digit", month: "short", year: "numeric" }) : "Loading...";
 
   // =====================
   // Render
