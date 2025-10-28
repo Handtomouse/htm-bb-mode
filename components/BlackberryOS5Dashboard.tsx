@@ -648,8 +648,8 @@ export default function BlackberryOS5Dashboard() {
         <div className="h-5" />
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
-        <div className="px-6 pt-3 pb-5">
-          <div className="mx-auto flex items-center justify-stretch gap-1 text-white">
+        <div className="px-8 pt-3 pb-5">
+          <div className="mx-auto flex items-center justify-stretch gap-0 text-white">
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -1064,14 +1064,14 @@ function HomeDockOverlay({
       {/* Bold-style bottom dock overlay */}
       <div className="w-full max-w-[94%] rounded-md border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05)]">
         {/* Hints at top of dock bar with gradient */}
-        <div className="px-4 pt-2.5 pb-2 text-center text-white/80 text-[10px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
+        <div className="px-4 pt-2.5 pb-2 text-center text-white/80 text-[10px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest rounded-t-md">
           <span className="opacity-90 font-medium">▲ Menu</span>
           <span className="mx-3 opacity-50">•</span>
           <span className="opacity-90 font-medium">◀▶ Navigate</span>
           <span className="mx-3 opacity-50">•</span>
           <span className="opacity-90 font-medium">Enter/Tap=Open</span>
         </div>
-        <div className="grid grid-cols-5 gap-5 p-5">
+        <div className="grid grid-cols-5 gap-5 p-7">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
@@ -1189,7 +1189,8 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
       className={`group flex flex-col items-center gap-1 flex-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
       style={{
         transition: "all 0.3s ease",
-        padding: "0 2px"
+        position: "relative",
+        zIndex: isHovered ? 10 : 1
       }}
       onMouseEnter={() => !disabled && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -1198,9 +1199,9 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
         className="grid place-items-center h-12 w-full rounded-none border border-white/20 bg-gradient-to-br from-[#1b1b1b] to-[#0e0e0e] backdrop-blur-sm"
         style={{
           boxShadow: isHovered
-            ? "0 0 12px rgba(255,157,35,0.6), inset 0 0 6px #111"
+            ? "0 0 8px rgba(255,157,35,0.5), inset 0 0 8px rgba(255,157,35,0.15)"
             : "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000",
-          transform: isHovered ? "scale(1.03)" : "scale(1)",
+          transform: isHovered ? "scale(1.05)" : "scale(1)",
           transition: "all 0.3s ease"
         }}
         onMouseDown={(e) => {
@@ -1210,7 +1211,7 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
         }}
         onMouseUp={(e) => {
           if (!disabled) {
-            e.currentTarget.style.transform = isHovered ? "scale(1.03)" : "scale(1)";
+            e.currentTarget.style.transform = isHovered ? "scale(1.05)" : "scale(1)";
           }
         }}
       >
