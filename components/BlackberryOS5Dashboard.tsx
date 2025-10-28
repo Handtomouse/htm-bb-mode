@@ -648,8 +648,8 @@ export default function BlackberryOS5Dashboard() {
         <div className="h-3" />
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
-        <div className="px-4 pt-2 pb-4" style={{ overflow: "visible" }}>
-          <div className="mx-auto flex items-center justify-stretch gap-0 text-white" style={{ padding: "0 4px", overflow: "visible" }}>
+        <div className="px-6 pt-3 pb-5">
+          <div className="mx-auto flex items-center justify-stretch gap-1 text-white">
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -1078,14 +1078,14 @@ function HomeDockOverlay({
               className={[
                 "group relative flex flex-col items-center justify-center rounded-md border p-3",
                 selectedDock === idx
-                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/60 shadow-[0_0_0_2px_rgba(255,157,35,0.4),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/15 to-white/10"
-                  : "border-white/15 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:shadow-[0_0_18px_rgba(255,157,35,0.35)] hover:from-white/12 hover:to-white/8",
+                  ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/60 bg-gradient-to-b from-white/15 to-white/10"
+                  : "border-white/15 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/25 hover:from-white/10 hover:to-white/7",
                 "transition-all duration-300 active:scale-95",
               ].join(" ")}
               style={{
-                transform: selectedDock === idx ? "scale(1.1) translateY(-3px)" : "scale(1)",
+                transform: selectedDock === idx ? "scale(1.05) translateY(-2px)" : "scale(1)",
                 boxShadow: selectedDock === idx
-                  ? "0 0 0 2px rgba(255,157,35,0.4), 0 0 28px rgba(255,157,35,0.6), 0 6px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
+                  ? "0 0 0 2px rgba(255,157,35,0.4), 0 0 20px rgba(255,157,35,0.5), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)"
                   : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
               }}
               onMouseEnter={() => setSelectedDock(idx)}
@@ -1095,18 +1095,18 @@ function HomeDockOverlay({
             >
               <div className={`h-10 w-10 transition-all duration-300 ${
                 selectedDock === idx
-                  ? "brightness-130 drop-shadow-[0_0_10px_rgba(255,157,35,0.7)] scale-110"
-                  : "brightness-100 group-hover:brightness-115 group-hover:drop-shadow-[0_0_6px_rgba(255,157,35,0.4)] group-hover:scale-105"
+                  ? "brightness-125 drop-shadow-[0_0_8px_rgba(255,157,35,0.6)] scale-105"
+                  : "brightness-100 group-hover:brightness-110 group-hover:drop-shadow-[0_0_4px_rgba(255,157,35,0.3)]"
               }`}>
                 {app.icon}
               </div>
               <div className={`mt-2 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
-                selectedDock === idx ? "text-[#ff9d23] scale-105" : "text-white/90 group-hover:text-white"
+                selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}
               </div>
               {selectedDock === idx && (
-                <div className="pointer-events-none absolute inset-0 rounded-md ring-1 ring-[#ff9d23]/50 shadow-[inset_0_0_24px_rgba(255,157,35,0.3)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-md ring-1 ring-[#ff9d23]/50 shadow-[inset_0_0_20px_rgba(255,157,35,0.25)]" />
               )}
             </button>
           ))}
@@ -1181,6 +1181,8 @@ function MenuGrid({
 }
 
 function HwButton({ children, label, onClick, disabled, className }: { children: React.ReactNode; label: string; onClick: () => void; disabled?: boolean; className?: string }) {
+  const [isHovered, setIsHovered] = React.useState(false);
+
   return (
     <button
       onClick={onClick}
@@ -1188,34 +1190,28 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
       className={`group flex flex-col items-center gap-1 flex-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
       style={{
         transition: "all 0.3s ease",
-        overflow: "visible"
+        padding: "0 2px"
       }}
+      onMouseEnter={() => !disabled && setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div
         className="grid place-items-center h-12 w-full rounded-none border border-white/20 bg-gradient-to-br from-[#1b1b1b] to-[#0e0e0e] backdrop-blur-sm"
         style={{
-          boxShadow: "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000",
-          transition: "all 0.3s ease",
-          overflow: "visible"
-        }}
-        onMouseEnter={(e) => {
-          if (!disabled) {
-            e.currentTarget.style.boxShadow = "0 0 16px #ff9d23, inset 0 0 6px #111";
-            e.currentTarget.style.transform = "scale(1.05)";
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000";
-          e.currentTarget.style.transform = "scale(1)";
+          boxShadow: isHovered
+            ? "0 0 12px rgba(255,157,35,0.6), inset 0 0 6px #111"
+            : "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000",
+          transform: isHovered ? "scale(1.03)" : "scale(1)",
+          transition: "all 0.3s ease"
         }}
         onMouseDown={(e) => {
           if (!disabled) {
-            e.currentTarget.style.transform = "scale(0.93)";
+            e.currentTarget.style.transform = "scale(0.95)";
           }
         }}
         onMouseUp={(e) => {
           if (!disabled) {
-            e.currentTarget.style.transform = "scale(1.05)";
+            e.currentTarget.style.transform = isHovered ? "scale(1.03)" : "scale(1)";
           }
         }}
       >
