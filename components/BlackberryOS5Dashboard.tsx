@@ -59,7 +59,7 @@ function ResponsiveStage({ children, margin = 16 }: { children: React.ReactNode;
 // =====================
 function VolumeIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="opacity-90">
+    <svg width="28" height="28" viewBox="0 0 16 16" fill="none" className="opacity-90">
       <path d="M8 3L5 6H2v4h3l3 3V3z" fill="currentColor" />
       <path d="M11 5c.5.5.8 1.2.8 2s-.3 1.5-.8 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -68,9 +68,9 @@ function VolumeIcon() {
 
 function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
   return (
-    <div className="flex items-end gap-0.5" aria-label={`Signal ${strength}/4`}>
+    <div className="flex items-end gap-1" aria-label={`Signal ${strength}/4`}>
       {[0, 1, 2, 3].map((i) => (
-        <span key={i} className={["w-1 rounded-none", i <= strength - 1 ? "bg-white" : "bg-white/30"].join(" ")} style={{ height: 4 + i * 3 }} />
+        <span key={i} className={["w-2 rounded-none", i <= strength - 1 ? "bg-white" : "bg-white/30"].join(" ")} style={{ height: 8 + i * 6 }} />
       ))}
     </div>
   );
@@ -81,9 +81,9 @@ function Battery({ level = 50, charging = false }: { level?: number; charging?: 
   const color = pct < 20 ? "#ef4444" : charging ? "#fbbf24" : "#22c55e";
 
   return (
-    <div className={`relative h-3 w-6 rounded-none border border-white/70 ${charging ? "animate-pulse" : ""}`}>
-      <div className="absolute inset-0.5 rounded-none" style={{ width: `${pct}%`, backgroundColor: color }} />
-      <div className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-0.5 h-1.5 bg-white/70" />
+    <div className={`relative h-6 w-12 rounded-none border-2 border-white/70 ${charging ? "animate-pulse" : ""}`}>
+      <div className="absolute inset-1 rounded-none" style={{ width: `${pct}%`, backgroundColor: color }} />
+      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-1 h-3 bg-white/70" />
     </div>
   );
 }
@@ -568,19 +568,38 @@ export default function BlackberryOS5Dashboard() {
 
           {/* Status bar - BlackBerry OS style */}
           {poweredOn && (
-            <div className="relative z-10 flex items-center justify-between text-[10px] text-white px-4 py-2 bg-gradient-to-b from-black/70 via-black/60 to-black/50 border-b border-white/5">
+            <div className="relative z-10 flex items-center justify-between text-[20px] text-[#E0E0E0] px-8 py-4 bg-[#000000] border-b border-white/10" style={{ fontFamily: 'VT323, monospace' }}>
               {/* Left: Sound + Signal */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <VolumeIcon />
                 <SignalBars strength={signalStrength as 0 | 1 | 2 | 3 | 4} />
               </div>
 
-              {/* Center: Carrier name */}
-              <div className="font-heading font-semibold tracking-widest text-[13px]">HTM</div>
+              {/* Center: Wordmark on homescreen, Logo+Time when app/menu open */}
+              {(openApp !== null || mode === "menu") ? (
+                <div className="flex items-center gap-6 text-[20px]">
+                  <img src="/logos/HTM-LOGO-ICON-01.svg" alt="HTM" className="h-6 w-6 opacity-80" style={{ imageRendering: 'pixelated' }} />
+                  <span className="font-mono font-semibold">{timeStr}</span>
+                  <span className="text-[#E0E0E0]/50">{dateStr}</span>
+                </div>
+              ) : (
+                <img
+                  src="/logos/HTM-LOGOS-FULLWORDMARK.svg"
+                  alt="HandToMouse"
+                  className="h-6 w-auto max-w-[120px]"
+                  style={{
+                    objectFit: "contain",
+                    imageRendering: 'pixelated',
+                    opacity: 0.88,
+                  }}
+                />
+              )}
 
               {/* Right: Network + Battery */}
-              <div className="flex items-center gap-2">
-                <span className="font-heading text-[10px] font-medium px-2 py-1 rounded-sm bg-white/10">{networkType}</span>
+              <div className="flex items-center gap-4">
+                <div className="border border-[#E0E0E0] px-2 py-1 bg-transparent min-w-[48px] flex items-center justify-center flex-shrink-0" style={{ imageRendering: 'pixelated' }}>
+                  <span className="font-heading text-[14px] md:text-[16px] font-medium text-[#E0E0E0] whitespace-nowrap" style={{ fontFamily: 'VT323, monospace' }}>{networkType}</span>
+                </div>
                 <div
                   className="relative"
                   onMouseEnter={() => setShowBatteryTooltip(true)}
@@ -588,7 +607,7 @@ export default function BlackberryOS5Dashboard() {
                 >
                   <Battery level={batteryLevel} charging={isCharging} />
                   {showBatteryTooltip && (
-                    <div className="absolute -bottom-7 right-0 bg-black/95 text-white text-[9px] px-2 py-1 rounded-sm whitespace-nowrap z-50 border border-white/20 shadow-lg">
+                    <div className="absolute -bottom-7 right-0 bg-black/95 text-white text-[18px] px-4 py-2 rounded-sm whitespace-nowrap z-50 border border-white/20 shadow-lg">
                       {batteryLevel}% {isCharging && "⚡ Charging"}
                     </div>
                   )}
@@ -597,35 +616,29 @@ export default function BlackberryOS5Dashboard() {
             </div>
           )}
 
-          {/* Time and date display - BlackBerry OS style */}
-          {poweredOn && mode !== "menu" && (
-            <div className="relative z-10 px-4 pt-5 pb-5 text-white text-center bg-gradient-to-b from-transparent via-black/10 to-transparent">
-              {/* HTM Logo */}
-              <div className="flex justify-center mb-4 opacity-90">
-                <img
-                  src="/logos/HTM-LOGOS-FULLWORDMARK.svg"
-                  alt="HandToMouse"
-                  className="h-6 w-auto"
-                  style={{ filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6))' }}
-                />
-              </div>
-              {/* Large centered time */}
-              <div className="text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
-                textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
-              }}>
-                {timeStr}
-              </div>
-              {/* Date below */}
-              <div className="text-xs mt-2 opacity-80 tracking-wide font-medium">{dateStr}</div>
-              {/* Notifications indicator */}
-              {mounted && (
-                <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] text-white/50">
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-pulse" />
-                    <span>No notifications</span>
-                  </div>
+          {/* Time Display - BlackBerry OS style (only on home screen) */}
+          {poweredOn && mode === "home" && openApp === null && (
+            <div className="relative z-10 w-full text-white text-center bg-gradient-to-b from-transparent via-black/10 to-transparent">
+              {/* Time and Date - Compact */}
+              <div className="px-4 py-8 md:py-10">
+                {/* Large centered time */}
+                <div className="text-3xl md:text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
+                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
+                }}>
+                  {timeStr}
                 </div>
-              )}
+                {/* Date below */}
+                <div className="text-xs mt-2 opacity-80 tracking-wide font-medium">{dateStr}</div>
+                {/* Notifications indicator */}
+                {mounted && (
+                  <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] text-white/50">
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-pulse" />
+                      <span>No notifications</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -701,7 +714,7 @@ export default function BlackberryOS5Dashboard() {
             backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E\")",
           }}
         >
-          <div className="mx-auto flex items-center justify-stretch gap-4 text-white">
+          <div className="w-full flex items-stretch justify-between text-white">
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
@@ -709,9 +722,9 @@ export default function BlackberryOS5Dashboard() {
               <PixelMenuIcon />
             </HwButton>
             {/* Trackpad */}
-            <div className="flex flex-col items-center gap-1 flex-1 group/trackpad">
+            <div className="flex flex-col items-center gap-1 flex-1 min-w-0 group/trackpad">
               <div
-                className="flex items-center justify-center w-full h-[104px] rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
+                className="flex items-center justify-center w-full h-[88px] sm:h-[104px] rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
                 style={{
                   background: "linear-gradient(145deg, #141414 0%, #0f0f0f 25%, #0a0a0a 50%, #060606 75%, #000000 100%)",
                   borderColor: poweredOn ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.25)",
@@ -721,7 +734,9 @@ export default function BlackberryOS5Dashboard() {
                   padding: "0",
                 }}
               >
-                <BBTrackpad size={80} disabled={!poweredOn} />
+                <div className="scale-75 sm:scale-100 transition-transform">
+                  <BBTrackpad size={80} disabled={!poweredOn} />
+                </div>
               </div>
               <div
                 className="text-[13px] leading-none opacity-85 mt-1 font-bold transition-all duration-300"
@@ -1534,7 +1549,7 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
         setIsHovered(false);
       }}
       aria-label={label}
-      className={`group flex flex-col items-center gap-1 flex-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
+      className={`group flex flex-col items-center gap-1 flex-1 min-w-0 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
       style={{
         transition: "all 0.3s ease",
         position: "relative",
@@ -1544,7 +1559,7 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
       onMouseLeave={() => !disabled && setIsHovered(false)}
     >
       <div
-        className="grid place-items-center h-[104px] w-full rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
+        className="grid place-items-center h-[88px] sm:h-[104px] w-full rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
         style={{
           background: "linear-gradient(145deg, #141414 0%, #0f0f0f 25%, #0a0a0a 50%, #060606 75%, #000000 100%)",
           borderColor: isHovered ? "rgba(255,157,35,0.45)" : "rgba(255,255,255,0.3)",
@@ -1571,7 +1586,7 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
         }}
       >
         <div
-          className="h-16 w-16 transition-all duration-300 ease-out group-hover:[&_svg_rect]:fill-[#ff9d23] group-hover:[&_svg_rect]:stroke-[#ff9d23] group-hover:[&_svg_g]:fill-[#ff9d23] group-hover:[&_svg_g]:stroke-[#ff9d23]"
+          className="h-12 sm:h-16 w-12 sm:w-16 transition-all duration-300 ease-out group-hover:[&_svg_rect]:fill-[#ff9d23] group-hover:[&_svg_rect]:stroke-[#ff9d23] group-hover:[&_svg_g]:fill-[#ff9d23] group-hover:[&_svg_g]:stroke-[#ff9d23]"
           style={{
             filter: isHovered ? "drop-shadow(0 0 4px rgba(255,157,35,0.6))" : "none"
           }}

@@ -10,7 +10,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   return (
     <>
       {!isHomePage && <TopBar />}
-      <div className={!isHomePage ? "pt-6" : ""}>
+      <div className={!isHomePage ? "pt-10" : ""}>
         {children}
       </div>
     </>

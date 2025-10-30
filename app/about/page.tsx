@@ -2,70 +2,76 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import CollapsibleCard from "@/components/CollapsibleCard";
+import SignatureFooter from "@/components/SignatureFooter";
 
 interface AboutData {
-  studio: {
-    name: string;
-    tagline: string;
-    established: string;
-    location: string;
-    timezone: string;
-    teamSize: string;
-  };
-  philosophy: Array<{
+  hero: {
     title: string;
-    description: string;
-  }>;
-  process: Array<{
-    phase: string;
-    description: string;
-    duration: string;
-    icon: string;
-  }>;
-  capabilities: {
-    strategy: number;
-    creative: number;
-    technical: number;
-    production: number;
+    headline: string;
+    subline: string;
+    origin: string;
+    badges: string[];
+    principles: Array<{ icon: string; text: string }>;
   };
-  values: Array<{
+  services: Array<{
+    icon: string;
     title: string;
-    icon: string;
-    description: string;
+    line: string;
+    example: string;
   }>;
-  metrics: {
-    projectsCompleted: number;
-    clientRetention: number;
-    averageEngagement: string;
-    satisfaction: number;
+  process: {
+    steps: Array<{
+      num: string;
+      title: string;
+      promise: string;
+      duration: string;
+    }>;
   };
-  tools: {
-    design: string[];
-    development: string[];
-    production: string[];
+  proof: {
+    highlights: Array<{
+      label: string;
+      line: string;
+      quote?: string;
+      duration: string;
+    }>;
   };
-  availability: {
+  ops: {
+    items: Array<{ icon: string; text: string }>;
+  };
+  setup: {
+    line: string;
+  };
+  notRightFor: {
+    items: Array<{ icon: string; text: string }>;
+  };
+  pricing: {
+    projects: string;
+    projectLength: string;
+    retainers: string;
+    retainerDetails: string;
+    terms: string;
+    termsDetail: string;
+    guarantee: string;
+  };
+  stats: {
+    projects: string;
+    retention: string;
+    repeatClients: string;
+    avgProjectValue: string;
+    avgResponse: string;
+    industries: string;
+  };
+  contact: {
+    email: string;
     status: string;
-    nextSlot: string;
-    capacity: number;
+    responseTime: string;
   };
-  industries: Array<{
-    name: string;
-    projects: number;
-  }>;
-  approach: {
-    title: string;
-    principles: string[];
-  };
-  faqs: Array<{
-    question: string;
-    answer: string;
-  }>;
 }
 
 export default function AboutPage() {
   const [data, setData] = useState<AboutData | null>(null);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [openPanel, setOpenPanel] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/data/about.json")
@@ -73,357 +79,300 @@ export default function AboutPage() {
       .then((json) => setData(json));
   }, []);
 
+  const togglePanel = (panelName: string) => {
+    setOpenPanel(openPanel === panelName ? null : panelName);
+  };
+
   if (!data) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-[16px] text-white/70 animate-pulse">Loading...</div>
+        <div className="text-[16px] text-[#E0E0E0]/70 animate-pulse" style={{ fontFamily: "VT323, monospace" }}>
+          LOADING...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-6xl p-6 space-y-24">
-      {/* Hero Section */}
-      <section className="border-b border-white/20 pb-20">
-        <div className="space-y-8">
-          <h1 className="font-heading text-7xl font-bold text-white">
-            {data.studio.name}
+    <div className="min-h-screen bg-black text-[#E0E0E0]" style={{ fontFamily: "VT323, monospace" }}>
+      {/* Main Content Container - Centered with max-width ~60ch */}
+      <main className="max-w-[60ch] mx-auto px-6 py-12 md:py-16 space-y-16">
+
+        {/* Hero Section - Introduction */}
+        <section className="space-y-6 text-center">
+          <h1 className="text-[32px] md:text-[40px] font-bold text-[#FF9D23] uppercase tracking-wide leading-tight">
+            {data.hero.title}
           </h1>
-          <p className="text-3xl text-white/90 max-w-3xl leading-relaxed" style={{ lineHeight: "1.6" }}>
-            {data.studio.tagline}
+
+          {/* Concise Summary Line */}
+          <p className="text-[18px] md:text-[22px] text-[#E0E0E0] leading-relaxed" style={{ lineHeight: "1.6" }}>
+            {data.hero.headline}
           </p>
 
-          {/* Studio Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8">
-            <div className="border border-white/20 bg-gradient-to-b from-white/12 to-white/6 p-6 rounded-none">
-              <div className="text-[13px] text-white/60 mb-2 font-bold uppercase tracking-wider">Est.</div>
-              <div className="font-heading text-[24px] text-[#ff9d23]">{data.studio.established}</div>
-            </div>
-            <div className="border border-white/20 bg-gradient-to-b from-white/12 to-white/6 p-6 rounded-none">
-              <div className="text-[13px] text-white/60 mb-2 font-bold uppercase tracking-wider">Location</div>
-              <div className="font-heading text-[24px] text-[#ff9d23]">{data.studio.location}</div>
-            </div>
-            <div className="border border-white/20 bg-gradient-to-b from-white/12 to-white/6 p-6 rounded-none">
-              <div className="text-[13px] text-white/60 mb-2 font-bold uppercase tracking-wider">Time Zone</div>
-              <div className="font-heading text-[24px] text-[#ff9d23]">{data.studio.timezone}</div>
-            </div>
-            <div className="border border-white/20 bg-gradient-to-b from-white/12 to-white/6 p-6 rounded-none">
-              <div className="text-[13px] text-white/60 mb-2 font-bold uppercase tracking-wider">Team</div>
-              <div className="font-heading text-[24px] text-[#ff9d23]">{data.studio.teamSize}</div>
-            </div>
-          </div>
-        </div>
-      </section>
+          {/* Subline */}
+          <p className="text-[16px] md:text-[18px] text-[#E0E0E0]/80 leading-relaxed" style={{ lineHeight: "1.7" }}>
+            {data.hero.subline}
+          </p>
 
-      {/* Philosophy */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Philosophy
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {data.philosophy.map((item, idx) => (
-            <div
-              key={idx}
-              className="border border-white/20 bg-gradient-to-b from-white/12 to-white/7 p-8 rounded-none hover:border-[#ff9d23]/50 hover:shadow-[0_0_24px_rgba(255,157,35,0.25)] transition-all duration-300"
-            >
-              <h3 className="font-heading text-[18px] font-bold mb-4 text-white">
-                {item.title}
-              </h3>
-              <p className="text-[16px] text-white/85 leading-relaxed" style={{ lineHeight: "1.8" }}>
-                {item.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+          {/* Origin Story (Brief) */}
+          <p className="text-[14px] md:text-[16px] text-[#E0E0E0]/70 leading-relaxed max-w-[50ch] mx-auto" style={{ lineHeight: "1.7" }}>
+            {data.hero.origin}
+          </p>
 
-      {/* Process Timeline */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Process
-        </h2>
-        <div className="space-y-6">
-          {data.process.map((phase, idx) => (
-            <div
-              key={idx}
-              className="border border-white/20 bg-gradient-to-b from-white/10 to-white/6 p-8 rounded-none hover:border-[#ff9d23]/50 transition-all duration-300"
-            >
-              <div className="flex items-start gap-6">
-                <div className="text-5xl">{phase.icon}</div>
-                <div className="flex-1">
-                  <div className="flex items-baseline justify-between mb-3">
-                    <h3 className="font-heading text-[22px] font-bold text-white">
-                      {idx + 1}. {phase.phase}
-                    </h3>
-                    <span className="text-[14px] text-[#ff9d23] font-bold">{phase.duration}</span>
-                  </div>
-                  <p className="text-[16px] text-white/85 leading-relaxed" style={{ lineHeight: "1.8" }}>{phase.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Capabilities Matrix */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Capabilities
-        </h2>
-        <div className="space-y-8">
-          {Object.entries(data.capabilities).map(([key, value]) => (
-            <div key={key}>
-              <div className="flex items-baseline justify-between mb-3">
-                <span className="font-heading text-[20px] font-bold text-white capitalize">
-                  {key}
-                </span>
-                <span className="text-[18px] text-[#ff9d23] font-bold">{value}%</span>
-              </div>
-              <div className="h-4 border border-white/30 bg-black rounded-none overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#ff9d23] to-[#ffb84d] transition-all duration-1000 ease-out"
-                  style={{ width: `${value}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Metrics */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> By The Numbers
-        </h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="border-2 border-[#ff9d23]/40 bg-gradient-to-b from-white/12 to-white/6 p-8 rounded-none text-center">
-            <div className="font-heading text-5xl font-bold text-[#ff9d23] mb-3">
-              {data.metrics.projectsCompleted}+
-            </div>
-            <div className="text-[15px] text-white/80 font-bold uppercase tracking-wider">
-              Projects
-            </div>
-          </div>
-          <div className="border-2 border-[#ff9d23]/40 bg-gradient-to-b from-white/12 to-white/6 p-8 rounded-none text-center">
-            <div className="font-heading text-5xl font-bold text-[#ff9d23] mb-3">
-              {data.metrics.clientRetention}%
-            </div>
-            <div className="text-[15px] text-white/80 font-bold uppercase tracking-wider">
-              Retention
-            </div>
-          </div>
-          <div className="border-2 border-[#ff9d23]/40 bg-gradient-to-b from-white/12 to-white/6 p-8 rounded-none text-center">
-            <div className="font-heading text-5xl font-bold text-[#ff9d23] mb-3">
-              {data.metrics.averageEngagement}
-            </div>
-            <div className="text-[15px] text-white/80 font-bold uppercase tracking-wider">
-              Avg Engagement
-            </div>
-          </div>
-          <div className="border-2 border-[#ff9d23]/40 bg-gradient-to-b from-white/12 to-white/6 p-8 rounded-none text-center">
-            <div className="font-heading text-5xl font-bold text-[#ff9d23] mb-3">
-              {data.metrics.satisfaction}/5
-            </div>
-            <div className="text-[15px] text-white/80 font-bold uppercase tracking-wider">
-              Satisfaction
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Values */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Values
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.values.map((value, idx) => (
-            <div
-              key={idx}
-              className="border border-white/20 bg-gradient-to-b from-white/12 to-white/7 p-8 rounded-none hover:border-[#ff9d23]/50 hover:shadow-[0_0_24px_rgba(255,157,35,0.25)] transition-all duration-300"
-            >
-              <div className="text-4xl mb-4">{value.icon}</div>
-              <h3 className="font-heading text-[19px] font-bold mb-3 text-white">
-                {value.title}
-              </h3>
-              <p className="text-[16px] text-white/85 leading-relaxed" style={{ lineHeight: "1.8" }}>
-                {value.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Approach */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> {data.approach.title}
-        </h2>
-        <div className="border border-white/20 bg-gradient-to-b from-white/10 to-white/6 p-10 rounded-none">
-          <ul className="space-y-6">
-            {data.approach.principles.map((principle, idx) => (
-              <li key={idx} className="flex items-start gap-4">
-                <span className="text-[#ff9d23] font-bold mt-1 text-xl">→</span>
-                <span className="text-[17px] text-white/85 leading-relaxed" style={{ lineHeight: "1.8" }}>{principle}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Industries */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Industries
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.industries.map((industry, idx) => (
-            <div
-              key={idx}
-              className="border border-white/20 bg-gradient-to-b from-white/10 to-white/6 p-7 rounded-none hover:border-[#ff9d23]/50 transition-all duration-300"
-            >
-              <div className="flex items-baseline justify-between">
-                <span className="font-heading text-[18px] font-bold text-white">
-                  {industry.name}
-                </span>
-                <span className="text-[15px] text-[#ff9d23] font-bold">
-                  {industry.projects}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Tools & Stack */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Tools & Stack
-        </h2>
-        <div className="space-y-8">
-          {Object.entries(data.tools).map(([category, tools]) => (
-            <div key={category}>
-              <h3 className="font-heading text-[20px] font-bold text-white mb-4 capitalize">
-                {category}
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {tools.map((tool, idx) => (
-                  <span
-                    key={idx}
-                    className="border border-white/25 bg-gradient-to-b from-white/12 to-white/6 px-5 py-3 text-[15px] text-white font-bold rounded-none hover:border-[#ff9d23]/50 hover:text-[#ff9d23] transition-all duration-300"
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Availability */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> Availability
-        </h2>
-        <div className="border-2 border-[#ff9d23]/50 bg-gradient-to-b from-white/12 to-white/6 p-10 rounded-none">
-          <div className="grid sm:grid-cols-3 gap-8 items-center">
-            <div>
-              <div className="text-[14px] text-white/60 mb-3 font-bold uppercase tracking-wider">
-                Status
-              </div>
-              <div className="font-heading text-[24px] font-bold text-[#ff9d23] flex items-center gap-3">
-                <span className="inline-block w-4 h-4 bg-[#ff9d23] rounded-full animate-pulse" />
-                {data.availability.status}
-              </div>
-            </div>
-            <div>
-              <div className="text-[14px] text-white/60 mb-3 font-bold uppercase tracking-wider">
-                Next Available
-              </div>
-              <div className="font-heading text-[24px] font-bold text-white">
-                {data.availability.nextSlot}
-              </div>
-            </div>
-            <div>
-              <div className="text-[14px] text-white/60 mb-3 font-bold uppercase tracking-wider">
-                Capacity
-              </div>
-              <div className="font-heading text-[24px] font-bold text-white">
-                {data.availability.capacity}%
-              </div>
-              <div className="mt-3 h-3 border border-white/30 bg-black rounded-none overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#ff9d23] to-[#ffb84d]"
-                  style={{ width: `${data.availability.capacity}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section>
-        <h2 className="font-heading text-4xl font-bold mb-10 text-white">
-          <span className="text-[#ff9d23]">/</span> FAQ
-        </h2>
-        <div className="space-y-4">
-          {data.faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="border border-white/20 bg-gradient-to-b from-white/10 to-white/6 rounded-none overflow-hidden hover:border-[#ff9d23]/40 transition-all duration-300"
-            >
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
-                className="w-full text-left p-7 flex items-center justify-between gap-6 group"
+          {/* Badges */}
+          <div className="flex flex-wrap justify-center gap-4 pt-4">
+            {data.hero.badges.map((badge, idx) => (
+              <span
+                key={idx}
+                className="border border-[#E0E0E0]/40 bg-transparent px-4 py-2 text-[14px] text-[#E0E0E0] uppercase"
               >
-                <span className="font-heading text-[17px] font-bold text-white group-hover:text-[#ff9d23] transition-colors">
-                  {faq.question}
-                </span>
-                <span className="text-[#ff9d23] text-2xl font-bold flex-shrink-0 transition-transform duration-300" style={{
-                  transform: expandedFaq === idx ? "rotate(180deg)" : "rotate(0deg)"
-                }}>
-                  ▼
-                </span>
-              </button>
-              {expandedFaq === idx && (
-                <div className="px-7 pb-7 border-t border-white/15">
-                  <p className="text-[16px] text-white/85 leading-relaxed pt-5" style={{ lineHeight: "1.8" }}>
-                    {faq.answer}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
+                {badge}
+              </span>
+            ))}
+          </div>
+        </section>
 
-      {/* CTA Section */}
-      <section className="border-t border-white/20 pt-20">
-        <div className="text-center space-y-8">
-          <h2 className="font-heading text-5xl font-bold text-white">
-            Let's Work Together
+        {/* Pixel Rule Separator */}
+        <div className="border-t border-[#E0E0E0]/30 border-dashed" />
+
+        {/* Pull Quote - Key Phrase */}
+        <section className="text-center py-8">
+          <blockquote className="text-[24px] md:text-[30px] font-bold text-[#FF9D23] uppercase leading-tight">
+            "GOOD IDEAS DON'T SHOUT—<br />THEY STICK."
+          </blockquote>
+        </section>
+
+        {/* Pixel Rule Separator */}
+        <div className="border-t border-[#E0E0E0]/30 border-dashed" />
+
+        {/* Core Principles (Beliefs) */}
+        <section className="space-y-4">
+          <h2 className="text-[20px] md:text-[24px] font-bold text-[#E0E0E0] uppercase flex items-center gap-2">
+            <span className="text-[#FF9D23]">▶</span> BELIEFS
           </h2>
-          <p className="text-[18px] text-white/85 max-w-2xl mx-auto leading-relaxed" style={{ lineHeight: "1.8" }}>
-            Interested in collaborating? Get in touch to discuss your project.
+          <div className="space-y-3">
+            {data.hero.principles.map((principle, idx) => (
+              <div key={idx} className="flex items-start gap-3">
+                <span className="text-[20px] text-[#FF9D23] flex-shrink-0">{principle.icon}</span>
+                <p className="text-[16px] md:text-[18px] text-[#E0E0E0] leading-relaxed" style={{ lineHeight: "1.7" }}>
+                  {principle.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Pixel Rule Separator */}
+        <div className="border-t border-[#E0E0E0]/30 border-dashed" />
+
+        {/* Collapsible Panels */}
+        <section className="space-y-4">
+          <h2 className="text-[20px] md:text-[24px] font-bold text-[#E0E0E0] uppercase flex items-center gap-2 mb-6">
+            <span className="text-[#FF9D23]">▶</span> MORE ABOUT HTM
+          </h2>
+
+          {/* Panel 1: How I Work */}
+          <CollapsibleCard
+            title="HOW I WORK"
+            icon="⚙️"
+            isOpen={openPanel === "how-i-work"}
+            onToggle={() => togglePanel("how-i-work")}
+          >
+            <div className="space-y-6">
+              {/* Process Steps */}
+              <div>
+                <h4 className="text-[16px] md:text-[18px] font-bold text-[#E0E0E0] mb-4 uppercase">
+                  Process
+                </h4>
+                <div className="space-y-3">
+                  {data.process.steps.map((step, idx) => (
+                    <div key={idx} className="flex items-start gap-3 border-l-2 border-[#FF9D23]/40 pl-4">
+                      <span className="text-[20px] text-[#FF9D23] flex-shrink-0">{step.num}</span>
+                      <div>
+                        <div className="font-bold text-[#E0E0E0]">
+                          {step.title} • <span className="text-[#FF9D23]">{step.promise}</span>
+                        </div>
+                        <div className="text-[14px] text-[#E0E0E0]/70">{step.duration}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Operations */}
+              <div>
+                <h4 className="text-[16px] md:text-[18px] font-bold text-[#E0E0E0] mb-4 uppercase">
+                  Operations
+                </h4>
+                <div className="space-y-2">
+                  {data.ops.items.map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <span className="text-[16px] text-[#FF9D23] flex-shrink-0">{item.icon}</span>
+                      <p className="text-[14px] md:text-[16px] text-[#E0E0E0]">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Setup */}
+              <div className="border-t border-[#E0E0E0]/20 pt-4">
+                <p className="text-[14px] md:text-[16px] text-[#E0E0E0]/80 leading-relaxed" style={{ lineHeight: "1.7" }}>
+                  {data.setup.line}
+                </p>
+              </div>
+            </div>
+          </CollapsibleCard>
+
+          {/* Panel 2: Who I Work With */}
+          <CollapsibleCard
+            title="WHO I WORK WITH"
+            icon="🤝"
+            isOpen={openPanel === "who-with"}
+            onToggle={() => togglePanel("who-with")}
+          >
+            <div className="space-y-6">
+              {/* Right For */}
+              <div>
+                <h4 className="text-[16px] md:text-[18px] font-bold text-[#E0E0E0] mb-4 uppercase">
+                  Best For
+                </h4>
+                <div className="space-y-2">
+                  {data.hero.principles.map((principle, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <span className="text-[16px] text-[#FF9D23] flex-shrink-0">✓</span>
+                      <p className="text-[14px] md:text-[16px] text-[#E0E0E0]">{principle.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Not Right For */}
+              <div>
+                <h4 className="text-[16px] md:text-[18px] font-bold text-[#E0E0E0] mb-4 uppercase">
+                  Not Right For
+                </h4>
+                <div className="space-y-2">
+                  {data.notRightFor.items.map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <span className="text-[16px] text-[#E0E0E0]/50 flex-shrink-0">{item.icon}</span>
+                      <p className="text-[14px] md:text-[16px] text-[#E0E0E0]/70">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Past Clients/Industries */}
+              <div className="border-t border-[#E0E0E0]/20 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  {data.proof.highlights.map((highlight, idx) => (
+                    <span
+                      key={idx}
+                      className="border border-[#E0E0E0]/30 bg-transparent px-3 py-1 text-[12px] md:text-[14px] text-[#E0E0E0]/80"
+                    >
+                      {highlight.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CollapsibleCard>
+
+          {/* Panel 3: Pricing & Terms */}
+          <CollapsibleCard
+            title="PRICING & TERMS"
+            icon="💰"
+            isOpen={openPanel === "pricing"}
+            onToggle={() => togglePanel("pricing")}
+          >
+            <div className="space-y-6">
+              {/* Projects */}
+              <div>
+                <h4 className="text-[16px] md:text-[18px] font-bold text-[#FF9D23] mb-2">
+                  Projects
+                </h4>
+                <p className="text-[20px] font-bold text-[#E0E0E0] mb-1">{data.pricing.projects}</p>
+                <p className="text-[14px] text-[#E0E0E0]/70">{data.pricing.projectLength}</p>
+              </div>
+
+              {/* Retainers */}
+              <div>
+                <h4 className="text-[16px] md:text-[18px] font-bold text-[#FF9D23] mb-2">
+                  Retainers
+                </h4>
+                <p className="text-[20px] font-bold text-[#E0E0E0] mb-1">{data.pricing.retainers}</p>
+                <p className="text-[14px] text-[#E0E0E0]/70">{data.pricing.retainerDetails}</p>
+              </div>
+
+              {/* Terms */}
+              <div className="border-t border-[#E0E0E0]/20 pt-4">
+                <h4 className="text-[16px] font-bold text-[#E0E0E0] mb-2 uppercase">Payment Terms</h4>
+                <p className="text-[14px] text-[#E0E0E0] mb-1">{data.pricing.terms}</p>
+                <p className="text-[12px] text-[#E0E0E0]/70">{data.pricing.termsDetail}</p>
+              </div>
+
+              {/* Guarantee */}
+              <div className="border border-[#FF9D23]/50 bg-[#FF9D23]/10 px-4 py-3">
+                <p className="text-[14px] md:text-[16px] text-[#E0E0E0] font-bold">{data.pricing.guarantee}</p>
+              </div>
+            </div>
+          </CollapsibleCard>
+        </section>
+
+        {/* Pixel Rule Separator */}
+        <div className="border-t border-[#E0E0E0]/30 border-dashed" />
+
+        {/* Stats/Metrics */}
+        <section className="space-y-6">
+          <h2 className="text-[20px] md:text-[24px] font-bold text-[#E0E0E0] uppercase flex items-center gap-2">
+            <span className="text-[#FF9D23]">▶</span> BY THE NUMBERS
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {Object.entries(data.stats).map(([key, value]) => (
+              <div key={key} className="border border-[#E0E0E0]/40 bg-transparent px-4 py-3 text-center">
+                <div className="text-[24px] md:text-[30px] font-bold text-[#FF9D23]">{value}</div>
+                <div className="text-[12px] md:text-[14px] text-[#E0E0E0]/70 uppercase mt-1">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Pixel Rule Separator */}
+        <div className="border-t border-[#E0E0E0]/30 border-dashed" />
+
+        {/* CTA Section */}
+        <section className="text-center space-y-6 pt-8">
+          <h2 className="text-[24px] md:text-[32px] font-bold text-[#E0E0E0] uppercase">
+            LET'S WORK TOGETHER
+          </h2>
+          <p className="text-[16px] md:text-[18px] text-[#E0E0E0]/80 leading-relaxed max-w-[50ch] mx-auto" style={{ lineHeight: "1.7" }}>
+            {data.contact.status} • {data.contact.responseTime}
           </p>
-          <div className="flex flex-wrap gap-5 justify-center pt-6">
-            <Link
-              href="/contact"
-              className="border-2 border-[#ff9d23] bg-[#ff9d23] hover:bg-[#ff9d23]/90 px-10 py-5 font-heading text-[17px] font-bold text-black rounded-none transition-all duration-300 hover:scale-105 active:scale-95"
+          <div className="flex flex-wrap gap-4 justify-center pt-4">
+            <a
+              href={`mailto:${data.contact.email}`}
+              className="border-2 border-[#FF9D23] bg-[#FF9D23] hover:bg-[#FFB84D] px-8 py-3 text-[16px] font-bold text-black uppercase transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#FF9D23]"
             >
-              Get In Touch →
-            </Link>
+              GET IN TOUCH →
+            </a>
             <Link
               href="/portfolio"
-              className="border-2 border-white/40 hover:border-[#ff9d23]/70 px-10 py-5 font-heading text-[17px] font-bold text-white rounded-none transition-all duration-300 hover:scale-105 active:scale-95"
+              className="border-2 border-[#E0E0E0] bg-transparent hover:border-[#FF9D23] hover:text-[#FF9D23] px-8 py-3 text-[16px] font-bold text-[#E0E0E0] uppercase transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#E0E0E0]"
             >
-              View Work
+              VIEW WORK
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
+
+      {/* Signature Footer */}
+      <SignatureFooter
+        name="Nate Dorey"
+        location="Sydney NSW"
+        email={data.contact.email}
+        className="mt-16"
+      />
     </div>
   );
 }
