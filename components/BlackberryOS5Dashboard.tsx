@@ -600,6 +600,15 @@ export default function BlackberryOS5Dashboard() {
           {/* Time and date display - BlackBerry OS style */}
           {poweredOn && mode !== "menu" && (
             <div className="relative z-10 px-4 pt-5 pb-5 text-white text-center bg-gradient-to-b from-transparent via-black/10 to-transparent">
+              {/* HTM Logo */}
+              <div className="flex justify-center mb-4 opacity-90">
+                <img
+                  src="/logos/HTM-LOGOS-FULLWORDMARK.svg"
+                  alt="HandToMouse"
+                  className="h-6 w-auto"
+                  style={{ filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6))' }}
+                />
+              </div>
               {/* Large centered time */}
               <div className="text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
                 textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
@@ -1154,6 +1163,15 @@ function AboutContent() {
         <div className="space-y-12 py-8 px-6 max-w-[90%] mx-auto shadow-[inset_0_0_20px_#000000] ring-1 ring-[#1f1f1f]">
           {/* Hero Header */}
           <header className="space-y-4 pb-8 border-b border-[#1f1f1f]">
+            {/* Logo */}
+            <div className="flex items-center gap-3 mb-2">
+              <img
+                src="/logos/HTM-LOGO-ICON-01.svg"
+                alt="HandToMouse"
+                className="h-8 w-8 opacity-80"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4))' }}
+              />
+            </div>
             <h1 className="text-2xl font-semibold uppercase tracking-wide leading-tight text-[#ff9d23]" style={{ fontFamily: "var(--font-handjet)" }}>
               About
             </h1>

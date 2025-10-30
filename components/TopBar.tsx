@@ -41,7 +41,12 @@ export default function TopBar() {
 
       {/* Left: Status */}
       <div className="flex items-center gap-2 font-mono">
-        <span className="text-[#ff9d23] font-semibold">HTM</span>
+        <img
+          src="/logos/HTM-LOGO-ICON-01.svg"
+          alt="HTM"
+          className="h-4 w-4 opacity-90"
+          style={{ filter: 'brightness(1.1)' }}
+        />
         <span className="text-gray-600">•</span>
         <span>Wi-Fi</span>
       </div>

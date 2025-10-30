@@ -37,6 +37,7 @@ export default function RootLayout({
           name="description"
           content="Creative systems, content infrastructure, and brand work by HandToMouse."
         />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
