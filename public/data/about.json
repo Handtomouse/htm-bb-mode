@@ -1,0 +1,91 @@
+{
+  "hero": {
+    "title": "HANDTOMOUSE",
+    "headline": "Everyone else's websites were boring, so we built this.",
+    "subline": "Make it work, then make it pretty.",
+    "origin": "Started in lockdown 2020 when every brief was 'make us viral.' We said no. Built systems instead.",
+    "badges": ["Est. 2020", "Sydney (AET)", "2–4 per project"],
+    "principles": [
+      { "icon": "⚙️", "text": "Great systems → great work" },
+      { "icon": "🔧", "text": "Maintainability over sparkle" },
+      { "icon": "📖", "text": "We teach, not gatekeep" }
+    ]
+  },
+  "services": [
+    { "icon": "🧭", "title": "Brand Strategy", "line": "One idea, everywhere.", "example": "S'WICH rebrand, MapleMoon launch" },
+    { "icon": "🎯", "title": "Campaign Creative", "line": "A line worth repeating.", "example": "Jac+Jack W25/SP25 campaign" },
+    { "icon": "⚡", "title": "Strategy Sprints", "line": "Decide what not to build.", "example": "2-week positioning sprints" },
+    { "icon": "📦", "title": "Content Systems", "line": "Templates your team can run.", "example": "Social calendars, email flows" }
+  ],
+  "process": {
+    "steps": [
+      { "num": "①", "title": "Plan", "promise": "Clarify", "duration": "1-2 weeks" },
+      { "num": "②", "title": "Produce", "promise": "Create", "duration": "2-4 weeks" },
+      { "num": "③", "title": "Train", "promise": "Transfer", "duration": "1-2 weeks" }
+    ]
+  },
+  "proof": {
+    "highlights": [
+      {
+        "label": "S'WICH",
+        "line": "Bondi → Redfern → Surry Hills expansion • Broadsheet, Hospitality Magazine, Destination NSW",
+        "quote": "'They get hospitality' — Dan Hooper, Founder",
+        "duration": "2022-present"
+      },
+      {
+        "label": "MapleMoon",
+        "line": "160+ retailers",
+        "quote": "'Built a brand we can scale with' — Founder",
+        "duration": "2022-present"
+      },
+      {
+        "label": "Jac+Jack",
+        "line": "W25/SP25 Campaign & E-com refresh",
+        "duration": "2024"
+      }
+    ]
+  },
+  "ops": {
+    "items": [
+      { "icon": "✓", "text": "Strategy before starting" },
+      { "icon": "✓", "text": "If they go right, you go left" },
+      { "icon": "💬", "text": "Async by default • Weekly 30-min check-ins" },
+      { "icon": "✗", "text": "No spec work" },
+      { "icon": "✗", "text": "No vanity-metric promises" },
+      { "icon": "✗", "text": "No 'ASAP, no brief'" }
+    ]
+  },
+  "setup": {
+    "line": "2-person core + 6 specialists. No office. All async. Weekly 30min syncs."
+  },
+  "notRightFor": {
+    "items": [
+      { "icon": "✗", "text": "Urgent rebrand (we take 4-8 weeks)" },
+      { "icon": "✗", "text": "Vanity metrics focus" },
+      { "icon": "✗", "text": "No strategy budget" },
+      { "icon": "✗", "text": "'Make us viral' briefs" }
+    ]
+  },
+  "pricing": {
+    "projects": "$10k–$25k",
+    "projectLength": "Most projects: 4-8 weeks",
+    "retainers": "$5k–$8k/m",
+    "retainerDetails": "20-30hrs • 4-week sprint cycles",
+    "terms": "🏁 50% / ⚡ 20% / 🚀 15% / 🎉 15%",
+    "termsDetail": "start / mid / pre-launch / handoff",
+    "guarantee": "Unhappy after Week 1? Full refund."
+  },
+  "stats": {
+    "projects": "60+",
+    "retention": "75%",
+    "repeatClients": "45%",
+    "avgProjectValue": "$17.5k",
+    "avgResponse": "48h",
+    "industries": "8"
+  },
+  "contact": {
+    "email": "hello@handtomouse.com",
+    "status": "3 slots for Dec 2025",
+    "responseTime": "Reply within 24h (usually 4h)"
+  }
+}

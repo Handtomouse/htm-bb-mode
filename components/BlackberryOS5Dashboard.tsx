@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import BBTrackpad from "./BBTrackpad";
 
 // Accent colour (global)
 const ACCENT = "#ff9d23";
@@ -49,6 +50,40 @@ function ResponsiveStage({ children, margin = 16 }: { children: React.ReactNode;
       <div ref={contentRef} style={{ transform: `scale(${scale})`, transformOrigin: "center center", willChange: "transform" }}>
         {children}
       </div>
+    </div>
+  );
+}
+
+// =====================
+// Helper Components
+// =====================
+function VolumeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="opacity-90">
+      <path d="M8 3L5 6H2v4h3l3 3V3z" fill="currentColor" />
+      <path d="M11 5c.5.5.8 1.2.8 2s-.3 1.5-.8 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
+  return (
+    <div className="flex items-end gap-0.5" aria-label={`Signal ${strength}/4`}>
+      {[0, 1, 2, 3].map((i) => (
+        <span key={i} className={["w-1 rounded-none", i <= strength - 1 ? "bg-white" : "bg-white/30"].join(" ")} style={{ height: 4 + i * 3 }} />
+      ))}
+    </div>
+  );
+}
+
+function Battery({ level = 50, charging = false }: { level?: number; charging?: boolean }) {
+  const pct = Math.max(0, Math.min(100, level));
+  const color = pct < 20 ? "#ef4444" : charging ? "#fbbf24" : "#22c55e";
+
+  return (
+    <div className={`relative h-3 w-6 rounded-none border border-white/70 ${charging ? "animate-pulse" : ""}`}>
+      <div className="absolute inset-0.5 rounded-none" style={{ width: `${pct}%`, backgroundColor: color }} />
+      <div className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-0.5 h-1.5 bg-white/70" />
     </div>
   );
 }
@@ -178,7 +213,7 @@ export default function BlackberryOS5Dashboard() {
   const COLUMNS = 3;
   const rows = Math.ceil(apps.length / COLUMNS);
 
-  // Navigation - open apps inside BB device instead of routing
+  // Navigation - open apps inside BB device
   const navigateTo = (app: App) => {
     if (app.external) {
       window.open(app.path, "_blank");
@@ -203,7 +238,7 @@ export default function BlackberryOS5Dashboard() {
     const appId = appMap[app.name];
     if (appId) {
       setOpenApp(appId);
-      setMode("home"); // Reset to home mode when opening app
+      setMode("home");
     } else {
       setOpenAppIndex(apps.findIndex((a) => a.name === app.name));
     }
@@ -231,7 +266,8 @@ export default function BlackberryOS5Dashboard() {
     setShowContext(false);
     setOpenAppIndex(null);
     setOpenApp(null); // Close any open app
-    setMode("menu");
+    // Toggle between menu and home
+    setMode((prev) => (prev === "menu" ? "home" : "menu"));
   };
   const goBack = () => {
     if (!poweredOn) return;
@@ -472,7 +508,7 @@ export default function BlackberryOS5Dashboard() {
     <ResponsiveStage margin={24}>
       {/* Device body */}
       <div
-        className="relative w-[380px] max-w-full rounded-none shadow-2xl ring-1 ring-white/10 overflow-hidden"
+        className="relative w-screen h-screen rounded-none shadow-2xl ring-1 ring-white/10 overflow-hidden"
         style={{
           backgroundImage:
             "radial-gradient(180%_120% at 50% -20%, #0a1220 10%, #000 70%), linear-gradient(180deg, rgba(255,255,255,0.06), transparent)",
@@ -482,13 +518,13 @@ export default function BlackberryOS5Dashboard() {
         <div className="px-4 pt-4 pb-2 flex items-center justify-between text-white/60 text-[11px]">
           <div className={`h-1.5 w-16 rounded-none ${poweredOn ? "bg-white/10" : "bg-transparent"}`} />
           <div
-            className={`h-1.5 w-1.5 rounded-none ${poweredOn ? "bg-emerald-400/80 shadow-[0_0_8px_2px_rgba(16,185,129,0.6)]" : "bg-transparent"}`}
+            className={`h-2 w-2 rounded-none ${poweredOn ? "bg-emerald-400 shadow-[0_0_12px_3px_rgba(16,185,129,0.8)]" : "bg-transparent"}`}
             title="Notification LED"
           />
         </div>
 
         {/* Screen */}
-        <div ref={screenRef} className="mx-4 rounded-none overflow-hidden ring-1 ring-white/15 relative aspect-[3/4.6]">
+        <div ref={screenRef} className="mx-8 rounded-none overflow-hidden ring-1 ring-white/15 relative h-[calc(100vh-180px)]">
           {/* Wallpaper with static effect - time-based colors */}
           <div
             className="absolute inset-0 transition-colors duration-[3000ms]"
@@ -540,11 +576,11 @@ export default function BlackberryOS5Dashboard() {
               </div>
 
               {/* Center: Carrier name */}
-              <div className="font-semibold tracking-widest text-[11px]">HTM</div>
+              <div className="font-heading font-semibold tracking-widest text-[13px]">HTM</div>
 
               {/* Right: Network + Battery */}
               <div className="flex items-center gap-2">
-                <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-sm bg-white/10">{networkType}</span>
+                <span className="font-heading text-[10px] font-medium px-2 py-1 rounded-sm bg-white/10">{networkType}</span>
                 <div
                   className="relative"
                   onMouseEnter={() => setShowBatteryTooltip(true)}
@@ -562,10 +598,10 @@ export default function BlackberryOS5Dashboard() {
           )}
 
           {/* Time and date display - BlackBerry OS style */}
-          {poweredOn && (
+          {poweredOn && mode !== "menu" && (
             <div className="relative z-10 px-4 pt-5 pb-5 text-white text-center bg-gradient-to-b from-transparent via-black/10 to-transparent">
               {/* Large centered time */}
-              <div className="text-4xl font-extralight tabular-nums tracking-tight mb-1" style={{
+              <div className="text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
                 textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
               }}>
                 {timeStr}
@@ -576,7 +612,7 @@ export default function BlackberryOS5Dashboard() {
               {mounted && (
                 <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] text-white/50">
                   <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-pulse" />
                     <span>No notifications</span>
                   </div>
                 </div>
@@ -645,21 +681,49 @@ export default function BlackberryOS5Dashboard() {
         </div>
 
         {/* Gap between screen and hardware */}
-        <div className="h-5" />
+        <div className="h-6" />
 
         {/* Hardware row (Call • Menu • Trackpad(paused) • Back • Power) */}
-        <div className="px-8 pt-3 pb-5">
-          <div className="mx-auto flex items-center justify-stretch gap-0 text-white">
+        <div
+          className="px-8 pt-5 pb-7"
+          style={{
+            background: "linear-gradient(180deg, rgba(12,12,12,0.85) 0%, rgba(8,8,8,0.95) 50%, rgba(4,4,4,0.98) 100%)",
+            boxShadow: "inset 0 3px 10px rgba(0,0,0,0.7), 0 -1px 0 rgba(255,157,35,0.2), inset 0 0 40px rgba(0,0,0,0.4)",
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E\")",
+          }}
+        >
+          <div className="mx-auto flex items-center justify-stretch gap-4 text-white">
             <HwButton label="Call" onClick={() => navigateTo(apps.find(a => a.name === "Contact")!)} disabled={!poweredOn}>
               <PixelCallIcon />
             </HwButton>
             <HwButton label="Menu" onClick={goMenu} disabled={!poweredOn}>
               <PixelMenuIcon />
             </HwButton>
-            {/* Trackpad paused */}
-            <HwButton label="Trackpad" onClick={() => setToast("Trackpad paused (coming soon)")} disabled={!poweredOn}>
-              <TrackpadMetal />
-            </HwButton>
+            {/* Trackpad */}
+            <div className="flex flex-col items-center gap-1 flex-1 group/trackpad">
+              <div
+                className="flex items-center justify-center w-full h-[104px] rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
+                style={{
+                  background: "linear-gradient(145deg, #141414 0%, #0f0f0f 25%, #0a0a0a 50%, #060606 75%, #000000 100%)",
+                  borderColor: poweredOn ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.25)",
+                  boxShadow: poweredOn
+                    ? "3px 3px 8px rgba(0,0,0,0.8), inset 0 1px 3px rgba(255,255,255,0.08), inset 0 0 8px rgba(0,0,0,0.9), inset 0 -1px 0 rgba(255,157,35,0.1)"
+                    : "3px 3px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.05), inset 0 0 6px rgba(0,0,0,0.8)",
+                  padding: "0",
+                }}
+              >
+                <BBTrackpad size={80} disabled={!poweredOn} />
+              </div>
+              <div
+                className="text-[13px] leading-none opacity-85 mt-1 font-bold transition-all duration-300"
+                style={{
+                  letterSpacing: "0.02em",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.6)"
+                }}
+              >
+                Trackpad
+              </div>
+            </div>
             <HwButton label="Back" onClick={goBack} disabled={!poweredOn}>
               <PixelBackIcon />
             </HwButton>
@@ -674,8 +738,8 @@ export default function BlackberryOS5Dashboard() {
       {showContext && openAppIndex === null && poweredOn && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end justify-start p-4">
           <div className="w-48 rounded-none border border-white/15 bg-black/80 text-white shadow-xl overflow-hidden">
-            <div className="px-3 py-2 text-[12px] font-semibold border-b border-white/10">Menu</div>
-            <ul className="text-[12px] divide-y divide-white/10">
+            <div className="px-3 py-2 text-[14px] font-semibold border-b border-white/10">Menu</div>
+            <ul className="text-[14px] divide-y divide-white/10">
               {[
                 { label: "Open", action: () => openSelected() },
                 { label: "Go Home", action: () => goHome() },
@@ -696,7 +760,7 @@ export default function BlackberryOS5Dashboard() {
       {openAppIndex !== null && poweredOn && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-sm rounded-none border border-white/15 bg-black/85 text-white shadow-2xl">
-            <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 text-[12px]">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 text-[14px]">
               <div className="flex items-center gap-2">
                 <AppGlyph name={apps[openAppIndex].name} />
                 <span className="font-semibold">{apps[openAppIndex].name}</span>
@@ -751,7 +815,7 @@ export default function BlackberryOS5Dashboard() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[12px] px-3 py-1.5 rounded-none border border-white/15 shadow-lg">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[14px] px-3 py-1.5 rounded-none border border-white/15 shadow-lg">
           {toast}
         </div>
       )}
@@ -776,7 +840,7 @@ function AppContent({ appId }: { appId: string }) {
     // Trigger fade-in after a brief delay
     const fadeTimer = setTimeout(() => setFadeIn(true), 50);
 
-    // Load data for portfolio, clients, services, notes
+    // Load data for portfolio, clients, services, notes, about
     if (appId === "portfolio") {
       fetch("/data/projects.json")
         .then(res => res.json())
@@ -793,6 +857,13 @@ function AppContent({ appId }: { appId: string }) {
         });
     } else if (appId === "notes") {
       fetch("/data/posts.json")
+        .then(res => res.json())
+        .then(data => {
+          setData(data);
+          setLoading(false);
+        });
+    } else if (appId === "about") {
+      fetch("/data/about.json")
         .then(res => res.json())
         .then(data => {
           setData(data);
@@ -822,7 +893,7 @@ function AppContent({ appId }: { appId: string }) {
         ) : appId === "notes" ? (
           <NotesContent posts={data} />
         ) : appId === "about" ? (
-          <PlaceholderContent title="About" />
+          <AboutContent />
         ) : appId === "settings" ? (
           <PlaceholderContent title="Settings" />
         ) : appId === "contact" ? (
@@ -1002,6 +1073,253 @@ function NotesContent({ posts }: { posts: any[] }) {
   );
 }
 
+function AboutContent() {
+  const [copiedEmail, setCopiedEmail] = React.useState(false);
+  const [showIdleOverlay, setShowIdleOverlay] = React.useState(false);
+  const [scrollProgress, setScrollProgress] = React.useState(0);
+  const [emailPulsed, setEmailPulsed] = React.useState(false);
+
+  const handleEmailClick = () => {
+    navigator.clipboard.writeText('hello@handtomouse.com').then(() => {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    });
+  };
+
+  // 10s idle overlay
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIdleOverlay(true);
+      setTimeout(() => setShowIdleOverlay(false), 2000);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Scroll progress bar
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollableElement = document.querySelector('.scrollable-content');
+      if (scrollableElement) {
+        const scrollTop = scrollableElement.scrollTop;
+        const scrollHeight = scrollableElement.scrollHeight - scrollableElement.clientHeight;
+        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        setScrollProgress(progress);
+      }
+    };
+
+    const scrollableElement = document.querySelector('.scrollable-content');
+    if (scrollableElement) {
+      scrollableElement.addEventListener('scroll', handleScroll);
+      return () => scrollableElement.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  // Email glow on mount
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setEmailPulsed(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const beliefs = [
+    "Culture rewards originality, not volume.",
+    "Research is the opposite of guessing.",
+    "Simplicity is the final stage of intelligence.",
+    "The best work doesn't need an explanation.",
+    "If it doesn't feel original, it isn't finished."
+  ];
+
+  return (
+    <div className="relative w-full h-full" style={{ fontFamily: "var(--font-mono)" }}>
+      {/* Scroll progress bar */}
+      <div className="fixed bottom-0 left-0 right-0 h-px bg-[#1f1f1f] z-50">
+        <div
+          className="h-full bg-[#ff9d23] transition-all duration-100 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        ></div>
+      </div>
+
+      {/* Idle overlay */}
+      {showIdleOverlay && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 animate-fade-in">
+          <div className="text-[#ff9d23] text-2xl font-bold animate-pulse" style={{ fontFamily: "var(--font-handjet)" }}>
+            Thinking…
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-[1fr_minmax(0,90%)_1fr] w-full h-full">
+        <div></div>
+        <div className="space-y-12 py-8 px-6 max-w-[90%] mx-auto shadow-[inset_0_0_20px_#000000] ring-1 ring-[#1f1f1f]">
+          {/* Hero Header */}
+          <header className="space-y-4 pb-8 border-b border-[#1f1f1f]">
+            <h1 className="text-2xl font-semibold uppercase tracking-wide leading-tight text-[#ff9d23]" style={{ fontFamily: "var(--font-handjet)" }}>
+              About
+            </h1>
+            <h2 className="text-xl font-bold leading-relaxed text-white max-w-prose">
+              Everyone's chasing new — we chase <span style={{ color: ACCENT }}>different.</span>
+            </h2>
+            <p className="text-sm text-white/60 italic leading-relaxed max-w-prose">
+              Independent creative direction and cultural strategy from Sydney.
+            </p>
+          </header>
+
+        {/* Main Philosophy */}
+        <section className="space-y-6">
+          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
+            Philosophy
+          </h3>
+          <div className="space-y-6 text-sm leading-relaxed text-white/80 max-w-prose">
+            <p>
+              I work where ideas meet culture — finding the small, precise angle no one else has noticed yet.
+            </p>
+            <p>
+              Anyone can make something that looks current; the work is making something that still feels right in five years.<br />
+              That comes from research, reference, and restraint — knowing what to leave out, not just what to put in.
+            </p>
+            <p>
+              I'm not interested in trends or templates. I'm interested in ideas with backbone — things that stick because they mean something.
+            </p>
+            <p className="italic text-white/60">
+              Because sameness kills curiosity.
+            </p>
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-[#1f1f1f]"></div>
+
+        {/* Quote */}
+        <section className="py-6 text-center border-y border-[#1f1f1f]">
+          <blockquote className="text-lg font-bold uppercase tracking-wider" style={{ color: ACCENT }}>
+            Good ideas don't shout.<br />
+            They hum until everyone hears them.
+          </blockquote>
+        </section>
+
+        {/* Philosophy Detail */}
+        <section className="space-y-6 text-sm leading-relaxed text-white/80 max-w-prose">
+          <p>
+            The best creative work comes from paying attention — to language, to subcultures, to what people care about.
+          </p>
+          <p>
+            Every project is a small act of anthropology: studying how something already lives in the world, then finding a smarter way to express it.
+          </p>
+          <div className="space-y-1 text-white/90">
+            <p>No jargon.</p>
+            <p>No decks that explain what should be obvious.</p>
+            <p>Just thinking, timing, and taste.</p>
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-[#1f1f1f]"></div>
+
+        {/* How I Work */}
+        <section className="space-y-6">
+          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
+            How I Work
+          </h3>
+          <div className="space-y-4 text-sm text-white/80 max-w-prose">
+            <div className="space-y-1">
+              <p>Research deeply.</p>
+              <p>Write clearly.</p>
+              <p>Design like it matters.</p>
+            </div>
+            <ul className="space-y-2 pl-4">
+              <li><strong>•</strong> Cultural strategy — finding the signal in the clutter.</li>
+              <li><strong>•</strong> Concept development — building the idea everything else orbits.</li>
+              <li><strong>•</strong> Creative direction — giving it form, tone, and presence.</li>
+            </ul>
+            <p className="pt-2">
+              Projects range from brand campaigns to product launches to total rethinks.<br />
+              The medium shifts — the intelligence stays the same.
+            </p>
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-[#1f1f1f]"></div>
+
+        {/* Beliefs */}
+        <section className="space-y-6">
+          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
+            Beliefs
+          </h3>
+          <ul className="space-y-3 text-sm text-white/80 max-w-prose">
+            {beliefs.map((belief, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span style={{ color: ACCENT }}>∴</span>
+                <span>{belief}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-[#1f1f1f]"></div>
+
+        {/* Who With */}
+        <section className="space-y-6">
+          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
+            Who With
+          </h3>
+          <div className="space-y-6 max-w-prose">
+            <p className="text-sm text-white/80">
+              I work with people who care about ideas as much as execution:
+            </p>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li>
+                <span style={{ color: ACCENT }} className="font-bold">S'WICH</span> — turning Sydney sandwiches into iconography.
+              </li>
+              <li>
+                <span style={{ color: ACCENT }} className="font-bold">MapleMoon</span> — making carob feel like mythology.
+              </li>
+              <li>
+                <span style={{ color: ACCENT }} className="font-bold">Jac+Jack</span> — giving quiet luxury a language.
+              </li>
+              <li>
+                <span style={{ color: ACCENT }} className="font-bold">Aura Therapeutics</span> — where wellness met weird.
+              </li>
+            </ul>
+            <p className="text-sm text-white/60 italic">
+              Independent. Idea-led. Occasionally obsessive.
+            </p>
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-[#1f1f1f]"></div>
+
+        {/* Footer */}
+        <footer className="space-y-4 text-sm text-white/70 max-w-prose">
+          <div>
+            <p className="font-bold text-white">HandToMouse / Nate Don</p>
+            <p>Sydney, Australia</p>
+          </div>
+          <button
+            onClick={handleEmailClick}
+            className={`hover:opacity-80 transition-all duration-1000 cursor-pointer block ${
+              !emailPulsed ? 'animate-pulse drop-shadow-[0_0_8px_rgba(255,157,35,0.6)]' : ''
+            }`}
+            style={{ color: ACCENT }}
+          >
+            {copiedEmail ? '✓ Copied!' : 'hello@handtomouse.com'}
+          </button>
+          <div className="space-y-1 text-white/60 text-xs italic pt-4">
+            <p>Not "creative solutions." Just better ideas.</p>
+            <p>Built for people who think before they brief.</p>
+            <p className="text-white/40">(Updated Oct 2025)</p>
+          </div>
+        </footer>
+      </div>
+      <div></div>
+    </div>
+    </div>
+  );
+}
+
 function PlaceholderContent({ title }: { title: string }) {
   return (
     <div>
@@ -1062,24 +1380,24 @@ function HomeDockOverlay({
       onTouchEnd={handleTouchEnd}
     >
       {/* Bold-style bottom dock overlay */}
-      <div className="w-full max-w-[94%] rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05)]">
+      <div className="w-full max-w-[90%] mx-auto rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05),0_0_2px_rgba(255,157,35,0.3)]">
         {/* Hints at top of dock bar with gradient */}
-        <div className="px-4 pt-2.5 pb-2 text-center text-white/80 text-[10px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
-          <span className="opacity-90 font-medium">▲ Menu</span>
-          <span className="mx-3 opacity-50">•</span>
-          <span className="opacity-90 font-medium">◀▶ Navigate</span>
-          <span className="mx-3 opacity-50">•</span>
-          <span className="opacity-90 font-medium">Enter/Tap=Open</span>
+        <div className="px-4 pt-3 pb-2.5 text-center text-white/80 text-[13px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
+          <span className="opacity-90 font-bold">▲ Menu</span>
+          <span className="mx-2 opacity-50">•</span>
+          <span className="opacity-90 font-bold">◀▶ Navigate</span>
+          <span className="mx-2 opacity-50">•</span>
+          <span className="opacity-90 font-bold">Enter/Tap=Open</span>
         </div>
-        <div className="grid grid-cols-5 gap-5 p-7">
+        <div className="grid grid-cols-5 gap-4 p-5 place-items-center transition-all duration-300">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-none border p-5 min-h-[140px]",
+                "group relative flex flex-col items-center justify-center rounded-none border-2 p-3 min-h-[100px]",
                 selectedDock === idx
-                  ? "border-[#ff9d23]/80 bg-gradient-to-b from-white/15 to-white/10"
-                  : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7",
+                  ? "border-[#ff9d23] bg-gradient-to-b from-white/20 to-white/15 backdrop-blur-sm"
+                  : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7 hover:scale-105",
                 "transition-all duration-300 active:scale-95",
               ].join(" ")}
               style={{
@@ -1092,14 +1410,14 @@ function HomeDockOverlay({
               onClick={() => navigateTo(app)}
               aria-label={app.name}
             >
-              <div className={`h-10 w-10 transition-all duration-300 ${
+              <div className={`h-18 w-18 transition-all duration-300 ${
                 selectedDock === idx
-                  ? "brightness-125 drop-shadow-[0_0_8px_rgba(255,157,35,0.5)]"
+                  ? "brightness-130 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)]"
                   : "brightness-100 group-hover:brightness-110"
               }`}>
                 {app.icon}
               </div>
-              <div className={`mt-3.5 text-[10px] leading-none text-center font-semibold transition-all duration-300 ${
+              <div className={`font-heading mt-4 text-[13px] leading-none text-center font-semibold transition-all duration-300 ${
                 selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}
@@ -1129,24 +1447,25 @@ function MenuGrid({
   setShowContext: (b: boolean) => void;
 }) {
   return (
-    <div className="absolute inset-0 top-16 bottom-8 px-6 py-6 overflow-y-auto" style={{ overflow: "visible" }}>
-      <div className="grid grid-cols-3 gap-5 select-none" style={{ gridAutoRows: "minmax(120px, 1fr)", padding: "8px" }}>
+    <div className="absolute inset-0 top-16 bottom-8 px-18 py-12 flex items-center justify-center overflow-y-auto" style={{ overflow: "visible" }}>
+      <div className="grid grid-cols-3 gap-7 select-none w-full" style={{ gridAutoRows: "minmax(140px, 1fr)", padding: "20px" }}>
         {apps.map((app, idx) => (
           <button
             key={app.name}
             className={[
-              "group relative flex flex-col items-center justify-center rounded-lg border p-4",
+              "group relative flex flex-col items-center justify-center rounded-none border p-6 backdrop-blur-md",
               selected === idx
-                ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/60 shadow-[0_0_0_2px_rgba(255,157,35,0.4),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/15 to-white/10"
-                : "border-white/15 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:shadow-[0_0_18px_rgba(255,157,35,0.35)] hover:from-white/12 hover:to-white/8",
-              "transition-all duration-300 active:scale-95",
+                ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/70 shadow-[0_0_0_2px_rgba(255,157,35,0.5),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/20 to-white/12"
+                : "border-white/15 bg-gradient-to-b from-white/10 to-white/6 hover:border-white/35 hover:shadow-[0_0_20px_rgba(255,157,35,0.4)] hover:from-white/14 hover:to-white/9",
+              "transition-all duration-300 active:scale-93",
             ].join(" ")}
             style={{
               overflow: "visible",
+              transformOrigin: "center",
               transform: selected === idx ? "scale(1.05)" : "scale(1)",
               boxShadow: selected === idx
-                ? "0 0 0 2px rgba(255,157,35,0.4), 0 0 28px rgba(255,157,35,0.6), 0 6px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
-                : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
+                ? "0 0 0 2px rgba(255,157,35,0.5), 0 0 32px rgba(255,157,35,0.65), 0 8px 18px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.12), inset 0 0 30px rgba(255,157,35,0.15)"
+                : "0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 20px rgba(255,255,255,0.02)"
             }}
             onMouseEnter={() => setSelected(idx)}
             onFocus={() => setSelected(idx)}
@@ -1157,20 +1476,31 @@ function MenuGrid({
             }}
             aria-label={app.name}
           >
-            <div className={`h-12 w-12 transition-all duration-300 ${
-              selected === idx
-                ? "brightness-130 drop-shadow-[0_0_10px_rgba(255,157,35,0.7)] scale-110"
-                : "brightness-100 group-hover:brightness-115 group-hover:drop-shadow-[0_0_6px_rgba(255,157,35,0.4)] group-hover:scale-105"
-            }`}>
+            <div
+              className={`h-18 w-18 transition-all duration-300 ${
+                selected === idx
+                  ? "brightness-135 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)] scale-115"
+                  : "brightness-100 group-hover:brightness-120 group-hover:drop-shadow-[0_0_8px_rgba(255,157,35,0.5)] group-hover:scale-108"
+              }`}
+              style={{ transformOrigin: "center" }}
+            >
               {app.icon}
             </div>
-            <div className={`mt-3 text-[11px] leading-none text-center font-semibold transition-all duration-300 ${
-              selected === idx ? "text-[#ff9d23] scale-105" : "text-white/90 group-hover:text-white"
-            }`}>
+            <div
+              className={`font-heading mt-3 text-[14px] leading-none text-center font-semibold transition-all duration-300 ${
+                selected === idx ? "text-[#ff9d23] scale-105" : "text-white/90 group-hover:text-white"
+              }`}
+              style={{
+                letterSpacing: "0.02em",
+                textShadow: selected === idx
+                  ? "0 0 8px rgba(255,157,35,0.6), 0 1px 2px rgba(0,0,0,0.8)"
+                  : "0 1px 2px rgba(0,0,0,0.5)"
+              }}
+            >
               {app.name}
             </div>
             {selected === idx && (
-              <div className="pointer-events-none absolute inset-0 rounded-lg ring-1 ring-[#ff9d23]/50 shadow-[inset_0_0_24px_rgba(255,157,35,0.3)]" />
+              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/60 shadow-[inset_0_0_30px_rgba(255,157,35,0.35)]" />
             )}
           </button>
         ))}
@@ -1181,10 +1511,14 @@ function MenuGrid({
 
 function HwButton({ children, label, onClick, disabled, className }: { children: React.ReactNode; label: string; onClick: () => void; disabled?: boolean; className?: string }) {
   const [isHovered, setIsHovered] = React.useState(false);
+  const [isPressed, setIsPressed] = React.useState(false);
 
   return (
     <button
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+        setIsHovered(false);
+      }}
       aria-label={label}
       className={`group flex flex-col items-center gap-1 flex-1 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
       style={{
@@ -1193,33 +1527,53 @@ function HwButton({ children, label, onClick, disabled, className }: { children:
         zIndex: isHovered ? 10 : 1
       }}
       onMouseEnter={() => !disabled && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => !disabled && setIsHovered(false)}
     >
       <div
-        className="grid place-items-center h-12 w-full rounded-none border border-white/20 bg-gradient-to-br from-[#1b1b1b] to-[#0e0e0e] backdrop-blur-sm"
+        className="grid place-items-center h-[104px] w-full rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
         style={{
-          boxShadow: isHovered
-            ? "0 0 8px rgba(255,157,35,0.5), inset 0 0 8px rgba(255,157,35,0.15)"
-            : "2px 2px 5px rgba(0,0,0,0.6), inset 0 0 4px #000",
-          transform: isHovered ? "scale(1.05)" : "scale(1)",
-          transition: "all 0.3s ease"
+          background: "linear-gradient(145deg, #141414 0%, #0f0f0f 25%, #0a0a0a 50%, #060606 75%, #000000 100%)",
+          borderColor: isHovered ? "rgba(255,157,35,0.45)" : "rgba(255,255,255,0.3)",
+          boxShadow: isPressed
+            ? "inset 0 5px 10px rgba(0,0,0,0.95), inset 0 0 15px rgba(0,0,0,0.9)"
+            : isHovered
+            ? "0 0 12px rgba(255,157,35,0.5), 0 0 16px rgba(255,157,35,0.25), inset 0 0 10px rgba(255,157,35,0.18), inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -1px 0 rgba(255,157,35,0.15)"
+            : "3px 3px 8px rgba(0,0,0,0.8), inset 0 1px 3px rgba(255,255,255,0.08), inset 0 0 8px rgba(0,0,0,0.9), inset 0 -1px 0 rgba(255,157,35,0.08)",
+          transform: isPressed ? "scale(0.95)" : isHovered ? "scale(1.03)" : "scale(1)",
+          transformOrigin: "center",
+          padding: "2px"
         }}
         onMouseDown={(e) => {
           if (!disabled) {
-            e.currentTarget.style.transform = "scale(0.95)";
+            setIsPressed(true);
+            e.currentTarget.style.transform = "scale(0.93)";
           }
         }}
         onMouseUp={(e) => {
           if (!disabled) {
-            e.currentTarget.style.transform = isHovered ? "scale(1.05)" : "scale(1)";
+            setIsPressed(false);
+            e.currentTarget.style.transform = isHovered ? "scale(1.03)" : "scale(1)";
           }
         }}
       >
-        <div className="h-8 w-8 transition-all duration-300 group-hover:[&_svg_rect]:fill-[#ff9d23] group-hover:[&_svg_rect]:stroke-[#ff9d23] group-hover:[&_svg_g]:fill-[#ff9d23] group-hover:[&_svg_g]:stroke-[#ff9d23]">
+        <div
+          className="h-16 w-16 transition-all duration-300 ease-out group-hover:[&_svg_rect]:fill-[#ff9d23] group-hover:[&_svg_rect]:stroke-[#ff9d23] group-hover:[&_svg_g]:fill-[#ff9d23] group-hover:[&_svg_g]:stroke-[#ff9d23]"
+          style={{
+            filter: isHovered ? "drop-shadow(0 0 4px rgba(255,157,35,0.6))" : "none"
+          }}
+        >
           {children}
         </div>
       </div>
-      <div className="text-[9px] leading-none opacity-70 mt-0.5">{label}</div>
+      <div
+        className="text-[13px] leading-none opacity-85 mt-1 font-bold transition-all duration-300"
+        style={{
+          letterSpacing: "0.02em",
+          textShadow: "0 1px 2px rgba(0,0,0,0.6)"
+        }}
+      >
+        {label}
+      </div>
     </button>
   );
 }
@@ -1252,50 +1606,6 @@ function NotiDot({ pulse = false }: { pulse?: boolean }) {
     </span>
   );
 }
-
-function VolumeIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="opacity-90">
-      <path d="M8 3L5 6H2v4h3l3 3V3z" fill="currentColor" />
-      <path d="M11 5c.5.5.8 1.2.8 2s-.3 1.5-.8 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
-  return (
-    <div className="flex items-end gap-0.5" aria-label={`Signal ${strength}/4`}>
-      {[0, 1, 2, 3].map((i) => (
-        <span key={i} className={["w-1 rounded-none", i <= strength - 1 ? "bg-white" : "bg-white/30"].join(" ")} style={{ height: 4 + i * 3 }} />
-      ))}
-    </div>
-  );
-}
-
-function Battery({ level = 50, charging = false }: { level?: number; charging?: boolean }) {
-  const pct = Math.max(0, Math.min(100, level));
-  const color = pct < 20 ? "#ef4444" : charging ? "#fbbf24" : "#22c55e";
-
-  return (
-    <div className={`relative h-3 w-6 rounded-none border border-white/70 ${charging ? "animate-pulse" : ""}`}>
-      <div className="absolute -right-1 top-0.5 h-2 w-0.5 bg-white/70" />
-      <div
-        className={`h-full transition-all duration-300 ${charging ? "animate-pulse" : ""}`}
-        style={{
-          width: `${pct}%`,
-          background: charging ? `linear-gradient(90deg, ${color} 0%, #fde047 100%)` : color,
-          boxShadow: charging ? `0 0 6px ${color}` : "none"
-        }}
-      />
-      {charging && (
-        <div className="absolute inset-0 grid place-items-center text-[9px] animate-pulse">
-          ⚡️
-        </div>
-      )}
-    </div>
-  );
-}
-
 function AppGlyph({ name }: { name: string }) {
   return (
     <div className="h-4 w-4 mr-1.5 opacity-80">

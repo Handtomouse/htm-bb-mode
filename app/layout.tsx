@@ -1,11 +1,26 @@
-import { VT323 } from "next/font/google";
+import { VT323, Pixelify_Sans, Handjet } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import LayoutWrapper from "@/components/LayoutWrapper";
 import "./globals.css";
 
 const vt323 = VT323({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+const pixelifySans = Pixelify_Sans({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
+});
+
+const handjet = Handjet({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-handjet",
   display: "swap",
 });
 
@@ -29,8 +44,10 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className={`${vt323.variable} antialiased`}>
-        {children}
+      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
         <Analytics />
       </body>
     </html>

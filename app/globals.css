@@ -15,6 +15,8 @@
   --shadow: 0 0 0 1px rgba(244, 162, 89, 0.2), 0 6px 30px rgba(244, 162, 89, 0.08);
   --font-sans: "Halyard Display", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "VT323", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --font-heading: "Pixelify Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-handjet: "Handjet", ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme inline {
@@ -29,6 +31,8 @@
   --color-icon: var(--icon);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --font-handjet: var(--font-handjet);
 }
 
 * {
@@ -71,16 +75,53 @@ body {
   color: var(--bg);
 }
 
-/* Headings with mono font */
+/* Type Hierarchy */
+/* VT323 (mono): Body text, labels, general UI (default)
+   Pixelify Sans (heading): Headings, app titles, important UI elements */
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* Utility classes for font switching */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-mono {
   font-family: var(--font-mono);
-  font-weight: normal;
-  letter-spacing: 0.02em;
+}
+
+.font-handjet {
+  font-family: var(--font-handjet);
 }
 
 /* Accent slash */
@@ -137,4 +178,49 @@ button {
 /* Border utility for settings panel buttons */
 .border-3 {
   border: 3px solid;
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-in-out;
+}
+
+/* Pixel scrollbar for About page */
+.scrollbar-pixel::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollbar-pixel::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-left: 1px solid var(--grid);
+}
+
+.scrollbar-pixel::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+.scrollbar-pixel::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-2);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
