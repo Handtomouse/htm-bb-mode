@@ -1213,79 +1213,75 @@ function AboutContent() {
           </div>
         </section>
 
-        {/* Divider */}
-        <div className="border-t border-[#1f1f1f]"></div>
+        {/* Contact Cards Grid */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Card 1 — How I Work */}
+          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[#ff9d23] transition-colors relative group">
+            {/* Status LED */}
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[#ff9d23] transition-colors"></div>
 
-        {/* How I Work */}
-        <section className="space-y-6">
-          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
-            How I Work
-          </h3>
-          <div className="space-y-4 text-sm text-white/80 max-w-prose">
-            <div className="space-y-1">
-              <p>Research deeply.</p>
-              <p>Write clearly.</p>
-              <p>Design like it matters.</p>
+            <header className="flex items-center space-x-2">
+              <span className="text-[#ff9d23] text-lg">💡</span>
+              <h3 className="text-xs uppercase tracking-wide text-[#ff9d23] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
+                How I Work
+              </h3>
+            </header>
+
+            <div className="text-xs text-gray-300 leading-relaxed space-y-3">
+              <div className="space-y-1">
+                <p>Research deeply.</p>
+                <p>Write clearly.</p>
+                <p>Design like it matters.</p>
+              </div>
+              <div className="space-y-1.5 text-[11px]">
+                <p><strong>•</strong> Cultural strategy — finding the signal in the clutter.</p>
+                <p><strong>•</strong> Concept development — building the idea everything else orbits.</p>
+                <p><strong>•</strong> Creative direction — giving it form, tone, and presence.</p>
+              </div>
             </div>
-            <ul className="space-y-2 pl-4">
-              <li><strong>•</strong> Cultural strategy — finding the signal in the clutter.</li>
-              <li><strong>•</strong> Concept development — building the idea everything else orbits.</li>
-              <li><strong>•</strong> Creative direction — giving it form, tone, and presence.</li>
-            </ul>
-            <p className="pt-2">
-              Projects range from brand campaigns to product launches to total rethinks.<br />
-              The medium shifts — the intelligence stays the same.
-            </p>
           </div>
-        </section>
 
-        {/* Divider */}
-        <div className="border-t border-[#1f1f1f]"></div>
+          {/* Card 2 — Beliefs */}
+          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[#ff9d23] transition-colors relative group">
+            {/* Status LED */}
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[#ff9d23] transition-colors"></div>
 
-        {/* Beliefs */}
-        <section className="space-y-6">
-          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
-            Beliefs
-          </h3>
-          <ul className="space-y-3 text-sm text-white/80 max-w-prose">
-            {beliefs.map((belief, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <span style={{ color: ACCENT }}>∴</span>
-                <span>{belief}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+            <header className="flex items-center space-x-2">
+              <span className="text-[#ff9d23] text-lg">∴</span>
+              <h3 className="text-xs uppercase tracking-wide text-[#ff9d23] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
+                Beliefs
+              </h3>
+            </header>
 
-        {/* Divider */}
-        <div className="border-t border-[#1f1f1f]"></div>
+            <div className="text-xs text-gray-300 leading-relaxed space-y-2">
+              {beliefs.map((belief, idx) => (
+                <p key={idx} className="flex items-start gap-2">
+                  <span className="text-[#ff9d23] flex-shrink-0">∴</span>
+                  <span>{belief}</span>
+                </p>
+              ))}
+            </div>
+          </div>
 
-        {/* Who With */}
-        <section className="space-y-6">
-          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>
-            Who With
-          </h3>
-          <div className="space-y-6 max-w-prose">
-            <p className="text-sm text-white/80">
-              I work with people who care about ideas as much as execution:
-            </p>
-            <ul className="space-y-3 text-sm text-white/80">
-              <li>
-                <span style={{ color: ACCENT }} className="font-bold">S'WICH</span> — turning Sydney sandwiches into iconography.
-              </li>
-              <li>
-                <span style={{ color: ACCENT }} className="font-bold">MapleMoon</span> — making carob feel like mythology.
-              </li>
-              <li>
-                <span style={{ color: ACCENT }} className="font-bold">Jac+Jack</span> — giving quiet luxury a language.
-              </li>
-              <li>
-                <span style={{ color: ACCENT }} className="font-bold">Aura Therapeutics</span> — where wellness met weird.
-              </li>
-            </ul>
-            <p className="text-sm text-white/60 italic">
-              Independent. Idea-led. Occasionally obsessive.
-            </p>
+          {/* Card 3 — Who With */}
+          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[#ff9d23] transition-colors relative group">
+            {/* Status LED */}
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[#ff9d23] transition-colors"></div>
+
+            <header className="flex items-center space-x-2">
+              <span className="text-[#ff9d23] text-lg">👥</span>
+              <h3 className="text-xs uppercase tracking-wide text-[#ff9d23] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
+                Who With
+              </h3>
+            </header>
+
+            <div className="text-xs text-gray-300 leading-relaxed space-y-2">
+              <p><strong className="text-[#ff9d23]">S'WICH</strong> — turning Sydney sandwiches into iconography.</p>
+              <p><strong className="text-[#ff9d23]">MapleMoon</strong> — making carob feel like mythology.</p>
+              <p><strong className="text-[#ff9d23]">Jac+Jack</strong> — giving quiet luxury a language.</p>
+              <p><strong className="text-[#ff9d23]">Aura Therapeutics</strong> — where wellness met weird.</p>
+              <p className="text-white/60 italic pt-2">Independent. Idea-led. Occasionally obsessive.</p>
+            </div>
           </div>
         </section>
 
