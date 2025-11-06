@@ -1,6 +1,10 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend lazily to avoid build-time errors when API key is not available
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY || "";
+  return new Resend(apiKey);
+};
 
 type ContactSubmission = {
   mode: "quick" | "brief";
@@ -173,6 +177,7 @@ ${utm_source || utm_medium || utm_campaign ? `\nCampaign: ${utm_source || ""} / 
 Received: ${new Date().toLocaleString("en-AU", { timeZone: "Australia/Sydney" })}
   `.trim();
 
+  const resend = getResendClient();
   const result = await resend.emails.send({
     from: process.env.CONTACT_EMAIL_FROM || "HandToMouse <noreply@handtomouse.com>",
     to: process.env.CONTACT_EMAIL_TO || "hello@handtomouse.com",
@@ -265,6 +270,7 @@ www.handtomouse.org
 This is an automated confirmation email.
   `.trim();
 
+  const resend = getResendClient();
   const result = await resend.emails.send({
     from: process.env.CONTACT_EMAIL_FROM || "HandToMouse <noreply@handtomouse.com>",
     to: email,
