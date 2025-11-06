@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "version": "2.0",
+    "structure": "three-act-narrative",
+    "updated": "2024-12-01"
+  },
+  "hero": {
+    "title": "HANDTOMOUSE",
+    "tagline": "Everyone's chasing new — we chase different.",
+    "subtitle": "Independent creative direction and cultural strategy from Sydney."
+  },
+  "actOne": {
+    "title": "PHILOSOPHY",
+    "paragraphs": [
+      "I work where ideas meet culture — finding the small, precise angle no one else has noticed yet.",
+      "Anyone can make something that looks current. The work is making it feel right in five years.",
+      "That comes from research, reference, and restraint. Knowing what to leave out, not just what to put in.",
+      "I'm not interested in trends or templates. I'm interested in ideas with backbone — work that sticks because it means something.",
+      "Because sameness kills curiosity."
+    ],
+    "nameExplanation": {
+      "text": "HandToMouse is how I work — directly, without layers. Thought to cursor. Idea to execution.",
+      "emphasis": "HandToMouse"
+    }
+  },
+  "actTwo": {
+    "title": "PROOF",
+    "beliefs": {
+      "title": "BELIEFS",
+      "transition": "Here's what guides me when I work.",
+      "items": [
+        "Culture rewards originality, not volume.",
+        "Research is the opposite of guessing.",
+        "Simplicity is the final stage of intelligence.",
+        "The best work doesn't need an explanation.",
+        "If it doesn't feel original, it isn't finished."
+      ]
+    },
+    "pullQuote": "GOOD IDEAS DON'T SHOUT — THEY STICK.",
+    "stats": {
+      "title": "BY THE NUMBERS",
+      "items": [
+        {
+          "value": "50+",
+          "label": "Projects",
+          "caption": "Delivered across 8 industries"
+        },
+        {
+          "value": "90%",
+          "label": "Retention",
+          "caption": "Clients return year on year"
+        },
+        {
+          "value": "70%",
+          "label": "Repeat",
+          "caption": "Multi-project partnerships"
+        },
+        {
+          "value": "$15k+",
+          "label": "Avg Value",
+          "caption": "Typical project investment"
+        },
+        {
+          "value": "<24h",
+          "label": "Response",
+          "caption": "First reply guaranteed"
+        },
+        {
+          "value": "8+",
+          "label": "Industries",
+          "caption": "Fashion, F&B, wellness, tech"
+        }
+      ]
+    },
+    "clients": {
+      "title": "CLIENTS",
+      "transition": "A few names that trusted the process.",
+      "items": [
+        {
+          "name": "S'WICH",
+          "description": "turning Sydney sandwiches into iconography."
+        },
+        {
+          "name": "MapleMoon",
+          "description": "making carob feel like mythology."
+        },
+        {
+          "name": "Jac+Jack",
+          "description": "giving quiet luxury a language."
+        },
+        {
+          "name": "Aura Therapeutics",
+          "description": "where wellness met weird."
+        }
+      ]
+    }
+  },
+  "actThree": {
+    "title": "NOW",
+    "now": {
+      "title": "NOW",
+      "status": "Taking Dec 2025 bookings",
+      "focus": "E-com refresh for Jac+Jack, S'WICH expansion",
+      "response": "<24h guaranteed",
+      "lastUpdated": "Dec 2024"
+    },
+    "contact": {
+      "title": "CONTACT",
+      "transition": "If the work matters to you, let's make it matter to others.",
+      "email": "hello@handtomouse.com",
+      "location": "Sydney, Australia",
+      "tagline": "Not \"creative solutions.\" Just better ideas.",
+      "subtitle": "Built for people who think before they brief."
+    }
+  },
+  "legacy": {
+    "note": "This section preserves original schema for backward compatibility",
+    "process": {
+      "steps": [
+        { "num": "①", "title": "Plan", "promise": "Clarify", "duration": "1-2 weeks" },
+        { "num": "②", "title": "Produce", "promise": "Create", "duration": "2-4 weeks" },
+        { "num": "③", "title": "Train", "promise": "Transfer", "duration": "1-2 weeks" }
+      ]
+    },
+    "pricing": {
+      "projects": "$10k–$25k",
+      "projectLength": "Most projects: 4-8 weeks",
+      "retainers": "$5k–$8k/m",
+      "retainerDetails": "20-30hrs • 4-week sprint cycles",
+      "terms": "🏁 50% / ⚡ 20% / 🚀 15% / 🎉 15%",
+      "termsDetail": "start / mid / pre-launch / handoff",
+      "guarantee": "Unhappy after Week 1? Full refund."
+    }
+  }
+}

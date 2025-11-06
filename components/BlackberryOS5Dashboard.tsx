@@ -1,8 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import BBTrackpad from "./BBTrackpad";
+import { BBSkeletonCard } from "./BBSkeleton";
+
+// Lazy load content components for better performance
+const BlackberryAboutContent = lazy(() => import("./BlackberryAboutContent"));
+const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
+const BlackberrySettingsContent = lazy(() => import("./BlackberrySettingsContent"));
+const BlackberryShowreelContent = lazy(() => import("./BlackberryShowreelContent"));
+const BlackberryFavouritesContent = lazy(() => import("./BlackberryFavouritesContent"));
+const BlackberryWormholeContent = lazy(() => import("./BlackberryWormholeContent"));
+const BlackberryGamesContent = lazy(() => import("./BlackberryGamesContent"));
+const BlackberryWebContent = lazy(() => import("./BlackberryWebContent"));
 
 // Accent colour (global)
 const ACCENT = "#ff9d23";
@@ -93,6 +104,7 @@ function Battery({ level = 50, charging = false }: { level?: number; charging?: 
 // =====================
 export default function BlackberryOS5Dashboard() {
   const router = useRouter();
+  const pathname = usePathname();
 
   // Screen state
   const [mode, setMode] = useState<"home" | "menu">("home");
@@ -104,6 +116,8 @@ export default function BlackberryOS5Dashboard() {
   const [openApp, setOpenApp] = useState<string | null>(null); // Track which app is open
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false); // Keyboard shortcuts overlay
   const [isLocked, setIsLocked] = useState(false); // Lock screen state
+  const [konamiActive, setKonamiActive] = useState(false); // Easter egg state
+  const [konamiSequence, setKonamiSequence] = useState<string[]>([]); // Track key sequence
 
   // Time/UI state
   const [now, setNow] = useState(new Date());
@@ -126,6 +140,63 @@ export default function BlackberryOS5Dashboard() {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
+
+  // Easter egg: Konami code (↑ ↑ ↓ ↓ ← → ← → B A)
+  useEffect(() => {
+    const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+
+    const handleKonami = (e: KeyboardEvent) => {
+      if (isLocked || showContext || showKeyboardHelp) return;
+
+      const key = e.key;
+      const newSequence = [...konamiSequence, key].slice(-10);
+      setKonamiSequence(newSequence);
+
+      // Check if sequence matches
+      const matches = konamiCode.every((code, i) => newSequence[i] === code);
+      if (matches) {
+        setKonamiActive(true);
+        setKonamiSequence([]);
+
+        // Trigger confetti using dynamic import
+        if (typeof window !== "undefined") {
+          import("canvas-confetti").then((confetti) => {
+            const duration = 3000;
+            const end = Date.now() + duration;
+
+            const colors = ["#FF9D23", "#FFB84D", "#FFC266", "#FFD699"];
+
+            (function frame() {
+              confetti.default({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0, y: 0.6 },
+                colors: colors
+              });
+              confetti.default({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1, y: 0.6 },
+                colors: colors
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            })();
+          });
+        }
+
+        // Reset after 5 seconds
+        setTimeout(() => setKonamiActive(false), 5000);
+      }
+    };
+
+    window.addEventListener("keydown", handleKonami);
+    return () => window.removeEventListener("keydown", handleKonami);
+  }, [konamiSequence, isLocked, showContext, showKeyboardHelp]);
 
   // Simulate dynamic signal and network changes
   useEffect(() => {
@@ -193,7 +264,7 @@ export default function BlackberryOS5Dashboard() {
       { name: "Showreel", icon: <ShowreelIcon />, path: "/showreel" },
       { name: "Settings", icon: <SettingsIcon />, path: "/settings" },
       { name: "Donate", icon: <DonateIcon />, path: "/contact" },
-      { name: "Wormhole", icon: <WormholeIcon />, path: "/web" },
+      { name: "Wormhole", icon: <WormholeIcon />, path: "/wormhole" },
       { name: "Contact", icon: <ContactIcon />, path: "/contact" },
       { name: "Message", icon: <MessageIcon />, path: "/notes" },
       { name: "Games", icon: <GamesIcon />, path: "/games" },
@@ -231,8 +302,8 @@ export default function BlackberryOS5Dashboard() {
       "Showreel": "showreel",
       "Favourites": "favourites",
       "Games": "games",
-      "Wormhole": "web",
-      "Donate": "donate"
+      "Wormhole": "wormhole",
+      "Donate": "contact" // Map Donate to contact as well
     };
 
     const appId = appMap[app.name];
@@ -362,18 +433,26 @@ export default function BlackberryOS5Dashboard() {
         return;
       }
 
-      // If an app is open, ESC/Backspace closes it
+      // Check if user is typing in an input field
+      const activeEl = document.activeElement as HTMLElement;
+      const isTyping = activeEl?.tagName === "INPUT" || activeEl?.tagName === "TEXTAREA" || activeEl?.tagName === "SELECT" || activeEl?.isContentEditable;
+
+      // If an app is open, ESC/Backspace closes it (unless typing)
       if (openApp !== null) {
         if (["Escape", "Backspace"].includes(e.key)) {
-          setOpenApp(null);
-          e.preventDefault();
+          if (!isTyping || e.key === "Escape") {
+            setOpenApp(null);
+            e.preventDefault();
+          }
         }
         return;
       }
       if (openAppIndex !== null) {
         if (["Escape", "Backspace"].includes(e.key)) {
-          setOpenAppIndex(null);
-          e.preventDefault();
+          if (!isTyping || e.key === "Escape") {
+            setOpenAppIndex(null);
+            e.preventDefault();
+          }
         }
         return;
       }
@@ -440,8 +519,10 @@ export default function BlackberryOS5Dashboard() {
         e.preventDefault();
       }
       if (e.key === "Escape" || e.key === "Backspace") {
-        setMode("home");
-        e.preventDefault();
+        if (!isTyping || e.key === "Escape") {
+          setMode("home");
+          e.preventDefault();
+        }
       }
       if (e.key.toLowerCase() === "m") {
         setShowContext(true);
@@ -575,24 +656,28 @@ export default function BlackberryOS5Dashboard() {
                 <SignalBars strength={signalStrength as 0 | 1 | 2 | 3 | 4} />
               </div>
 
-              {/* Center: Wordmark on homescreen, Logo+Time when app/menu open */}
-              {(openApp !== null || mode === "menu") ? (
+              {/* Center: Wordmark on homescreen, Logo+Time otherwise */}
+              {(openApp !== null || mode === "menu" || pathname !== '/') ? (
                 <div className="flex items-center gap-6 text-[20px]">
                   <img src="/logos/HTM-LOGO-ICON-01.svg" alt="HTM" className="h-6 w-6 opacity-80" style={{ imageRendering: 'pixelated' }} />
                   <span className="font-mono font-semibold">{timeStr}</span>
                   <span className="text-[#E0E0E0]/50">{dateStr}</span>
                 </div>
               ) : (
-                <img
-                  src="/logos/HTM-LOGOS-FULLWORDMARK.svg"
-                  alt="HandToMouse"
-                  className="h-6 w-auto max-w-[120px]"
-                  style={{
-                    objectFit: "contain",
-                    imageRendering: 'pixelated',
-                    opacity: 0.88,
-                  }}
-                />
+                <div className="flex items-center justify-center" style={{ paddingLeft: '40px' }}>
+                  <img
+                    src="/logos/HTM-LOGOS-FULLWORDMARK-small.svg?v=5"
+                    alt="HandToMouse"
+                    className="opacity-80"
+                    style={{
+                      height: '32px',
+                      width: 'auto',
+                      maxWidth: '160px',
+                      objectFit: "contain",
+                      imageRendering: 'pixelated',
+                    }}
+                  />
+                </div>
               )}
 
               {/* Right: Network + Battery */}
@@ -616,8 +701,8 @@ export default function BlackberryOS5Dashboard() {
             </div>
           )}
 
-          {/* Time Display - BlackBerry OS style (only on home screen) */}
-          {poweredOn && mode === "home" && openApp === null && (
+          {/* Time Display - BlackBerry OS style (only on homepage) */}
+          {poweredOn && mode === "home" && openApp === null && pathname === '/' && (
             <div className="relative z-10 w-full text-white text-center bg-gradient-to-b from-transparent via-black/10 to-transparent">
               {/* Time and Date - Compact */}
               <div className="px-4 py-8 md:py-10">
@@ -903,7 +988,7 @@ function AppContent({ appId }: { appId: string }) {
   // Scrollable container that fills the BB screen (below status bar, above hints)
   return (
     <div
-      className={`absolute left-0 right-0 top-[72px] bottom-[32px] overflow-y-auto bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+      className={`scrollable-content absolute left-0 right-0 top-[72px] bottom-[32px] overflow-y-auto bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
         fadeIn ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -917,19 +1002,37 @@ function AppContent({ appId }: { appId: string }) {
         ) : appId === "notes" ? (
           <NotesContent posts={data} />
         ) : appId === "about" ? (
-          <AboutContent />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryAboutContent />
+          </Suspense>
         ) : appId === "settings" ? (
-          <PlaceholderContent title="Settings" />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberrySettingsContent />
+          </Suspense>
         ) : appId === "contact" ? (
-          <PlaceholderContent title="Contact" />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryContactContent />
+          </Suspense>
         ) : appId === "showreel" ? (
-          <PlaceholderContent title="Showreel" />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryShowreelContent />
+          </Suspense>
         ) : appId === "favourites" ? (
-          <PlaceholderContent title="Favourites" />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryFavouritesContent />
+          </Suspense>
         ) : appId === "games" ? (
-          <PlaceholderContent title="Games" />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryGamesContent />
+          </Suspense>
+        ) : appId === "wormhole" ? (
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryWormholeContent />
+          </Suspense>
         ) : appId === "web" ? (
-          <PlaceholderContent title="Wormhole" />
+          <Suspense fallback={<BBSkeletonCard />}>
+            <BlackberryWebContent />
+          </Suspense>
         ) : appId === "donate" ? (
           <PlaceholderContent title="Donate" />
         ) : (

@@ -1,9 +1,9 @@
 {
   "hero": {
     "title": "HANDTOMOUSE",
-    "headline": "Everyone else's websites were boring, so we built this.",
-    "subline": "Make it work, then make it pretty.",
-    "origin": "Started in lockdown 2020 when every brief was 'make us viral.' We said no. Built systems instead.",
+    "headline": "Independent creative direction and cultural strategy from Sydney.",
+    "subline": "I work where ideas meet culture — finding the small, precise angle no one else has noticed yet. Anyone can make something that looks current; the work is making something that still feels right in five years. That comes from research, reference, and restraint — knowing what to leave out, not just what to put in.",
+    "origin": "I'm not interested in trends or templates. I'm interested in ideas with backbone — things that stick because they mean something.",
     "badges": ["Est. 2020", "Sydney (AET)", "2–4 per project"],
     "principles": [
       { "icon": "⚙️", "text": "Great systems → great work" },
@@ -87,5 +87,10 @@
     "email": "hello@handtomouse.com",
     "status": "3 slots for Dec 2025",
     "responseTime": "Reply within 24h (usually 4h)"
+  },
+  "now": {
+    "lastUpdated": "Dec 2024",
+    "currentFocus": "E-com refresh for Jac+Jack, S'WICH expansion strategy",
+    "status": "Taking Dec 2025 bookings"
   }
 }

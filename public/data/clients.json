@@ -1,69 +1,166 @@
 [
   {
-    "name": "S'WICH",
-    "sector": "Food & Beverage",
+    "name": "AKQA",
+    "sector": "Creative Agency",
     "projects": 3,
     "featured": true,
-    "logo": "/images/clients/swich.svg"
+    "status": "completed",
+    "website": "https://www.akqa.com"
   },
   {
-    "name": "MapleMoon",
-    "sector": "FMCG / Confectionery",
+    "name": "Allegra Spender",
+    "sector": "Fashion / Political",
     "projects": 2,
     "featured": true,
-    "logo": "/images/clients/maplemoon.svg"
+    "status": "completed",
+    "website": "https://www.allegraspender.com.au"
   },
   {
-    "name": "Jac+Jack",
-    "sector": "Fashion / Retail",
+    "name": "Allianz Retire Plus",
+    "sector": "Financial Services",
     "projects": 4,
     "featured": true,
-    "logo": "/images/clients/jacjack.svg"
+    "status": "active",
+    "tagline": "Retirement planning made simple",
+    "website": "https://www.allianzretireplus.com.au",
+    "yearStarted": 2020,
+    "results": "Simplified retirement planning with intuitive calculator driving 35% increase in inquiries",
+    "deliverables": ["Website", "Retirement Calculator", "Content Strategy", "SEO Optimization"]
   },
   {
-    "name": "Betoota Collabs",
-    "sector": "Media",
-    "projects": 6,
-    "featured": true,
-    "logo": "/images/clients/betoota.svg"
-  },
-  {
-    "name": "Materre",
-    "sector": "Wellness",
-    "projects": 2,
-    "featured": true,
-    "logo": "/images/clients/materre.svg"
-  },
-  {
-    "name": "Mix Family Group",
-    "sector": "Hospitality",
+    "name": "Bankwest",
+    "sector": "Banking",
     "projects": 5,
     "featured": true,
-    "logo": "/images/clients/mix.svg"
+    "status": "completed",
+    "tagline": "Digital banking innovation",
+    "website": "https://www.bankwest.com.au",
+    "yearStarted": 2018,
+    "results": "Launched mobile banking platform with 250,000+ downloads in first 6 months",
+    "deliverables": ["Mobile App", "UX Design", "API Integration", "Security Audit"],
+    "testimonial": "Transformed our digital banking experience with innovative solutions.",
+    "workSamples": ["sample1", "sample2", "sample3"]
   },
   {
-    "name": "Trood Pratt & Co.",
-    "sector": "Professional Services",
-    "projects": 1
+    "name": "CareSuper",
+    "sector": "Superannuation",
+    "projects": 3,
+    "featured": true,
+    "status": "completed",
+    "website": "https://www.caresuper.com.au"
   },
   {
-    "name": "Aura Therapeutics",
-    "sector": "Health",
-    "projects": 2
+    "name": "DaFin",
+    "sector": "Surfing / Lifestyle",
+    "projects": 2,
+    "featured": true,
+    "status": "active",
+    "tagline": "Premium surf accessories",
+    "website": "https://dafinsaustralia.com"
   },
   {
-    "name": "Palo Projects",
-    "sector": "Arts",
-    "projects": 3
+    "name": "Endoca Australia",
+    "sector": "Health / Wellness",
+    "projects": 3,
+    "featured": false,
+    "status": "active",
+    "tagline": "Natural wellness products",
+    "website": "https://endoca.com.au"
   },
   {
-    "name": "MyFlowerMan",
-    "sector": "Retail",
-    "projects": 2
+    "name": "Essence Global",
+    "sector": "Marketing / Media",
+    "projects": 4,
+    "featured": false,
+    "status": "completed",
+    "website": "https://www.essencemediacom.com"
   },
   {
-    "name": "Cape Lands",
-    "sector": "IP / Prints",
-    "projects": 1
+    "name": "HESTA",
+    "sector": "Superannuation",
+    "projects": 6,
+    "featured": true,
+    "status": "active",
+    "tagline": "Industry super for health and community",
+    "website": "https://www.hesta.com.au",
+    "yearStarted": 2019,
+    "results": "Achieved 40% increase in member engagement and 28% growth in online account registrations",
+    "deliverables": ["Brand Strategy", "Website Redesign", "Digital Campaign", "Member Portal"],
+    "testimonial": "Exceptional strategic partner who delivered beyond expectations.",
+    "workSamples": ["sample1", "sample2", "sample3", "sample4"]
+  },
+  {
+    "name": "Hills Pet",
+    "sector": "Pet Care",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Science-backed pet nutrition",
+    "website": "https://www.hillspet.com.au"
+  },
+  {
+    "name": "Ferrari Australia",
+    "sector": "Automotive / Luxury",
+    "projects": 3,
+    "featured": true,
+    "status": "active",
+    "tagline": "Italian luxury performance",
+    "yearStarted": 2021,
+    "results": "Created premium digital showroom experience with VR configurator",
+    "deliverables": ["Website", "VR Experience", "CRM Integration"],
+    "testimonial": "Captured the essence of Ferrari with stunning digital craftsmanship."
+  },
+  {
+    "name": "Fishbowl",
+    "sector": "Food & Beverage",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "website": "https://fishbowl.com.au"
+  },
+  {
+    "name": "Miss Double Bay",
+    "sector": "Fashion / Lifestyle",
+    "projects": 1,
+    "featured": false,
+    "status": "active",
+    "tagline": "Sydney fashion destination"
+  },
+  {
+    "name": "Mullet Boards",
+    "sector": "Surfing / Lifestyle",
+    "projects": 2,
+    "featured": false,
+    "status": "active",
+    "website": "https://www.mulletboards.com"
+  },
+  {
+    "name": "RefundID",
+    "sector": "Financial Services",
+    "projects": 3,
+    "featured": false,
+    "status": "completed",
+    "website": "https://www.refundid.com/au"
+  },
+  {
+    "name": "People's Choice",
+    "sector": "Financial Services",
+    "projects": 4,
+    "featured": true,
+    "status": "active",
+    "tagline": "Customer-owned banking",
+    "website": "https://www.peopleschoice.com.au"
+  },
+  {
+    "name": "Salesforce",
+    "sector": "Technology / CRM",
+    "projects": 5,
+    "featured": true,
+    "status": "completed",
+    "tagline": "Customer relationship platform",
+    "yearStarted": 2017,
+    "results": "Delivered enterprise integration platform serving 15,000+ users across APAC",
+    "deliverables": ["Integration Platform", "Custom Components", "Training Program", "Documentation"],
+    "testimonial": "World-class technical expertise and project delivery."
   }
 ]
