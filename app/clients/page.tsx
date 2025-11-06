@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
@@ -49,7 +49,7 @@ interface Client {
   projectTitles?: string[];
 }
 
-export default function ClientsPage() {
+function ClientsPageContent() {
   const searchParams = useSearchParams();
 
   // Core state
@@ -796,5 +796,18 @@ export default function ClientsPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+// Wrapper component with Suspense boundary for useSearchParams
+export default function ClientsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0b0b0b] flex items-center justify-center">
+        <div className="text-[#F4A259] text-xl">Loading clients...</div>
+      </div>
+    }>
+      <ClientsPageContent />
+    </Suspense>
   );
 }
