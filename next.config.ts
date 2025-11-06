@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+  // Disable static optimization for pages using useSearchParams
+  output: 'standalone',
 };
 
 export default nextConfig;
