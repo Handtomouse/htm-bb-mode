@@ -552,7 +552,15 @@ export default function WormholePage() {
   // Particle burst on speed change (#12)
   useEffect(() => {
     const createBurst = () => {
-      const newParticles = [];
+      const newParticles: Array<{
+        id: number;
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        life: number;
+        color: string;
+      }> = [];
       const particleCount = isHyperhyperspace ? 60 : (ludicrousSpeed ? 40 : 25);
       const baseId = Date.now();
 
