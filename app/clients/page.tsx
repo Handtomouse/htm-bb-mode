@@ -4,6 +4,9 @@ import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
+// Force dynamic rendering to avoid prerendering issues with useSearchParams
+export const dynamic = 'force-dynamic';
+
 // Constants
 const SCROLL_THRESHOLD = 100;
 const MAX_PROJECTS_FOR_SCALE = 10;
