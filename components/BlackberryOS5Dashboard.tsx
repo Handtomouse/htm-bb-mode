@@ -994,7 +994,7 @@ function AppContent({ appId }: { appId: string }) {
         fadeIn ? "opacity-100" : "opacity-0"
       } ${isFullscreen ? "" : "bg-black/40 backdrop-blur-sm"}`}
     >
-      <div className={appId === "wormhole" ? "" : "p-4"}>
+      <div className={appId === "wormhole" || appId === "about" ? "" : "p-4"}>
         {loading ? (
           <div className="text-white/60 text-sm">Loading...</div>
         ) : appId === "portfolio" ? (

@@ -467,6 +467,7 @@ export default function BlackberryAboutContent() {
           <div
             className="sticky top-0 h-screen flex flex-col items-center justify-center text-center gap-20 md:gap-24 lg:gap-32"
             style={{
+              marginTop: '-72px',
               opacity: heroOpacity,
               transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
               transition: 'opacity 0.3s ease, transform 0.3s ease',

@@ -161,12 +161,12 @@ export default function WormholePage() {
   const [showStats, setShowStats] = useState(false);
   const [konamiSequence, setKonamiSequence] = useState<string[]>([]);
   const [konamiActive, setKonamiActive] = useState(false);
-  const [starDensity, setStarDensity] = useState(200);
+  const [starDensity, setStarDensity] = useState(150);
   const [showWhiteFlash, setShowWhiteFlash] = useState(false);
   const [mouseTrail, setMouseTrail] = useState<{x: number, y: number, id: number, timestamp: number}[]>([]);
   const [isHyperhyperspace, setIsHyperhyperspace] = useState(false);
-  const [screenShake, setScreenShake] = useState({x: 0, y: 0});
   const [selectedCategory, setSelectedCategory] = useState<'interactive' | 'games' | 'weirdFun' | 'music' | 'educational' | 'retro' | 'all'>('all');
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   // Particle burst state (#12)
   const [burstParticles, setBurstParticles] = useState<Array<{
@@ -295,30 +295,44 @@ export default function WormholePage() {
     });
     setStars(initialStars);
 
-    // Initialize shimmer particles
-    const initialShimmers: Shimmer[] = Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-      y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      size: Math.random() * 3 + 1,
-      opacity: Math.random() * 0.4 + 0.1,
-      hue: Math.random() * 60 + 30, // Gold to orange range
-    }));
-    setShimmers(initialShimmers);
+    // Load immediately for better performance
+    setIsLoading(false);
 
-    // Simulate loading delay for dramatic effect
-    setTimeout(() => setIsLoading(false), 1500);
+    // Lazy load shimmer particles after initial render for better performance
+    setTimeout(() => {
+      const initialShimmers: Shimmer[] = Array.from({ length: 30 }, (_, i) => ({
+        id: i,
+        x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+        y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 3 + 1,
+        opacity: Math.random() * 0.4 + 0.1,
+        hue: Math.random() * 60 + 30, // Gold to orange range
+      }));
+      setShimmers(initialShimmers);
+    }, 100);
   }, [starDensity]);
 
-  // Animate stars
+  // Animate stars using requestAnimationFrame for better performance
   useEffect(() => {
-    const interval = setInterval(() => {
+    let animationFrameId: number;
+
+    // Calculate base speed once per frame (optimized)
+    const calculateBaseSpeed = () => {
+      if (isHyperhyperspace) return 300;
+      if (ludicrousSpeed) return 150;
+      if (isWarping) return 50;
+      if (konamiActive) return 30;
+      if (boost) return 20;
+      return 2;
+    };
+
+    const animateStars = () => {
+      const baseSpeed = calculateBaseSpeed();
+
       setStars((prevStars) =>
         prevStars.map((star) => {
-          const baseSpeed = isHyperhyperspace ? 300 : (ludicrousSpeed ? 150 : (boost ? 20 : (isWarping ? 50 : (konamiActive ? 30 : 2))));
-
           // Apply layer-based speed multipliers for parallax effect
           const layerMultipliers = [0.5, 1, 1.5]; // background slow, mid normal, foreground fast
           const currentSpeed = baseSpeed * layerMultipliers[star.layer] * (konamiActive ? 1.5 : 1);
@@ -341,14 +355,19 @@ export default function WormholePage() {
           return { ...star, z: newZ, speed: currentSpeed, colorPhase: newColorPhase };
         })
       );
-    }, 1000 / 60);
 
-    return () => clearInterval(interval);
+      animationFrameId = requestAnimationFrame(animateStars);
+    };
+
+    animationFrameId = requestAnimationFrame(animateStars);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [isWarping, boost, ludicrousSpeed, konamiActive, isHyperhyperspace]);
 
-  // Animate shimmer particles
+  // Animate shimmer particles using requestAnimationFrame for better performance
   useEffect(() => {
-    const interval = setInterval(() => {
+    let animationFrameId: number;
+
+    const animateShimmers = () => {
       setShimmers((prevShimmers) =>
         prevShimmers.map((shimmer) => {
           let newX = shimmer.x + shimmer.vx;
@@ -389,16 +408,19 @@ export default function WormholePage() {
           };
         })
       );
-    }, 1000 / 60);
 
-    return () => clearInterval(interval);
+      animationFrameId = requestAnimationFrame(animateShimmers);
+    };
+
+    animationFrameId = requestAnimationFrame(animateShimmers);
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Color shift animation
+  // Color shift animation - slowed down for performance
   useEffect(() => {
     const interval = setInterval(() => {
       setColorShift((prev) => (prev + 0.01) % (Math.PI * 2));
-    }, 50);
+    }, 100); // Reduced from 50ms to 100ms
     return () => clearInterval(interval);
   }, []);
 
@@ -442,38 +464,18 @@ export default function WormholePage() {
     };
   }, [isWarping, showExitWarning]);
 
-  // Fade out old mouse trail particles
+  // Fade out old mouse trail particles - disabled during countdown for performance
   useEffect(() => {
+    if (isWarping) return; // Skip cleanup during countdown
+
     const interval = setInterval(() => {
       const now = Date.now();
       setMouseTrail(prev => prev.filter(particle => now - particle.timestamp < 1000));
     }, 50);
     return () => clearInterval(interval);
-  }, []);
+  }, [isWarping]);
 
-  // Variable camera shake intensity based on speed (#14)
-  useEffect(() => {
-    if (!isWarping && !ludicrousSpeed && !isHyperhyperspace) {
-      setScreenShake({x: 0, y: 0});
-      return;
-    }
-
-    // Variable intensity based on speed mode
-    const intensity = isHyperhyperspace ? 12 : (ludicrousSpeed ? 6 : 3);
-    const frequency = isHyperhyperspace ? 40 : (ludicrousSpeed ? 50 : 60);
-
-    const interval = setInterval(() => {
-      setScreenShake({
-        x: (Math.random() - 0.5) * intensity,
-        y: (Math.random() - 0.5) * intensity,
-      });
-    }, frequency);
-
-    return () => {
-      clearInterval(interval);
-      setScreenShake({x: 0, y: 0});
-    };
-  }, [isWarping, ludicrousSpeed, isHyperhyperspace]);
+  // Screen shake removed - now using pure CSS animation for better performance
 
   // Click to boost & double-tap for ludicrous speed
   useEffect(() => {
@@ -590,24 +592,33 @@ export default function WormholePage() {
     }
   }, [isWarping, ludicrousSpeed, isHyperhyperspace]);
 
-  // Animate burst particles
+  // Animate burst particles using requestAnimationFrame for better performance
   useEffect(() => {
     if (burstParticles.length === 0) return;
 
-    const interval = setInterval(() => {
-      setBurstParticles(prev =>
-        prev
+    let animationFrameId: number;
+
+    const animateParticles = () => {
+      setBurstParticles(prev => {
+        const updated = prev
           .map(p => ({
             ...p,
             x: p.x + p.vx,
             y: p.y + p.vy,
             life: p.life - 0.02
           }))
-          .filter(p => p.life > 0)
-      );
-    }, 16);
+          .filter(p => p.life > 0);
 
-    return () => clearInterval(interval);
+        if (updated.length > 0) {
+          animationFrameId = requestAnimationFrame(animateParticles);
+        }
+
+        return updated;
+      });
+    };
+
+    animationFrameId = requestAnimationFrame(animateParticles);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [burstParticles.length]);
 
   // Get random destination (respecting category filters)
@@ -739,22 +750,34 @@ export default function WormholePage() {
         if (prev <= 1) {
           clearInterval(countdownInterval);
 
-          // Enter hyperhyperspace mode
-          setIsHyperhyperspace(true);
+          // Smooth async animation sequence
+          (async () => {
+            // Enter hyperhyperspace mode
+            setIsHyperhyperspace(true);
 
-          // After 2.5s of hyperhyperspace, trigger white flash
-          setTimeout(() => {
+            // Wait 2s of hyperhyperspace
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Crossfade transition (300ms)
             setIsHyperhyperspace(false);
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // White flash with fade-out
             setShowWhiteFlash(true);
 
-            // After 1 second of white flash, navigate
-            setTimeout(() => {
-              const newCount = journeyCount + 1;
-              setJourneyCount(newCount);
-              localStorage.setItem("wormhole_journeys", newCount.toString());
-              window.location.href = destination.url;
-            }, 1000);
-          }, 2500);
+            // Wait 800ms for white flash animation
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Final fade-out before navigation (200ms)
+            setIsFadingOut(true);
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            // Update journey count and navigate
+            const newCount = journeyCount + 1;
+            setJourneyCount(newCount);
+            localStorage.setItem("wormhole_journeys", newCount.toString());
+            window.location.href = destination.url;
+          })();
 
           return 0;
         }
@@ -788,9 +811,6 @@ export default function WormholePage() {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  // Calculate chromatic aberration intensity based on speed
-  const chromaticIntensity = isHyperhyperspace ? 8 : (ludicrousSpeed ? 4 : (isWarping ? 2 : 0));
-
   // Calculate border glow based on speed
   const getBorderGlow = () => {
     if (isHyperhyperspace) {
@@ -807,35 +827,42 @@ export default function WormholePage() {
 
   return (
     <div
-      className="fixed inset-0 bg-black overflow-hidden"
+      className="fixed inset-0 overflow-hidden"
       style={{
-        transform: `translate(${screenShake.x}px, ${screenShake.y}px)`,
-        transition: isHyperhyperspace ? 'none' : 'transform 0.3s ease',
-        filter: chromaticIntensity > 0 ? `drop-shadow(${chromaticIntensity}px 0 0 rgba(255,0,0,0.5)) drop-shadow(-${chromaticIntensity}px 0 0 rgba(0,255,255,0.5))` : 'none',
+        background: "var(--bg)",
+        transition: 'opacity 0.2s ease',
         boxShadow: getBorderGlow(),
-        animation: (isWarping || ludicrousSpeed || isHyperhyperspace) ? 'border-pulse 0.5s ease-in-out infinite' : 'none'
+        animation: isHyperhyperspace ? 'screen-shake 0.1s infinite, border-pulse 0.5s ease-in-out infinite' : ((isWarping || ludicrousSpeed) ? 'border-pulse 0.5s ease-in-out infinite' : 'none'),
+        opacity: isFadingOut ? 0 : 1
       }}
     >
       {/* Loading Screen */}
       {isLoading && (
-        <div className="absolute inset-0 bg-black flex items-center justify-center z-[100] animate-luxury-fade-in">
+        <div className="absolute inset-0 flex items-center justify-center z-[100] animate-luxury-fade-in" style={{ background: "var(--bg)" }}>
           <div className="text-center">
             <div className="mb-8">
               <div className="text-7xl animate-luxury-pulse" style={{
-                color: "#D4AF37",
-                textShadow: "0 0 40px rgba(212, 175, 55, 0.6), 0 0 80px rgba(212, 175, 55, 0.4)",
-                filter: "drop-shadow(0 0 40px rgba(212, 175, 55, 0.6))"
+                color: "var(--accent)",
+                textShadow: "0 0 40px rgba(255, 157, 35, 0.6), 0 0 80px rgba(255, 157, 35, 0.4)",
+                filter: "drop-shadow(0 0 40px rgba(255, 157, 35, 0.6))"
               }}>
                 ✦
               </div>
             </div>
-            <p className="text-white/80 text-xl mb-3" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em" }}>
+            <p style={{
+              fontFamily: "var(--font-sans)",
+              letterSpacing: "0.08em",
+              color: "var(--ink)",
+              opacity: 0.8,
+              fontSize: "1.25rem",
+              marginBottom: "0.75rem"
+            }}>
               Calibrating wormhole...
             </p>
             <div className="flex items-center justify-center gap-2">
-              <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse" style={{ animationDelay: "0s" }}></div>
-              <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></div>
-              <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0s" }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0.2s" }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0.4s" }}></div>
             </div>
           </div>
         </div>
@@ -1010,7 +1037,8 @@ export default function WormholePage() {
         }}
       />
 
-      {/* Mouse Trail Particles */}
+      {/* Mouse Trail Particles - hidden during countdown for performance */}
+      {!isWarping && (
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {mouseTrail.map((particle) => {
           const age = Date.now() - particle.timestamp;
@@ -1035,8 +1063,10 @@ export default function WormholePage() {
           );
         })}
       </div>
+      )}
 
-      {/* Shimmer Particle Layer */}
+      {/* Shimmer Particle Layer - hidden during countdown for performance */}
+      {!isWarping && (
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {shimmers.map((shimmer) => (
           <div
@@ -1055,6 +1085,7 @@ export default function WormholePage() {
           />
         ))}
       </div>
+      )}
 
       {/* Starfield */}
       <div
@@ -1065,8 +1096,8 @@ export default function WormholePage() {
         }}
       >
         <svg width="100%" height="100%" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-          {/* Constellation lines connecting nearby stars */}
-          {stars.map((star, i) => {
+          {/* Constellation lines connecting nearby stars - disabled during countdown for performance */}
+          {!isWarping && stars.map((star, i) => {
             const perspective = 1000;
             const scale = perspective / (perspective + star.z);
             const x = star.x * scale + (typeof window !== 'undefined' ? window.innerWidth / 2 : 500);
@@ -1109,8 +1140,8 @@ export default function WormholePage() {
             });
           })}
 
-          {/* Stars */}
-          {stars.map((star) => {
+          {/* Stars - show every other star during countdown for performance */}
+          {stars.filter((star, i) => !isWarping || i % 2 === 0).map((star) => {
             const perspective = 1000;
             const scale = perspective / (perspective + star.z);
             const x = star.x * scale + (typeof window !== 'undefined' ? window.innerWidth / 2 : 500);
@@ -1188,22 +1219,21 @@ export default function WormholePage() {
         </svg>
       </div>
 
-      {/* Lens Flare Effect */}
+      {/* Lens Flare Effect - simplified for performance */}
       {isWarping && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="relative animate-lens-flare-rotate">
-            {/* Center bright core */}
+          <div className="relative animate-lens-flare-rotate" style={{ willChange: 'transform' }}>
+            {/* Center bright core - blur removed for performance */}
             <div className="absolute" style={{
               width: "120px",
               height: "120px",
               marginLeft: "-60px",
               marginTop: "-60px",
-              background: "radial-gradient(circle, rgba(212, 175, 55, 0.8) 0%, rgba(244, 162, 89, 0.4) 30%, transparent 70%)",
-              filter: "blur(20px)",
+              background: "radial-gradient(circle, rgba(212, 175, 55, 0.6) 0%, rgba(244, 162, 89, 0.3) 30%, transparent 70%)",
             }} />
 
-            {/* Prismatic rays */}
-            {[0, 45, 90, 135].map((angle) => (
+            {/* Prismatic rays - blur removed for performance */}
+            {[0, 90].map((angle) => (
               <div
                 key={angle}
                 className="absolute"
@@ -1212,9 +1242,8 @@ export default function WormholePage() {
                   height: "2px",
                   marginLeft: "-200px",
                   marginTop: "-1px",
-                  background: `linear-gradient(90deg, transparent, rgba(100, 149, 237, 0.6), rgba(212, 175, 55, 0.8), rgba(138, 43, 226, 0.6), transparent)`,
+                  background: `linear-gradient(90deg, transparent, rgba(100, 149, 237, 0.4), rgba(212, 175, 55, 0.6), rgba(138, 43, 226, 0.4), transparent)`,
                   transform: `rotate(${angle}deg)`,
-                  filter: "blur(2px)",
                 }}
               />
             ))}
@@ -1238,10 +1267,10 @@ export default function WormholePage() {
         </div>
       )}
 
-      {/* Radial blur during acceleration (#13) */}
+      {/* Radial blur during acceleration (#13) - reduced for performance */}
       {(isWarping || ludicrousSpeed || isHyperhyperspace) && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          {[...Array(isHyperhyperspace ? 12 : (ludicrousSpeed ? 8 : 5))].map((_, i) => (
+          {[...Array(3)].map((_, i) => (
             <div
               key={i}
               className="absolute"
@@ -1255,17 +1284,18 @@ export default function WormholePage() {
                 animation: 'radial-blur-pulse 2s ease-out infinite',
                 animationDelay: `${i * 0.1}s`,
                 opacity: isHyperhyperspace ? 0.8 : (ludicrousSpeed ? 0.6 : 0.4),
-                filter: `blur(${isHyperhyperspace ? '8px' : (ludicrousSpeed ? '6px' : '4px')})`
+                filter: `blur(${isHyperhyperspace ? '8px' : (ludicrousSpeed ? '6px' : '4px')})`,
+                willChange: 'transform, opacity'
               }}
             />
           ))}
         </div>
       )}
 
-      {/* Luxury Warp Tunnel Rings */}
+      {/* Luxury Warp Tunnel Rings - reduced for performance */}
       {isWarping && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(3)].map((_, i) => (
             <div
               key={i}
               className="absolute rounded-full animate-luxury-warp-ring"
@@ -1277,6 +1307,7 @@ export default function WormholePage() {
                 background: `conic-gradient(from ${i * 60}deg, transparent, rgba(212, 175, 55, 0.3), transparent)`,
                 border: "1px solid rgba(212, 175, 55, 0.2)",
                 boxShadow: `0 0 30px rgba(212, 175, 55, 0.2), inset 0 0 30px rgba(212, 175, 55, 0.1)`,
+                willChange: 'transform, opacity'
               }}
             />
           ))}
@@ -1288,50 +1319,103 @@ export default function WormholePage() {
 
       {/* UI Overlay */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Top Bar */}
-        <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between border-b border-white/5 backdrop-blur-sm bg-black/20" style={{ fontFamily: "var(--font-sans)" }}>
-          <div className="flex items-center gap-4">
-            <span style={{ color: "#D4AF37", fontSize: "1.1rem" }}>✦</span>
-            <span className="text-white/90" style={{ letterSpacing: "0.05em", fontSize: "0.9rem" }}>WORMHOLE</span>
-            <span className="text-white/30">·</span>
-            <span className="text-white/50" style={{ fontSize: "0.85rem", letterSpacing: "0.02em" }}>Journey #{journeyCount + 1}</span>
+        {/* Top Bar - backdrop-blur removed for performance */}
+        <div className="absolute top-0 left-0 right-0 flex items-center justify-between" style={{
+          fontFamily: "var(--font-sans)",
+          borderBottom: "1px solid rgba(255, 157, 35, 0.1)",
+          background: "rgba(11, 11, 11, 0.5)",
+          padding: "var(--space-8) var(--space-10)"
+        }}>
+          <div className="flex items-center" style={{ gap: "var(--space-6)" }}>
+            <span style={{ color: "var(--accent)", fontSize: "1.25rem" }}>✦</span>
+            <span style={{ letterSpacing: "0.05em", fontSize: "1rem", color: "var(--ink)", opacity: 0.9 }}>WORMHOLE</span>
+            <span style={{ color: "var(--muted)", opacity: 0.3 }}>·</span>
+            <span style={{ fontSize: "0.9rem", letterSpacing: "0.02em", color: "var(--muted)" }}>Journey #{journeyCount + 1}</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center" style={{ gap: "var(--space-8)" }}>
             <button
               onClick={() => {
                 setShowCategoryFilter(!showCategoryFilter);
                 playSound('beep');
               }}
-              className="pointer-events-auto flex items-center gap-2 text-white/40 hover:text-[#D4AF37] transition-all px-3 py-1.5 rounded border border-white/10 hover:border-[#D4AF37]/30 backdrop-blur-sm"
+              className="pointer-events-auto flex items-center transition-all backdrop-blur-sm hover:scale-110 active:scale-95"
               title="Category Filters"
-              style={{ fontSize: "1rem" }}
+              style={{
+                fontSize: "1.1rem",
+                color: "var(--muted)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "var(--radius-sm)",
+                padding: "var(--space-3) var(--space-4)",
+                gap: "var(--space-2)",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(255, 157, 35, 0.4)";
+                e.currentTarget.style.background = "rgba(255, 157, 35, 0.1)";
+                e.currentTarget.style.color = "var(--accent)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--muted)";
+              }}
             >
               ⚙️
             </button>
             <button
               onClick={toggleSound}
-              className="pointer-events-auto flex items-center gap-2 text-white/40 hover:text-[#D4AF37] transition-all px-3 py-1.5 rounded border border-white/10 hover:border-[#D4AF37]/30 backdrop-blur-sm"
+              className="pointer-events-auto flex items-center transition-all backdrop-blur-sm hover:scale-110 active:scale-95"
               title={soundEnabled ? "Sound ON" : "Sound OFF"}
-              style={{ fontSize: "1.1rem" }}
+              style={{
+                fontSize: "1.25rem",
+                color: "var(--muted)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "var(--radius-sm)",
+                padding: "var(--space-3) var(--space-4)",
+                gap: "var(--space-2)",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(255, 157, 35, 0.4)";
+                e.currentTarget.style.background = "rgba(255, 157, 35, 0.1)";
+                e.currentTarget.style.color = "var(--accent)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--muted)";
+              }}
             >
               {soundEnabled ? "🔊" : "🔇"}
             </button>
-            <div className="text-white/50" style={{ fontSize: "0.85rem", letterSpacing: "0.08em" }}>
-              <span className={isWarping ? "text-[#D4AF37]" : boost ? "text-[#6495ED]" : "text-white/50"}>{isWarping ? "LIGHTSPEED" : boost ? "ACCELERATED" : "SUBLIGHT"}</span>
-            </div>
           </div>
         </div>
 
         {/* Category Filter Panel */}
         {showCategoryFilter && (
-          <div className="absolute top-20 right-6 bg-black/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-lg p-6 max-w-sm pointer-events-auto animate-luxury-fade-in z-50" style={{ boxShadow: "0 0 40px rgba(212, 175, 55, 0.15)" }}>
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-sm text-[#D4AF37]" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em" }}>Category Filters</h3>
-              <button onClick={() => setShowCategoryFilter(false)} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+          <div className="absolute right-0 backdrop-blur-xl pointer-events-auto animate-luxury-fade-in z-50" style={{
+            background: "rgba(11, 11, 11, 0.95)",
+            border: "1px solid rgba(255, 157, 35, 0.2)",
+            borderRadius: "var(--radius)",
+            boxShadow: "0 0 40px rgba(255, 157, 35, 0.15)",
+            top: "calc(var(--space-8) * 2 + 48px)",
+            marginRight: "var(--space-10)",
+            padding: "var(--space-8)",
+            maxWidth: "420px",
+            width: "100%"
+          }}>
+            <div className="flex items-center justify-between" style={{ marginBottom: "var(--space-6)" }}>
+              <h3 style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em", fontSize: "1rem", color: "var(--accent)" }}>Category Filters</h3>
+              <button onClick={() => setShowCategoryFilter(false)} style={{ color: "var(--muted)", fontSize: "2rem", lineHeight: 1, padding: "var(--space-2)" }}>×</button>
             </div>
-            <div className="space-y-3 mb-6">
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)", marginBottom: "var(--space-8)" }}>
               {Object.entries(enabledCategories).map(([category, enabled]) => (
-                <label key={category} className="flex items-center gap-3 cursor-pointer group">
+                <label key={category} className="flex items-center cursor-pointer group" style={{
+                  gap: "var(--space-4)",
+                  padding: "var(--space-3)",
+                  borderRadius: "var(--radius-sm)",
+                  transition: "background 120ms ease"
+                }}>
                   <input
                     type="checkbox"
                     checked={enabled}
@@ -1341,15 +1425,16 @@ export default function WormholePage() {
                       localStorage.setItem("wormhole_categories", JSON.stringify(newCategories));
                       playSound('beep');
                     }}
-                    className="w-4 h-4 rounded accent-[#D4AF37] cursor-pointer"
+                    className="cursor-pointer"
+                    style={{ accentColor: "var(--accent)", width: "18px", height: "18px" }}
                   />
-                  <span className="text-white/70 group-hover:text-white/90 transition-colors capitalize" style={{ fontFamily: "var(--font-sans)", fontSize: "0.9rem" }}>
+                  <span className="transition-colors capitalize" style={{ fontFamily: "var(--font-sans)", fontSize: "1rem", color: "var(--ink)", opacity: 0.7 }}>
                     {category === 'weirdFun' ? 'Weird & Fun' : category}
                   </span>
                 </label>
               ))}
             </div>
-            <div className="flex gap-3">
+            <div className="flex" style={{ gap: "var(--space-4)" }}>
               <button
                 onClick={() => {
                   const allEnabled = Object.keys(enabledCategories).reduce((acc, cat) => ({ ...acc, [cat]: true }), {});
@@ -1357,8 +1442,16 @@ export default function WormholePage() {
                   localStorage.setItem("wormhole_categories", JSON.stringify(allEnabled));
                   playSound('beep');
                 }}
-                className="flex-1 px-3 py-2 border border-white/20 hover:border-[#D4AF37]/40 text-white/60 hover:text-white text-xs transition-all"
-                style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em" }}
+                className="flex-1 transition-all"
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  letterSpacing: "0.05em",
+                  fontSize: "0.875rem",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  color: "var(--muted)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "var(--space-3) var(--space-4)"
+                }}
               >
                 All
               </button>
@@ -1369,20 +1462,45 @@ export default function WormholePage() {
                   localStorage.setItem("wormhole_categories", JSON.stringify(noneEnabled));
                   playSound('beep');
                 }}
-                className="flex-1 px-3 py-2 border border-white/20 hover:border-red-400/40 text-white/60 hover:text-red-400 text-xs transition-all"
-                style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em" }}
+                className="flex-1 transition-all"
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  letterSpacing: "0.05em",
+                  fontSize: "0.875rem",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  color: "var(--muted)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "var(--space-3) var(--space-4)"
+                }}
               >
                 None
               </button>
             </div>
-            <p className="mt-4 text-white/40 text-xs text-center" style={{ fontFamily: "var(--font-sans)", lineHeight: "1.6" }}>
+            <p className="text-center" style={{
+              fontFamily: "var(--font-sans)",
+              lineHeight: "1.6",
+              marginTop: "var(--space-5)",
+              color: "var(--muted)",
+              opacity: 0.6,
+              fontSize: "0.875rem"
+            }}>
               Select categories for your journey destinations
             </p>
 
             {/* Star Density Slider */}
-            <div className="mt-6 pt-6 border-t border-white/10">
-              <label className="block mb-3">
-                <span className="text-xs text-[#D4AF37] block mb-2" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em" }}>
+            <div style={{
+              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+              marginTop: "var(--space-8)",
+              paddingTop: "var(--space-8)"
+            }}>
+              <label className="block" style={{ marginBottom: "var(--space-5)" }}>
+                <span className="block" style={{
+                  fontFamily: "var(--font-sans)",
+                  letterSpacing: "0.08em",
+                  fontSize: "0.875rem",
+                  color: "var(--accent)",
+                  marginBottom: "var(--space-3)"
+                }}>
                   Star Density: {starDensity}
                 </span>
                 <input
@@ -1395,10 +1513,20 @@ export default function WormholePage() {
                     setStarDensity(parseInt(e.target.value));
                     playSound('beep');
                   }}
-                  className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer slider-gold"
+                  className="w-full appearance-none cursor-pointer slider-gold"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.2)",
+                    borderRadius: "var(--radius-sm)",
+                    height: "6px"
+                  }}
                 />
               </label>
-              <div className="flex justify-between text-[10px] text-white/40 font-mono">
+              <div className="flex justify-between" style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.75rem",
+                color: "var(--muted)",
+                opacity: 0.5
+              }}>
                 <span>Minimal</span>
                 <span>Dense</span>
               </div>
@@ -1409,12 +1537,19 @@ export default function WormholePage() {
         {/* Return to HTM Button */}
         <Link
           href="/"
-          className="absolute top-6 left-6 mt-14 px-5 py-2.5 bg-black/40 backdrop-blur-md border border-white/20 hover:border-[#D4AF37]/40 text-white/60 hover:text-white transition-all pointer-events-auto hover:-translate-x-1"
+          className="absolute backdrop-blur-md transition-all pointer-events-auto hover:-translate-x-1"
           style={{
             fontFamily: "var(--font-sans)",
-            fontSize: "0.8rem",
+            fontSize: "0.875rem",
             letterSpacing: "0.08em",
-            fontWeight: "500"
+            fontWeight: "500",
+            background: "rgba(11, 11, 11, 0.4)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            color: "var(--muted)",
+            borderRadius: "var(--radius-sm)",
+            top: "calc(var(--space-8) * 2 + 48px)",
+            left: "var(--space-10)",
+            padding: "var(--space-4) var(--space-6)"
           }}
         >
           ← RETURN HOME
@@ -1425,7 +1560,10 @@ export default function WormholePage() {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
             <div className="text-center">
               {/* Category Selector */}
-              <div className="mb-12 flex flex-wrap items-center justify-center gap-3">
+              <div className="flex flex-wrap items-center justify-center" style={{
+                gap: "var(--space-4)",
+                marginBottom: "var(--space-16)"
+              }}>
                 {[
                   { key: 'all', emoji: '🌀', label: 'All' },
                   { key: 'interactive', emoji: '🎮', label: 'Interactive' },
@@ -1443,19 +1581,26 @@ export default function WormholePage() {
                         setSelectedCategory(key as typeof selectedCategory);
                         playSound('beep');
                       }}
-                      className={`px-5 py-2.5 rounded-none border-2 backdrop-blur-sm transition-all duration-300 active:scale-95 ${
+                      className={`backdrop-blur-sm transition-all duration-300 active:scale-95 ${
                         isSelected
-                          ? 'bg-gradient-to-b from-white/20 to-white/15 border-[#ff9d23] text-white'
-                          : 'bg-gradient-to-b from-white/8 to-white/5 border-white/20 text-white/40 hover:border-white/30 hover:from-white/10 hover:to-white/7 hover:scale-105 hover:text-white/60'
+                          ? ''
+                          : 'hover:scale-105'
                       }`}
                       style={{
                         fontFamily: "var(--font-heading)",
-                        fontSize: "0.85rem",
+                        fontSize: "0.95rem",
                         letterSpacing: "0.02em",
                         fontWeight: isSelected ? "600" : "500",
+                        borderRadius: "0",
+                        border: isSelected ? "2px solid var(--accent)" : "2px solid rgba(255, 255, 255, 0.2)",
+                        background: isSelected
+                          ? "linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15))"
+                          : "linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.05))",
+                        color: isSelected ? "var(--ink)" : "var(--muted)",
                         boxShadow: isSelected
                           ? "0 0 0 2px rgba(255,157,35,0.3), 0 0 16px rgba(255,157,35,0.4), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)"
-                          : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
+                          : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)",
+                        padding: "var(--space-4) var(--space-6)"
                       }}
                     >
                       <span
@@ -1475,21 +1620,39 @@ export default function WormholePage() {
 
               <button
                 onClick={handleWarpButtonClick}
-                className="px-20 py-6 bg-gradient-to-r from-[#D4AF37] to-[#F4A259] text-black hover:shadow-2xl hover:scale-105 active:scale-95 transition-all rounded-xl border-2 border-[#D4AF37]/50 shadow-xl animate-button-pulse"
+                className="hover:shadow-2xl hover:scale-105 active:scale-95 transition-all shadow-xl animate-button-pulse group"
                 style={{
                   fontFamily: "var(--font-sans)",
-                  fontSize: "1.1rem",
+                  fontSize: "1.25rem",
                   letterSpacing: "0.1em",
                   fontWeight: "600",
-                  boxShadow: "0 0 50px rgba(212, 175, 55, 0.5), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
+                  background: "linear-gradient(to right, var(--accent), var(--accent-hover))",
+                  color: "var(--bg)",
+                  borderRadius: "var(--radius)",
+                  border: "2px solid rgba(255, 157, 35, 0.5)",
+                  boxShadow: "0 0 50px rgba(255, 157, 35, 0.5), 0 0 100px rgba(255, 157, 35, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                  padding: "var(--space-8) var(--space-24)"
                 }}
               >
-                ✦ INITIATE WARP SEQUENCE
+                <span className="inline-block group-hover:animate-[emoji-rotate_0.6s_ease-in-out]">✦</span> INITIATE WARP SEQUENCE
               </button>
-              <p className="mt-10 text-white/50 text-sm" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.03em" }}>
+              <p style={{
+                fontFamily: "var(--font-sans)",
+                letterSpacing: "0.03em",
+                color: "var(--muted)",
+                fontSize: "1rem",
+                marginTop: "var(--space-12)"
+              }}>
                 Click anywhere for acceleration
               </p>
-              <p className="mt-2 text-white/30 text-xs font-mono" style={{ letterSpacing: "0.05em" }}>
+              <p style={{
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.05em",
+                color: "var(--muted)",
+                opacity: 0.5,
+                fontSize: "0.875rem",
+                marginTop: "var(--space-3)"
+              }}>
                 SPACE to jump · R to recenter
               </p>
             </div>
@@ -1498,77 +1661,143 @@ export default function WormholePage() {
 
         {/* Exit Warning Modal */}
         {showExitWarning && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto z-50 animate-luxury-fade-in" style={{ backdropFilter: "blur(20px)", backgroundColor: "rgba(0, 0, 0, 0.85)" }}>
-            <div className="max-w-2xl w-full mx-4 bg-black/60 backdrop-blur-xl border border-[#D4AF37]/20 shadow-2xl" style={{ boxShadow: "0 0 60px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(212, 175, 55, 0.1)" }}>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto z-50 animate-luxury-fade-in" style={{
+            backdropFilter: "blur(20px)",
+            backgroundColor: "rgba(11, 11, 11, 0.85)"
+          }}>
+            <div className="w-full backdrop-blur-xl shadow-2xl" style={{
+              background: "rgba(11, 11, 11, 0.6)",
+              border: "1px solid rgba(255, 157, 35, 0.2)",
+              boxShadow: "0 0 60px rgba(255, 157, 35, 0.15), inset 0 1px 0 rgba(255, 157, 35, 0.1)",
+              maxWidth: "480px",
+              margin: "0 var(--space-6)",
+              borderRadius: "var(--radius)"
+            }}>
               {/* Header */}
-              <div className="px-10 pt-10 pb-8 border-b border-[#D4AF37]/10">
+              <div style={{
+                borderBottom: "1px solid rgba(255, 157, 35, 0.1)",
+                padding: "var(--space-6) var(--space-8) var(--space-5)"
+              }}>
                 <div className="text-center">
-                  <div className="text-5xl mb-6" style={{ color: "#D4AF37", textShadow: "0 0 20px rgba(212, 175, 55, 0.3)" }}>✦</div>
-                  <h2 className="font-heading text-3xl mb-2" style={{
-                    background: "linear-gradient(135deg, #D4AF37 0%, #F4A259 50%, #D4AF37 100%)",
+                  <div style={{
+                    fontSize: "2.5rem",
+                    marginBottom: "var(--space-4)",
+                    color: "var(--accent)",
+                    textShadow: "0 0 20px rgba(255, 157, 35, 0.3)"
+                  }}>✦</div>
+                  <h2 style={{
+                    fontFamily: "var(--font-heading)",
+                    fontSize: "1.5rem",
+                    marginBottom: "var(--space-2)",
+                    background: "linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 50%, var(--accent) 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     letterSpacing: "0.02em"
                   }}>
                     Your Journey Awaits
                   </h2>
-                  <p className="text-white/50 text-sm mb-5" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.03em" }}>
+                  <p style={{
+                    fontFamily: "var(--font-sans)",
+                    letterSpacing: "0.03em",
+                    fontSize: "0.875rem",
+                    marginBottom: "var(--space-4)",
+                    color: "var(--muted)"
+                  }}>
                     Step into the unknown
                   </p>
                   <div className="h-px mx-auto" style={{
-                    width: "120px",
-                    background: "linear-gradient(90deg, transparent, #D4AF37, transparent)"
+                    width: "100px",
+                    background: "linear-gradient(90deg, transparent, var(--accent), transparent)"
                   }}></div>
                 </div>
               </div>
 
               {/* Body */}
-              <div className="px-10 py-10">
-                <p className="text-center text-white/90 text-lg mb-12" style={{
+              <div style={{ padding: "var(--space-6) var(--space-8)" }}>
+                <p className="text-center" style={{
                   fontFamily: "var(--font-sans)",
                   letterSpacing: "0.01em",
-                  lineHeight: "2.0"
+                  lineHeight: "1.6",
+                  color: "var(--ink)",
+                  opacity: 0.9,
+                  fontSize: "0.875rem",
+                  marginBottom: "var(--space-8)"
                 }}>
                   You're about to embark on a curated journey through the internet.
                 </p>
 
-                <div className="bg-gradient-to-br from-[#D4AF37]/5 to-transparent border border-[#D4AF37]/10 rounded-lg p-10 mb-12">
-                  <p className="text-white/60 text-xs uppercase tracking-widest mb-4" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.1em" }}>
+                <div style={{
+                  background: "linear-gradient(to bottom right, rgba(255, 157, 35, 0.05), transparent)",
+                  border: "1px solid rgba(255, 157, 35, 0.1)",
+                  borderRadius: "var(--radius)",
+                  padding: "var(--space-5)",
+                  marginBottom: "var(--space-8)"
+                }}>
+                  <p className="uppercase" style={{
+                    fontFamily: "var(--font-sans)",
+                    letterSpacing: "0.1em",
+                    color: "var(--muted)",
+                    fontSize: "0.625rem",
+                    marginBottom: "var(--space-3)"
+                  }}>
                     What to expect
                   </p>
-                  <div className="space-y-6">
-                    <div className="flex items-start gap-3">
-                      <span className="text-[#D4AF37] mt-1">→</span>
-                      <p className="text-white/70 text-base" style={{ fontFamily: "var(--font-sans)", lineHeight: "2.0" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                    <div className="flex items-start" style={{ gap: "var(--space-2)" }}>
+                      <span style={{ color: "var(--accent)", marginTop: "0.125rem", fontSize: "0.875rem" }}>→</span>
+                      <p style={{
+                        fontFamily: "var(--font-sans)",
+                        lineHeight: "1.5",
+                        fontSize: "0.875rem",
+                        color: "var(--ink)",
+                        opacity: 0.7
+                      }}>
                         You'll be transported to an external website beyond our control
                       </p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-[#D4AF37] mt-1">→</span>
-                      <p className="text-white/70 text-base" style={{ fontFamily: "var(--font-sans)", lineHeight: "2.0" }}>
+                    <div className="flex items-start" style={{ gap: "var(--space-2)" }}>
+                      <span style={{ color: "var(--accent)", marginTop: "0.125rem", fontSize: "0.875rem" }}>→</span>
+                      <p style={{
+                        fontFamily: "var(--font-sans)",
+                        lineHeight: "1.5",
+                        fontSize: "0.875rem",
+                        color: "var(--ink)",
+                        opacity: 0.7
+                      }}>
                         Each destination is handpicked and unique
                       </p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-[#D4AF37] mt-1">→</span>
-                      <p className="text-white/70 text-base" style={{ fontFamily: "var(--font-sans)", lineHeight: "2.0" }}>
+                    <div className="flex items-start" style={{ gap: "var(--space-2)" }}>
+                      <span style={{ color: "var(--accent)", marginTop: "0.125rem", fontSize: "0.875rem" }}>→</span>
+                      <p style={{
+                        fontFamily: "var(--font-sans)",
+                        lineHeight: "1.5",
+                        fontSize: "0.875rem",
+                        color: "var(--ink)",
+                        opacity: 0.7
+                      }}>
                         You may discover something extraordinary, peculiar, or wonderfully unexpected
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <label className="flex items-center gap-3 cursor-pointer justify-center py-6 group">
+                <label className="flex items-center cursor-pointer justify-center group" style={{
+                  gap: "var(--space-2)",
+                  padding: "var(--space-5) 0"
+                }}>
                   <input
                     type="checkbox"
                     checked={acceptedRisk}
                     onChange={(e) => setAcceptedRisk(e.target.checked)}
-                    className="w-5 h-5 rounded accent-[#D4AF37] cursor-pointer"
+                    className="rounded cursor-pointer"
+                    style={{ accentColor: "var(--accent)", width: "20px", height: "20px" }}
                   />
-                  <span className="text-white/60 group-hover:text-white/90 transition-colors" style={{
+                  <span className="transition-colors" style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: "0.95rem",
-                    letterSpacing: "0.01em"
+                    fontSize: "0.875rem",
+                    letterSpacing: "0.01em",
+                    color: "var(--muted)"
                   }}>
                     I'm ready to explore
                   </span>
@@ -1576,18 +1805,25 @@ export default function WormholePage() {
               </div>
 
               {/* Footer */}
-              <div className="px-10 pb-12 flex gap-6">
+              <div className="flex" style={{
+                padding: "0 var(--space-8) var(--space-8)",
+                gap: "var(--space-3)"
+              }}>
                 <button
                   onClick={() => {
                     setShowExitWarning(false);
                     setAcceptedRisk(false);
                   }}
-                  className="flex-1 px-6 py-4 border border-white/20 text-white/60 hover:border-[#D4AF37]/40 hover:text-white transition-all backdrop-blur-sm"
+                  className="flex-1 transition-all backdrop-blur-sm"
                   style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: "0.9rem",
+                    fontSize: "0.8125rem",
                     letterSpacing: "0.05em",
-                    fontWeight: "500"
+                    fontWeight: "500",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    color: "var(--muted)",
+                    borderRadius: "var(--radius-sm)",
+                    padding: "var(--space-3) var(--space-5)"
                   }}
                 >
                   ← RETURN
@@ -1595,24 +1831,34 @@ export default function WormholePage() {
                 <button
                   onClick={handleWarningAccept}
                   disabled={!acceptedRisk}
-                  className={`flex-1 px-6 py-4 transition-all backdrop-blur-sm ${
-                    acceptedRisk
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#F4A259] text-black hover:shadow-lg hover:-translate-y-0.5"
-                      : "bg-white/10 text-white/30 cursor-not-allowed"
-                  }`}
+                  className="flex-1 transition-all backdrop-blur-sm"
                   style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: "0.9rem",
+                    fontSize: "0.8125rem",
                     letterSpacing: "0.05em",
                     fontWeight: "600",
-                    boxShadow: acceptedRisk ? "0 0 30px rgba(212, 175, 55, 0.3)" : "none"
+                    background: acceptedRisk
+                      ? "linear-gradient(to right, var(--accent), var(--accent-hover))"
+                      : "rgba(255, 255, 255, 0.1)",
+                    color: acceptedRisk ? "var(--bg)" : "rgba(255, 255, 255, 0.3)",
+                    cursor: acceptedRisk ? "pointer" : "not-allowed",
+                    boxShadow: acceptedRisk ? "0 0 30px rgba(255, 157, 35, 0.3)" : "none",
+                    borderRadius: "var(--radius-sm)",
+                    padding: "var(--space-3) var(--space-5)"
                   }}
                 >
                   ENTER WORMHOLE →
                 </button>
               </div>
 
-              <p className="pb-6 text-center text-white/40 text-xs" style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.05em" }}>
+              <p className="text-center" style={{
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.05em",
+                paddingBottom: "var(--space-5)",
+                color: "var(--muted)",
+                opacity: 0.4,
+                fontSize: "0.6875rem"
+              }}>
                 ESC to cancel
               </p>
             </div>
@@ -1621,13 +1867,14 @@ export default function WormholePage() {
 
         {/* Luxury Countdown */}
         {isWarping && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ backdropFilter: "blur(12px)", backgroundColor: "rgba(0, 0, 0, 0.4)" }}>
-            <div className="text-center px-8">
-              {/* Destination Preview Emoji Teaser (#10) */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
+            <div className="text-center" style={{ padding: "0 var(--space-10)" }}>
+              {/* Destination Preview Emoji Teaser */}
               {countdown > 0 && currentDestination && (
-                <div className="mb-8 text-8xl animate-flip-in" style={{
-                  filter: "drop-shadow(0 0 30px rgba(212, 175, 55, 0.6))",
-                  animation: "flip-reveal 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+                <div className="text-8xl animate-flip-in" style={{
+                  filter: "drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))",
+                  animation: "flip-reveal 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                  marginBottom: "var(--space-10)"
                 }}>
                   {currentDestination.category === 'interactive' && '🎮'}
                   {currentDestination.category === 'games' && '🎯'}
@@ -1641,50 +1888,50 @@ export default function WormholePage() {
 
               <div
                 key={countdown}
-                className="text-9xl mb-12"
+                className="text-9xl"
                 style={{
                   fontFamily: "var(--font-heading)",
-                  background: "linear-gradient(135deg, #D4AF37 0%, #F4A259 50%, #D4AF37 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  textShadow: `0 0 ${40 + (3 - countdown) * 20}px rgba(212, 175, 55, ${0.6 + (3 - countdown) * 0.1}), 0 0 ${80 + (3 - countdown) * 40}px rgba(212, 175, 55, ${0.4 + (3 - countdown) * 0.1})`,
-                  filter: `drop-shadow(0 0 ${50 + (3 - countdown) * 25}px rgba(212, 175, 55, ${0.5 + (3 - countdown) * 0.15}))`,
+                  color: "var(--accent)",
+                  filter: `drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))`,
                   animation: countdown === 0 ? 'countdown-zero 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)' : 'countdown-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-                  transformOrigin: 'center'
+                  transformOrigin: 'center',
+                  marginBottom: "var(--space-16)",
+                  willChange: 'transform'
                 }}
               >
                 {countdown}
               </div>
               <p
-                className="text-xl mb-8"
+                className="text-xl"
                 style={{
                   fontFamily: "var(--font-sans)",
                   letterSpacing: "0.05em",
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(212, 175, 55, 0.9) 100%)",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 157, 35, 0.9) 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   textShadow: "0 0 30px rgba(255, 255, 255, 0.3)",
-                  filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.2))"
+                  filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.2))",
+                  marginBottom: "var(--space-10)"
                 }}
               >
                 {currentMessage}
               </p>
-              <div className="flex items-center justify-center gap-4 mb-8">
-                <div className="h-px w-16 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-[#D4AF37]"></div>
-                <p className="text-base text-[#D4AF37]/90" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.06em", fontWeight: "500" }}>
+              <div className="flex items-center justify-center" style={{ gap: "var(--space-5)", marginBottom: "var(--space-10)" }}>
+                <div className="h-px w-16 bg-gradient-to-r from-transparent via-[var(--accent)]/50 to-[var(--accent)]"></div>
+                <p className="text-base" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.06em", fontWeight: "500", color: "var(--accent)", opacity: 0.9 }}>
                   {currentHint}
                 </p>
-                <div className="h-px w-16 bg-gradient-to-l from-transparent via-[#D4AF37]/50 to-[#D4AF37]"></div>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent via-[var(--accent)]/50 to-[var(--accent)]"></div>
               </div>
 
               {/* Destination Preview Card */}
               {currentDestination && (
-                <div className="mt-6 mx-auto max-w-md bg-black/60 backdrop-blur-md border border-[#D4AF37]/20 rounded-lg p-5 animate-luxury-fade-in">
+                <div className="mt-6 mx-auto max-w-md bg-black/60 backdrop-blur-md rounded-lg p-5 animate-luxury-fade-in" style={{ border: "1px solid rgba(255, 157, 35, 0.2)" }}>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-white/50 text-xs uppercase tracking-widest" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.1em" }}>
                       Destination
                     </span>
-                    <span className="px-2 py-1 bg-[#D4AF37]/20 text-[#D4AF37] text-xs rounded" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em" }}>
+                    <span className="px-2 py-1 text-xs rounded" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em", background: "rgba(255, 157, 35, 0.2)", color: "var(--accent)" }}>
                       {currentDestination.category}
                     </span>
                   </div>
@@ -1714,12 +1961,13 @@ export default function WormholePage() {
               ENTERING HYPERSPACE...
             </p>
             <div className="w-96 h-2 bg-white/10 rounded-full overflow-hidden" style={{
-              boxShadow: "0 0 20px rgba(212, 175, 55, 0.3)"
+              boxShadow: "0 0 20px rgba(255, 157, 35, 0.3)"
             }}>
               <div
-                className="h-full bg-gradient-to-r from-[#D4AF37] to-white animate-hyperspace-progress"
+                className="h-full bg-gradient-to-r to-white animate-hyperspace-progress"
                 style={{
-                  boxShadow: "0 0 30px rgba(212, 175, 55, 0.8)"
+                  background: "linear-gradient(to right, var(--accent), white)",
+                  boxShadow: "0 0 30px rgba(255, 157, 35, 0.8)"
                 }}
               />
             </div>
@@ -1729,16 +1977,17 @@ export default function WormholePage() {
         {/* Ludicrous Speed Message */}
         {showLudicrousMessage && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[100] animate-luxury-fade-in">
-            <div className="relative px-16 py-12 bg-black/80 backdrop-blur-2xl border-4 border-[#D4AF37] rounded-2xl" style={{
-              boxShadow: "0 0 100px rgba(212, 175, 55, 0.8), 0 0 200px rgba(212, 175, 55, 0.6), inset 0 0 100px rgba(212, 175, 55, 0.2)"
+            <div className="relative px-16 py-12 bg-black/80 backdrop-blur-2xl rounded-2xl" style={{
+              border: "4px solid var(--accent)",
+              boxShadow: "0 0 100px rgba(255, 157, 35, 0.8), 0 0 200px rgba(255, 157, 35, 0.6), inset 0 0 100px rgba(255, 157, 35, 0.2)"
             }}>
               <div className="text-center animate-shake">
                 <p className="font-heading text-8xl mb-4" style={{
-                  background: "linear-gradient(135deg, #D4AF37 0%, #F4A259 50%, #FF0080 100%)",
+                  background: "linear-gradient(135deg, var(--accent) 0%, #F4A259 50%, #FF0080 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
-                  textShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 120px rgba(212, 175, 55, 1)",
-                  filter: "drop-shadow(0 0 80px rgba(212, 175, 55, 1)) drop-shadow(0 0 40px rgba(255, 255, 255, 1))",
+                  textShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 120px rgba(255, 157, 35, 1)",
+                  filter: "drop-shadow(0 0 80px rgba(255, 157, 35, 1)) drop-shadow(0 0 40px rgba(255, 255, 255, 1))",
                   animation: "rainbow 1s linear infinite"
                 }}>
                   LUDICROUS SPEED
@@ -1820,12 +2069,12 @@ export default function WormholePage() {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
             <div className="text-center animate-luxury-fade-in">
               <p className="font-heading text-6xl mb-4" style={{
-                background: "linear-gradient(90deg, #D4AF37, #6495ED, #BA55D3, #40E0D0, #D4AF37)",
+                background: "linear-gradient(90deg, var(--accent), #6495ED, #BA55D3, #40E0D0, var(--accent))",
                 backgroundSize: "400% 100%",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                textShadow: "0 0 80px rgba(212, 175, 55, 1)",
-                filter: "drop-shadow(0 0 80px rgba(212, 175, 55, 1)) drop-shadow(0 0 120px rgba(100, 149, 237, 0.8))",
+                textShadow: "0 0 80px rgba(255, 157, 35, 1)",
+                filter: "drop-shadow(0 0 80px rgba(255, 157, 35, 1)) drop-shadow(0 0 120px rgba(100, 149, 237, 0.8))",
                 animation: "rainbow 1.5s linear infinite"
               }}>
                 ✦ COSMIC MODE ACTIVATED ✦
@@ -1837,8 +2086,13 @@ export default function WormholePage() {
                 {['↑', '↑', '↓', '↓', '←', '→', '←', '→', 'B', 'A'].map((key, i) => (
                   <span
                     key={i}
-                    className="text-[#D4AF37] font-mono text-sm px-2 py-1 border border-[#D4AF37]/40 bg-[#D4AF37]/10"
-                    style={{ animation: `fade-pulse ${0.5 + i * 0.1}s ease-in-out infinite` }}
+                    className="font-mono text-sm px-2 py-1"
+                    style={{
+                      color: "var(--accent)",
+                      border: "1px solid rgba(255, 157, 35, 0.4)",
+                      background: "rgba(255, 157, 35, 0.1)",
+                      animation: `fade-pulse ${0.5 + i * 0.1}s ease-in-out infinite`
+                    }}
                   >
                     {key}
                   </span>
@@ -1849,25 +2103,81 @@ export default function WormholePage() {
         )}
 
         {/* Bottom Bar */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 flex items-center justify-between border-t border-white/5 backdrop-blur-sm bg-black/20" style={{ fontFamily: "var(--font-sans)", fontSize: "0.8rem" }}>
-          <div className="flex items-center gap-5">
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between border-t border-white/5 backdrop-blur-sm bg-black/20" style={{ fontFamily: "var(--font-sans)", fontSize: "0.8rem", padding: "var(--space-8) var(--space-10)" }}>
+          <div className="flex items-center" style={{ gap: "var(--space-8)" }}>
             <span className="text-white/60" style={{ letterSpacing: "0.08em" }}>
-              <span className="text-[#D4AF37]">{journeyCount}</span> {journeyCount === 1 ? "Journey" : "Journeys"}
+              <span style={{ color: "var(--accent)" }}>{journeyCount}</span> {journeyCount === 1 ? "Journey" : "Journeys"}
             </span>
+            <span className="text-white/20">·</span>
+            <div className="flex items-center pointer-events-auto" style={{ gap: "var(--space-4)" }}>
+              <span style={{
+                fontSize: "0.75rem",
+                letterSpacing: "0.1em",
+                fontWeight: "600",
+                color: isHyperhyperspace ? "white" : (ludicrousSpeed ? "var(--accent)" : (isWarping ? "var(--accent)" : (boost ? "#6495ED" : "var(--muted)"))),
+                textShadow: (isHyperhyperspace || ludicrousSpeed || isWarping) ? "0 0 10px currentColor" : "none",
+                transition: "all 0.3s ease"
+              }}>
+                {isHyperhyperspace ? "⚡ HYPER" : (ludicrousSpeed ? "🚀 LUDICROUS" : (isWarping ? "✦ LIGHTSPEED" : (boost ? "→ BOOST" : "⊚ SUBLIGHT")))}
+              </span>
+              <div style={{
+                width: "120px",
+                height: "6px",
+                background: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "3px",
+                overflow: "hidden",
+                position: "relative"
+              }}>
+                <div style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  height: "100%",
+                  width: isHyperhyperspace ? "100%" : (ludicrousSpeed ? "85%" : (isWarping ? "60%" : (boost ? "30%" : "5%"))),
+                  background: isHyperhyperspace ? "linear-gradient(to right, white, var(--accent))" :
+                             (ludicrousSpeed ? "linear-gradient(to right, var(--accent), #F4A259)" :
+                             (isWarping ? "var(--accent)" :
+                             (boost ? "#6495ED" : "var(--muted)"))),
+                  boxShadow: (isHyperhyperspace || ludicrousSpeed || isWarping) ? "0 0 10px currentColor" : "none",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                }}></div>
+              </div>
+            </div>
             {journeyHistory.length > 0 && (
               <>
                 <span className="text-white/20">·</span>
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="pointer-events-auto text-white/50 hover:text-[#D4AF37] transition-colors underline decoration-white/20 hover:decoration-[#D4AF37]/40"
-                  style={{ letterSpacing: "0.05em" }}
+                  className="pointer-events-auto text-white/50 transition-colors underline decoration-white/20"
+                  style={{
+                    letterSpacing: "0.05em"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "var(--accent)";
+                    e.currentTarget.style.textDecorationColor = "rgba(255, 157, 35, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                    e.currentTarget.style.textDecorationColor = "rgba(255, 255, 255, 0.2)";
+                  }}
                 >
                   {showHistory ? "Hide" : "View"} History
                 </button>
                 <span className="text-white/20">·</span>
                 <button
                   onClick={() => setShowStats(!showStats)}
-                  className="pointer-events-auto text-white/50 hover:text-[#D4AF37] transition-colors underline decoration-white/20 hover:decoration-[#D4AF37]/40"
+                  className="pointer-events-auto text-white/50 transition-colors underline decoration-white/20"
+                  style={{
+                    letterSpacing: "0.05em"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "var(--accent)";
+                    e.currentTarget.style.textDecorationColor = "rgba(255, 157, 35, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                    e.currentTarget.style.textDecorationColor = "rgba(255, 255, 255, 0.2)";
+                  }}
                   style={{ letterSpacing: "0.05em" }}
                 >
                   {showStats ? "Hide" : "View"} Stats
@@ -1882,9 +2192,16 @@ export default function WormholePage() {
 
         {/* Journey History Dropdown */}
         {showHistory && journeyHistory.length > 0 && (
-          <div className="absolute bottom-20 left-6 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/20 p-5 max-w-md pointer-events-auto animate-luxury-fade-in" style={{ boxShadow: "0 0 40px rgba(212, 175, 55, 0.15)" }}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm text-[#D4AF37]" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em" }}>Recent Journeys</h3>
+          <div className="absolute bg-black/90 backdrop-blur-xl max-w-md pointer-events-auto animate-luxury-fade-in" style={{
+            border: "1px solid rgba(255, 157, 35, 0.2)",
+            boxShadow: "0 0 40px rgba(255, 157, 35, 0.15)",
+            padding: "var(--space-8)",
+            bottom: "calc(var(--space-8) * 2 + 48px)",
+            left: "var(--space-10)",
+            borderRadius: "var(--radius)"
+          }}>
+            <div className="flex items-center justify-between" style={{ marginBottom: "var(--space-6)" }}>
+              <h3 className="text-sm" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em", color: "var(--accent)" }}>Recent Journeys</h3>
               <button
                 onClick={() => setShowHistory(false)}
                 className="text-white/40 hover:text-white text-xl leading-none"
@@ -1902,13 +2219,23 @@ export default function WormholePage() {
                     href={journey.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-3 border border-white/10 hover:border-[#D4AF37]/50 transition-all bg-white/5 hover:bg-[#D4AF37]/10 backdrop-blur-sm group hover:scale-[1.02] hover:shadow-lg hover:shadow-[#D4AF37]/20"
+                    className="block p-3 border border-white/10 transition-all bg-white/5 backdrop-blur-sm group hover:scale-[1.02]"
                     style={{
                       transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                     }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(255, 157, 35, 0.5)";
+                      e.currentTarget.style.background = "rgba(255, 157, 35, 0.1)";
+                      e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(255, 157, 35, 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-[#D4AF37] group-hover:text-[#F4A259] transition-colors" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em" }}>{journey.hint}</span>
+                      <span className="text-xs transition-colors" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em", color: "var(--accent)" }}>{journey.hint}</span>
                       <span className="font-mono text-[10px] text-white/40 group-hover:text-white/60 transition-colors">
                         {timeAgo < 1 ? 'just now' : `${timeAgo}m ago`}
                       </span>
@@ -1937,9 +2264,16 @@ export default function WormholePage() {
 
         {/* Journey Stats Dashboard */}
         {showStats && journeyHistory.length > 0 && (
-          <div className="absolute bottom-20 right-6 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/20 p-5 w-80 pointer-events-auto animate-luxury-fade-in" style={{ boxShadow: "0 0 40px rgba(212, 175, 55, 0.15)" }}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm text-[#D4AF37]" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em" }}>Journey Analytics</h3>
+          <div className="absolute bg-black/90 backdrop-blur-xl w-80 pointer-events-auto animate-luxury-fade-in" style={{
+            border: "1px solid rgba(255, 157, 35, 0.2)",
+            boxShadow: "0 0 40px rgba(255, 157, 35, 0.15)",
+            padding: "var(--space-8)",
+            bottom: "calc(var(--space-8) * 2 + 48px)",
+            right: "var(--space-10)",
+            borderRadius: "var(--radius)"
+          }}>
+            <div className="flex items-center justify-between" style={{ marginBottom: "var(--space-6)" }}>
+              <h3 className="text-sm" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.08em", color: "var(--accent)" }}>Journey Analytics</h3>
               <button
                 onClick={() => setShowStats(false)}
                 className="text-white/40 hover:text-white text-xl leading-none"
@@ -1952,14 +2286,14 @@ export default function WormholePage() {
               {/* Total Journeys */}
               <div className="flex items-center justify-between p-3 bg-white/5 border border-white/10">
                 <span className="text-xs text-white/60" style={{ letterSpacing: "0.05em" }}>Total Journeys</span>
-                <span className="text-2xl text-[#D4AF37] font-heading">{journeyCount}</span>
+                <span className="text-2xl font-heading" style={{ color: "var(--accent)" }}>{journeyCount}</span>
               </div>
 
               {/* Current Streak */}
               {streak > 0 && (
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-3" style={{ background: "linear-gradient(to right, rgba(255, 157, 35, 0.1), transparent)", border: "1px solid rgba(255, 157, 35, 0.2)" }}>
                   <span className="text-xs text-white/60" style={{ letterSpacing: "0.05em" }}>Current Streak</span>
-                  <span className="text-2xl text-[#D4AF37] font-heading">{streak} 🔥</span>
+                  <span className="text-2xl font-heading" style={{ color: "var(--accent)" }}>{streak} 🔥</span>
                 </div>
               )}
 
@@ -1982,11 +2316,11 @@ export default function WormholePage() {
                       <div className="flex items-center gap-2">
                         <div className="h-1 bg-white/10 w-20 overflow-hidden">
                           <div
-                            className="h-full bg-[#D4AF37]"
-                            style={{ width: `${(count / journeyHistory.length) * 100}%` }}
+                            className="h-full"
+                            style={{ width: `${(count / journeyHistory.length) * 100}%`, background: "var(--accent)" }}
                           />
                         </div>
-                        <span className="text-[10px] text-[#D4AF37] font-mono w-6">{count}</span>
+                        <span className="text-[10px] font-mono w-6" style={{ color: "var(--accent)" }}>{count}</span>
                       </div>
                     </div>
                   ))}
@@ -2077,6 +2411,19 @@ export default function WormholePage() {
           10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
           20%, 40%, 60%, 80% { transform: translateX(10px); }
         }
+        @keyframes screen-shake {
+          0% { transform: translate(0, 0); }
+          10% { transform: translate(-8px, 6px); }
+          20% { transform: translate(6px, -8px); }
+          30% { transform: translate(-6px, -6px); }
+          40% { transform: translate(8px, 8px); }
+          50% { transform: translate(-8px, -6px); }
+          60% { transform: translate(6px, 8px); }
+          70% { transform: translate(-6px, 6px); }
+          80% { transform: translate(8px, -8px); }
+          90% { transform: translate(-8px, 8px); }
+          100% { transform: translate(0, 0); }
+        }
         @keyframes rainbow {
           0% { filter: hue-rotate(0deg); }
           100% { filter: hue-rotate(360deg); }
@@ -2087,22 +2434,27 @@ export default function WormholePage() {
           50% { opacity: 1; }
         }
 
+        @keyframes emoji-rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
         @keyframes white-flash {
           0% { opacity: 0; }
-          30% { opacity: 1; }
-          70% { opacity: 1; }
-          100% { opacity: 1; }
+          20% { opacity: 1; }
+          60% { opacity: 1; }
+          100% { opacity: 0; }
         }
         .animate-white-flash {
-          animation: white-flash 1s ease-in-out forwards;
+          animation: white-flash 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         @keyframes button-pulse {
           0%, 100% {
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.5), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 50px rgba(255, 157, 35, 0.5), 0 0 100px rgba(255, 157, 35, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
           }
           50% {
-            box-shadow: 0 0 80px rgba(212, 175, 55, 0.8), 0 0 150px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 80px rgba(255, 157, 35, 0.8), 0 0 150px rgba(255, 157, 35, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
           }
         }
         .animate-button-pulse {
@@ -2135,6 +2487,16 @@ export default function WormholePage() {
         .animate-lens-flare-rotate {
           animation: lens-flare-rotate 8s linear infinite;
         }
+
+        /* Enhanced focus states for accessibility */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+          outline: 2px solid var(--accent);
+          outline-offset: 2px;
+          border-radius: var(--radius-sm);
+        }
+
         .scrollbar-luxury::-webkit-scrollbar {
           width: 6px;
         }
@@ -2142,11 +2504,11 @@ export default function WormholePage() {
           background: rgba(255, 255, 255, 0.05);
         }
         .scrollbar-luxury::-webkit-scrollbar-thumb {
-          background: rgba(212, 175, 55, 0.3);
+          background: rgba(255, 157, 35, 0.3);
           border-radius: 3px;
         }
         .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
-          background: rgba(212, 175, 55, 0.5);
+          background: rgba(255, 157, 35, 0.5);
         }
 
         /* Slider styling */
