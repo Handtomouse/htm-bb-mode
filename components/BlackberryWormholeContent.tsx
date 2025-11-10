@@ -1244,9 +1244,9 @@ export default function BlackberryWormholeContent() {
 
       {/* Controls */}
       {!isWarping && !isLoading && !showExitWarning && hasSeenWarning && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-8">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-8 gap-8">
           {/* Category Selector */}
-          <div className="flex flex-wrap gap-2 gap-y-2 mb-12 justify-center max-w-full">
+          <div className="flex flex-wrap gap-2 gap-y-3 justify-center max-w-full">
             {(['all', 'interactive', 'games', 'weirdFun', 'music', 'educational', 'retro'] as const).map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -1276,40 +1276,42 @@ export default function BlackberryWormholeContent() {
             })}
           </div>
 
-          {/* Warp Button */}
-          <button
-            onClick={handleWarpButtonClick}
-            className="hover:scale-110 active:scale-95 transition-all group"
-            style={{
+          {/* Warp Button Section */}
+          <div className="flex flex-col items-center gap-4">
+            <button
+              onClick={handleWarpButtonClick}
+              className="hover:scale-110 active:scale-95 transition-all group"
+              style={{
+                fontFamily: "monospace",
+                fontSize: "1.125rem",
+                letterSpacing: "0.1em",
+                fontWeight: "700",
+                background: "linear-gradient(135deg, #ff9d23 0%, #FFB84D 100%)",
+                color: "#0b0b0b",
+                boxShadow: "0 0 40px rgba(255, 157, 35, 0.5)",
+                borderRadius: "12px",
+                padding: "0.75rem 1.5rem",
+                border: "2px solid #ff9d23",
+                animation: "button-pulse 2s ease-in-out infinite"
+              }}
+            >
+              <span className="inline-block group-hover:animate-[emoji-rotate_0.6s_ease-in-out]">✦</span> INITIATE WARP
+            </button>
+
+            <p style={{
               fontFamily: "monospace",
-              fontSize: "1.125rem",
-              letterSpacing: "0.1em",
-              fontWeight: "700",
-              background: "linear-gradient(135deg, #ff9d23 0%, #FFB84D 100%)",
-              color: "#0b0b0b",
-              boxShadow: "0 0 40px rgba(255, 157, 35, 0.5)",
-              borderRadius: "12px",
-              padding: "0.75rem 1.5rem",
-              border: "2px solid #ff9d23",
-              animation: "button-pulse 2s ease-in-out infinite"
-            }}
-          >
-            <span className="inline-block group-hover:animate-[emoji-rotate_0.6s_ease-in-out]">✦</span> INITIATE WARP
-          </button>
+              fontSize: "0.75rem",
+              color: "rgba(255, 255, 255, 0.5)",
+              letterSpacing: "0.05em"
+            }}>
+              PRESS TO ENGAGE HYPERDRIVE
+            </p>
+          </div>
 
-          <p style={{
-            fontFamily: "monospace",
-            fontSize: "0.75rem",
-            color: "rgba(255, 255, 255, 0.5)",
-            marginTop: "1rem",
-            letterSpacing: "0.05em"
-          }}>
-            PRESS TO ENGAGE HYPERDRIVE
-          </p>
-
+          {/* Sound Toggle */}
           <button
             onClick={toggleSound}
-            className="mt-8 transition-all"
+            className="transition-all"
             style={{
               fontFamily: "monospace",
               fontSize: "0.75rem",
