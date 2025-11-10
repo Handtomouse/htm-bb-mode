@@ -1,11 +1,37 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
 const ACCENT = "#ff9d23";
 const ACCENT_HOVER = "#FFB84D";
+
+// FadeSection Component - Handles scroll-based fade in/out
+function FadeSection({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"] // Track from entering to leaving viewport
+  });
+
+  // Fade in when approaching center, fade out when leaving
+  // 0 = section entering viewport bottom
+  // 0.5 = section centered in viewport
+  // 1 = section exiting viewport top
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.5, 0.8, 1],    // Scroll positions
+    [0, 1, 1, 1, 0]            // Opacity: fade in -> hold -> fade out
+  );
+
+  return (
+    <motion.div ref={ref} style={{ opacity }}>
+      {children}
+    </motion.div>
+  );
+}
 
 interface AboutData {
   hero: {
@@ -86,16 +112,19 @@ export default function BlackberryAboutContent() {
   const [aboutParallax, setAboutParallax] = useState(0);
   const [floatingElementsOffset, setFloatingElementsOffset] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [typewriterOpacity, setTypewriterOpacity] = useState(1);
+  const [headlineOpacity, setHeadlineOpacity] = useState(1);
+  const [typewriterScrollProgress, setTypewriterScrollProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Animation completion tracking
   const [typewriterComplete, setTypewriterComplete] = useState(false);
   const [headlineComplete, setHeadlineComplete] = useState(false);
-  const [scrollLocked, setScrollLocked] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
   const lastScrollTop = useRef(0);
   const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 });
   const typewriterRef = useRef<HTMLDivElement>(null);
-  const lockedScrollPosition = useRef<number | null>(null);
 
   useEffect(() => {
     fetch("/data/about.json")
@@ -103,82 +132,51 @@ export default function BlackberryAboutContent() {
       .then((json) => setData(json));
   }, []);
 
-  // Enforce scroll boundary - prevent scrolling past typewriter until animations complete
+  // Detect mobile/touch devices (Fix #1, #3)
   useEffect(() => {
-    const scrollableElement = document.querySelector('.scrollable-content') as HTMLElement;
-    if (!scrollableElement || !typewriterRef.current) return;
-
-    const handleScrollBoundary = () => {
-      // If animations complete, allow all scrolling
-      if (typewriterComplete && headlineComplete) {
-        scrollableElement.style.overflowY = 'auto';
-        lockedScrollPosition.current = null;
-        return;
-      }
-
-      const typewriterRect = typewriterRef.current?.getBoundingClientRect();
-      const scrollableRect = scrollableElement.getBoundingClientRect();
-
-      if (!typewriterRect) return;
-
-      // Calculate if typewriter is approaching or in the viewport
-      const viewportCenter = scrollableRect.top + (scrollableRect.height / 2);
-      const typewriterTop = typewriterRect.top;
-      const typewriterBottom = typewriterRect.bottom;
-
-      // Lock scroll when typewriter top reaches 60% of viewport (before center)
-      // This prevents fast scrolling from bypassing the lock
-      const lockThreshold = scrollableRect.top + (scrollableRect.height * 0.6);
-
-      if (typewriterTop <= lockThreshold && !scrollLocked) {
-        console.log('LOCKING SCROLL at position:', scrollableElement.scrollTop);
-        setScrollLocked(true);
-        lockedScrollPosition.current = scrollableElement.scrollTop;
-        scrollableElement.style.overflowY = 'hidden';
-      }
-
-      // FORCE scroll position back if user somehow scrolls past while locked
-      if (scrollLocked && lockedScrollPosition.current !== null) {
-        const currentScroll = scrollableElement.scrollTop;
-        if (currentScroll !== lockedScrollPosition.current) {
-          console.log('FORCING SCROLL BACK from', currentScroll, 'to', lockedScrollPosition.current);
-          scrollableElement.scrollTop = lockedScrollPosition.current;
-        }
-      }
+    const checkMobile = () => {
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth < 768;
+      setIsMobile(isTouchDevice || isSmallScreen);
     };
 
-    scrollableElement.addEventListener('scroll', handleScrollBoundary, { passive: false });
-    handleScrollBoundary(); // Check immediately
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
-    return () => {
-      scrollableElement.removeEventListener('scroll', handleScrollBoundary);
-    };
-  }, [typewriterComplete, headlineComplete, scrollLocked]);
-
-  // Unlock scroll when both animations complete
+  // Show scroll indicator after typewriter completes
   useEffect(() => {
     if (typewriterComplete && headlineComplete) {
-      const scrollableElement = document.querySelector('.scrollable-content') as HTMLElement;
-      if (scrollableElement) {
-        console.log('UNLOCKING SCROLL - animations complete');
-        scrollableElement.style.overflowY = 'auto';
-        setScrollLocked(false);
-        lockedScrollPosition.current = null;
-      }
+      const timeout = setTimeout(() => {
+        setShowScrollIndicator(true);
+      }, 500);
+      return () => clearTimeout(timeout);
     }
   }, [typewriterComplete, headlineComplete]);
 
-  // Enable scroll snap for smooth section transitions
+  // Enable scroll snap & smooth scroll (Fix #3, #10: desktop only)
   useEffect(() => {
     const scrollableElement = document.querySelector('.scrollable-content') as HTMLElement;
     if (!scrollableElement) return;
 
-    scrollableElement.style.scrollSnapType = 'y mandatory';
+    if (isMobile) {
+      // Mobile: Disable scroll snap (interferes with momentum), remove smooth scroll
+      scrollableElement.style.scrollSnapType = 'none';
+      scrollableElement.style.scrollBehavior = 'auto';
+    } else {
+      // Desktop: Enable proximity snap + smooth scroll for luxurious feel
+      scrollableElement.style.scrollSnapType = 'y proximity';
+      scrollableElement.style.scrollPaddingTop = '80px';
+      scrollableElement.style.scrollBehavior = 'smooth';
+    }
 
     return () => {
       scrollableElement.style.scrollSnapType = '';
+      scrollableElement.style.scrollPaddingTop = '';
+      scrollableElement.style.scrollBehavior = '';
     };
-  }, []);
+  }, [isMobile]);
 
   const handleTypewriterComplete = useCallback(() => {
     setTypewriterComplete(true);
@@ -205,6 +203,72 @@ export default function BlackberryAboutContent() {
       const heroFadeEnd = 800;
       const heroFade = Math.max(0, Math.min(1, 1 - (scrollTop - heroFadeStart) / (heroFadeEnd - heroFadeStart)));
       setHeroOpacity(heroFade);
+
+      // Typewriter scroll progress & fade: Viewport-edge based (Fix #1, #2, #8)
+      if (typewriterRef.current) {
+        const typewriterRect = typewriterRef.current.getBoundingClientRect();
+        const viewportHeight = scrollableElement.clientHeight;
+        const sectionHeight = typewriterRect.height;
+        const typewriterTop = typewriterRect.top;
+        const typewriterBottom = typewriterRect.bottom;
+
+        // Extended scroll range approach: Start when visible, finish in upper third
+        // Start typing: Section top at 90vh (just entering viewport)
+        // Finish typing: Section top reaches 25vh from top (upper third of screen)
+        const readingPosition = viewportHeight * 0.25; // Complete at 25vh from top
+        const startPosition = viewportHeight * 0.9; // Start at 90vh
+        const typingRange = startPosition - readingPosition; // 65vh scroll distance
+        const scrollProgress = (startPosition - typewriterTop) / typingRange;
+        const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
+
+        // Debug logging - always show when section is somewhat on screen
+        if (typewriterBottom > 0 && typewriterTop < viewportHeight) {
+          console.log('📝 Typewriter:', {
+            raw: (scrollProgress * 100).toFixed(0) + '%',
+            clamped: (clampedProgress * 100).toFixed(0) + '%',
+            top: typewriterTop.toFixed(0),
+            readingPos: readingPosition.toFixed(0),
+            range: typingRange.toFixed(0)
+          });
+        }
+
+        setTypewriterScrollProgress(clampedProgress);
+
+        // Responsive fade zones (Fix #8)
+        const fadeInZonePercent = isMobile ? 0.10 : 0.15; // Mobile: 10%, Desktop: 15%
+        const fadeOutZonePercent = isMobile ? 0.20 : 0.30; // Mobile: 20%, Desktop: 30%
+
+        let fadeOpacity = 1;
+
+        // Section completely outside viewport
+        if (typewriterBottom < 0) {
+          fadeOpacity = 0;
+        } else if (typewriterTop > viewportHeight) {
+          fadeOpacity = 0;
+        }
+        // FADE IN: Section bottom entering viewport from below
+        else if (typewriterBottom > viewportHeight * (1 - fadeInZonePercent) && typewriterTop > viewportHeight) {
+          const fadeInZone = viewportHeight * fadeInZonePercent;
+          const fadeInProgress = (viewportHeight - typewriterTop) / fadeInZone;
+          fadeOpacity = Math.max(0, Math.min(1, fadeInProgress));
+        }
+        // FADE OUT: Section top exiting viewport from above
+        else if (typewriterTop < viewportHeight * fadeOutZonePercent && typewriterBottom > 0) {
+          const fadeOutZone = viewportHeight * fadeOutZonePercent;
+          const fadeOutProgress = typewriterTop / fadeOutZone;
+          fadeOpacity = Math.max(0, Math.min(1, fadeOutProgress));
+        }
+        // FULL OPACITY: Section is fully visible in viewport
+        else {
+          fadeOpacity = 1;
+        }
+
+        setTypewriterOpacity(fadeOpacity);
+
+        // Headline opacity: Fade in when typewriter ≥ 80% complete (Fix #7)
+        const headlineFade = clampedProgress >= 0.8 ? Math.min(1, (clampedProgress - 0.8) / 0.15) : 0;
+        setHeadlineOpacity(headlineFade);
+      }
 
       // Parallax: move UP to create separation
       const parallaxOffset = Math.max(scrollTop * -0.2, -20);
@@ -347,10 +411,10 @@ export default function BlackberryAboutContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="relative"
-          style={{ scrollSnapAlign: 'start' }}
+          style={{ scrollSnapAlign: 'center' }}
         >
           <div
-            className="sticky top-0 h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center gap-12"
+            className="sticky top-0 h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center gap-20 md:gap-24 lg:gap-32"
             style={{
               opacity: heroOpacity,
               transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
@@ -379,6 +443,7 @@ export default function BlackberryAboutContent() {
 
             {/* Scroll indicator - HTM icon with pulse */}
             <motion.div
+              className="mt-8 md:mt-12 lg:mt-16"
               animate={{
                 y: [0, 15, 0],
                 opacity: [0.7, 1, 0.7]
@@ -404,46 +469,49 @@ export default function BlackberryAboutContent() {
           </div>
         </motion.div>
 
-        {/* Scroll spacer - creates distance between About and Typewriter */}
-        <div className="h-[50vh]" aria-hidden="true" />
+        {/* Scroll spacer - responsive height (Fix #4) */}
+        <div className="h-[5vh] md:h-[10vh] lg:h-[15vh]" aria-hidden="true" />
 
-        {/* Hero Text Content - Full Height - Luxury Edition */}
+        {/* Hero Text Content - Responsive height (Fix #5) */}
         <section
           ref={typewriterRef}
-          className="relative min-h-screen flex flex-col items-center justify-center space-y-16 md:space-y-20 text-center px-8 md:px-16 lg:px-32"
-          style={{ scrollSnapAlign: 'start' }}
+          className="relative min-h-[70vh] md:min-h-[85vh] lg:min-h-screen flex flex-col items-center justify-center space-y-16 md:space-y-20 text-center px-8 md:px-16 lg:px-32"
+          style={{
+            scrollSnapAlign: isMobile ? 'none' : 'start',
+            scrollSnapStop: isMobile ? 'normal' : 'always',
+            opacity: typewriterOpacity,
+            transition: 'opacity 0.3s ease-out'
+          }}
         >
-          {/* Manifesto with typewriter effect */}
-          <TypewriterManifesto onComplete={handleTypewriterComplete} />
+          {/* Manifesto with scroll-driven typewriter effect */}
+          <TypewriterManifesto
+            onComplete={handleTypewriterComplete}
+            scrollProgress={typewriterScrollProgress}
+          />
 
-          {/* Headline - more subtle, loads after typewriter */}
+          {/* Headline - scroll-driven fade in (Fix #7) */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 3.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            onAnimationComplete={handleHeadlineComplete}
+            animate={{ opacity: headlineOpacity, y: headlineOpacity > 0 ? 0 : 20 }}
+            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            onAnimationComplete={() => headlineOpacity >= 0.99 && handleHeadlineComplete()}
             className="text-[16px] md:text-[20px] lg:text-[24px] text-white/50 leading-[1.8] tracking-wide font-light"
+            style={{
+              transition: 'font-size 0.2s ease-out' // Fix #6: Smooth font size changes
+            }}
           >
             {data.hero.headline}
           </motion.p>
 
-          {/* Elegant thin divider */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            whileInView={{ scaleX: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="w-48 h-px"
-            style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.6) 50%, transparent 100%)',
-              boxShadow: '0 0 8px rgba(255,157,35,0.3)'
-            }}
-          />
+        </section>
 
-          {/* Massive blank dead space */}
-          <div className="h-[50vh] md:h-[70vh] lg:h-[100vh]" aria-hidden="true" />
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
-          {/* Philosophy heading with subtle gradient backdrop - increased gap above */}
+        {/* Philosophy Section */}
+        <FadeSection>
+          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-12 md:space-y-16">
+          {/* Philosophy heading with subtle gradient backdrop */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -504,10 +572,15 @@ export default function BlackberryAboutContent() {
             I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23]/90 font-medium">ideas with backbone</span> — things that stick because they mean something.
             <span className="absolute -right-6 md:-right-12 bottom-0 text-[80px] md:text-[120px] text-[#ff9d23]/20 leading-none">"</span>
           </motion.blockquote>
-        </section>
+          </section>
+        </FadeSection>
+
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Empty Space Reveal Window 1 */}
-        <section className="min-h-screen flex items-center justify-center">
+        <FadeSection>
+          <section className="min-h-screen flex items-center justify-center py-[10vh]">
           <motion.div
             initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
             whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
@@ -519,19 +592,15 @@ export default function BlackberryAboutContent() {
               Built to Last
             </div>
           </motion.div>
-        </section>
+          </section>
+        </FadeSection>
 
-        {/* Gradient Divider */}
-        <motion.div
-          initial={{ scaleX: 0, opacity: 0, filter: 'blur(10px)' }}
-          whileInView={{ scaleX: 1, opacity: 1, filter: 'blur(0px)' }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="h-px bg-gradient-to-r from-transparent via-[#ff9d23]/60 to-transparent my-32 max-w-md mx-auto shadow-[0_0_20px_rgba(255,157,35,0.3)]"
-        />
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Stats Grid - Full Width */}
-        <section className="space-y-12 md:space-y-20 py-20 md:py-32">
+        <FadeSection>
+          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -548,20 +617,16 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={1.0} />
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={1.25} />
           </div>
-        </section>
+          </section>
+        </FadeSection>
 
-        {/* Gradient Divider */}
-        <motion.div
-          initial={{ scaleX: 0, opacity: 0, filter: 'blur(10px)' }}
-          whileInView={{ scaleX: 1, opacity: 1, filter: 'blur(0px)' }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="h-px bg-gradient-to-r from-transparent via-[#ff9d23]/60 to-transparent my-32 max-w-md mx-auto shadow-[0_0_20px_rgba(255,157,35,0.3)]"
-        />
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Beliefs - Full Width Background */}
-        <section className="py-20 md:py-32 -mx-6 md:-mx-12 lg:-mx-20 px-6 md:px-12 lg:px-20 bg-gradient-to-b from-black/[0.01] via-black/[0.02] to-transparent">
-          <div className="max-w-6xl mx-auto space-y-8 md:space-y-12">
+        <FadeSection>
+          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh]">
+          <div className="w-full max-w-6xl mx-auto space-y-8 md:space-y-12">
             <motion.h2
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -576,10 +641,15 @@ export default function BlackberryAboutContent() {
               ))}
             </div>
           </div>
-        </section>
+          </section>
+        </FadeSection>
+
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Services Grid */}
-        <section className="space-y-12 md:space-y-20 py-20 md:py-32">
+        <FadeSection>
+          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -593,19 +663,15 @@ export default function BlackberryAboutContent() {
               <LuxuryServiceCard key={idx} service={service} delay={idx * 0.25} />
             ))}
           </div>
-        </section>
+          </section>
+        </FadeSection>
 
-        {/* Gradient Divider */}
-        <motion.div
-          initial={{ scaleX: 0, opacity: 0, filter: 'blur(10px)' }}
-          whileInView={{ scaleX: 1, opacity: 1, filter: 'blur(0px)' }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="h-px bg-gradient-to-r from-transparent via-[#ff9d23]/60 to-transparent my-32 max-w-md mx-auto shadow-[0_0_20px_rgba(255,157,35,0.3)]"
-        />
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Collapsible Sections */}
-        <section className="space-y-8 md:space-y-12 py-20 md:py-32 max-w-6xl mx-auto">
+        <FadeSection>
+          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-8 md:space-y-12">
           <LuxuryCollapsibleSection
             title="How I Work"
             icon="⚙️"
@@ -766,10 +832,15 @@ export default function BlackberryAboutContent() {
               </div>
             </div>
           </LuxuryCollapsibleSection>
-        </section>
+          </section>
+        </FadeSection>
+
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Now Block - Full Width Accent */}
-        <section className="py-20 md:py-32 -mx-6 md:-mx-12 lg:-mx-20 px-6 md:px-12 lg:px-20 bg-gradient-to-b from-[#ff9d23]/5 to-transparent">
+        <FadeSection>
+          <section className="min-h-screen flex items-center justify-center py-[10vh]">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -783,10 +854,15 @@ export default function BlackberryAboutContent() {
             <p className="text-[18px] md:text-[24px] text-white leading-loose">{data.now.currentFocus}</p>
             <p className="text-[20px] md:text-[28px] text-[#ff9d23] font-bold tracking-wide">{data.now.status}</p>
           </motion.div>
-        </section>
+          </section>
+        </FadeSection>
+
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Empty Space Reveal Window 2 */}
-        <section className="min-h-screen flex items-center justify-center">
+        <FadeSection>
+          <section className="min-h-screen flex items-center justify-center py-[10vh]">
           <motion.div
             initial={{ opacity: 0, y: 40, filter: 'blur(15px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
@@ -801,10 +877,15 @@ export default function BlackberryAboutContent() {
               Execution Second
             </div>
           </motion.div>
-        </section>
+          </section>
+        </FadeSection>
+
+        {/* Spacer */}
+        <div className="h-[20vh]" />
 
         {/* Contact CTA - Full Height */}
-        <section className="min-h-screen flex items-center justify-center py-32">
+        <FadeSection>
+          <section className="min-h-screen flex items-center justify-center py-[10vh]">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -849,48 +930,39 @@ export default function BlackberryAboutContent() {
               GET IN TOUCH →
             </motion.a>
           </motion.div>
-        </section>
+          </section>
+        </FadeSection>
 
-        {/* Spacer for scroll */}
-        <div className="h-32" />
+        {/* Final Spacer */}
+        <div className="h-[20vh]" />
       </div>
     </div>
   );
 }
 
-// Typewriter Manifesto Component
-function TypewriterManifesto({ onComplete }: { onComplete?: () => void }) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [showCursor, setShowCursor] = useState(true);
+// Typewriter Manifesto Component - Scroll-Driven
+function TypewriterManifesto({
+  onComplete,
+  scrollProgress
+}: {
+  onComplete?: () => void;
+  scrollProgress: number; // 0-1
+}) {
   const fullText = "Everyone's chasing new — we chase different.";
 
+  // Calculate character index from scroll progress
+  const charCount = Math.floor(scrollProgress * fullText.length);
+  const displayedText = fullText.slice(0, charCount);
+
+  // Extended cursor visibility (Fix #9): Wider range, less flickering on mobile
+  const showCursor = scrollProgress > 0.001 && scrollProgress < 0.999;
+
+  // Notify completion when fully scrolled through
   useEffect(() => {
-    let currentIndex = 0;
-    const typingSpeed = 60; // milliseconds per character
-
-    const typingInterval = setInterval(() => {
-      if (currentIndex <= fullText.length) {
-        setDisplayedText(fullText.slice(0, currentIndex));
-        currentIndex++;
-      } else {
-        clearInterval(typingInterval);
-        setShowCursor(false);
-        // Notify parent that typing animation is complete
-        onComplete?.();
-      }
-    }, typingSpeed);
-
-    return () => clearInterval(typingInterval);
-  }, [onComplete]);
-
-  // Cursor blink effect
-  useEffect(() => {
-    if (!showCursor) return;
-    const cursorInterval = setInterval(() => {
-      setShowCursor((prev) => !prev);
-    }, 530);
-    return () => clearInterval(cursorInterval);
-  }, [showCursor]);
+    if (scrollProgress >= 0.99 && onComplete) {
+      onComplete();
+    }
+  }, [scrollProgress, onComplete]);
 
   // Split text to apply accent color to "— we chase different."
   const splitIndex = displayedText.indexOf("—");
@@ -905,7 +977,8 @@ function TypewriterManifesto({ onComplete }: { onComplete?: () => void }) {
       className="text-[24px] md:text-[36px] lg:text-[48px] font-medium text-white leading-[1.4] tracking-[0.08em]"
       style={{
         textShadow: '0 1px 2px rgba(255,157,35,0.1)',
-        minHeight: '1.4em' // Prevent layout shift
+        minHeight: '1.4em', // Prevent layout shift
+        transition: 'font-size 0.2s ease-out' // Fix #6: Smooth font size transitions
       }}
     >
       {beforeAccent}
