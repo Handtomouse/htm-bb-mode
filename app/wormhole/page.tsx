@@ -2178,7 +2178,6 @@ export default function WormholePage() {
                     e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
                     e.currentTarget.style.textDecorationColor = "rgba(255, 255, 255, 0.2)";
                   }}
-                  style={{ letterSpacing: "0.05em" }}
                 >
                   {showStats ? "Hide" : "View"} Stats
                 </button>
