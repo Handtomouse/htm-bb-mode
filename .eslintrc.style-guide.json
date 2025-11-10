@@ -1,0 +1,34 @@
+{
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "Literal[value=/\\#F4A259/i]",
+        "message": "Use #ff9d23 instead of #F4A259 for accent color (style guide violation)"
+      },
+      {
+        "selector": "Literal[value=/\\#f4a259/i]",
+        "message": "Use #ff9d23 instead of #f4a259 for accent color (style guide violation)"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.tsx", "*.ts"],
+      "rules": {
+        "@typescript-eslint/naming-convention": [
+          "warn",
+          {
+            "selector": "variable",
+            "modifiers": ["const"],
+            "format": ["camelCase", "UPPER_CASE", "PascalCase"],
+            "custom": {
+              "regex": "^ACCENT$",
+              "match": false
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

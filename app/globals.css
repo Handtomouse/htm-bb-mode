@@ -1,18 +1,89 @@
 @import "tailwindcss";
 
 :root {
+  /* Base Colors */
   --bg: #0b0b0b;
   --panel: #131313;
   --ink: #EDECEC;
   --muted: #9A9A9A;
   --grid: #2A2A2A;
-  --accent: #F4A259;
-  --accent-2: #a92624;
-  --accent-3: #94b039;
+
+  /* Accent Colors (standardized to #ff9d23) */
+  --accent: #ff9d23;           /* Primary brand orange */
+  --accent-hover: #FFB84D;     /* Hover state */
+  --accent-2: #a92624;         /* Secondary accent (red) */
+  --accent-3: #94b039;         /* Tertiary accent (green) */
   --icon: #6b6b6b;
+
+  /* Semantic Colors */
+  --success: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.1);
+  --error: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --warning: #fbbf24;
+  --warning-bg: rgba(251, 191, 36, 0.1);
+  --info: #ff9d23;
+  --info-bg: rgba(255, 157, 35, 0.1);
+
+  /* Border Radius */
   --radius: 16px;
   --radius-dock: 14px;
-  --shadow: 0 0 0 1px rgba(244, 162, 89, 0.2), 0 6px 30px rgba(244, 162, 89, 0.08);
+  --radius-sm: 8px;
+  --radius-none: 0px;
+
+  /* Spacing Scale (4px increments) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Animation Durations */
+  --duration-instant: 120ms;
+  --duration-fast: 300ms;
+  --duration-normal: 600ms;
+  --duration-slow: 1200ms;
+  --duration-dramatic: 1800ms;
+
+  /* Easing Functions */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Line Heights */
+  --lh-tight: 1.2;
+  --lh-normal: 1.6;
+  --lh-relaxed: 1.8;
+
+  /* Letter Spacing */
+  --ls-tight: -0.02em;
+  --ls-normal: 0;
+  --ls-wide: 0.08em;
+
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  --z-tooltip: 60;
+
+  /* Shadows */
+  --shadow: 0 0 0 1px rgba(255, 157, 35, 0.2), 0 6px 30px rgba(255, 157, 35, 0.08);
+  --shadow-glow: 0 0 40px rgba(255, 157, 35, 0.5);
+  --shadow-glow-intense: 0 0 60px rgba(255, 157, 35, 0.8);
+
+  /* Fonts */
   --font-sans: "Halyard Display", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "VT323", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   --font-heading: "Pixelify Sans", ui-sans-serif, system-ui, sans-serif;
