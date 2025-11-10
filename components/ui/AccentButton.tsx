@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { accentButtonHover } from "@/lib/utils/animations";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-interface AccentButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface AccentButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
   variant?: "primary" | "secondary";
   children: React.ReactNode;
 }
@@ -32,7 +31,11 @@ export function AccentButton({
 
   return (
     <motion.button
-      {...accentButtonHover}
+      whileHover={{
+        boxShadow: "0 0 40px rgba(255, 157, 35, 0.8)",
+        scale: 1.05,
+      }}
+      transition={{ duration: 0.3 }}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
       {...props}
     >
