@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## ⚠️ Read First
+
+**Before making any changes**, read these files:
+1. [`PROJECT_CHECKLIST.md`](./PROJECT_CHECKLIST.md) - Always-read checklist (start here!)
+2. [`DEVELOPMENT_RULES.md`](./DEVELOPMENT_RULES.md) - BB-OS architecture constraints
+3. [`STYLE_GUIDE.md`](./STYLE_GUIDE.md) - Complete design system
+
 ## Getting Started
 
 First, run the development server:
