@@ -7,29 +7,85 @@ import Image from "next/image";
 const ACCENT = "#ff9d23";
 const ACCENT_HOVER = "#FFB84D";
 
-// FadeSection Component - Handles scroll-based fade in/out
+// FadeSection Component - Custom scroll-based fade with pixel-perfect control
 function FadeSection({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [opacity, setOpacity] = useState(1);
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"] // Track from entering to leaving viewport
-  });
+  useEffect(() => {
+    let rafId: number | null = null;
+    let ticking = false;
 
-  // Fade in when approaching center, fade out when leaving
-  // 0 = section entering viewport bottom
-  // 0.5 = section centered in viewport
-  // 1 = section exiting viewport top
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.5, 0.8, 1],    // Scroll positions
-    [0, 1, 1, 1, 0]            // Opacity: fade in -> hold -> fade out
-  );
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const updateOpacity = () => {
+      if (!ref.current) return;
+
+      const rect = ref.current.getBoundingClientRect();
+      const sectionTop = rect.top;
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+      const isMobile = viewportWidth < 768;
+
+      // Responsive fade zones: Sections stay visible well past middle (50vh)
+      // MOBILE: Fade IN 100vh→55vh, Visible 55vh→8vh (past middle!), Fade OUT 8vh→5vh
+      // DESKTOP: Fade IN 120vh→60vh, Visible 60vh→8vh (past middle!), Fade OUT 8vh→5vh
+
+      const fadeInStart = isMobile ? viewportHeight * 1.0 : viewportHeight * 1.2;
+      const fadeInEnd = isMobile ? viewportHeight * 0.55 : viewportHeight * 0.6;
+      const fadeOutStart = viewportHeight * 0.08; // Same for both - only fade at extreme top
+      const fadeOutEnd = viewportHeight * 0.05; // Fully faded by 5vh
+
+      let newOpacity = 1;
+
+      // Reduced motion: instant show/hide, no gradual fade
+      if (prefersReducedMotion) {
+        newOpacity = (sectionTop < viewportHeight && rect.bottom > 0) ? 1 : 0;
+      } else {
+        if (sectionTop > fadeInStart) {
+          newOpacity = 0;
+        } else if (sectionTop > fadeInEnd) {
+          const fadeInProgress = (fadeInStart - sectionTop) / (fadeInStart - fadeInEnd);
+          newOpacity = Math.min(1, fadeInProgress);
+        } else if (sectionTop > fadeOutStart) {
+          newOpacity = 1;
+        } else if (sectionTop > fadeOutEnd) {
+          const fadeOutProgress = (sectionTop - fadeOutEnd) / (fadeOutStart - fadeOutEnd);
+          newOpacity = Math.max(0, fadeOutProgress);
+        } else {
+          newOpacity = 0;
+        }
+      }
+
+      setOpacity(newOpacity);
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateOpacity);
+        ticking = true;
+      }
+    };
+
+    updateOpacity(); // Initial check
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
 
   return (
-    <motion.div ref={ref} style={{ opacity }}>
+    <div ref={ref} style={{ opacity, transition: 'opacity 0.1s ease-out' }}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -204,68 +260,63 @@ export default function BlackberryAboutContent() {
       const heroFade = Math.max(0, Math.min(1, 1 - (scrollTop - heroFadeStart) / (heroFadeEnd - heroFadeStart)));
       setHeroOpacity(heroFade);
 
-      // Typewriter scroll progress & fade: Viewport-edge based (Fix #1, #2, #8)
+      // Typewriter scroll progress & fade: PIXEL-BASED (predictable across all screens)
       if (typewriterRef.current) {
         const typewriterRect = typewriterRef.current.getBoundingClientRect();
         const viewportHeight = scrollableElement.clientHeight;
-        const sectionHeight = typewriterRect.height;
         const typewriterTop = typewriterRect.top;
         const typewriterBottom = typewriterRect.bottom;
 
-        // Extended scroll range approach: Start when visible, finish in upper third
-        // Start typing: Section top at 90vh (just entering viewport)
-        // Finish typing: Section top reaches 25vh from top (upper third of screen)
-        const readingPosition = viewportHeight * 0.25; // Complete at 25vh from top
-        const startPosition = viewportHeight * 0.9; // Start at 90vh
-        const typingRange = startPosition - readingPosition; // 65vh scroll distance
-        const scrollProgress = (startPosition - typewriterTop) / typingRange;
-        const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
+        // Calculate section center distance from viewport center (pixel-based)
+        const sectionCenter = typewriterTop + (typewriterRect.height / 2);
+        const viewportCenter = viewportHeight / 2;
+        const distanceFromCenter = sectionCenter - viewportCenter;
 
-        // Debug logging - always show when section is somewhat on screen
-        if (typewriterBottom > 0 && typewriterTop < viewportHeight) {
-          console.log('📝 Typewriter:', {
-            raw: (scrollProgress * 100).toFixed(0) + '%',
-            clamped: (clampedProgress * 100).toFixed(0) + '%',
-            top: typewriterTop.toFixed(0),
-            readingPos: readingPosition.toFixed(0),
-            range: typingRange.toFixed(0)
-          });
+        // TYPING ANIMATION: Based on distance from center (not viewport %)
+        // Starts when section center is 400px below viewport center
+        // Completes when section center is 50px above viewport center (closer to center)
+        // Total range: 450px of scrolling
+        let scrollProgress = 0;
+
+        if (distanceFromCenter > 400) {
+          // Section center more than 400px below viewport center - not started
+          scrollProgress = 0;
+        } else if (distanceFromCenter > -50) {
+          // Section center between 400px below and 50px above center
+          // Progress from 0 to 1 over 450px of scrolling
+          scrollProgress = (400 - distanceFromCenter) / 450;
+        } else {
+          // Section center more than 50px above viewport center - complete
+          scrollProgress = 1;
         }
 
+        const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
         setTypewriterScrollProgress(clampedProgress);
 
-        // Responsive fade zones (Fix #8)
-        const fadeInZonePercent = isMobile ? 0.10 : 0.15; // Mobile: 10%, Desktop: 15%
-        const fadeOutZonePercent = isMobile ? 0.20 : 0.30; // Mobile: 20%, Desktop: 30%
-
+        // FADE OPACITY: Based on absolute pixels from viewport top (not %)
+        // Fades out only when section is within 40px of top edge
         let fadeOpacity = 1;
 
-        // Section completely outside viewport
-        if (typewriterBottom < 0) {
+        if (typewriterTop > viewportHeight) {
+          // Section completely below viewport
           fadeOpacity = 0;
-        } else if (typewriterTop > viewportHeight) {
+        } else if (typewriterBottom < 0) {
+          // Section completely above viewport
           fadeOpacity = 0;
-        }
-        // FADE IN: Section bottom entering viewport from below
-        else if (typewriterBottom > viewportHeight * (1 - fadeInZonePercent) && typewriterTop > viewportHeight) {
-          const fadeInZone = viewportHeight * fadeInZonePercent;
-          const fadeInProgress = (viewportHeight - typewriterTop) / fadeInZone;
-          fadeOpacity = Math.max(0, Math.min(1, fadeInProgress));
-        }
-        // FADE OUT: Section top exiting viewport from above
-        else if (typewriterTop < viewportHeight * fadeOutZonePercent && typewriterBottom > 0) {
-          const fadeOutZone = viewportHeight * fadeOutZonePercent;
-          const fadeOutProgress = typewriterTop / fadeOutZone;
-          fadeOpacity = Math.max(0, Math.min(1, fadeOutProgress));
-        }
-        // FULL OPACITY: Section is fully visible in viewport
-        else {
+        } else if (typewriterTop > viewportHeight - 100) {
+          // Section entering from bottom - fade in over 100px
+          fadeOpacity = (viewportHeight - typewriterTop) / 100;
+        } else if (typewriterTop < 40 && typewriterTop > 0) {
+          // Section within 40px of top - fade out
+          fadeOpacity = typewriterTop / 40;
+        } else {
+          // Section fully visible in viewport
           fadeOpacity = 1;
         }
 
-        setTypewriterOpacity(fadeOpacity);
+        setTypewriterOpacity(Math.max(0, Math.min(1, fadeOpacity)));
 
-        // Headline opacity: Fade in when typewriter ≥ 80% complete (Fix #7)
+        // Headline opacity: Fade in when typewriter ≥ 80% complete
         const headlineFade = clampedProgress >= 0.8 ? Math.min(1, (clampedProgress - 0.8) / 0.15) : 0;
         setHeadlineOpacity(headlineFade);
       }
@@ -404,7 +455,7 @@ export default function BlackberryAboutContent() {
       )}
 
       {/* Main Content */}
-      <div className="w-full px-6 md:px-12 lg:px-20 py-8">
+      <div className="w-full px-6 md:px-12 lg:px-20">
         {/* Hero Section with Sticky Title & Floating Icon */}
         <motion.div
           initial={{ opacity: 0, y: 0 }}
@@ -414,8 +465,10 @@ export default function BlackberryAboutContent() {
           style={{ scrollSnapAlign: 'center' }}
         >
           <div
-            className="sticky top-0 h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center gap-20 md:gap-24 lg:gap-32"
+            className="sticky top-0 h-screen flex flex-col items-center justify-center text-center gap-20 md:gap-24 lg:gap-32"
             style={{
+              marginTop: '-72px',
+              paddingTop: '72px',
               opacity: heroOpacity,
               transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
               transition: 'opacity 0.3s ease, transform 0.3s ease',
@@ -470,7 +523,7 @@ export default function BlackberryAboutContent() {
         </motion.div>
 
         {/* Scroll spacer - responsive height (Fix #4) */}
-        <div className="h-[5vh] md:h-[10vh] lg:h-[15vh]" aria-hidden="true" />
+        <div className="h-[50vh] md:h-[60vh] lg:h-[75vh]" aria-hidden="true" />
 
         {/* Hero Text Content - Responsive height (Fix #5) */}
         <section
@@ -505,12 +558,9 @@ export default function BlackberryAboutContent() {
 
         </section>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Philosophy Section */}
         <FadeSection>
-          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-12 md:space-y-16">
+          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           {/* Philosophy heading with subtle gradient backdrop */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -575,13 +625,10 @@ export default function BlackberryAboutContent() {
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Empty Space Reveal Window 1 */}
         <FadeSection>
-          <section className="min-h-screen flex items-center justify-center py-[10vh]">
-          <motion.div
+          <section className="h-[150vh] flex items-center justify-center">
+            <motion.div
             initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
             whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             viewport={{ once: true, amount: 0.5 }}
@@ -591,16 +638,13 @@ export default function BlackberryAboutContent() {
             <div className="text-[24px] md:text-[32px] lg:text-[40px] text-[#ff9d23]/60 tracking-[0.2em] uppercase">
               Built to Last
             </div>
-          </motion.div>
+            </motion.div>
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Stats Grid - Full Width */}
         <FadeSection>
-          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-12 md:space-y-16">
+          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -620,12 +664,9 @@ export default function BlackberryAboutContent() {
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Beliefs - Full Width Background */}
         <FadeSection>
-          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh]">
+          <section className="h-[150vh] flex flex-col items-center justify-center">
           <div className="w-full max-w-6xl mx-auto space-y-8 md:space-y-12">
             <motion.h2
               initial={{ opacity: 0 }}
@@ -644,12 +685,9 @@ export default function BlackberryAboutContent() {
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Services Grid */}
         <FadeSection>
-          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-12 md:space-y-16">
+          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -666,19 +704,16 @@ export default function BlackberryAboutContent() {
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Collapsible Sections */}
         <FadeSection>
-          <section className="min-h-screen flex flex-col items-center justify-center py-[10vh] space-y-8 md:space-y-12">
-          <LuxuryCollapsibleSection
-            title="How I Work"
-            icon="⚙️"
-            isOpen={openSection === "work"}
-            onToggle={() => setOpenSection(openSection === "work" ? null : "work")}
-          >
-            <div className="space-y-10">
+          <section className="h-[150vh] flex flex-col items-center justify-center space-y-8 md:space-y-12">
+            <LuxuryCollapsibleSection
+              title="How I Work"
+              icon="⚙️"
+              isOpen={openSection === "work"}
+              onToggle={() => setOpenSection(openSection === "work" ? null : "work")}
+            >
+              <div className="space-y-10">
               <div>
                 <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Process</h4>
                 <div className="space-y-6">
@@ -723,16 +758,16 @@ export default function BlackberryAboutContent() {
               <div className="border-t border-white/20 pt-8">
                 <p className="text-[16px] md:text-[20px] text-white/80 leading-loose">{data.setup.line}</p>
               </div>
-            </div>
-          </LuxuryCollapsibleSection>
+              </div>
+            </LuxuryCollapsibleSection>
 
-          <LuxuryCollapsibleSection
-            title="Pricing & Terms"
-            icon="💰"
-            isOpen={openSection === "pricing"}
-            onToggle={() => setOpenSection(openSection === "pricing" ? null : "pricing")}
-          >
-            <div className="space-y-10">
+            <LuxuryCollapsibleSection
+              title="Pricing & Terms"
+              icon="💰"
+              isOpen={openSection === "pricing"}
+              onToggle={() => setOpenSection(openSection === "pricing" ? null : "pricing")}
+            >
+              <div className="space-y-10">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -768,16 +803,16 @@ export default function BlackberryAboutContent() {
               >
                 <p className="text-[18px] md:text-[24px] text-white font-bold leading-relaxed">{data.pricing.guarantee}</p>
               </motion.div>
-            </div>
-          </LuxuryCollapsibleSection>
+              </div>
+            </LuxuryCollapsibleSection>
 
-          <LuxuryCollapsibleSection
-            title="Who I Work With"
-            icon="🤝"
-            isOpen={openSection === "who"}
-            onToggle={() => setOpenSection(openSection === "who" ? null : "who")}
-          >
-            <div className="space-y-10">
+            <LuxuryCollapsibleSection
+              title="Who I Work With"
+              icon="🤝"
+              isOpen={openSection === "who"}
+              onToggle={() => setOpenSection(openSection === "who" ? null : "who")}
+            >
+              <div className="space-y-10">
               <div>
                 <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Best For</h4>
                 <div className="space-y-4">
@@ -830,18 +865,15 @@ export default function BlackberryAboutContent() {
                   ))}
                 </div>
               </div>
-            </div>
-          </LuxuryCollapsibleSection>
+              </div>
+            </LuxuryCollapsibleSection>
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Now Block - Full Width Accent */}
         <FadeSection>
-          <section className="min-h-screen flex items-center justify-center py-[10vh]">
-          <motion.div
+          <section className="h-[150vh] flex items-center justify-center">
+            <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -853,17 +885,14 @@ export default function BlackberryAboutContent() {
             <p className="text-[16px] md:text-[18px] text-white/60 tracking-wide">Last updated: {data.now.lastUpdated}</p>
             <p className="text-[18px] md:text-[24px] text-white leading-loose">{data.now.currentFocus}</p>
             <p className="text-[20px] md:text-[28px] text-[#ff9d23] font-bold tracking-wide">{data.now.status}</p>
-          </motion.div>
+            </motion.div>
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Empty Space Reveal Window 2 */}
         <FadeSection>
-          <section className="min-h-screen flex items-center justify-center py-[10vh]">
-          <motion.div
+          <section className="h-[150vh] flex items-center justify-center">
+            <motion.div
             initial={{ opacity: 0, y: 40, filter: 'blur(15px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, amount: 0.5 }}
@@ -876,17 +905,14 @@ export default function BlackberryAboutContent() {
             <div className="text-[16px] md:text-[20px] text-[#ff9d23]/70 tracking-[0.1em]">
               Execution Second
             </div>
-          </motion.div>
+            </motion.div>
           </section>
         </FadeSection>
 
-        {/* Spacer */}
-        <div className="h-[20vh]" />
-
         {/* Contact CTA - Full Height */}
         <FadeSection>
-          <section className="min-h-screen flex items-center justify-center py-[10vh]">
-          <motion.div
+          <section className="h-[150vh] flex items-center justify-center">
+            <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -929,12 +955,10 @@ export default function BlackberryAboutContent() {
             >
               GET IN TOUCH →
             </motion.a>
-          </motion.div>
+            </motion.div>
           </section>
         </FadeSection>
 
-        {/* Final Spacer */}
-        <div className="h-[20vh]" />
       </div>
     </div>
   );

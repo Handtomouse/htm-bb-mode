@@ -4,9 +4,9 @@ import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMe
 import { useRouter, usePathname } from "next/navigation";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
+import BlackberryAboutContent from "./BlackberryAboutContent";
 
 // Lazy load content components for better performance
-const BlackberryAboutContent = lazy(() => import("./BlackberryAboutContent"));
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
 const BlackberrySettingsContent = lazy(() => import("./BlackberrySettingsContent"));
 const BlackberryShowreelContent = lazy(() => import("./BlackberryShowreelContent"));
@@ -986,13 +986,15 @@ function AppContent({ appId }: { appId: string }) {
   }, [appId]);
 
   // Scrollable container that fills the BB screen (below status bar, above hints)
+  // Wormhole gets full screen (no status bar, no bottom padding)
+  const isFullscreen = appId === "wormhole";
   return (
     <div
-      className={`scrollable-content absolute left-0 right-0 top-[72px] bottom-[32px] overflow-y-auto bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+      className={`scrollable-content absolute left-0 right-0 ${isFullscreen ? "top-0 bottom-0" : "top-[72px] bottom-[32px]"} overflow-y-auto transition-opacity duration-300 ${
         fadeIn ? "opacity-100" : "opacity-0"
-      }`}
+      } ${isFullscreen ? "" : "bg-black/40 backdrop-blur-sm"}`}
     >
-      <div className="p-4">
+      <div className={appId === "wormhole" ? "" : "p-4"}>
         {loading ? (
           <div className="text-white/60 text-sm">Loading...</div>
         ) : appId === "portfolio" ? (
@@ -1002,9 +1004,7 @@ function AppContent({ appId }: { appId: string }) {
         ) : appId === "notes" ? (
           <NotesContent posts={data} />
         ) : appId === "about" ? (
-          <Suspense fallback={<BBSkeletonCard />}>
-            <BlackberryAboutContent />
-          </Suspense>
+          <BlackberryAboutContent />
         ) : appId === "settings" ? (
           <Suspense fallback={<BBSkeletonCard />}>
             <BlackberrySettingsContent />
