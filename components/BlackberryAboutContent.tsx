@@ -495,7 +495,7 @@ export default function BlackberryAboutContent() {
 
             {/* Scroll indicator - HTM icon with pulse */}
             <motion.div
-              className="mt-8 md:mt-12 lg:mt-16"
+              className="mt-20 md:mt-24 lg:mt-32"
               animate={{
                 y: [0, 15, 0],
                 opacity: [0.7, 1, 0.7]
