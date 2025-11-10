@@ -5,13 +5,13 @@ import { useRouter, usePathname } from "next/navigation";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
 import BlackberryAboutContent from "./BlackberryAboutContent";
+import BlackberryWormholeContent from "./BlackberryWormholeContent";
 
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
 const BlackberrySettingsContent = lazy(() => import("./BlackberrySettingsContent"));
 const BlackberryShowreelContent = lazy(() => import("./BlackberryShowreelContent"));
 const BlackberryFavouritesContent = lazy(() => import("./BlackberryFavouritesContent"));
-const BlackberryWormholeContent = lazy(() => import("./BlackberryWormholeContent"));
 const BlackberryGamesContent = lazy(() => import("./BlackberryGamesContent"));
 const BlackberryWebContent = lazy(() => import("./BlackberryWebContent"));
 
@@ -1026,9 +1026,7 @@ function AppContent({ appId }: { appId: string }) {
             <BlackberryGamesContent />
           </Suspense>
         ) : appId === "wormhole" ? (
-          <Suspense fallback={<BBSkeletonCard />}>
-            <BlackberryWormholeContent />
-          </Suspense>
+          <BlackberryWormholeContent />
         ) : appId === "web" ? (
           <Suspense fallback={<BBSkeletonCard />}>
             <BlackberryWebContent />
