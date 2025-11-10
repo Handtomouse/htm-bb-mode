@@ -274,19 +274,19 @@ export default function BlackberryAboutContent() {
 
         // TYPING ANIMATION: Based on distance from center (not viewport %)
         // Starts when section center is 400px below viewport center
-        // Completes when section center is 50px above viewport center (closer to center)
-        // Total range: 450px of scrolling
+        // Completes when section center is 72px below viewport center (accounting for status bar offset)
+        // Total range: 328px of scrolling
         let scrollProgress = 0;
 
         if (distanceFromCenter > 400) {
           // Section center more than 400px below viewport center - not started
           scrollProgress = 0;
-        } else if (distanceFromCenter > -50) {
-          // Section center between 400px below and 50px above center
-          // Progress from 0 to 1 over 450px of scrolling
-          scrollProgress = (400 - distanceFromCenter) / 450;
+        } else if (distanceFromCenter > 72) {
+          // Section center between 400px below and 72px below center
+          // Progress from 0 to 1 over 328px of scrolling
+          scrollProgress = (400 - distanceFromCenter) / 328;
         } else {
-          // Section center more than 50px above viewport center - complete
+          // Section center at 72px below viewport center or higher - complete
           scrollProgress = 1;
         }
 
@@ -467,8 +467,6 @@ export default function BlackberryAboutContent() {
           <div
             className="sticky top-0 h-screen flex flex-col items-center justify-center text-center gap-20 md:gap-24 lg:gap-32"
             style={{
-              marginTop: '-72px',
-              paddingTop: '72px',
               opacity: heroOpacity,
               transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
               transition: 'opacity 0.3s ease, transform 0.3s ease',
