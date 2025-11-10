@@ -38,7 +38,10 @@ export function GlowCard({
 
   return (
     <motion.div
-      {...scrollFade}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
     >
       {children}
