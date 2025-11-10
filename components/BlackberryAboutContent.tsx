@@ -522,7 +522,7 @@ export default function BlackberryAboutContent() {
         </motion.div>
 
         {/* Scroll spacer - responsive height (Fix #4) */}
-        <div className="h-[50vh] md:h-[60vh] lg:h-[75vh]" aria-hidden="true" />
+        <div className="h-[20vh] md:h-[25vh] lg:h-[30vh]" aria-hidden="true" />
 
         {/* Hero Text Content - Responsive height (Fix #5) */}
         <section
