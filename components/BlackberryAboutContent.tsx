@@ -29,11 +29,11 @@ function FadeSection({ children }: { children: React.ReactNode }) {
       const isMobile = viewportWidth < 768;
 
       // Responsive fade zones: Sections stay visible well past middle (50vh)
-      // MOBILE: Fade IN 100vh→55vh, Visible 55vh→8vh (past middle!), Fade OUT 8vh→5vh
-      // DESKTOP: Fade IN 120vh→60vh, Visible 60vh→8vh (past middle!), Fade OUT 8vh→5vh
+      // MOBILE: Fade IN 80vh→40vh, Visible 40vh→8vh (past middle!), Fade OUT 8vh→5vh
+      // DESKTOP: Fade IN 90vh→50vh, Visible 50vh→8vh (past middle!), Fade OUT 8vh→5vh
 
-      const fadeInStart = isMobile ? viewportHeight * 1.0 : viewportHeight * 1.2;
-      const fadeInEnd = isMobile ? viewportHeight * 0.55 : viewportHeight * 0.6;
+      const fadeInStart = isMobile ? viewportHeight * 0.8 : viewportHeight * 0.9;
+      const fadeInEnd = isMobile ? viewportHeight * 0.4 : viewportHeight * 0.5;
       const fadeOutStart = viewportHeight * 0.08; // Same for both - only fade at extreme top
       const fadeOutEnd = viewportHeight * 0.05; // Fully faded by 5vh
 
