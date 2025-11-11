@@ -41,12 +41,14 @@ function ClientCell({
   isLongTerm,
   delay,
   onHoverChange,
+  onClick,
 }: {
   client: Client;
   sectorColor: string;
   isLongTerm: boolean;
   delay: number;
   onHoverChange: (hovering: boolean) => void;
+  onClick: () => void;
 }) {
   const [localMousePos, setLocalMousePos] = useState({ x: 0, y: 0 });
   const cellRef = useRef<HTMLDivElement>(null);
@@ -78,6 +80,7 @@ function ClientCell({
       onMouseLeave={handleMouseLeave}
       onMouseEnter={() => onHoverChange(true)}
       onMouseExit={() => onHoverChange(false)}
+      onClick={onClick}
       className="group relative aspect-square border-r border-b border-white/10 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-500 overflow-hidden cursor-none"
     >
       {/* Noise texture overlay */}
@@ -184,6 +187,15 @@ function ClientCell({
         />
       </div>
 
+      {/* Website link indicator */}
+      {client.website && (
+        <div className="absolute top-3 right-8 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+          <svg className="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </div>
+      )}
+
       {/* Projects count indicator (dot notation) */}
       <div className="absolute bottom-3 left-3 flex gap-0.5 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
         {Array.from({ length: Math.min(client.projects, 5) }).map((_, i) => (
@@ -198,6 +210,15 @@ function ClientCell({
       {isLongTerm && (
         <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
           <span className="text-[8px] text-white/40 font-light tracking-wider">EST {client.yearStarted}</span>
+        </div>
+      )}
+
+      {/* Testimonial indicator */}
+      {client.testimonial && (
+        <div className="absolute bottom-3 left-12 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+          <svg className="w-3 h-3 text-white/40" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
         </div>
       )}
 
@@ -230,6 +251,7 @@ export default function ClientsPage() {
   const [animatedStats, setAnimatedStats] = useState({ clients: 0, projects: 0, sectors: 0 });
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   // Load clients
@@ -327,6 +349,35 @@ export default function ClientsPage() {
         </div>
       </section>
 
+      {/* Sector Distribution Bar */}
+      <motion.div
+        className="max-w-7xl mx-auto px-8 mb-12"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <div className="flex flex-wrap gap-6 justify-center text-[11px] text-white/40 font-light uppercase tracking-[0.2em]">
+          {Object.entries(
+            clients.reduce((acc, client) => {
+              acc[client.sector] = (acc[client.sector] || 0) + 1;
+              return acc;
+            }, {} as Record<string, number>)
+          )
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 6)
+            .map(([sector, count]) => (
+              <div key={sector} className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: SECTOR_COLORS[sector] || "#ff9d23" }}
+                />
+                <span>{sector}: {count}</span>
+              </div>
+            ))}
+        </div>
+      </motion.div>
+
       {/* Luxury Divider */}
       <motion.div
         className="max-w-7xl mx-auto px-8 mb-16"
@@ -349,15 +400,28 @@ export default function ClientsPage() {
             const sectorIndex = Object.keys(SECTOR_COLORS).indexOf(client.sector);
             const delay = (sectorIndex * 0.1) + (index * 0.015);
 
+            // Check if this is the first client of a new letter
+            const currentLetter = client.name[0].toUpperCase();
+            const prevLetter = index > 0 ? clients[index - 1].name[0].toUpperCase() : '';
+            const showLetterHeader = currentLetter !== prevLetter;
+
             return (
-              <ClientCell
-                key={client.name}
-                client={client}
-                sectorColor={sectorColor}
-                isLongTerm={isLongTerm}
-                delay={delay}
-                onHoverChange={setIsHovering}
-              />
+              <>
+                {showLetterHeader && (
+                  <div key={`letter-${currentLetter}`} className="col-span-full border-b border-white/5 py-3 px-4">
+                    <span className="text-[10px] text-white/30 font-light tracking-[0.3em] uppercase">{currentLetter}</span>
+                  </div>
+                )}
+                <ClientCell
+                  key={client.name}
+                  client={client}
+                  sectorColor={sectorColor}
+                  isLongTerm={isLongTerm}
+                  delay={delay}
+                  onHoverChange={setIsHovering}
+                  onClick={() => setSelectedClient(client)}
+                />
+              </>
             );
           })}
         </div>
@@ -376,7 +440,172 @@ export default function ClientsPage() {
             </p>
           </div>
         </motion.div>
+
+        {/* CTA Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, delay: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
+          className="mt-32 text-center"
+        >
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-[32px] md:text-[42px] lg:text-[52px] font-light text-white/90 mb-6 leading-tight">
+              Ready to join them?
+            </h2>
+            <p className="text-[15px] md:text-[17px] text-white/50 font-light leading-relaxed mb-12 tracking-wide">
+              Let's create something exceptional together. From concept to launch, we deliver digital experiences that drive results.
+            </p>
+            <a
+              href="/contact"
+              className="inline-block px-12 py-4 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[13px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-500"
+            >
+              Start Your Project
+            </a>
+          </div>
+        </motion.div>
       </div>
+
+      {/* Client Detail Modal */}
+      {selectedClient && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+          onClick={() => setSelectedClient(null)}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
+
+          {/* Modal Content */}
+          <motion.div
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-8 md:p-12 max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setSelectedClient(null)}
+              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-300 group"
+            >
+              <div className="relative w-5 h-5">
+                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white rotate-45" />
+                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white -rotate-45" />
+              </div>
+            </button>
+
+            {/* Client Logo/Name */}
+            <div className="mb-8 pb-8 border-b border-white/10">
+              {selectedClient.logo ? (
+                <img
+                  src={selectedClient.logo}
+                  alt={selectedClient.name}
+                  className="max-w-[200px] h-auto mx-auto md:mx-0 opacity-90 filter brightness-0 invert"
+                />
+              ) : (
+                <h2 className="text-[32px] md:text-[42px] font-thin text-white/90 tracking-[0.15em]">
+                  {selectedClient.name}
+                </h2>
+              )}
+            </div>
+
+            {/* Client Details Grid */}
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              {/* Left Column */}
+              <div className="space-y-6">
+                <div>
+                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Sector</p>
+                  <p className="text-[16px] text-white/80 font-light">{selectedClient.sector}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Projects Delivered</p>
+                  <p className="text-[16px] text-white/80 font-light">{selectedClient.projects}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Status</p>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`} />
+                    <p className="text-[16px] text-white/80 font-light capitalize">{selectedClient.status}</p>
+                  </div>
+                </div>
+
+                {selectedClient.yearStarted && (
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Relationship Since</p>
+                    <p className="text-[16px] text-white/80 font-light">{selectedClient.yearStarted}</p>
+                  </div>
+                )}
+
+                {selectedClient.website && (
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Website</p>
+                    <a
+                      href={selectedClient.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[16px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-colors duration-300 flex items-center gap-2"
+                    >
+                      Visit Site
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                {selectedClient.tagline && (
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Tagline</p>
+                    <p className="text-[16px] text-white/80 font-light italic">{selectedClient.tagline}</p>
+                  </div>
+                )}
+
+                {selectedClient.results && (
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Results</p>
+                    <p className="text-[16px] text-white/80 font-light leading-relaxed">{selectedClient.results}</p>
+                  </div>
+                )}
+
+                {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Deliverables</p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedClient.deliverables.map((item, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 text-[12px] bg-white/5 border border-white/10 text-white/70 font-light rounded-sm"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Testimonial */}
+            {selectedClient.testimonial && (
+              <div className="pt-8 border-t border-white/10">
+                <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-4">Testimonial</p>
+                <blockquote className="text-[18px] md:text-[20px] text-white/80 font-light italic leading-relaxed">
+                  "{selectedClient.testimonial}"
+                </blockquote>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }
