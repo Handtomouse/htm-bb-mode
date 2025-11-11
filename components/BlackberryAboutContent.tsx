@@ -917,58 +917,105 @@ export default function BlackberryAboutContent() {
         
 
         {/* Now Block - Full Width Accent */}
-        
-          <section className="h-[150vh] flex items-center justify-center">
+
+          <section className="h-[120vh] flex items-center justify-center">
             <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="max-w-6xl mx-auto border-2 border-[#ff9d23] bg-gradient-to-br from-[#ff9d23]/10 to-transparent backdrop-blur-sm p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-all duration-700"
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-6xl mx-auto border-2 border-[#ff9d23] bg-gradient-to-br from-[#ff9d23]/10 to-transparent backdrop-blur-sm p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-shadow duration-700"
           >
-            <h2 className="text-[32px] md:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em]">
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[32px] md:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em]"
+            >
               Now
-            </h2>
-            <p className="text-[16px] md:text-[18px] text-white/60 tracking-wide">Last updated: {data.now.lastUpdated}</p>
-            <p className="text-[18px] md:text-[24px] text-white leading-loose">{data.now.currentFocus}</p>
-            <p className="text-[20px] md:text-[28px] text-[#ff9d23] font-bold tracking-wide">{data.now.status}</p>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="text-[16px] md:text-[18px] text-white/60 tracking-wide"
+            >
+              Last updated: {data.now.lastUpdated}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[18px] md:text-[24px] text-white leading-loose"
+            >
+              {data.now.currentFocus}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[20px] md:text-[28px] text-[#ff9d23] font-bold tracking-wide"
+            >
+              {data.now.status}
+            </motion.p>
             </motion.div>
           </section>
         
 
         {/* Empty Space Reveal Window 2 */}
-        
-          <section className="h-[150vh] flex items-center justify-center">
+
+          <section className="h-[90vh] flex items-center justify-center">
             <motion.div
-            initial={{ opacity: 0, y: 40, filter: 'blur(15px)' }}
-            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-center space-y-8"
           >
-            <div className="text-[20px] md:text-[28px] lg:text-[36px] text-white/90 tracking-[0.15em] uppercase">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="text-[20px] md:text-[28px] lg:text-[36px] text-white/90 tracking-[0.15em] uppercase"
+            >
               Strategy First
-            </div>
-            <div className="text-[16px] md:text-[20px] text-[#ff9d23]/70 tracking-[0.1em]">
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-[16px] md:text-[20px] text-[#ff9d23]/70 tracking-[0.1em]"
+            >
               Execution Second
-            </div>
+            </motion.div>
             </motion.div>
           </section>
         
 
         {/* Contact CTA - Full Height */}
-        
-          <section className="h-[150vh] flex items-center justify-center">
+
+          <section className="relative h-[130vh] flex items-center justify-center">
+            {/* Background gradient that builds toward CTA */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/5 to-[#ff9d23]/10 pointer-events-none" />
+
             <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="border-4 border-[#ff9d23]/40 bg-gradient-to-b from-black/60 to-black/40 backdrop-blur-sm p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[#ff9d23] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
+            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            className="relative border-4 border-[#ff9d23]/40 bg-gradient-to-b from-black/60 to-black/40 backdrop-blur-sm p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[#ff9d23] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
           >
             <motion.h2
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="text-[36px] md:text-[52px] lg:text-[68px] font-black text-white uppercase tracking-[0.08em] leading-tight"
               style={{ textShadow: '0 0 30px rgba(255,157,35,0.3)' }}
             >
@@ -979,7 +1026,7 @@ export default function BlackberryAboutContent() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.4, duration: 0.7 }}
               className="text-[20px] md:text-[28px] text-white/90 leading-loose tracking-wide"
             >
               {data.contact.status} • {data.contact.responseTime}
@@ -987,10 +1034,10 @@ export default function BlackberryAboutContent() {
 
             <motion.a
               href={`mailto:${data.contact.email}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{
                 scale: 1.05,
                 backgroundColor: ACCENT_HOVER,
