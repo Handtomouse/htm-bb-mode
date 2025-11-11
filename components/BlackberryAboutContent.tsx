@@ -477,8 +477,8 @@ export default function BlackberryAboutContent() {
 
         {/* Philosophy Section - Clean Text Only */}
 
-          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
-          <div className="max-w-4xl w-full px-6 md:px-8">
+          <section className="h-[150vh] flex flex-col items-center justify-center py-24 md:py-32 lg:py-40">
+          <div className="max-w-6xl w-full px-12 md:px-16 lg:px-24">
             {/* Philosophy heading with divider */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -489,38 +489,39 @@ export default function BlackberryAboutContent() {
               <h2 className="text-[18px] md:text-[20px] lg:text-[24px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] mb-4">
                 Philosophy
               </h2>
-              <div className="h-[1px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent mb-12 md:mb-16" />
+              <div className="h-[2px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent opacity-60 mb-16 md:mb-20 lg:mb-24" />
             </motion.div>
 
             {/* Philosophy statements - luxury hierarchy */}
-            <div className="space-y-10 md:space-y-12 lg:space-y-14">
+            <div className="space-y-16 md:space-y-20 lg:space-y-24">
               {/* HERO statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-[32px] md:text-[42px] lg:text-[56px] text-white/95 leading-[1.5] font-light tracking-wide"
+                transition={{ duration: 1.0, delay: 0.3 }}
+                className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.4] font-light tracking-tight max-w-5xl"
+                style={{ wordSpacing: '0.1em' }}
               >
-                I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-medium">small, precise angle</span> no one else has noticed yet.
+                I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>small, precise angle</span> no one else has noticed yet.
               </motion.p>
               {/* Secondary statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-[24px] md:text-[30px] lg:text-[38px] text-white/90 leading-[1.6] font-normal tracking-wide"
+                transition={{ duration: 1.0, delay: 0.5 }}
+                className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.7] font-normal tracking-normal max-w-4xl pl-4 md:pl-6"
               >
-                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-medium">five years</span>.
+                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>five years</span>.
               </motion.p>
               {/* Supporting statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                className="text-[18px] md:text-[22px] lg:text-[26px] text-white/85 leading-[1.7] font-normal tracking-wide"
+                transition={{ duration: 1.0, delay: 0.7 }}
+                className="text-[18px] md:text-[22px] lg:text-[26px] text-white/90 leading-[1.9] font-normal tracking-wide max-w-3xl pl-4 md:pl-6"
               >
                 That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </motion.p>

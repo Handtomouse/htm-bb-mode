@@ -351,7 +351,7 @@ export default function BlackberryWormholeContent() {
 
     animationFrameId = requestAnimationFrame(animateStars);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isWarping, boost, ludicrousSpeed, konamiActive, isHyperhyperspace]);
+  }, [isWarping, boost, hecticSpeed, konamiActive, isHyperhyperspace]);
 
   // Animate shimmer particles
   useEffect(() => {
@@ -564,10 +564,10 @@ export default function BlackberryWormholeContent() {
       setBurstParticles(prev => [...prev, ...newParticles]);
     };
 
-    if (isWarping || ludicrousSpeed || isHyperhyperspace) {
+    if (isWarping || hecticSpeed || isHyperhyperspace) {
       createBurst();
     }
-  }, [isWarping, ludicrousSpeed, isHyperhyperspace]);
+  }, [isWarping, hecticSpeed, isHyperhyperspace]);
 
   // Animate burst particles
   useEffect(() => {
