@@ -487,24 +487,21 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 0.8 }}
               className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
             >
-              {/* Number Label - Small, subtle, whisper */}
-              <div
-                className="text-[18px] md:text-[20px] lg:text-[22px] font-medium text-[#ff9d23] mb-4 md:mb-5 lg:mb-6 opacity-70"
-                style={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.4)' }}
-              >
+              {/* Number Label - Uniform size, soft weight, consistent opacity */}
+              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
                 [01]
               </div>
-              {/* Section Title - Refined micro typography */}
-              <h3 className="text-[11px] md:text-[12px] lg:text-[13px] font-light text-[#ff9d23]/40 uppercase tracking-[0.3em] mb-6 md:mb-8 lg:mb-10">
+              {/* Section Title - Readable, generous tracking */}
+              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16">
                 The Intersection
               </h3>
-              {/* Body Text - Intimate reading scale */}
-              <p className="text-[16px] md:text-[18px] lg:text-[20px] text-white leading-[2.0] font-light tracking-normal max-w-3xl">
-                I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-light" style={{ textShadow: '0 0 8px rgba(255, 157, 35, 0.3)' }}>small, precise angle</span> no one else has noticed yet.
+              {/* Body Text - Comfortable uniform reading, editorial indent */}
+              <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.1] font-light tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12">
+                I work where ideas meet culture — finding the <span className="text-[#ff9d23]/90 font-medium">small, precise angle</span> no one else has noticed yet.
               </p>
             </motion.div>
 
-            {/* Part 2 - Refined hierarchy */}
+            {/* Part 2 - Consistent structure */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -512,24 +509,21 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 0.8 }}
               className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
             >
-              {/* Number - Subtle reduction */}
-              <div
-                className="text-[17px] md:text-[19px] lg:text-[21px] font-medium text-[#ff9d23] mb-4 md:mb-5 lg:mb-6 opacity-60"
-                style={{ textShadow: '0 0 12px rgba(255, 157, 35, 0.3)' }}
-              >
+              {/* Number - Uniform size, consistent opacity */}
+              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
                 [02]
               </div>
-              {/* Section Title - Refined micro typography */}
-              <h3 className="text-[11px] md:text-[12px] lg:text-[13px] font-light text-[#ff9d23]/40 uppercase tracking-[0.3em] mb-6 md:mb-8 lg:mb-10">
+              {/* Section Title - Consistent refinement */}
+              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16">
                 The Timeframe
               </h3>
-              {/* Body Text - Intimate reading scale */}
-              <p className="text-[15px] md:text-[17px] lg:text-[19px] text-white leading-[2.0] font-light tracking-normal max-w-3xl">
-                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-light" style={{ textShadow: '0 0 8px rgba(255, 157, 35, 0.3)' }}>five years</span>.
+              {/* Body Text - Uniform comfortable reading, weight variation */}
+              <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-normal tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12">
+                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23]/90 font-medium">five years</span>.
               </p>
             </motion.div>
 
-            {/* Part 3 - Most refined hierarchy */}
+            {/* Part 3 - Consistent structure */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -537,41 +531,38 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 0.8 }}
               className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
             >
-              {/* Number - Smallest, whisper quiet */}
-              <div
-                className="text-[16px] md:text-[18px] lg:text-[20px] font-medium text-[#ff9d23] mb-4 md:mb-5 lg:mb-6 opacity-50"
-                style={{ textShadow: '0 0 10px rgba(255, 157, 35, 0.2)' }}
-              >
+              {/* Number - Uniform size, consistent opacity */}
+              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
                 [03]
               </div>
-              {/* Section Title - Refined micro typography */}
-              <h3 className="text-[11px] md:text-[12px] lg:text-[13px] font-light text-[#ff9d23]/40 uppercase tracking-[0.3em] mb-6 md:mb-8 lg:mb-10">
+              {/* Section Title - Consistent refinement */}
+              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16">
                 The Method
               </h3>
-              {/* Body Text - Most intimate reading scale */}
-              <p className="text-[14px] md:text-[16px] lg:text-[18px] text-white leading-[2.0] font-light tracking-normal max-w-3xl">
+              {/* Body Text - Uniform reading, heaviest weight for contrast */}
+              <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[1.9] font-medium tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12">
                 That comes from <em className="text-white italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </p>
             </motion.div>
 
-            {/* Divider - Elegant hairline, subtle gradient */}
+            {/* Divider - Ultra-thin hairline, closer to content */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0 }}
-              className="h-[1px] bg-gradient-to-r from-[#ff9d23]/20 via-[#ff9d23]/5 to-transparent mb-[120px] md:mb-[140px] lg:mb-[160px]"
+              className="h-[0.5px] bg-gradient-to-r from-[#ff9d23]/20 via-[#ff9d23]/5 to-transparent mb-[100px] md:mb-[120px] lg:mb-[140px]"
             />
 
-            {/* Final Statement - Modest, intimate */}
+            {/* Final Statement - Ethereal, distinctive indent */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0, delay: 0.3 }}
-              className="text-[17px] md:text-[20px] lg:text-[23px] text-white leading-[2.2] font-light tracking-normal max-w-3xl mt-12 md:mt-16 lg:mt-20"
+              className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.3] font-extralight tracking-wide max-w-4xl pl-12 md:pl-16 lg:pl-20"
             >
-              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-light" style={{ textShadow: '0 0 8px rgba(255, 157, 35, 0.3)' }}>ideas with backbone</span> — things that stick because they mean something.
+              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23]/90 font-medium">ideas with backbone</span> — things that stick because they mean something.
             </motion.p>
           </div>
           </section>
