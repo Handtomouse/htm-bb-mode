@@ -110,138 +110,68 @@ export default function ClientsPage() {
         </div>
       </section>
 
-      {/* Clients Timeline */}
-      <div className="max-w-6xl mx-auto px-8">
-        {clients.map((client, index) => {
-          const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
-          const isFeatured = client.featured;
-          const initials = client.name
-            .split(" ")
-            .map((word) => word[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase();
+      {/* Logo Grid */}
+      <div className="max-w-7xl mx-auto px-8 pb-32">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border-t border-l border-white/10">
+          {clients.map((client, index) => {
+            const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
+            const initials = client.name
+              .split(" ")
+              .map((word) => word[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase();
 
-          return (
-            <motion.section
-              key={client.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
-            >
-              {/* Number/Index */}
-              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
-                [{String(index + 1).padStart(2, "0")}]
-              </div>
-
-              {/* Sector Label */}
-              <div className="flex items-center gap-3 mb-10 md:mb-12 lg:mb-16">
+            return (
+              <motion.div
+                key={client.name}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.02 }}
+                className="group relative aspect-square border-r border-b border-white/10 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-300 overflow-hidden"
+              >
+                {/* Sector color indicator (subtle top border) */}
                 <div
-                  className="w-2 h-2 rounded-full"
+                  className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{ backgroundColor: sectorColor }}
                 />
-                <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light uppercase tracking-[0.35em]" style={{ color: `${sectorColor}80` }}>
-                  {client.sector}
-                </h3>
-              </div>
 
-              {/* Client Name */}
-              <h2 className="text-[32px] md:text-[40px] lg:text-[48px] text-white leading-[1.1] font-light mb-8 md:mb-10 lg:mb-12 pl-8 md:pl-10 lg:pl-12">
-                {client.name}
-              </h2>
-
-              {/* Project Count & Status */}
-              <div className="pl-8 md:pl-10 lg:pl-12 mb-8 md:mb-10 lg:mb-12">
-                <p className="text-[14px] md:text-[15px] lg:text-[16px] text-white/50 font-light tracking-wide">
-                  <span className="tabular-nums">{client.projects}</span> {client.projects === 1 ? "project" : "projects"}
-                  {client.yearStarted && ` • Since ${client.yearStarted}`}
-                  {client.status && (
-                    <span className={client.status === "active" ? "text-[#ff9d23]/80" : "text-white/40"}>
-                      {" "}• {client.status}
-                    </span>
-                  )}
-                </p>
-              </div>
-
-              {/* Featured Client Details */}
-              {isFeatured && (
-                <>
-                  {/* Tagline */}
-                  {client.tagline && (
-                    <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-light tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12 mb-8 md:mb-10 lg:mb-12 italic">
-                      "{client.tagline}"
-                    </p>
-                  )}
-
-                  {/* Results */}
-                  {client.results && (
-                    <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/80 leading-[2.0] font-light tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12 mb-8 md:mb-10 lg:mb-12">
-                      {client.results}
-                    </p>
-                  )}
-
-                  {/* Deliverables */}
-                  {client.deliverables && client.deliverables.length > 0 && (
-                    <div className="pl-8 md:pl-10 lg:pl-12 mb-8 md:mb-10 lg:mb-12">
-                      <p className="text-[12px] md:text-[13px] lg:text-[14px] text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-4">
-                        Services
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {client.deliverables.map((item) => (
-                          <span
-                            key={item}
-                            className="text-[12px] md:text-[13px] lg:text-[14px] text-white/60 font-light tracking-wide"
-                          >
-                            {item}
-                            {client.deliverables && client.deliverables.indexOf(item) < client.deliverables.length - 1 && " • "}
-                          </span>
-                        ))}
-                      </div>
+                {/* Logo or Initials */}
+                <div className="text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300 text-center px-4">
+                  {client.logo ? (
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-light">{client.name}</div>
+                  ) : (
+                    <div className="text-3xl md:text-4xl lg:text-5xl font-light opacity-40 group-hover:opacity-60">
+                      {initials}
                     </div>
                   )}
-
-                  {/* Testimonial */}
-                  {client.testimonial && (
-                    <p className="text-[15px] md:text-[16px] lg:text-[17px] text-white/70 leading-[2.1] font-light tracking-wide max-w-4xl pl-12 md:pl-16 lg:pl-20 italic">
-                      "{client.testimonial}"
-                    </p>
-                  )}
-                </>
-              )}
-
-              {/* Non-featured: just initials as visual element */}
-              {!isFeatured && (
-                <div className="pl-8 md:pl-10 lg:pl-12">
-                  <div
-                    className="text-[80px] md:text-[100px] lg:text-[120px] font-light opacity-5 leading-none"
-                    style={{ color: sectorColor }}
-                  >
-                    {initials}
-                  </div>
                 </div>
-              )}
-            </motion.section>
-          );
-        })}
 
-        {/* Final Divider */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.0 }}
-          className="h-[0.5px] bg-gradient-to-r from-[#ff9d23]/20 via-[#ff9d23]/5 to-transparent mb-[100px] md:mb-[120px] lg:mb-[140px]"
-        />
+                {/* Client name on hover */}
+                <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-[10px] md:text-[11px] font-light text-white/90 uppercase tracking-wider text-center">
+                    {client.name}
+                  </p>
+                </div>
+
+                {/* Subtle glow on hover */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"
+                  style={{ backgroundColor: sectorColor }}
+                />
+              </motion.div>
+            );
+          })}
+        </div>
 
         {/* Confidential Note */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.0, delay: 0.3 }}
-          className="text-[14px] md:text-[15px] lg:text-[16px] text-white/40 leading-[2.3] font-extralight tracking-wide max-w-4xl pl-12 md:pl-16 lg:pl-20 mb-32"
+          transition={{ duration: 1.0, delay: 0.5 }}
+          className="text-[14px] md:text-[15px] lg:text-[16px] text-white/40 leading-[2.3] font-extralight tracking-wide text-center mt-16"
         >
           + 5 additional confidential projects
         </motion.p>
