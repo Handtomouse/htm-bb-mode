@@ -678,7 +678,10 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="h-[120vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
+          {/* Improvement #9: Background gradient */}
+          <section className="relative h-[140vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/3 to-transparent pointer-events-none" />
+
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -688,13 +691,14 @@ export default function BlackberryAboutContent() {
           >
             By The Numbers
           </motion.h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 max-w-6xl mx-auto">
+          {/* Improvement #10: Responsive grid, #11: Luxury spacing */}
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-14 max-w-6xl mx-auto">
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
-            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.25} />
-            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.5} />
-            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={0.75} />
-            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={1.0} />
-            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={1.25} />
+            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.35} />
+            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.70} />
+            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={1.05} />
+            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={1.40} />
+            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={1.75} />
           </div>
           </section>
         
