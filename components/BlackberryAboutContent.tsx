@@ -487,21 +487,24 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 0.8 }}
               className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
             >
-              {/* Number Label */}
-              <div className="text-[48px] md:text-[64px] lg:text-[80px] font-bold text-[#ff9d23] mb-6 md:mb-8">
+              {/* Number Label - Progressive sizing, glow effect, opacity layering */}
+              <div
+                className="text-[64px] md:text-[80px] lg:text-[96px] font-bold text-[#ff9d23] mb-10 md:mb-12 lg:mb-16 opacity-100"
+                style={{ textShadow: '0 0 40px rgba(255, 157, 35, 0.6)' }}
+              >
                 [01]
               </div>
-              {/* Section Title */}
-              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-bold text-[#ff9d23]/60 uppercase tracking-[0.15em] mb-8 md:mb-10 lg:mb-12">
+              {/* Section Title - Increased size, enhanced tracking */}
+              <h3 className="text-[14px] md:text-[16px] lg:text-[18px] font-bold text-[#ff9d23]/60 uppercase tracking-[0.2em] mb-12 md:mb-16 lg:mb-20">
                 The Intersection
               </h3>
-              {/* Body Text */}
-              <p className="text-[24px] md:text-[28px] lg:text-[32px] text-white leading-[1.7] font-light tracking-wide max-w-4xl">
-                I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-medium">small, precise angle</span> no one else has noticed yet.
+              {/* Body Text - Dramatic size increase, removed max-width, lighter weight, increased line-height */}
+              <p className="text-[32px] md:text-[38px] lg:text-[44px] text-white leading-[1.8] font-extralight tracking-wide">
+                I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255, 157, 35, 0.4)' }}>small, precise angle</span> no one else has noticed yet.
               </p>
             </motion.div>
 
-            {/* Part 2 */}
+            {/* Part 2 - Diminished hierarchy */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -509,18 +512,24 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 0.8 }}
               className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
             >
-              <div className="text-[48px] md:text-[64px] lg:text-[80px] font-bold text-[#ff9d23] mb-6 md:mb-8">
+              {/* Number - Smaller than [01], glow, reduced opacity */}
+              <div
+                className="text-[56px] md:text-[72px] lg:text-[88px] font-bold text-[#ff9d23] mb-10 md:mb-12 lg:mb-16 opacity-95"
+                style={{ textShadow: '0 0 35px rgba(255, 157, 35, 0.5)' }}
+              >
                 [02]
               </div>
-              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-bold text-[#ff9d23]/60 uppercase tracking-[0.15em] mb-8 md:mb-10 lg:mb-12">
+              {/* Section Title */}
+              <h3 className="text-[14px] md:text-[16px] lg:text-[18px] font-bold text-[#ff9d23]/60 uppercase tracking-[0.2em] mb-12 md:mb-16 lg:mb-20">
                 The Timeframe
               </h3>
-              <p className="text-[24px] md:text-[28px] lg:text-[32px] text-white leading-[1.7] font-light tracking-wide max-w-4xl">
-                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-medium">five years</span>.
+              {/* Body Text - Smaller than [01], light weight */}
+              <p className="text-[28px] md:text-[34px] lg:text-[40px] text-white leading-[1.8] font-light tracking-wide">
+                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255, 157, 35, 0.4)' }}>five years</span>.
               </p>
             </motion.div>
 
-            {/* Part 3 */}
+            {/* Part 3 - Smallest hierarchy */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -528,35 +537,41 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 0.8 }}
               className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
             >
-              <div className="text-[48px] md:text-[64px] lg:text-[80px] font-bold text-[#ff9d23] mb-6 md:mb-8">
+              {/* Number - Smallest, glow, most reduced opacity */}
+              <div
+                className="text-[48px] md:text-[64px] lg:text-[80px] font-bold text-[#ff9d23] mb-10 md:mb-12 lg:mb-16 opacity-90"
+                style={{ textShadow: '0 0 30px rgba(255, 157, 35, 0.4)' }}
+              >
                 [03]
               </div>
-              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-bold text-[#ff9d23]/60 uppercase tracking-[0.15em] mb-8 md:mb-10 lg:mb-12">
+              {/* Section Title */}
+              <h3 className="text-[14px] md:text-[16px] lg:text-[18px] font-bold text-[#ff9d23]/60 uppercase tracking-[0.2em] mb-12 md:mb-16 lg:mb-20">
                 The Method
               </h3>
-              <p className="text-[24px] md:text-[28px] lg:text-[32px] text-white leading-[1.7] font-light tracking-wide max-w-4xl">
+              {/* Body Text - Smallest, normal weight */}
+              <p className="text-[24px] md:text-[30px] lg:text-[36px] text-white leading-[1.8] font-normal tracking-wide">
                 That comes from <em className="text-white italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </p>
             </motion.div>
 
-            {/* Divider */}
+            {/* Divider - Thicker, increased spacing */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0 }}
-              className="h-[2px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent mb-[80px] md:mb-[100px] lg:mb-[120px]"
+              className="h-[3px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent mb-[120px] md:mb-[140px] lg:mb-[160px]"
             />
 
-            {/* Final Statement - No Number */}
+            {/* Final Statement - HERO size, centered, ultra-light, tighter line-height, top spacing */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0, delay: 0.3 }}
-              className="text-[28px] md:text-[34px] lg:text-[40px] text-white leading-[1.6] font-light tracking-wide max-w-5xl"
+              className="text-[40px] md:text-[52px] lg:text-[64px] text-white leading-[1.5] font-thin tracking-wide text-center mx-auto mt-12 md:mt-16 lg:mt-20"
             >
-              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-medium">ideas with backbone</span> — things that stick because they mean something.
+              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 25px rgba(255, 157, 35, 0.5)' }}>ideas with backbone</span> — things that stick because they mean something.
             </motion.p>
           </div>
           </section>
