@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface Client {
@@ -33,10 +33,174 @@ const SECTOR_COLORS: Record<string, string> = {
   "Technology / CRM": "#3a86ff",
 };
 
+// Client Cell Component with Magnetic Hover
+function ClientCell({
+  client,
+  sectorColor,
+  isLongTerm,
+  delay,
+  onHoverChange,
+}: {
+  client: Client;
+  sectorColor: string;
+  isLongTerm: boolean;
+  delay: number;
+  onHoverChange: (hovering: boolean) => void;
+}) {
+  const [localMousePos, setLocalMousePos] = useState({ x: 0, y: 0 });
+  const cellRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cellRef.current) return;
+    const rect = cellRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
+    setLocalMousePos({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setLocalMousePos({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.div
+      ref={cellRef}
+      initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
+      whileInView={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
+      viewport={{ once: true }}
+      transition={{
+        duration: 0.6,
+        delay,
+        ease: [0.43, 0.13, 0.23, 0.96]
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseExit={() => onHoverChange(false)}
+      className="group relative aspect-square border-r border-b border-white/10 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-500 overflow-hidden cursor-none"
+    >
+      {/* Noise texture overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundSize: '200px 200px'
+        }}
+      />
+
+      {/* Gradient overlay (bottom fade) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {/* Featured spotlight effect */}
+      {client.featured && (
+        <div
+          className="absolute inset-0 border-2 opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"
+          style={{
+            borderColor: sectorColor,
+            boxShadow: `inset 0 0 40px ${sectorColor}40`
+          }}
+        />
+      )}
+
+      {/* Sector color indicator with gradient */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${sectorColor}, transparent)`
+        }}
+      />
+
+      {/* Grid line glow propagation */}
+      <div className="absolute -top-[1px] -right-[1px] w-[1px] h-8 opacity-0 group-hover:opacity-60 transition-opacity duration-300 bg-white/30" />
+      <div className="absolute -bottom-[1px] -left-[1px] w-8 h-[1px] opacity-0 group-hover:opacity-60 transition-opacity duration-300 bg-white/30" />
+
+      {/* Client name as wordmark with magnetic effect */}
+      <motion.div
+        animate={{
+          x: localMousePos.x,
+          y: localMousePos.y
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 150,
+          damping: 15,
+          mass: 0.1
+        }}
+        className="relative text-white/70 group-hover:text-white transition-all duration-500 text-center px-6 group-hover:tracking-[0.2em]"
+        style={{ letterSpacing: '0.15em' }}
+      >
+        <div className="text-[16px] md:text-[18px] lg:text-[20px] font-extralight group-hover:font-light uppercase transition-all duration-500 group-hover:scale-[1.02]">
+          {client.name}
+        </div>
+
+        {/* Tagline reveal on hover */}
+        {client.tagline && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            className="absolute top-full left-0 right-0 mt-3 opacity-0 group-hover:opacity-100 transition-all duration-500"
+          >
+            <p className="text-[9px] md:text-[10px] text-white/50 font-light tracking-wider uppercase">
+              {client.tagline}
+            </p>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Status indicator (minimal dot) */}
+      <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div
+          className={`w-1.5 h-1.5 rounded-full ${client.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
+          style={{ boxShadow: client.status === 'active' ? '0 0 8px #06ffa5' : 'none' }}
+        />
+      </div>
+
+      {/* Projects count indicator (dot notation) */}
+      <div className="absolute bottom-3 left-3 flex gap-0.5 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+        {Array.from({ length: Math.min(client.projects, 5) }).map((_, i) => (
+          <div key={i} className="w-1 h-1 rounded-full bg-white/40" />
+        ))}
+        {client.projects > 5 && (
+          <span className="text-[8px] text-white/40 ml-1">+{client.projects - 5}</span>
+        )}
+      </div>
+
+      {/* Year started badge for long-term clients */}
+      {isLongTerm && (
+        <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+          <span className="text-[8px] text-white/40 font-light tracking-wider">EST {client.yearStarted}</span>
+        </div>
+      )}
+
+      {/* Sector badge pill */}
+      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <div
+          className="px-2 py-0.5 rounded-full text-[8px] font-light tracking-wider uppercase backdrop-blur-sm"
+          style={{
+            backgroundColor: `${sectorColor}15`,
+            border: `1px solid ${sectorColor}30`,
+            color: sectorColor
+          }}
+        >
+          {client.sector}
+        </div>
+      </div>
+
+      {/* Subtle glow on hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500 pointer-events-none"
+        style={{ backgroundColor: sectorColor }}
+      />
+    </motion.div>
+  );
+}
+
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [animatedStats, setAnimatedStats] = useState({ clients: 0, projects: 0, sectors: 0 });
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // Load clients
   useEffect(() => {
@@ -80,6 +244,15 @@ export default function ClientsPage() {
     }
   }, [clients]);
 
+  // Custom cursor tracking
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0b0b0b] flex items-center justify-center">
@@ -90,6 +263,26 @@ export default function ClientsPage() {
 
   return (
     <div className="min-h-screen bg-[#0b0b0b] text-white">
+      {/* Custom Cursor */}
+      <motion.div
+        className="fixed w-6 h-6 pointer-events-none z-50 mix-blend-difference"
+        animate={{
+          x: cursorPos.x - 12,
+          y: cursorPos.y - 12,
+          scale: isHovering ? 1.5 : 1,
+          opacity: isHovering ? 1 : 0.6
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 28,
+          mass: 0.5
+        }}
+      >
+        <div className="w-full h-full rounded-full border border-white/60" />
+        <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white/80 rounded-full -translate-x-1/2 -translate-y-1/2" />
+      </motion.div>
+
       {/* Hero Section */}
       <section className="h-screen flex items-center justify-center px-8">
         <div className="max-w-6xl w-full">
@@ -110,54 +303,55 @@ export default function ClientsPage() {
         </div>
       </section>
 
+      {/* Luxury Divider */}
+      <motion.div
+        className="max-w-7xl mx-auto px-8 mb-16"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2, ease: [0.43, 0.13, 0.23, 0.96] }}
+      >
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/30 to-transparent" />
+      </motion.div>
+
       {/* Logo Grid */}
-      <div className="max-w-7xl mx-auto px-8 pb-32">
+      <div ref={gridRef} className="max-w-7xl mx-auto px-8 pb-32">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
           {clients.map((client, index) => {
             const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
+            const isLongTerm = client.yearStarted && new Date().getFullYear() - client.yearStarted >= 3;
+
+            // Group by sector for staggered animation
+            const sectorIndex = Object.keys(SECTOR_COLORS).indexOf(client.sector);
+            const delay = (sectorIndex * 0.1) + (index * 0.015);
 
             return (
-              <motion.div
+              <ClientCell
                 key={client.name}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.02 }}
-                className="group relative aspect-square border-r border-b border-white/10 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-300 overflow-hidden"
-              >
-                {/* Sector color indicator (subtle top border) */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ backgroundColor: sectorColor }}
-                />
-
-                {/* Client name as wordmark */}
-                <div className="text-white/70 group-hover:text-white group-hover:scale-105 transition-all duration-300 text-center px-6">
-                  <div className="text-[16px] md:text-[18px] lg:text-[20px] font-light uppercase tracking-[0.15em]">
-                    {client.name}
-                  </div>
-                </div>
-
-                {/* Subtle glow on hover */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"
-                  style={{ backgroundColor: sectorColor }}
-                />
-              </motion.div>
+                client={client}
+                sectorColor={sectorColor}
+                isLongTerm={isLongTerm}
+                delay={delay}
+                onHoverChange={setIsHovering}
+              />
             );
           })}
         </div>
 
-        {/* Confidential Note */}
-        <motion.p
+        {/* Confidential Note - Luxury Editorial */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.0, delay: 0.5 }}
-          className="text-[14px] md:text-[15px] lg:text-[16px] text-white/40 leading-[2.3] font-extralight tracking-wide text-center mt-16"
+          transition={{ duration: 1.2, delay: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
+          className="mt-24 text-center"
         >
-          + 5 additional confidential projects
-        </motion.p>
+          <div className="inline-block px-8 py-4 border border-white/5 rounded-sm backdrop-blur-sm">
+            <p className="text-[11px] md:text-[12px] lg:text-[13px] text-white/30 leading-[2.5] font-extralight tracking-[0.35em] uppercase">
+              + 5 additional confidential projects
+            </p>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
