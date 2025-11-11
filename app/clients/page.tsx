@@ -490,7 +490,7 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0, rotate: 0 }}
             exit={{ scale: 0.92, y: 20, rotate: -2 }}
             transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
-            className="relative max-w-5xl w-full bg-[#0b0b0b] border-2 p-12 sm:p-16 md:p-20 lg:p-28 max-h-[90vh] overflow-y-auto scroll-smooth"
+            className="relative max-w-5xl w-full bg-[#0b0b0b] border-2 p-16 sm:p-20 md:p-24 lg:p-32 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
               borderImage: `linear-gradient(135deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40, transparent, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40) 1`,
@@ -563,7 +563,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-20 pb-20 relative text-center"
+              className="mb-24 pb-24 relative text-center"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               {selectedClient.logo ? (
@@ -582,7 +582,7 @@ export default function ClientsPage() {
               {/* Sector badge inline with status */}
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <span
-                  className="inline-block px-6 py-2.5 rounded-full text-[11px] font-light tracking-[0.25em] uppercase backdrop-blur-sm transition-all duration-500 hover:scale-105"
+                  className="inline-block px-8 py-3 rounded-full text-[11px] font-light tracking-[0.25em] uppercase backdrop-blur-sm transition-all duration-500 hover:scale-105"
                   style={{
                     backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
                     border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
@@ -592,7 +592,7 @@ export default function ClientsPage() {
                 >
                   {selectedClient.sector}
                 </span>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full">
+                <div className="flex items-center gap-2 px-5 py-2.5 bg-white/5 rounded-full">
                   <div
                     className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
                     style={{
@@ -610,12 +610,12 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid md:grid-cols-[40%_60%] gap-24 mb-20"
+              className="grid md:grid-cols-[40%_60%] gap-28 mb-24"
             >
               {/* Left Column - Key Info */}
-              <div className="space-y-12">
+              <div className="space-y-14">
                 <div>
-                  <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                  <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
@@ -624,7 +624,7 @@ export default function ClientsPage() {
 
                 {selectedClient.yearStarted && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
                     </p>
@@ -639,7 +639,7 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
                     </p>
@@ -672,16 +672,16 @@ export default function ClientsPage() {
               </div>
 
               {/* Right Column - Main Content */}
-              <div className="space-y-12">
+              <div className="space-y-14">
                 {selectedClient.tagline && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4">Tagline</p>
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5">Tagline</p>
                     <p className="text-[20px] text-white/85 font-light italic leading-relaxed bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent">{selectedClient.tagline}</p>
                   </div>
                 )}
 
                 {selectedClient.results && (
-                  <div className="p-8 bg-white/[0.02] border border-white/5 rounded-sm">
+                  <div className="p-10 bg-white/[0.02] border border-white/5 rounded-sm">
                     <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                       Results
@@ -692,7 +692,7 @@ export default function ClientsPage() {
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                       Deliverables
                     </p>
@@ -703,7 +703,7 @@ export default function ClientsPage() {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                          className="px-6 py-3 text-[13px] bg-white/5 border border-white/10 text-white/75 font-light rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
+                          className="px-7 py-3.5 text-[13px] bg-white/5 border border-white/10 text-white/75 font-light rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
                           style={{
                             boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
                           }}
@@ -723,15 +723,15 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="pt-20 relative"
+                className="pt-24 relative"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-8">Testimonial</p>
+                <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-10">Testimonial</p>
 
                 {/* Large opening quote */}
                 <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
 
-                <blockquote className="relative text-[26px] md:text-[32px] text-white/85 font-light italic leading-[1.7] pl-16">
+                <blockquote className="relative text-[26px] md:text-[32px] text-white/85 font-light italic leading-[1.7] pl-20">
                   {selectedClient.testimonial}
                 </blockquote>
 
