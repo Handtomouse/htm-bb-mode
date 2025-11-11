@@ -490,54 +490,89 @@ export default function BlackberryAboutContent() {
             <div className="absolute inset-0 -m-12 opacity-30 blur-3xl bg-gradient-radial from-[#ff9d23]/20 via-transparent to-transparent" />
 
             <motion.h3
-              animate={{ opacity: [0.9, 1, 0.9] }}
+              animate={{
+                textShadow: [
+                  '0 2px 8px rgba(255,157,35,0.25), 0 4px 16px rgba(255,157,35,0.15)',
+                  '0 2px 12px rgba(255,157,35,0.4), 0 4px 24px rgba(255,157,35,0.25)',
+                  '0 2px 8px rgba(255,157,35,0.25), 0 4px 16px rgba(255,157,35,0.15)'
+                ]
+              }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="relative text-[26px] md:text-[36px] lg:text-[44px] font-semibold text-[#ff9d23]/80 uppercase tracking-[0.12em] leading-tight"
-              style={{
-                textShadow: '0 2px 8px rgba(255,157,35,0.25), 0 4px 16px rgba(255,157,35,0.15)'
-              }}
             >
               Philosophy
             </motion.h3>
           </motion.div>
 
-          {/* Frosted glass philosophy container with hover lift */}
+          {/* Frosted glass philosophy container with hover lift + corner accents + scanlines */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             whileHover={{ y: -8, boxShadow: '0 24px 48px rgba(255,157,35,0.15), 0 8px 16px rgba(0,0,0,0.3)' }}
-            className="border border-[#ff9d23]/20 bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-xl p-12 md:p-16 lg:p-20 max-w-[65ch] transition-all duration-700"
+            className="relative border border-[#ff9d23]/20 bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-xl p-12 md:p-16 lg:p-20 max-w-[65ch] transition-all duration-700 overflow-hidden"
             style={{
               borderTop: '1px solid rgba(255,157,35,0.3)',
               boxShadow: '0 16px 32px rgba(255,157,35,0.08), 0 4px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)'
             }}
           >
-            <div className="space-y-8 text-[18px] md:text-[22px] lg:text-[26px] text-white/85 leading-[1.8] tracking-wide">
-              <p className="border-l-2 border-[#ff9d23]/30 pl-6 transition-colors hover:border-[#ff9d23]/60">
+            {/* Scanline texture overlay */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.02]" style={{
+              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,1) 1px, rgba(255,255,255,1) 2px)'
+            }} />
+
+            {/* Corner accent brackets */}
+            <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#ff9d23]/60" />
+            <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#ff9d23]/60" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#ff9d23]/60" />
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#ff9d23]/60" />
+
+            <div className="relative space-y-8 text-[18px] md:text-[22px] lg:text-[26px] text-white/85 leading-[1.8] tracking-wide">
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                className="group border-l-2 border-[#ff9d23]/30 pl-6 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)] -ml-2 pl-8 py-2"
+              >
                 I work where ideas meet culture — finding the <em className="text-[#ff9d23]/90 not-italic font-medium">small, precise angle</em> no one else has noticed yet.
-              </p>
-              <p className="border-l-2 border-[#ff9d23]/30 pl-6 transition-colors hover:border-[#ff9d23]/60">
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.85 }}
+                className="group border-l-2 border-[#ff9d23]/30 pl-6 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)] -ml-2 pl-8 py-2"
+              >
                 Anyone can make something that looks current; the work is making something that still feels right in <em className="text-[#ff9d23]/90 not-italic font-medium">five years</em>.
-              </p>
-              <p className="border-l-2 border-[#ff9d23]/30 pl-6 transition-colors hover:border-[#ff9d23]/60">
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+                className="group border-l-2 border-[#ff9d23]/30 pl-6 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)] -ml-2 pl-8 py-2"
+              >
                 That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
-              </p>
+              </motion.p>
             </div>
           </motion.div>
 
-          {/* Pull-quote for "ideas with backbone" */}
+          {/* Pull-quote for "ideas with backbone" with BB-style chevrons + cursor */}
           <motion.blockquote
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative max-w-[50ch] text-[24px] md:text-[32px] lg:text-[40px] text-white/95 leading-[1.6] font-light tracking-wide"
+            className="relative max-w-[50ch] text-[24px] md:text-[32px] lg:text-[40px] text-white/95 leading-[1.6] font-light tracking-wide pl-8 md:pl-12"
           >
-            <span className="absolute -left-6 md:-left-12 top-0 text-[80px] md:text-[120px] text-[#ff9d23]/20 leading-none">"</span>
-            I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23]/90 font-medium">ideas with backbone</span> — things that stick because they mean something.
-            <span className="absolute -right-6 md:-right-12 bottom-0 text-[80px] md:text-[120px] text-[#ff9d23]/20 leading-none">"</span>
+            <span className="absolute left-0 top-0 text-[32px] md:text-[40px] text-[#ff9d23]/60 leading-none font-bold">&gt;&gt;</span>
+            I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23]/90 font-medium">ideas with backbone</span> — things that stick because they mean something<motion.span
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ duration: 0.6, repeat: Infinity, ease: "steps(1)" }}
+              className="inline-block ml-1 text-[#ff9d23]/80"
+            >|</motion.span>
           </motion.blockquote>
           </section>
         
