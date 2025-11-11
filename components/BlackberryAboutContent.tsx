@@ -486,7 +486,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.6, delay: -0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '100vh'}}
+              style={{marginBottom: '40vh'}}
             >
               <h2 className="text-[48px] md:text-[64px] lg:text-[80px] font-light text-[#ff9d23]/70 tracking-[0.15em] uppercase mb-8 text-center">
                 Philosophy
@@ -500,14 +500,14 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '160vh'}}
+              style={{marginBottom: '60vh'}}
             >
               {/* Number Label - Centered with hover glow */}
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
                 className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-55 text-center"
-                style={{marginBottom: '6rem'}}
+                style={{marginBottom: '3rem'}}
               >
                 [01]
               </motion.div>
@@ -519,7 +519,7 @@ export default function BlackberryAboutContent() {
                 transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
                 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] transition-all duration-300 text-center"
-                style={{marginBottom: '8rem'}}
+                style={{marginBottom: '4rem'}}
               >
                 The Intersection
               </motion.h3>
@@ -541,14 +541,14 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '160vh'}}
+              style={{marginBottom: '60vh'}}
             >
               {/* Number - Centered with hover glow */}
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
                 className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-55 text-center"
-                style={{marginBottom: '6rem'}}
+                style={{marginBottom: '3rem'}}
               >
                 [02]
               </motion.div>
@@ -560,7 +560,7 @@ export default function BlackberryAboutContent() {
                 transition={{ duration: 1.4, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
                 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] transition-all duration-300 text-center"
-                style={{marginBottom: '8rem'}}
+                style={{marginBottom: '4rem'}}
               >
                 The Timeframe
               </motion.h3>
@@ -589,7 +589,7 @@ export default function BlackberryAboutContent() {
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
                 className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-55 text-center"
-                style={{marginBottom: '6rem'}}
+                style={{marginBottom: '3rem'}}
               >
                 [03]
               </motion.div>
@@ -601,7 +601,7 @@ export default function BlackberryAboutContent() {
                 transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
                 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] transition-all duration-300 text-center"
-                style={{marginBottom: '8rem'}}
+                style={{marginBottom: '4rem'}}
               >
                 The Method
               </motion.h3>
