@@ -486,7 +486,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.6, delay: -0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[60vh] md:mb-[70vh] lg:mb-[80vh]"
+              className="mb-[80vh] md:mb-[90vh] lg:mb-[100vh]"
             >
               <h2 className="text-[48px] md:text-[64px] lg:text-[80px] font-light text-[#ff9d23]/70 tracking-[0.15em] uppercase mb-8 text-center">
                 Philosophy
@@ -506,7 +506,7 @@ export default function BlackberryAboutContent() {
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 text-center"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-16 md:mb-20 lg:mb-24 opacity-55 text-center"
               >
                 [01]
               </motion.div>
@@ -517,7 +517,7 @@ export default function BlackberryAboutContent() {
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300 text-center"
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-20 md:mb-24 lg:mb-32 transition-all duration-300 text-center"
               >
                 The Intersection
               </motion.h3>
@@ -545,7 +545,7 @@ export default function BlackberryAboutContent() {
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 text-center"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-16 md:mb-20 lg:mb-24 opacity-55 text-center"
               >
                 [02]
               </motion.div>
@@ -556,7 +556,7 @@ export default function BlackberryAboutContent() {
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300 text-center"
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-20 md:mb-24 lg:mb-32 transition-all duration-300 text-center"
               >
                 The Timeframe
               </motion.h3>
@@ -584,7 +584,7 @@ export default function BlackberryAboutContent() {
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 text-center"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-16 md:mb-20 lg:mb-24 opacity-55 text-center"
               >
                 [03]
               </motion.div>
@@ -595,7 +595,7 @@ export default function BlackberryAboutContent() {
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300 text-center"
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-20 md:mb-24 lg:mb-32 transition-all duration-300 text-center"
               >
                 The Method
               </motion.h3>
