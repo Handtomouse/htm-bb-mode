@@ -184,6 +184,14 @@
     "tagline": "Modern Italian dining"
   },
   {
+    "name": "MapleMoon",
+    "sector": "Food & Beverage",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Premium maple syrup"
+  },
+  {
     "name": "MedBox",
     "sector": "Health / Wellness",
     "projects": 1,
@@ -201,12 +209,13 @@
     "logo": "/images/clients/miss-double-bay.png"
   },
   {
-    "name": "MapleMoon",
-    "sector": "Food & Beverage",
-    "projects": 1,
+    "name": "Mullet Boards",
+    "sector": "Surfing / Lifestyle",
+    "projects": 2,
     "featured": false,
-    "status": "completed",
-    "tagline": "Premium maple syrup"
+    "status": "active",
+    "website": "https://www.mulletboards.com",
+    "logo": "/images/clients/mullet-boards.png"
   },
   {
     "name": "My Flower Man",
@@ -215,15 +224,6 @@
     "featured": false,
     "status": "completed",
     "logo": "/images/clients/mfm.png"
-  },
-  {
-    "name": "Mullet Boards",
-    "sector": "Surfing / Lifestyle",
-    "projects": 2,
-    "featured": false,
-    "status": "active",
-    "website": "https://www.mulletboards.com",
-    "logo": "/images/clients/mullet-boards.png"
   },
   {
     "name": "People's Choice",
