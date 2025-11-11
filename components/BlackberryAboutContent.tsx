@@ -1130,6 +1130,8 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [countedValue, setCountedValue] = useState("0");
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 }); // Improvement #23: 3D perspective
+  const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -1141,6 +1143,11 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     const deltaY = e.clientY - centerY;
     const strength = 0.25; // Improvement #4: Enhanced parallax
     setOffset({ x: deltaX * strength, y: deltaY * strength });
+
+    // Improvement #23: 3D tilt based on mouse position
+    const rotateX = -(deltaY / rect.height) * 15; // Max 15deg tilt
+    const rotateY = (deltaX / rect.width) * 15;
+    setRotation({ x: rotateX, y: rotateY });
   };
 
   // Improvement #2: Count-up animation
@@ -1180,6 +1187,13 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     }, stepDuration);
   }, [value, hasAnimated]);
 
+  // Improvement #38: Click to reset animation
+  const handleClick = () => {
+    setHasAnimated(false);
+    setCountedValue("0");
+    setTimeout(() => animateValue(), 100);
+  };
+
   return (
     <motion.div
       ref={cardRef}
@@ -1196,31 +1210,85 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       }}
       onViewportEnter={animateValue}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => setOffset({ x: 0, y: 0 })}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setOffset({ x: 0, y: 0 });
+        setRotation({ x: 0, y: 0 });
+        setIsHovered(false);
+      }}
+      onClick={handleClick}
       whileHover={{ borderColor: ACCENT }}
-      // Improvement #5: Rotating border gradient (simplified with animated shadow)
+      // Improvement #26: Breathing idle animation + #3: Pulse glow
       animate={{
         boxShadow: [
           '0 0 40px rgba(255,157,35,0.3)',
           '0 0 50px rgba(255,157,35,0.5)',
           '0 0 40px rgba(255,157,35,0.3)'
-        ]
+        ],
+        scale: isHovered ? 1 : [1, 1.01, 1]
       }}
-      // Improvement #3: Subtle pulse
       transition={{
-        boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+        boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+        scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
       }}
       style={{
-        transform: `translate(${offset.x}px, ${offset.y}px)`
+        transform: `translate(${offset.x}px, ${offset.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+        transformStyle: 'preserve-3d',
+        willChange: 'transform'
       }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm p-10 md:p-12 lg:p-16 text-center transition-all duration-700 cursor-default aspect-[4/3]"
+      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm p-10 md:p-12 lg:p-16 text-center transition-all duration-700 cursor-pointer aspect-[4/3] hover:cursor-pointer"
     >
       <div className="text-[48px] md:text-[64px] lg:text-[84px] font-black text-[#ff9d23] tabular-nums leading-none" style={{ textShadow: '0 0 20px rgba(255,157,35,0.3)' }}>
         {countedValue}
       </div>
-      <div className="text-[16px] md:text-[20px] lg:text-[24px] text-white/80 font-medium uppercase mt-6 tracking-[0.12em]">
-        {label}
-      </div>
+      {/* Improvement #24: Letter-by-letter label reveal */}
+      <motion.div
+        className="text-[16px] md:text-[20px] lg:text-[24px] text-white/80 font-medium uppercase mt-6 tracking-[0.12em]"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        {label.split('').map((char, i) => (
+          <motion.span
+            key={i}
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ delay: delay + 0.8 + (i * 0.03), duration: 0.2 }}
+          >
+            {char === ' ' ? '\u00A0' : char}
+          </motion.span>
+        ))}
+      </motion.div>
+
+      {/* Improvement #31: Time period indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: delay + 1.2, duration: 0.6 }}
+        className="text-[11px] md:text-[13px] text-white/40 uppercase tracking-wider mt-2"
+      >
+        Since 2020
+      </motion.div>
+
+      {/* Improvement #30: Animated progress bar */}
+      <motion.div
+        className="mt-4 w-full h-[2px] bg-white/10 rounded-full overflow-hidden"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: delay + 1.4 }}
+      >
+        <motion.div
+          className="h-full bg-gradient-to-r from-[#ff9d23]/60 to-[#ff9d23] rounded-full"
+          initial={{ width: "0%" }}
+          whileInView={{ width: value.includes('%') ? value : value.includes('+') ? "100%" : "85%" }}
+          viewport={{ once: true }}
+          transition={{ delay: delay + 1.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </motion.div>
     </motion.div>
   );
 }
