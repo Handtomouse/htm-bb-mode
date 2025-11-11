@@ -101,6 +101,22 @@ const DESTINATION_HINTS: Record<string, string[]> = {
   retro: ["Nostalgic", "Vintage", "Classic", "Timeless", "Heritage"],
 };
 
+// Performance constants - extracted to module level to prevent re-allocation
+const PARALLAX_MULTIPLIERS = [0.3, 0.6, 1.0] as const; // Layer 0 = slowest, Layer 2 = fastest
+const LAYER_SIZE_MULTIPLIERS = [0.8, 1.2, 1.6] as const;
+const LAYER_OPACITY_MULTIPLIERS = [0.5, 0.8, 1] as const;
+const SPEED_LINE_COUNT = 12;
+const SPEED_LINE_INDICES = Array.from({ length: SPEED_LINE_COUNT }, (_, i) => i);
+
+// Shared AudioContext - create once and reuse for all sounds (major memory savings)
+let sharedAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!sharedAudioContext && typeof window !== 'undefined') {
+    sharedAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return sharedAudioContext;
+};
+
 interface Star {
   id: number;
   x: number;
@@ -146,7 +162,6 @@ export default function BlackberryWormholeContent() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [showStats, setShowStats] = useState(false);
-  const [konamiSequence, setKonamiSequence] = useState<string[]>([]);
   const [konamiActive, setKonamiActive] = useState(false);
   const [starDensity, setStarDensity] = useState(75);
   const [showWhiteFlash, setShowWhiteFlash] = useState(false);
@@ -165,11 +180,13 @@ export default function BlackberryWormholeContent() {
     color: string;
   }>>([]);
 
-  // Sound effects using Web Audio API
+  // Sound effects using Web Audio API (shared context for performance)
   const playSound = (type: 'whoosh' | 'beep' | 'warp' | 'abort') => {
     if (!soundEnabled) return;
 
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = getAudioContext();
+    if (!audioContext) return;
+
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -335,12 +352,19 @@ export default function BlackberryWormholeContent() {
     return () => clearInterval(interval);
   }, []);
 
-  // Track mouse movement for parallax effect
+  // Track mouse movement for parallax effect (throttled with RAF for 60fps max)
   useEffect(() => {
+    let rafId: number | null = null;
+
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: (e.clientX - 240) * 0.05,
-        y: (e.clientY - 400) * 0.05,
+      if (rafId !== null) return; // Skip if already scheduled
+
+      rafId = requestAnimationFrame(() => {
+        setMousePos({
+          x: (e.clientX - 240) * 0.05,
+          y: (e.clientY - 400) * 0.05,
+        });
+        rafId = null;
       });
     };
 
@@ -358,6 +382,7 @@ export default function BlackberryWormholeContent() {
     window.addEventListener("deviceorientation", handleOrientation);
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("deviceorientation", handleOrientation);
     };
@@ -393,24 +418,32 @@ export default function BlackberryWormholeContent() {
     return () => window.removeEventListener("click", handleClick);
   }, [isWarping, showExitWarning, soundEnabled, lastClickTime]);
 
-  // Konami Code detection
+  // Konami Code detection (lazy loaded - only active when arrow keys pressed)
   useEffect(() => {
+    if (konamiActive) return; // Don't attach if already active
+
     const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let sequence: string[] = [];
 
     const handleKonami = (e: KeyboardEvent) => {
-      const newSequence = [...konamiSequence, e.key].slice(-10);
-      setKonamiSequence(newSequence);
+      // Only track relevant keys to reduce overhead
+      const relevantKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+      if (!relevantKeys.includes(e.key)) return;
 
-      if (newSequence.join(',') === konamiCode.join(',')) {
+      sequence.push(e.key);
+      if (sequence.length > 10) sequence.shift();
+
+      if (sequence.length === 10 && sequence.join(',') === konamiCode.join(',')) {
         setKonamiActive(true);
         playSound('warp');
         setTimeout(() => setKonamiActive(false), 10000);
+        sequence = []; // Reset
       }
     };
 
     window.addEventListener('keydown', handleKonami);
     return () => window.removeEventListener('keydown', handleKonami);
-  }, [konamiSequence, playSound]);
+  }, [konamiActive, playSound]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -504,9 +537,20 @@ export default function BlackberryWormholeContent() {
     return () => cancelAnimationFrame(animationFrameId);
   }, [burstParticles.length]);
 
+  // Memoize category weights (only recalculate per hour)
+  const currentHour = new Date().getHours();
+  const baseCategoryWeights = useMemo(() => {
+    if (currentHour >= 6 && currentHour < 12) {
+      return { interactive: 0.35, educational: 0.3, music: 0.2, retro: 0.15 };
+    } else if (currentHour >= 22 || currentHour < 6) {
+      return { weirdFun: 0.4, games: 0.3, interactive: 0.2, retro: 0.1 };
+    } else {
+      return { interactive: 0.3, games: 0.25, weirdFun: 0.2, music: 0.1, educational: 0.1, retro: 0.05 };
+    }
+  }, [currentHour]);
+
   // Get random destination (respecting category filters)
   const getRandomDestination = () => {
-    const hour = new Date().getHours();
     const isEasterEgg = Math.random() < 0.01;
 
     if (isEasterEgg) {
@@ -532,19 +576,10 @@ export default function BlackberryWormholeContent() {
         };
       }
 
-      let categoryWeights: Record<string, number> = {};
-      if (hour >= 6 && hour < 12) {
-        categoryWeights = { interactive: 0.35, educational: 0.3, music: 0.2, retro: 0.15 };
-      } else if (hour >= 22 || hour < 6) {
-        categoryWeights = { weirdFun: 0.4, games: 0.3, interactive: 0.2, retro: 0.1 };
-      } else {
-        categoryWeights = { interactive: 0.3, games: 0.25, weirdFun: 0.2, music: 0.1, educational: 0.1, retro: 0.05 };
-      }
-
       const filteredWeights: Record<string, number> = {};
       let totalWeight = 0;
       for (const cat of enabledCats) {
-        const weight = categoryWeights[cat] || (1 / enabledCats.length);
+        const weight = baseCategoryWeights[cat] || (1 / enabledCats.length);
         filteredWeights[cat] = weight;
         totalWeight += weight;
       }
@@ -760,18 +795,14 @@ export default function BlackberryWormholeContent() {
             const scale = perspective / (perspective + star.z);
 
             // Parallax depth effect based on layer (background moves slower than foreground)
-            const parallaxMultipliers = [0.3, 0.6, 1.0]; // Layer 0 = slowest, Layer 2 = fastest
-            const parallaxX = mousePos.x * parallaxMultipliers[star.layer];
-            const parallaxY = mousePos.y * parallaxMultipliers[star.layer];
+            const parallaxX = mousePos.x * PARALLAX_MULTIPLIERS[star.layer];
+            const parallaxY = mousePos.y * PARALLAX_MULTIPLIERS[star.layer];
 
             const x = star.x * scale + 240 + parallaxX;
             const y = star.y * scale + 400 + parallaxY;
 
-            const layerSizeMultipliers = [0.8, 1.2, 1.6];
-            const layerOpacityMultipliers = [0.5, 0.8, 1];
-
-            const brightness = (1 - star.z / 2000) * layerOpacityMultipliers[star.layer];
-            const size = Math.max(1.5, 4 * scale * layerSizeMultipliers[star.layer]);
+            const brightness = (1 - star.z / 2000) * LAYER_OPACITY_MULTIPLIERS[star.layer];
+            const size = Math.max(1.5, 4 * scale * LAYER_SIZE_MULTIPLIERS[star.layer]);
 
             // Star Wars-style dramatic streak multipliers
             const streakMultiplier = isHyperhyperspace ? 25 : (isWarping ? 12 : (boost ? 5 : 1));
@@ -943,7 +974,7 @@ export default function BlackberryWormholeContent() {
         <>
           {/* Speed Lines (Comic book style motion lines) */}
           <div className="absolute inset-0 pointer-events-none z-[99]" style={{ overflow: 'hidden' }}>
-            {[...Array(12)].map((_, i) => (
+            {SPEED_LINE_INDICES.map((i) => (
               <div
                 key={i}
                 className="absolute"
