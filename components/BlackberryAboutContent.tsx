@@ -500,7 +500,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[90vh] md:mb-[100vh] lg:mb-[110vh]"
+              className="mb-[120vh] md:mb-[140vh] lg:mb-[160vh]"
             >
               {/* Number Label - Centered with hover glow */}
               <motion.div
@@ -539,7 +539,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[90vh] md:mb-[100vh] lg:mb-[110vh]"
+              className="mb-[120vh] md:mb-[140vh] lg:mb-[160vh]"
             >
               {/* Number - Centered with hover glow */}
               <motion.div
@@ -578,7 +578,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[90vh] md:mb-[100vh] lg:mb-[110vh]"
+              className="mb-[120vh] md:mb-[140vh] lg:mb-[160vh]"
             >
               {/* Number - Centered with hover glow */}
               <motion.div
