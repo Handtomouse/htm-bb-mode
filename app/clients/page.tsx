@@ -215,14 +215,8 @@ export default function ClientsPage() {
     fetch("/data/clients.json")
       .then((res) => res.json())
       .then((data) => {
-        // Sort: featured first, then by sector, then alphabetically
-        const sorted = [...data].sort((a, b) => {
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          if (a.sector !== b.sector) return a.sector.localeCompare(b.sector);
-          return a.name.localeCompare(b.name);
-        });
-        setClients(sorted);
+        // clients.json is already alphabetically sorted
+        setClients(data);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
