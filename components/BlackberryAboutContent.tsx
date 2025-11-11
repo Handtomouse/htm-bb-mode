@@ -7,88 +7,6 @@ import Image from "next/image";
 const ACCENT = "#ff9d23";
 const ACCENT_HOVER = "#FFB84D";
 
-// FadeSection Component - Custom scroll-based fade with pixel-perfect control
-function FadeSection({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [opacity, setOpacity] = useState(1);
-
-  useEffect(() => {
-    let rafId: number | null = null;
-    let ticking = false;
-
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const updateOpacity = () => {
-      if (!ref.current) return;
-
-      const rect = ref.current.getBoundingClientRect();
-      const sectionTop = rect.top;
-      const viewportHeight = window.innerHeight;
-      const viewportWidth = window.innerWidth;
-      const isMobile = viewportWidth < 768;
-
-      // Responsive fade zones: Sections stay visible well past middle (50vh)
-      // MOBILE: Fade IN 95vh→60vh, Visible 60vh→8vh (past middle!), Fade OUT 8vh→5vh
-      // DESKTOP: Fade IN 100vh→70vh, Visible 70vh→8vh (past middle!), Fade OUT 8vh→5vh
-
-      const fadeInStart = isMobile ? viewportHeight * 0.95 : viewportHeight * 1.0;
-      const fadeInEnd = isMobile ? viewportHeight * 0.6 : viewportHeight * 0.7;
-      const fadeOutStart = viewportHeight * 0.08; // Same for both - only fade at extreme top
-      const fadeOutEnd = viewportHeight * 0.05; // Fully faded by 5vh
-
-      let newOpacity = 1;
-
-      // Reduced motion: instant show/hide, no gradual fade
-      if (prefersReducedMotion) {
-        newOpacity = (sectionTop < viewportHeight && rect.bottom > 0) ? 1 : 0;
-      } else {
-        if (sectionTop > fadeInStart) {
-          newOpacity = 0;
-        } else if (sectionTop > fadeInEnd) {
-          const fadeInProgress = (fadeInStart - sectionTop) / (fadeInStart - fadeInEnd);
-          newOpacity = Math.min(1, fadeInProgress);
-        } else if (sectionTop > fadeOutStart) {
-          newOpacity = 1;
-        } else if (sectionTop > fadeOutEnd) {
-          const fadeOutProgress = (sectionTop - fadeOutEnd) / (fadeOutStart - fadeOutEnd);
-          newOpacity = Math.max(0, fadeOutProgress);
-        } else {
-          newOpacity = 0;
-        }
-      }
-
-      setOpacity(newOpacity);
-      ticking = false;
-    };
-
-    const handleScroll = () => {
-      if (!ticking) {
-        rafId = requestAnimationFrame(updateOpacity);
-        ticking = true;
-      }
-    };
-
-    updateOpacity(); // Initial check
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-      }
-    };
-  }, []);
-
-  return (
-    <div ref={ref} style={{ opacity, transition: 'opacity 0.1s ease-out' }}>
-      {children}
-    </div>
-  );
-}
-
 interface AboutData {
   hero: {
     title: string;
@@ -558,7 +476,7 @@ export default function BlackberryAboutContent() {
         </section>
 
         {/* Philosophy Section */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           {/* Philosophy heading with subtle gradient backdrop */}
           <motion.div
@@ -622,10 +540,10 @@ export default function BlackberryAboutContent() {
             <span className="absolute -right-6 md:-right-12 bottom-0 text-[80px] md:text-[120px] text-[#ff9d23]/20 leading-none">"</span>
           </motion.blockquote>
           </section>
-        </FadeSection>
+        
 
         {/* Empty Space Reveal Window 1 */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
@@ -639,10 +557,10 @@ export default function BlackberryAboutContent() {
             </div>
             </motion.div>
           </section>
-        </FadeSection>
+        
 
         {/* Stats Grid - Full Width */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0 }}
@@ -661,10 +579,10 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={1.25} />
           </div>
           </section>
-        </FadeSection>
+        
 
         {/* Beliefs - Full Width Background */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex flex-col items-center justify-center">
           <div className="w-full max-w-6xl mx-auto space-y-8 md:space-y-12">
             <motion.h2
@@ -682,10 +600,10 @@ export default function BlackberryAboutContent() {
             </div>
           </div>
           </section>
-        </FadeSection>
+        
 
         {/* Services Grid */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0 }}
@@ -701,10 +619,10 @@ export default function BlackberryAboutContent() {
             ))}
           </div>
           </section>
-        </FadeSection>
+        
 
         {/* Collapsible Sections */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex flex-col items-center justify-center space-y-8 md:space-y-12">
             <LuxuryCollapsibleSection
               title="How I Work"
@@ -867,10 +785,10 @@ export default function BlackberryAboutContent() {
               </div>
             </LuxuryCollapsibleSection>
           </section>
-        </FadeSection>
+        
 
         {/* Now Block - Full Width Accent */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0 }}
@@ -886,10 +804,10 @@ export default function BlackberryAboutContent() {
             <p className="text-[20px] md:text-[28px] text-[#ff9d23] font-bold tracking-wide">{data.now.status}</p>
             </motion.div>
           </section>
-        </FadeSection>
+        
 
         {/* Empty Space Reveal Window 2 */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0, y: 40, filter: 'blur(15px)' }}
@@ -906,10 +824,10 @@ export default function BlackberryAboutContent() {
             </div>
             </motion.div>
           </section>
-        </FadeSection>
+        
 
         {/* Contact CTA - Full Height */}
-        <FadeSection>
+        
           <section className="h-[150vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -956,7 +874,7 @@ export default function BlackberryAboutContent() {
             </motion.a>
             </motion.div>
           </section>
-        </FadeSection>
+        
 
       </div>
     </div>
