@@ -478,7 +478,7 @@ export default function BlackberryAboutContent() {
         {/* Philosophy Section - Centered with Title */}
 
           <section className="min-h-screen flex flex-col items-center justify-center py-12 md:py-16 lg:py-20 scroll-smooth">
-          <div className="max-w-3xl w-full px-12 md:px-16 lg:px-24 text-center">
+          <div className="max-w-3xl w-full px-12 md:px-16 lg:px-24 flex flex-col items-center">
 
             {/* Section Title - "Philosophy" */}
             <motion.div
@@ -488,10 +488,10 @@ export default function BlackberryAboutContent() {
               transition={{ duration: 1.6, delay: -0.2, ease: [0.25, 0.1, 0.25, 1] }}
               className="mb-[60vh] md:mb-[70vh] lg:mb-[80vh]"
             >
-              <h2 className="text-[48px] md:text-[64px] lg:text-[80px] font-light text-[#ff9d23]/70 tracking-[0.15em] uppercase mb-8">
+              <h2 className="text-[48px] md:text-[64px] lg:text-[80px] font-light text-[#ff9d23]/70 tracking-[0.15em] uppercase mb-8 text-center">
                 Philosophy
               </h2>
-              <div className="h-[1px] w-24 mx-auto bg-[#ff9d23]/30" />
+              <div className="h-[1px] w-24 bg-[#ff9d23]/30" />
             </motion.div>
 
             {/* Philosophy - Numbered Manifesto */}
@@ -506,7 +506,7 @@ export default function BlackberryAboutContent() {
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 mx-auto"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 text-center"
               >
                 [01]
               </motion.div>
@@ -517,17 +517,17 @@ export default function BlackberryAboutContent() {
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300"
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300 text-center"
               >
                 The Intersection
               </motion.h3>
-              {/* Body Text - Centered with scale entrance */}
+              {/* Body Text - Left-aligned with scale entrance */}
               <motion.p
                 initial={{ opacity: 0, scale: 0.98 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.1] font-light tracking-wide mx-auto"
+                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.1] font-light tracking-wide text-left max-w-2xl"
               >
                 I work where ideas meet culture — finding the <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">small, precise angle</motion.span> no one else has noticed yet.
               </motion.p>
@@ -545,7 +545,7 @@ export default function BlackberryAboutContent() {
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 mx-auto"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 text-center"
               >
                 [02]
               </motion.div>
@@ -556,17 +556,17 @@ export default function BlackberryAboutContent() {
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300"
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300 text-center"
               >
                 The Timeframe
               </motion.h3>
-              {/* Body Text - Centered with scale entrance */}
+              {/* Body Text - Left-aligned with scale entrance */}
               <motion.p
                 initial={{ opacity: 0, scale: 0.98 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-normal tracking-wide mx-auto"
+                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-normal tracking-wide text-left max-w-2xl"
               >
                 Anyone can make something that looks current; the work is making something that still feels right in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">five years</motion.span>.
               </motion.p>
@@ -584,7 +584,7 @@ export default function BlackberryAboutContent() {
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 mx-auto"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55 text-center"
               >
                 [03]
               </motion.div>
@@ -595,17 +595,17 @@ export default function BlackberryAboutContent() {
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300"
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300 text-center"
               >
                 The Method
               </motion.h3>
-              {/* Body Text - Centered with scale entrance */}
+              {/* Body Text - Left-aligned with scale entrance */}
               <motion.p
                 initial={{ opacity: 0, scale: 0.98 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[1.9] font-medium tracking-wide mx-auto"
+                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[1.9] font-medium tracking-wide text-left max-w-2xl"
               >
                 That comes from <em className="text-white italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </motion.p>
@@ -617,16 +617,16 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, scaleX: 1 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="h-[0.5px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent mt-[40vh] mb-[100px] md:mb-[120px] lg:mb-[140px] mx-auto"
+              className="h-[0.5px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent mt-[40vh] mb-[100px] md:mb-[120px] lg:mb-[140px]"
             />
 
-            {/* Final Statement - Centered ethereal entrance */}
+            {/* Final Statement - Left-aligned ethereal entrance */}
             <motion.p
               initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.3] font-extralight tracking-wide mx-auto"
+              className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.3] font-extralight tracking-wide text-left max-w-2xl"
             >
               I'm not interested in trends or templates. I'm interested in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">ideas with backbone</motion.span> — things that stick because they mean something.
             </motion.p>
