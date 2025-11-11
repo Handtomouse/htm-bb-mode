@@ -136,8 +136,30 @@ function ClientCell({
             className="max-w-[120px] md:max-w-[140px] lg:max-w-[160px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-opacity duration-500 filter brightness-0 invert"
           />
         ) : (
-          <div className="text-[16px] md:text-[18px] lg:text-[20px] font-extralight group-hover:font-light uppercase transition-all duration-500 text-white/70 group-hover:text-white group-hover:tracking-[0.2em]" style={{ letterSpacing: '0.15em' }}>
-            {client.name}
+          <div className="relative px-4 py-2">
+            {/* Frosted backdrop */}
+            <div className="absolute inset-0 backdrop-blur-[2px] bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-sm" />
+
+            {/* Luxury text wordmark */}
+            <div
+              className="relative text-[13px] md:text-[15px] lg:text-[17px] font-thin transition-all duration-700 bg-gradient-to-b from-white/80 via-white/70 to-white/50 bg-clip-text text-transparent group-hover:from-white group-hover:via-white/95 group-hover:to-white/80"
+              style={{
+                letterSpacing: '0.25em',
+                lineHeight: 1.6,
+                textShadow: '0 0 20px rgba(255,255,255,0)',
+                transition: 'all 0.7s cubic-bezier(0.43, 0.13, 0.23, 0.96)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.letterSpacing = '0.35em';
+                e.currentTarget.style.textShadow = '0 0 20px rgba(255,255,255,0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.letterSpacing = '0.25em';
+                e.currentTarget.style.textShadow = '0 0 20px rgba(255,255,255,0)';
+              }}
+            >
+              {client.name}
+            </div>
           </div>
         )}
 
