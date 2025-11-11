@@ -18,6 +18,14 @@
     "logo": "/images/clients/allegra-spender.png"
   },
   {
+    "name": "Align Property Solutions",
+    "sector": "Financial Services",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Property investment solutions"
+  },
+  {
     "name": "Allianz Retire Plus",
     "sector": "Financial Services",
     "projects": 4,
@@ -36,6 +44,14 @@
     "featured": false,
     "status": "completed",
     "logo": "/images/clients/anitaj.png"
+  },
+  {
+    "name": "Arc Factory",
+    "sector": "Creative Agency",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Brand and digital agency"
   },
   {
     "name": "Bankwest",
@@ -58,6 +74,14 @@
     "featured": false,
     "status": "completed",
     "tagline": "Australia's oldest newspaper"
+  },
+  {
+    "name": "Bonds",
+    "sector": "Fashion / Lifestyle",
+    "projects": 3,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Iconic Australian underwear brand"
   },
   {
     "name": "CareSuper",
@@ -274,6 +298,14 @@
     "featured": false,
     "status": "completed",
     "logo": "/images/clients/the-char.png"
+  },
+  {
+    "name": "Trood Pratt & Co",
+    "sector": "Financial Services",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Accounting and advisory"
   },
   {
     "name": "Undercard",
