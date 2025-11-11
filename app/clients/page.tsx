@@ -112,15 +112,9 @@ export default function ClientsPage() {
 
       {/* Logo Grid */}
       <div className="max-w-7xl mx-auto px-8 pb-32">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border-t border-l border-white/10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
           {clients.map((client, index) => {
             const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
-            const initials = client.name
-              .split(" ")
-              .map((word) => word[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase();
 
             return (
               <motion.div
@@ -137,22 +131,11 @@ export default function ClientsPage() {
                   style={{ backgroundColor: sectorColor }}
                 />
 
-                {/* Logo or Initials */}
-                <div className="text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300 text-center px-4">
-                  {client.logo ? (
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-light">{client.name}</div>
-                  ) : (
-                    <div className="text-3xl md:text-4xl lg:text-5xl font-light opacity-40 group-hover:opacity-60">
-                      {initials}
-                    </div>
-                  )}
-                </div>
-
-                {/* Client name on hover */}
-                <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-[10px] md:text-[11px] font-light text-white/90 uppercase tracking-wider text-center">
+                {/* Client name as wordmark */}
+                <div className="text-white/70 group-hover:text-white group-hover:scale-105 transition-all duration-300 text-center px-6">
+                  <div className="text-[16px] md:text-[18px] lg:text-[20px] font-light uppercase tracking-[0.15em]">
                     {client.name}
-                  </p>
+                  </div>
                 </div>
 
                 {/* Subtle glow on hover */}

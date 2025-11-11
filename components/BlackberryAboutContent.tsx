@@ -477,95 +477,149 @@ export default function BlackberryAboutContent() {
 
         {/* Philosophy Section - Clean Text Only */}
 
-          <section className="min-h-screen flex flex-col items-center py-12 md:py-16 lg:py-20">
+          <section className="min-h-screen flex flex-col items-center py-12 md:py-16 lg:py-20 scroll-smooth">
           <div className="max-w-7xl w-full px-12 md:px-16 lg:px-24">
             {/* Philosophy - Numbered Manifesto */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
+              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: "-200px" }}
+              transition={{ duration: 1.4, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
+              className="mb-[80vh] md:mb-[85vh] lg:mb-[90vh]"
             >
-              {/* Number Label - Uniform size, soft weight, consistent opacity */}
-              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
+              {/* Number Label - With hover glow */}
+              <motion.div
+                whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
+                transition={{ duration: 0.3 }}
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55"
+              >
                 [01]
-              </div>
-              {/* Section Title - Readable, generous tracking */}
-              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16">
+              </motion.div>
+              {/* Section Title - With hover tracking expansion */}
+              <motion.h3
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: "-200px" }}
+                transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                whileHover={{ letterSpacing: '0.4em' }}
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300"
+              >
                 The Intersection
-              </h3>
-              {/* Body Text - Comfortable uniform reading, editorial indent */}
-              <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.1] font-light tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12">
-                I work where ideas meet culture — finding the <span className="text-[#ff9d23]/90 font-medium">small, precise angle</span> no one else has noticed yet.
-              </p>
+              </motion.h3>
+              {/* Body Text - With scale entrance */}
+              <motion.p
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-200px" }}
+                transition={{ duration: 1.4, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.1] font-light tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12"
+              >
+                I work where ideas meet culture — finding the <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">small, precise angle</motion.span> no one else has noticed yet.
+              </motion.p>
             </motion.div>
 
-            {/* Part 2 - Consistent structure */}
+            {/* Part 2 - Staggered entrance */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
+              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: "-200px" }}
+              transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+              className="mb-[80vh] md:mb-[85vh] lg:mb-[90vh]"
             >
-              {/* Number - Uniform size, consistent opacity */}
-              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
+              {/* Number - With hover glow */}
+              <motion.div
+                whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
+                transition={{ duration: 0.3 }}
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55"
+              >
                 [02]
-              </div>
-              {/* Section Title - Consistent refinement */}
-              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16">
+              </motion.div>
+              {/* Section Title - With hover tracking expansion */}
+              <motion.h3
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: "-200px" }}
+                transition={{ duration: 1.4, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                whileHover={{ letterSpacing: '0.4em' }}
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300"
+              >
                 The Timeframe
-              </h3>
-              {/* Body Text - Uniform comfortable reading, weight variation */}
-              <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-normal tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12">
-                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23]/90 font-medium">five years</span>.
-              </p>
+              </motion.h3>
+              {/* Body Text - With scale entrance */}
+              <motion.p
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-200px" }}
+                transition={{ duration: 1.4, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-normal tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12"
+              >
+                Anyone can make something that looks current; the work is making something that still feels right in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">five years</motion.span>.
+              </motion.p>
             </motion.div>
 
-            {/* Part 3 - Consistent structure */}
+            {/* Part 3 - Staggered entrance */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
+              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: "-200px" }}
+              transition={{ duration: 1.4, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+              className="mb-[80vh] md:mb-[85vh] lg:mb-[90vh]"
             >
-              {/* Number - Uniform size, consistent opacity */}
-              <div className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55">
+              {/* Number - With hover glow */}
+              <motion.div
+                whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
+                transition={{ duration: 0.3 }}
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] mb-8 md:mb-10 lg:mb-12 opacity-55"
+              >
                 [03]
-              </div>
-              {/* Section Title - Consistent refinement */}
-              <h3 className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16">
+              </motion.div>
+              {/* Section Title - With hover tracking expansion */}
+              <motion.h3
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: "-200px" }}
+                transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+                whileHover={{ letterSpacing: '0.4em' }}
+                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] mb-10 md:mb-12 lg:mb-16 transition-all duration-300"
+              >
                 The Method
-              </h3>
-              {/* Body Text - Uniform reading, heaviest weight for contrast */}
-              <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[1.9] font-medium tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12">
+              </motion.h3>
+              {/* Body Text - With scale entrance */}
+              <motion.p
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-200px" }}
+                transition={{ duration: 1.4, delay: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
+                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[1.9] font-medium tracking-wide max-w-4xl pl-8 md:pl-10 lg:pl-12"
+              >
                 That comes from <em className="text-white italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
-              </p>
+              </motion.p>
             </motion.div>
 
-            {/* Divider - Ultra-thin hairline, closer to content */}
+            {/* Divider - Ultra-thin hairline */}
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.0 }}
-              className="h-[0.5px] bg-gradient-to-r from-[#ff9d23]/20 via-[#ff9d23]/5 to-transparent mb-[100px] md:mb-[120px] lg:mb-[140px]"
+              initial={{ opacity: 0, scaleX: 0 }}
+              whileInView={{ opacity: 1, scaleX: 1 }}
+              viewport={{ once: true, margin: "-200px" }}
+              transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
+              className="h-[0.5px] bg-gradient-to-r from-[#ff9d23]/20 via-[#ff9d23]/5 to-transparent mb-[100px] md:mb-[120px] lg:mb-[140px] origin-left"
             />
 
-            {/* Final Statement - Ethereal, distinctive indent */}
+            {/* Final Statement - Ethereal entrance */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.0, delay: 0.3 }}
+              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: "-200px" }}
+              transition={{ duration: 1.4, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
               className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.3] font-extralight tracking-wide max-w-4xl pl-12 md:pl-16 lg:pl-20"
             >
-              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23]/90 font-medium">ideas with backbone</span> — things that stick because they mean something.
+              I'm not interested in trends or templates. I'm interested in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">ideas with backbone</motion.span> — things that stick because they mean something.
             </motion.p>
           </div>
           </section>
+
+        {/* Breathing Room */}
+        <div className="h-[40vh]" />
         
 
         {/* Empty Space Reveal Window 1 */}
