@@ -1124,6 +1124,8 @@ function TypewriterManifesto({
 // Luxury Stat Card with Magnetic Hover
 function LuxuryStatCard({ label, value, delay }: { label: string; value: string; delay: number }) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [countedValue, setCountedValue] = useState("0");
+  const [hasAnimated, setHasAnimated] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -1133,29 +1135,86 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     const centerY = rect.top + rect.height / 2;
     const deltaX = e.clientX - centerX;
     const deltaY = e.clientY - centerY;
-    const strength = 0.15;
+    const strength = 0.25; // Improvement #4: Enhanced parallax
     setOffset({ x: deltaX * strength, y: deltaY * strength });
   };
+
+  // Improvement #2: Count-up animation
+  const animateValue = useCallback(() => {
+    if (hasAnimated) return;
+    setHasAnimated(true);
+
+    const numericMatch = value.match(/[\d.]+/);
+    if (!numericMatch) {
+      setCountedValue(value);
+      return;
+    }
+
+    const targetNum = parseFloat(numericMatch[0]);
+    const prefix = value.substring(0, numericMatch.index);
+    const suffix = value.substring(numericMatch.index! + numericMatch[0].length);
+    const duration = 1500;
+    const steps = 60;
+    const stepDuration = duration / steps;
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const currentValue = targetNum * easedProgress;
+
+      if (currentStep >= steps) {
+        setCountedValue(value);
+        clearInterval(interval);
+      } else {
+        const formatted = suffix.includes('%') || suffix.includes('+')
+          ? Math.floor(currentValue)
+          : currentValue.toFixed(value.includes('.') ? 1 : 0);
+        setCountedValue(`${prefix}${formatted}${suffix}`);
+      }
+    }, stepDuration);
+  }, [value, hasAnimated]);
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, scale: 0.85, filter: 'blur(10px)' }}
-      whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+      // Improvement #1: Remove blur, #7: Add bounce scale
+      initial={{ opacity: 0, y: 20, scale: 0.85 }}
+      whileInView={{ opacity: 1, y: 0, scale: [0.85, 1.05, 1] }}
       viewport={{ once: true, amount: 0.3, margin: "-100px" }}
-      transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      // Improvement #6: Increased stagger
+      transition={{
+        delay,
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1],
+        scale: { times: [0, 0.7, 1], duration: 0.8 }
+      }}
+      onViewportEnter={animateValue}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setOffset({ x: 0, y: 0 })}
       whileHover={{ borderColor: ACCENT }}
+      // Improvement #5: Rotating border gradient (simplified with animated shadow)
+      animate={{
+        boxShadow: [
+          '0 0 40px rgba(255,157,35,0.3)',
+          '0 0 50px rgba(255,157,35,0.5)',
+          '0 0 40px rgba(255,157,35,0.3)'
+        ]
+      }}
+      // Improvement #3: Subtle pulse
+      transition={{
+        boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+      }}
       style={{
         transform: `translate(${offset.x}px, ${offset.y}px)`
       }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm p-10 md:p-12 lg:p-16 text-center transition-all duration-700 cursor-default hover:shadow-[0_0_40px_rgba(255,157,35,0.5)]"
+      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm p-10 md:p-12 lg:p-16 text-center transition-all duration-700 cursor-default aspect-[4/3]"
     >
-      <div className="text-[42px] md:text-[56px] lg:text-[72px] font-black text-[#ff9d23] tabular-nums leading-none" style={{ textShadow: '0 0 20px rgba(255,157,35,0.3)' }}>
-        {value}
+      <div className="text-[48px] md:text-[64px] lg:text-[84px] font-black text-[#ff9d23] tabular-nums leading-none" style={{ textShadow: '0 0 20px rgba(255,157,35,0.3)' }}>
+        {countedValue}
       </div>
-      <div className="text-[16px] md:text-[20px] lg:text-[24px] text-white/80 font-medium uppercase mt-6 tracking-[0.08em]">
+      <div className="text-[16px] md:text-[20px] lg:text-[24px] text-white/80 font-medium uppercase mt-6 tracking-[0.12em]">
         {label}
       </div>
     </motion.div>

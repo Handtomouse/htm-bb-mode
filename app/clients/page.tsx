@@ -254,6 +254,17 @@ export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
+  // ESC key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedClient) {
+        setSelectedClient(null);
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [selectedClient]);
+
   // Load clients
   useEffect(() => {
     fetch("/data/clients.json")
@@ -475,18 +486,22 @@ export default function ClientsPage() {
 
           {/* Modal Content */}
           <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
-            transition={{ type: "spring", damping: 30, stiffness: 250 }}
-            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-12 sm:p-16 md:p-20 lg:p-24 max-h-[85vh] overflow-y-auto"
+            initial={{ scale: 0.92, y: 20, rotate: -2 }}
+            animate={{ scale: 1, y: 0, rotate: 0 }}
+            exit={{ scale: 0.92, y: 20, rotate: -2 }}
+            transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
+            className="relative max-w-5xl w-full bg-[#0b0b0b] border-2 p-12 sm:p-16 md:p-20 lg:p-28 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
-              boxShadow: `0 0 60px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
+              borderImage: `linear-gradient(135deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40, transparent, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40) 1`,
+              boxShadow: `0 0 80px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}25, 0 0 120px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}15`,
               scrollbarWidth: 'thin',
-              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40 transparent`
+              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`,
+              animation: 'modalPulse 3s ease-in-out infinite'
             }}
           >
+            {/* Vignette overlay */}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(11,11,11,0.3) 100%)' }} />
             {/* Noise texture */}
             <div
               className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay"
@@ -496,17 +511,31 @@ export default function ClientsPage() {
               }}
             />
 
-            {/* Corner accents */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 opacity-40" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 opacity-40" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            {/* Corner accents - all 4 corners */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
 
-            {/* Scroll fade gradients */}
-            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#0b0b0b] to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none z-10" />
-            {/* Close button */}
+            {/* Scroll fade gradients - more pronounced */}
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0b0b0b] via-[#0b0b0b]/90 to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/90 to-transparent pointer-events-none z-10" />
+            {/* Close button with sector color accent */}
             <button
               onClick={() => setSelectedClient(null)}
-              className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95"
+              className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95"
+              style={{
+                boxShadow: `0 0 0 0 ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}00`,
+                transition: 'all 0.5s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = SECTOR_COLORS[selectedClient.sector] || '#ff9d23';
+                e.currentTarget.style.boxShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}60`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                e.currentTarget.style.boxShadow = '0 0 0 0 transparent';
+              }}
             >
               <div className="relative w-5 h-5">
                 <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white rotate-45 transition-all duration-500" />
@@ -514,71 +543,95 @@ export default function ClientsPage() {
               </div>
             </button>
 
+            {/* Featured Client Banner */}
+            {selectedClient.featured && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.05 }}
+                className="absolute top-0 left-0 px-8 py-3 bg-gradient-to-r from-transparent to-transparent"
+                style={{
+                  background: `linear-gradient(90deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40, transparent)`
+                }}
+              >
+                <span className="text-[10px] font-light tracking-[0.3em] uppercase text-white/70">Featured Client</span>
+              </motion.div>
+            )}
+
             {/* Client Logo/Name */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-12 pb-12 relative"
+              className="mb-20 pb-20 relative text-center"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               {selectedClient.logo ? (
                 <img
                   src={selectedClient.logo}
                   alt={selectedClient.name}
-                  className="max-w-[320px] h-auto mx-auto md:mx-0 opacity-90 filter brightness-0 invert"
-                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255,255,255,0.1))' }}
+                  className="max-w-[380px] h-auto mx-auto opacity-90 filter brightness-0 invert mb-8"
+                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 4px 12px rgba(255,255,255,0.15))' }}
                 />
               ) : (
-                <h2 className="text-[40px] md:text-[52px] font-thin text-white/90 tracking-[0.15em]">
+                <h2 className="text-[40px] md:text-[52px] font-thin text-white/90 tracking-[0.15em] mb-8">
                   {selectedClient.name}
                 </h2>
               )}
 
-              {/* Sector badge */}
-              <div className="mt-8">
+              {/* Sector badge inline with status */}
+              <div className="flex items-center justify-center gap-4 flex-wrap">
                 <span
-                  className="inline-block px-5 py-2 rounded-full text-[10px] font-light tracking-[0.25em] uppercase backdrop-blur-sm"
+                  className="inline-block px-6 py-2.5 rounded-full text-[11px] font-light tracking-[0.25em] uppercase backdrop-blur-sm transition-all duration-500 hover:scale-105"
                   style={{
-                    backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}15`,
-                    border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}30`,
-                    color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23'
+                    backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
+                    border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
+                    color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23',
+                    boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`
                   }}
                 >
                   {selectedClient.sector}
                 </span>
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full">
+                  <div
+                    className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
+                    style={{
+                      boxShadow: selectedClient.status === 'active' ? '0 0 12px #06ffa5, 0 0 20px #06ffa540' : 'none',
+                      animation: selectedClient.status === 'active' ? 'ripple 2s ease-in-out infinite' : 'none'
+                    }}
+                  />
+                  <span className="text-[10px] text-white/60 uppercase tracking-wider font-light">{selectedClient.status}</span>
+                </div>
               </div>
             </motion.div>
 
-            {/* Client Details Grid */}
+            {/* Client Details Grid - Asymmetric */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid md:grid-cols-2 gap-20 mb-16"
+              className="grid md:grid-cols-[40%_60%] gap-24 mb-20"
             >
-              {/* Left Column */}
-              <div className="space-y-10">
+              {/* Left Column - Key Info */}
+              <div className="space-y-12">
                 <div>
-                  <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Projects Delivered</p>
-                  <p className="text-[16px] text-white/80 font-light">{selectedClient.projects}</p>
-                </div>
-
-                <div>
-                  <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Status</p>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2.5 h-2.5 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5] animate-pulse' : 'bg-white/30'}`} style={{ boxShadow: selectedClient.status === 'active' ? '0 0 12px #06ffa5' : 'none' }} />
-                    <p className="text-[16px] text-white/80 font-light capitalize">{selectedClient.status}</p>
-                  </div>
+                  <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Projects Delivered
+                  </p>
+                  <p className="text-[20px] text-white/90 font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Relationship Since</p>
-                    <p className="text-[16px] text-white/80 font-light">
-                      {selectedClient.yearStarted}
-                      <span className="text-white/40 ml-2">
-                        ({new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'})
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      Timeline
+                    </p>
+                    <p className="text-[18px] text-white/80 font-light">
+                      {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
+                      <span className="block text-[14px] text-white/40 mt-1">
+                        {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
                   </div>
@@ -586,18 +639,31 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Website</p>
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                      Website
+                    </p>
                     <a
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group text-[16px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-2 relative"
+                      className="group text-[18px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative"
+                      style={{
+                        textShadow: '0 0 0 transparent',
+                        transition: 'all 0.5s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.textShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}80`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.textShadow = '0 0 0 transparent';
+                      }}
                     >
                       <span className="relative">
                         Visit Site
                         <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#ff9d23] transition-all duration-500 group-hover:w-full" />
                       </span>
-                      <svg className="w-3.5 h-3.5 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
@@ -605,36 +671,45 @@ export default function ClientsPage() {
                 )}
               </div>
 
-              {/* Right Column */}
-              <div className="space-y-10">
+              {/* Right Column - Main Content */}
+              <div className="space-y-12">
                 {selectedClient.tagline && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Tagline</p>
-                    <p className="text-[16px] text-white/80 font-light italic">{selectedClient.tagline}</p>
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-4">Tagline</p>
+                    <p className="text-[20px] text-white/85 font-light italic leading-relaxed bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent">{selectedClient.tagline}</p>
                   </div>
                 )}
 
                 {selectedClient.results && (
-                  <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Results</p>
-                    <p className="text-[16px] text-white/80 font-light leading-relaxed">{selectedClient.results}</p>
+                  <div className="p-8 bg-white/[0.02] border border-white/5 rounded-sm">
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                      Results
+                    </p>
+                    <p className="text-[18px] md:text-[20px] text-white/85 font-light leading-[1.7]">{selectedClient.results}</p>
                   </div>
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-4">Deliverables</p>
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      Deliverables
+                    </p>
                     <div className="flex flex-wrap gap-3">
                       {selectedClient.deliverables.map((item, i) => (
-                        <span
+                        <motion.span
                           key={i}
-                          className="px-5 py-2.5 text-[12px] bg-white/5 border border-white/10 text-white/70 font-light rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
+                          className="px-6 py-3 text-[13px] bg-white/5 border border-white/10 text-white/75 font-light rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
                           style={{
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                            boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
                           }}
                         >
                           {item}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
@@ -642,19 +717,26 @@ export default function ClientsPage() {
               </div>
             </motion.div>
 
-            {/* Testimonial */}
+            {/* Testimonial with decorative quotes */}
             {selectedClient.testimonial && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="pt-16 relative"
+                transition={{ duration: 0.6, delay: 0.35 }}
+                className="pt-20 relative"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-6">Testimonial</p>
-                <blockquote className="text-[22px] md:text-[28px] text-white/80 font-light italic leading-[1.8]">
-                  "{selectedClient.testimonial}"
+                <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-8">Testimonial</p>
+
+                {/* Large opening quote */}
+                <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
+
+                <blockquote className="relative text-[26px] md:text-[32px] text-white/85 font-light italic leading-[1.7] pl-16">
+                  {selectedClient.testimonial}
                 </blockquote>
+
+                {/* Large closing quote */}
+                <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
               </motion.div>
             )}
           </motion.div>
@@ -662,4 +744,21 @@ export default function ClientsPage() {
       )}
     </div>
   );
+}
+
+// Add CSS keyframes for animations
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes modalPulse {
+    0%, 100% { box-shadow: 0 0 80px rgba(255, 157, 35, 0.25), 0 0 120px rgba(255, 157, 35, 0.15); }
+    50% { box-shadow: 0 0 100px rgba(255, 157, 35, 0.35), 0 0 140px rgba(255, 157, 35, 0.20); }
+  }
+  @keyframes ripple {
+    0%, 100% { box-shadow: 0 0 12px #06ffa5, 0 0 20px rgba(6, 255, 165, 0.25); }
+    50% { box-shadow: 0 0 16px #06ffa5, 0 0 30px rgba(6, 255, 165, 0.40); }
+  }
+`;
+if (typeof document !== 'undefined' && !document.querySelector('#modal-animations')) {
+  style.id = 'modal-animations';
+  document.head.appendChild(style);
 }
