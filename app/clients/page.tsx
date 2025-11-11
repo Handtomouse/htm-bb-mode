@@ -457,87 +457,147 @@ export default function ClientsPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
           onClick={() => setSelectedClient(null)}
         >
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
+          {/* Backdrop with enhanced blur and noise */}
+          <div className="absolute inset-0 bg-black/92 backdrop-blur-2xl">
+            {/* Noise texture overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                backgroundSize: '200px 200px'
+              }}
+            />
+          </div>
 
           {/* Modal Content */}
           <motion.div
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-12 md:p-16 lg:p-20 max-h-[85vh] overflow-y-auto"
+            transition={{ type: "spring", damping: 30, stiffness: 250 }}
+            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-16 md:p-20 lg:p-24 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              boxShadow: `0 0 60px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
+              scrollbarWidth: 'thin',
+              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40 transparent`
+            }}
           >
+            {/* Noise texture */}
+            <div
+              className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                backgroundSize: '200px 200px'
+              }}
+            />
+
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 opacity-40" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 opacity-40" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+
+            {/* Scroll fade gradients */}
+            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#0b0b0b] to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none z-10" />
             {/* Close button */}
             <button
               onClick={() => setSelectedClient(null)}
-              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-300 group"
+              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95"
             >
               <div className="relative w-5 h-5">
-                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white rotate-45" />
-                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white -rotate-45" />
+                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white rotate-45 transition-all duration-500" />
+                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white -rotate-45 transition-all duration-500" />
               </div>
             </button>
 
             {/* Client Logo/Name */}
-            <div className="mb-8 pb-8 border-b border-white/10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="mb-10 pb-10 relative"
+            >
+              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               {selectedClient.logo ? (
                 <img
                   src={selectedClient.logo}
                   alt={selectedClient.name}
-                  className="max-w-[280px] h-auto mx-auto md:mx-0 opacity-90 filter brightness-0 invert"
+                  className="max-w-[320px] h-auto mx-auto md:mx-0 opacity-90 filter brightness-0 invert"
+                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255,255,255,0.1))' }}
                 />
               ) : (
                 <h2 className="text-[40px] md:text-[52px] font-thin text-white/90 tracking-[0.15em]">
                   {selectedClient.name}
                 </h2>
               )}
-            </div>
+
+              {/* Sector badge */}
+              <div className="mt-6">
+                <span
+                  className="inline-block px-5 py-2 rounded-full text-[10px] font-light tracking-[0.25em] uppercase backdrop-blur-sm"
+                  style={{
+                    backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}15`,
+                    border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}30`,
+                    color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23'
+                  }}
+                >
+                  {selectedClient.sector}
+                </span>
+              </div>
+            </motion.div>
 
             {/* Client Details Grid */}
-            <div className="grid md:grid-cols-2 gap-12 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid md:grid-cols-2 gap-16 mb-16"
+            >
               {/* Left Column */}
-              <div className="space-y-8">
+              <div className="space-y-10">
                 <div>
-                  <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Sector</p>
-                  <p className="text-[16px] text-white/80 font-light">{selectedClient.sector}</p>
-                </div>
-
-                <div>
-                  <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Projects Delivered</p>
+                  <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Projects Delivered</p>
                   <p className="text-[16px] text-white/80 font-light">{selectedClient.projects}</p>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Status</p>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`} />
+                  <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Status</p>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2.5 h-2.5 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5] animate-pulse' : 'bg-white/30'}`} style={{ boxShadow: selectedClient.status === 'active' ? '0 0 12px #06ffa5' : 'none' }} />
                     <p className="text-[16px] text-white/80 font-light capitalize">{selectedClient.status}</p>
                   </div>
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Relationship Since</p>
-                    <p className="text-[16px] text-white/80 font-light">{selectedClient.yearStarted}</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Relationship Since</p>
+                    <p className="text-[16px] text-white/80 font-light">
+                      {selectedClient.yearStarted}
+                      <span className="text-white/40 ml-2">
+                        ({new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'})
+                      </span>
+                    </p>
                   </div>
                 )}
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Website</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Website</p>
                     <a
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[16px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-colors duration-300 flex items-center gap-2"
+                      className="group text-[16px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-2 relative"
                     >
-                      Visit Site
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <span className="relative">
+                        Visit Site
+                        <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#ff9d23] transition-all duration-500 group-hover:w-full" />
+                      </span>
+                      <svg className="w-3.5 h-3.5 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
@@ -546,29 +606,32 @@ export default function ClientsPage() {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-8">
+              <div className="space-y-10">
                 {selectedClient.tagline && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Tagline</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Tagline</p>
                     <p className="text-[16px] text-white/80 font-light italic">{selectedClient.tagline}</p>
                   </div>
                 )}
 
                 {selectedClient.results && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Results</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-3">Results</p>
                     <p className="text-[16px] text-white/80 font-light leading-relaxed">{selectedClient.results}</p>
                   </div>
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-3">Deliverables</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-4">Deliverables</p>
                     <div className="flex flex-wrap gap-3">
                       {selectedClient.deliverables.map((item, i) => (
                         <span
                           key={i}
-                          className="px-4 py-2 text-[12px] bg-white/5 border border-white/10 text-white/70 font-light rounded-sm"
+                          className="px-5 py-2.5 text-[12px] bg-white/5 border border-white/10 text-white/70 font-light rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
+                          style={{
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                          }}
                         >
                           {item}
                         </span>
@@ -577,16 +640,22 @@ export default function ClientsPage() {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Testimonial */}
             {selectedClient.testimonial && (
-              <div className="pt-12 border-t border-white/10">
-                <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-4">Testimonial</p>
-                <blockquote className="text-[20px] md:text-[24px] text-white/80 font-light italic leading-[1.8]">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="pt-16 relative"
+              >
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] mb-6">Testimonial</p>
+                <blockquote className="text-[22px] md:text-[28px] text-white/80 font-light italic leading-[1.8]">
                   "{selectedClient.testimonial}"
                 </blockquote>
-              </div>
+              </motion.div>
             )}
           </motion.div>
         </motion.div>
