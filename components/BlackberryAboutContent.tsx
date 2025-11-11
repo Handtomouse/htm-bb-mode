@@ -477,8 +477,8 @@ export default function BlackberryAboutContent() {
 
         {/* Philosophy Section - Clean Text Only */}
 
-          <section className="min-h-screen flex flex-col items-center py-24 md:py-32 lg:py-40">
-          <div className="max-w-6xl w-full px-12 md:px-16 lg:px-24">
+          <section className="min-h-screen flex flex-col items-center py-12 md:py-16 lg:py-20">
+          <div className="max-w-7xl w-full px-12 md:px-16 lg:px-24">
             {/* Philosophy heading with divider */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -493,56 +493,58 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             {/* Philosophy statements - luxury hierarchy */}
-            <div className="space-y-24 md:space-y-32 lg:space-y-40">
-              {/* HERO statement */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.0, delay: 0.3 }}
-                className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.6] font-light tracking-tight max-w-5xl py-6 md:py-8"
-                style={{ wordSpacing: '0.1em' }}
-              >
-                I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>small, precise angle</span> no one else has noticed yet.
-              </motion.p>
-              {/* Secondary statement */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.0, delay: 0.5 }}
-                className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.8] font-normal tracking-normal max-w-4xl pl-4 md:pl-6 py-6 md:py-8"
-              >
-                Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>five years</span>.
-              </motion.p>
-              {/* Supporting statement */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.0, delay: 0.7 }}
-                className="text-[18px] md:text-[22px] lg:text-[26px] text-white/90 leading-[2.0] font-normal tracking-wide max-w-3xl pl-4 md:pl-6 py-6 md:py-8"
-              >
-                That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
-              </motion.p>
-            </div>
 
-            {/* Divider before blockquote */}
+            {/* HERO statement - Part 1 */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.0, delay: 0.3 }}
+              className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.8] font-light tracking-normal mb-[60vh] md:mb-[70vh] lg:mb-[80vh]"
+              style={{ wordSpacing: '0.1em' }}
+            >
+              I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>small, precise angle</span> no one else has noticed yet.
+            </motion.p>
+
+            {/* Secondary statement - Part 2 */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.0, delay: 0.5 }}
+              className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.8] font-normal tracking-normal mb-[60vh] md:mb-[70vh] lg:mb-[80vh]"
+              style={{ wordSpacing: '0.1em' }}
+            >
+              Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>five years</span>.
+            </motion.p>
+
+            {/* Supporting statement - Part 3 */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.0, delay: 0.7 }}
+              className="text-[18px] md:text-[22px] lg:text-[26px] text-white/90 leading-[2.0] font-normal tracking-wide"
+            >
+              That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
+            </motion.p>
+
+            {/* Divider before blockquote - Part 4 */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0, delay: 0.9 }}
-              className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-32 md:my-40 lg:my-48"
+              className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-[70vh] md:my-[80vh] lg:my-[90vh]"
             />
 
-            {/* Pull-quote - statement piece */}
+            {/* Pull-quote - statement piece - Part 4 */}
             <motion.blockquote
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0, delay: 1.2 }}
-              className="text-[28px] md:text-[36px] lg:text-[44px] text-white leading-[1.5] font-extralight tracking-tight pl-8 md:pl-12"
+              className="text-[28px] md:text-[36px] lg:text-[44px] text-white leading-[1.5] font-extralight tracking-normal"
             >
               <span className="text-[#ff9d23]/60 font-bold mr-3">&gt;&gt;</span>
               I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>ideas with backbone</span> — things that stick because they mean something<motion.span

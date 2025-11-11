@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 // Destination categories - all verified and fast-loading
 const DESTINATIONS = {
@@ -111,20 +111,8 @@ interface Star {
   layer: number; // 0 = background (slow), 1 = mid (normal), 2 = foreground (fast)
 }
 
-interface Shimmer {
-  id: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  opacity: number;
-  hue: number;
-}
-
 export default function BlackberryWormholeContent() {
   const [stars, setStars] = useState<Star[]>([]);
-  const [shimmers, setShimmers] = useState<Shimmer[]>([]);
   const [isWarping, setIsWarping] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(true);
   const [acceptedRisk, setAcceptedRisk] = useState(false);
@@ -162,7 +150,6 @@ export default function BlackberryWormholeContent() {
   const [konamiActive, setKonamiActive] = useState(false);
   const [starDensity, setStarDensity] = useState(75);
   const [showWhiteFlash, setShowWhiteFlash] = useState(false);
-  const [mouseTrail, setMouseTrail] = useState<{x: number, y: number, id: number, timestamp: number}[]>([]);
   const [isHyperhyperspace, setIsHyperhyperspace] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<'interactive' | 'games' | 'weirdFun' | 'music' | 'educational' | 'retro' | 'all'>('all');
   const [isFadingOut, setIsFadingOut] = useState(false);
@@ -290,20 +277,6 @@ export default function BlackberryWormholeContent() {
 
     setIsLoading(false);
 
-    // Lazy load shimmer particles
-    setTimeout(() => {
-      const initialShimmers: Shimmer[] = Array.from({ length: 30 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 480,
-        y: Math.random() * 800,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.4 + 0.1,
-        hue: Math.random() * 60 + 30,
-      }));
-      setShimmers(initialShimmers);
-    }, 100);
   }, [starDensity]);
 
   // Animate stars using requestAnimationFrame
@@ -353,55 +326,6 @@ export default function BlackberryWormholeContent() {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isWarping, boost, hecticSpeed, konamiActive, isHyperhyperspace]);
 
-  // Animate shimmer particles
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const animateShimmers = () => {
-      setShimmers((prevShimmers) =>
-        prevShimmers.map((shimmer) => {
-          let newX = shimmer.x + shimmer.vx;
-          let newY = shimmer.y + shimmer.vy;
-          let newVx = shimmer.vx;
-          let newVy = shimmer.vy;
-
-          const width = 480;
-          const height = 800;
-
-          if (newX < 0 || newX > width) {
-            newX = newX < 0 ? width : 0;
-          }
-          if (newY < 0 || newY > height) {
-            newY = newY < 0 ? height : 0;
-          }
-
-          newVx += (Math.random() - 0.5) * 0.05;
-          newVy += (Math.random() - 0.5) * 0.05;
-
-          const maxSpeed = 0.8;
-          const speed = Math.sqrt(newVx * newVx + newVy * newVy);
-          if (speed > maxSpeed) {
-            newVx = (newVx / speed) * maxSpeed;
-            newVy = (newVy / speed) * maxSpeed;
-          }
-
-          return {
-            ...shimmer,
-            x: newX,
-            y: newY,
-            vx: newVx,
-            vy: newVy,
-            opacity: Math.sin(Date.now() * 0.001 + shimmer.id) * 0.2 + 0.3,
-          };
-        })
-      );
-
-      animationFrameId = requestAnimationFrame(animateShimmers);
-    };
-
-    animationFrameId = requestAnimationFrame(animateShimmers);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
 
   // Color shift animation
   useEffect(() => {
@@ -411,21 +335,13 @@ export default function BlackberryWormholeContent() {
     return () => clearInterval(interval);
   }, []);
 
-  // Track mouse movement
+  // Track mouse movement for parallax effect
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({
         x: (e.clientX - 240) * 0.05,
         y: (e.clientY - 400) * 0.05,
       });
-
-      if (!isWarping && !showExitWarning) {
-        setMouseTrail(prev => {
-          const now = Date.now();
-          const newTrail = [...prev, { x: e.clientX, y: e.clientY, id: now, timestamp: now }];
-          return newTrail.slice(-20);
-        });
-      }
     };
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
@@ -447,16 +363,6 @@ export default function BlackberryWormholeContent() {
     };
   }, [isWarping, showExitWarning]);
 
-  // Fade out old mouse trail particles
-  useEffect(() => {
-    if (isWarping) return;
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setMouseTrail(prev => prev.filter(particle => now - particle.timestamp < 1000));
-    }, 50);
-    return () => clearInterval(interval);
-  }, [isWarping]);
 
   // Click to boost & double-tap for ludicrous speed
   useEffect(() => {
@@ -749,8 +655,8 @@ export default function BlackberryWormholeContent() {
     setTimeout(() => setCanAbort(false), 1000);
   };
 
-  // Get star color - Star Wars style (pure white/blue)
-  const getStarColor = (colorPhase: number) => {
+  // Get star color - Star Wars style (pure white/blue) - Memoized for performance
+  const getStarColor = useCallback((colorPhase: number) => {
     if (!isWarping) {
       // Pure white stars at rest
       return `rgb(255, 255, 255)`;
@@ -763,7 +669,12 @@ export default function BlackberryWormholeContent() {
 
     // Regular warp: white with slight blue tint
     return `rgb(235, 245, 255)`;
-  };
+  }, [isWarping, isHyperhyperspace]);
+
+  // Memoized filtered stars for performance
+  const filteredStars = useMemo(() => {
+    return isWarping ? stars.filter((_, i) => i % 2 === 0) : stars;
+  }, [stars, isWarping]);
 
   return (
     <div
@@ -841,7 +752,7 @@ export default function BlackberryWormholeContent() {
           </defs>
 
           {/* Stars */}
-          {stars.filter((star, i) => !isWarping || i % 2 === 0).map((star) => {
+          {filteredStars.map((star) => {
             const perspective = 1000;
             const scale = perspective / (perspective + star.z);
             const x = star.x * scale + 240;
