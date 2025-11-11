@@ -72,8 +72,8 @@ function ClientCell({
       whileInView={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
       viewport={{ once: true }}
       transition={{
-        duration: 0.6,
-        delay,
+        duration: 0.8,
+        delay: delay + 0.1,
         ease: [0.43, 0.13, 0.23, 0.96]
       }}
       onMouseMove={handleMouseMove}
@@ -81,11 +81,11 @@ function ClientCell({
       onMouseEnter={() => onHoverChange(true)}
       onMouseExit={() => onHoverChange(false)}
       onClick={onClick}
-      className="group relative aspect-square border-r border-b border-white/10 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-500 overflow-hidden cursor-none"
+      className="group relative aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-700 overflow-hidden cursor-none hover:scale-[1.02] active:scale-[0.98]"
     >
       {/* Noise texture overlay */}
       <div
-        className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.025] pointer-events-none mix-blend-overlay"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           backgroundSize: '200px 200px'
@@ -93,7 +93,7 @@ function ClientCell({
       />
 
       {/* Gradient overlay (bottom fade) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
       {/* Featured spotlight effect */}
       {client.featured && (
@@ -108,9 +108,9 @@ function ClientCell({
 
       {/* Sector color indicator with gradient */}
       <div
-        className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500"
+        className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700"
         style={{
-          background: `linear-gradient(90deg, transparent, ${sectorColor}, transparent)`
+          background: `linear-gradient(90deg, transparent 0%, ${sectorColor} 50%, transparent 100%)`
         }}
       />
 
@@ -126,11 +126,11 @@ function ClientCell({
         }}
         transition={{
           type: "spring",
-          stiffness: 150,
-          damping: 15,
-          mass: 0.1
+          stiffness: 120,
+          damping: 18,
+          mass: 0.15
         }}
-        className="relative text-center px-6 transition-all duration-500 group-hover:scale-105"
+        className="relative text-center px-6 transition-all duration-700 group-hover:scale-[1.08]"
       >
         {client.logo ? (
           <img
@@ -141,11 +141,11 @@ function ClientCell({
         ) : (
           <div className="relative px-6 py-3">
             {/* Frosted backdrop */}
-            <div className="absolute inset-0 backdrop-blur-[2px] bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-sm" />
+            <div className="absolute inset-0 backdrop-blur-[3px] bg-white/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-sm" />
 
             {/* Luxury text wordmark */}
             <div
-              className="relative text-[13px] md:text-[15px] lg:text-[17px] font-thin transition-all duration-700 bg-gradient-to-b from-white/80 via-white/70 to-white/50 bg-clip-text text-transparent group-hover:from-white group-hover:via-white/95 group-hover:to-white/80"
+              className="relative text-[13px] md:text-[15px] lg:text-[17px] font-thin transition-all duration-700 bg-gradient-to-b from-white/90 via-white/80 to-white/60 bg-clip-text text-transparent group-hover:from-white group-hover:via-white/95 group-hover:to-white/85"
               style={{
                 letterSpacing: '0.25em',
                 lineHeight: 1.6,
@@ -308,25 +308,25 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0b0b] text-white">
+    <div className="min-h-screen bg-[#0b0b0b] text-white scroll-smooth">
       {/* Custom Cursor */}
       <motion.div
-        className="fixed w-6 h-6 pointer-events-none z-50 mix-blend-difference"
+        className="fixed w-8 h-8 pointer-events-none z-50 mix-blend-difference"
         animate={{
-          x: cursorPos.x - 12,
-          y: cursorPos.y - 12,
-          scale: isHovering ? 1.5 : 1,
+          x: cursorPos.x - 16,
+          y: cursorPos.y - 16,
+          scale: isHovering ? 1.8 : 1,
           opacity: isHovering ? 1 : 0.6
         }}
         transition={{
           type: "spring",
-          stiffness: 500,
-          damping: 28,
-          mass: 0.5
+          stiffness: 400,
+          damping: 30,
+          mass: 0.6
         }}
       >
         <div className="w-full h-full rounded-full border border-white/60" />
-        <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white/80 rounded-full -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white/80 rounded-full -translate-x-1/2 -translate-y-1/2" />
       </motion.div>
 
       {/* Hero Section */}
@@ -381,9 +381,9 @@ export default function ClientsPage() {
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: [0.43, 0.13, 0.23, 0.96] }}
+        transition={{ duration: 1.4, ease: [0.43, 0.13, 0.23, 0.96] }}
       >
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/30 to-transparent" />
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent" />
       </motion.div>
 
       {/* Logo Grid */}
@@ -417,10 +417,10 @@ export default function ClientsPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
-          className="mt-24 text-center"
+          className="mt-28 text-center"
         >
-          <div className="inline-block px-8 py-4 border border-white/5 rounded-sm backdrop-blur-sm">
-            <p className="text-[11px] md:text-[12px] lg:text-[13px] text-white/30 leading-[2.5] font-extralight tracking-[0.35em] uppercase">
+          <div className="inline-block px-10 py-5 border border-white/5 rounded-sm backdrop-blur-sm">
+            <p className="text-[11px] md:text-[12px] lg:text-[13px] text-white/30 leading-[2.8] font-extralight tracking-[0.35em] uppercase">
               + 5 additional confidential projects
             </p>
           </div>
@@ -431,19 +431,19 @@ export default function ClientsPage() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, delay: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
+          transition={{ duration: 1.4, delay: 1.0, ease: [0.43, 0.13, 0.23, 0.96] }}
           className="mt-32 text-center"
         >
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-[32px] md:text-[42px] lg:text-[52px] font-light text-white/90 mb-6 leading-tight">
+            <h2 className="text-[38px] md:text-[48px] lg:text-[60px] font-light text-white/90 mb-8 leading-tight">
               Ready to join them?
             </h2>
-            <p className="text-[15px] md:text-[17px] text-white/50 font-light leading-relaxed mb-12 tracking-wide">
+            <p className="text-[15px] md:text-[17px] text-white/50 font-light leading-relaxed mb-14 tracking-wide">
               Let's create something exceptional together. From concept to launch, we deliver digital experiences that drive results.
             </p>
             <a
               href="/contact"
-              className="inline-block px-12 py-4 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[13px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-500"
+              className="inline-block px-16 py-5 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 hover:scale-105 active:scale-95"
             >
               Start Your Project
             </a>

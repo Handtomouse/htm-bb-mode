@@ -649,18 +649,24 @@ export default function BlackberryAboutContent() {
           </div>
           </section>
 
-        {/* Breathing Room - Reduced */}
-        <div className="h-[20vh]" />
-        
+        {/* Transition divider - Act I → Act II */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 2.0, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-md mx-auto my-20 md:my-24 lg:my-28 h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent"
+          style={{ transformOrigin: 'center' }}
+        />
 
-        {/* Empty Space Reveal Window 1 */}
-        
-          <section className="h-[150vh] flex items-center justify-center">
+        {/* "Built to Last" - Chapter marker */}
+
+          <section className="h-[100vh] flex items-center justify-center">
             <motion.div
-            initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
-            whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-center"
           >
             <div className="text-[24px] md:text-[32px] lg:text-[40px] text-[#ff9d23]/60 tracking-[0.2em] uppercase">
@@ -671,13 +677,14 @@ export default function BlackberryAboutContent() {
         
 
         {/* Stats Grid - Full Width */}
-        
-          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
+
+          <section className="h-[120vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/60 backdrop-blur-md py-4 transition-opacity duration-500"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/60 backdrop-blur-md py-4"
           >
             By The Numbers
           </motion.h2>
@@ -693,14 +700,15 @@ export default function BlackberryAboutContent() {
         
 
         {/* Beliefs - Full Width Background */}
-        
-          <section className="h-[150vh] flex flex-col items-center justify-center">
+
+          <section className="h-[110vh] flex flex-col items-center justify-center">
           <div className="w-full max-w-6xl mx-auto space-y-8 md:space-y-12">
             <motion.h2
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] bg-black/60 backdrop-blur-md py-4 transition-opacity duration-500"
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] text-center mb-12"
             >
               Beliefs
             </motion.h2>
@@ -711,16 +719,26 @@ export default function BlackberryAboutContent() {
             </div>
           </div>
           </section>
-        
+
+        {/* Transition divider - Beliefs → Services */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-sm mx-auto my-16 md:my-20 h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/30 to-transparent"
+          style={{ transformOrigin: 'center' }}
+        />
 
         {/* Services Grid */}
-        
-          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
+
+          <section className="h-[130vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/60 backdrop-blur-md py-4 transition-opacity duration-500"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/60 backdrop-blur-md py-4"
           >
             What We Do
           </motion.h2>
@@ -733,8 +751,8 @@ export default function BlackberryAboutContent() {
         
 
         {/* Collapsible Sections */}
-        
-          <section className="h-[150vh] flex flex-col items-center justify-center space-y-8 md:space-y-12">
+
+          <section className="h-[180vh] flex flex-col items-center justify-center space-y-8 md:space-y-12">
             <LuxuryCollapsibleSection
               title="How I Work"
               icon="⚙️"
