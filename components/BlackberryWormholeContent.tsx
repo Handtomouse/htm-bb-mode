@@ -143,8 +143,8 @@ export default function BlackberryWormholeContent() {
   const [streak, setStreak] = useState(0);
   const [showStreakBadge, setShowStreakBadge] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const [ludicrousSpeed, setLudicrousSpeed] = useState(false);
-  const [showLudicrousMessage, setShowLudicrousMessage] = useState(false);
+  const [hecticSpeed, setHecticSpeed] = useState(false);
+  const [showHecticMessage, setShowHecticMessage] = useState(false);
   const [lastClickTime, setLastClickTime] = useState(0);
   const [currentDestination, setCurrentDestination] = useState<{url: string, category: string, hint: string} | null>(null);
   const [showCategoryFilter, setShowCategoryFilter] = useState(false);
@@ -312,7 +312,7 @@ export default function BlackberryWormholeContent() {
 
     const calculateBaseSpeed = () => {
       if (isHyperhyperspace) return 300;
-      if (ludicrousSpeed) return 150;
+      if (hecticSpeed) return 150;
       if (isWarping) return 50;
       if (konamiActive) return 30;
       if (boost) return 20;
@@ -466,12 +466,12 @@ export default function BlackberryWormholeContent() {
         const timeSinceLastClick = now - lastClickTime;
 
         if (timeSinceLastClick < 300 && timeSinceLastClick > 0) {
-          setLudicrousSpeed(true);
-          setShowLudicrousMessage(true);
+          setHecticSpeed(true);
+          setShowHecticMessage(true);
           playSound('warp');
           setTimeout(() => {
-            setLudicrousSpeed(false);
-            setShowLudicrousMessage(false);
+            setHecticSpeed(false);
+            setShowHecticMessage(false);
           }, 3000);
         } else {
           setBoost(true);
@@ -542,15 +542,13 @@ export default function BlackberryWormholeContent() {
         life: number;
         color: string;
       }> = [];
-      const particleCount = isHyperhyperspace ? 60 : (ludicrousSpeed ? 40 : 25);
+      const particleCount = isHyperhyperspace ? 60 : (hecticSpeed ? 40 : 25);
       const baseId = Date.now();
 
       for (let i = 0; i < particleCount; i++) {
         const angle = (Math.PI * 2 * i) / particleCount;
         const speed = 3 + Math.random() * 4;
-        const color = isHyperhyperspace ? 'rgba(255,255,255,0.9)' :
-                      (ludicrousSpeed ? 'rgba(255,157,35,0.9)' :
-                      'rgba(100,149,237,0.9)');
+        const color = 'rgba(255,255,255,0.9)'; // Pure white for Star Wars hyperspace
 
         newParticles.push({
           id: baseId + i,
@@ -751,25 +749,20 @@ export default function BlackberryWormholeContent() {
     setTimeout(() => setCanAbort(false), 1000);
   };
 
-  // Get star color - animated blue/red/yellow/white cycling
+  // Get star color - Star Wars style (pure white/blue)
   const getStarColor = (colorPhase: number) => {
     if (!isWarping) {
-      const goldTint = Math.sin(colorPhase) * 0.15 + 0.85;
-      return `rgba(255, 255, 255, ${goldTint})`;
+      // Pure white stars at rest
+      return `rgb(255, 255, 255)`;
     }
 
-    const colors = [
-      [100, 149, 237],
-      [255, 69, 58],
-      [255, 214, 10],
-      [255, 255, 255],
-    ];
+    // Blue-tinted hyperspace (classic Star Wars look)
+    if (isHyperhyperspace) {
+      return `rgb(220, 235, 255)`; // Bright blue-white
+    }
 
-    const phase = (colorPhase + colorShift) % (Math.PI * 2);
-    const colorIndex = Math.floor((phase / (Math.PI * 2)) * 4);
-    const [r, g, b] = colors[colorIndex];
-
-    return `rgb(${r}, ${g}, ${b})`;
+    // Regular warp: white with slight blue tint
+    return `rgb(235, 245, 255)`;
   };
 
   return (
@@ -826,59 +819,27 @@ export default function BlackberryWormholeContent() {
         />
       </div>
 
-      {/* Mouse Trail Particles */}
-      {!isWarping && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {mouseTrail.map((particle) => {
-            const age = Date.now() - particle.timestamp;
-            const opacity = 1 - (age / 1000);
-            const size = 8 * (1 - age / 1000);
-
-            return (
-              <div
-                key={particle.id}
-                className="absolute rounded-full"
-                style={{
-                  left: `${particle.x}px`,
-                  top: `${particle.y}px`,
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  background: `radial-gradient(circle, rgba(212, 175, 55, ${opacity}) 0%, transparent 70%)`,
-                  transform: 'translate(-50%, -50%)',
-                  boxShadow: `0 0 ${size * 2}px rgba(212, 175, 55, ${opacity * 0.6})`,
-                  pointerEvents: 'none',
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
-
-      {/* Shimmer Particle Layer */}
-      {!isWarping && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {shimmers.map((shimmer) => (
-            <div
-              key={shimmer.id}
-              className="absolute rounded-full"
-              style={{
-                left: `${shimmer.x}px`,
-                top: `${shimmer.y}px`,
-                width: `${shimmer.size}px`,
-                height: `${shimmer.size}px`,
-                background: `radial-gradient(circle, hsl(${shimmer.hue}, 80%, 70%) 0%, transparent 70%)`,
-                opacity: shimmer.opacity,
-                filter: `blur(${shimmer.size * 0.5}px)`,
-                boxShadow: `0 0 ${shimmer.size * 3}px hsl(${shimmer.hue}, 80%, 60%)`,
-              }}
-            />
-          ))}
-        </div>
-      )}
+      {/* Mouse Trail & Shimmer Particles removed for pure Star Wars aesthetic */}
 
       {/* Starfield - centered at (240, 400) for BB screen */}
       <div className="absolute inset-0">
         <svg width="100%" height="100%" viewBox="0 0 480 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", top: 0, left: 0 }}>
+          {/* SVG Filters for Star Wars-style glow */}
+          <defs>
+            <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="streakGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <linearGradient id="streakGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="white" stopOpacity="0"/>
+              <stop offset="100%" stopColor="white" stopOpacity="1"/>
+            </linearGradient>
+          </defs>
+
           {/* Stars */}
           {stars.filter((star, i) => !isWarping || i % 2 === 0).map((star) => {
             const perspective = 1000;
@@ -886,13 +847,14 @@ export default function BlackberryWormholeContent() {
             const x = star.x * scale + 240;
             const y = star.y * scale + 400;
 
-            const layerSizeMultipliers = [0.6, 1, 1.4];
-            const layerOpacityMultipliers = [0.4, 0.7, 1];
+            const layerSizeMultipliers = [0.8, 1.2, 1.6];
+            const layerOpacityMultipliers = [0.5, 0.8, 1];
 
             const brightness = (1 - star.z / 2000) * layerOpacityMultipliers[star.layer];
-            const size = Math.max(1, 3 * scale * layerSizeMultipliers[star.layer]);
+            const size = Math.max(1.5, 4 * scale * layerSizeMultipliers[star.layer]);
 
-            const streakMultiplier = isHyperhyperspace ? 15 : (isWarping ? 8 : (boost ? 3 : 1));
+            // Star Wars-style dramatic streak multipliers
+            const streakMultiplier = isHyperhyperspace ? 25 : (isWarping ? 12 : (boost ? 5 : 1));
             const streakZ = star.z + (star.speed * streakMultiplier);
             const streakScale = perspective / (perspective + streakZ);
             const streakX = star.x * streakScale + 240;
@@ -909,8 +871,10 @@ export default function BlackberryWormholeContent() {
                     x2={x}
                     y2={y}
                     stroke={starColor}
-                    strokeWidth={size * 0.5}
-                    opacity={brightness * 0.8}
+                    strokeWidth={size * 1.5}
+                    opacity={brightness * 0.9}
+                    filter="url(#streakGlow)"
+                    strokeLinecap="round"
                   />
                 )}
                 <circle
@@ -919,6 +883,7 @@ export default function BlackberryWormholeContent() {
                   r={size}
                   fill={starColor}
                   opacity={brightness}
+                  filter="url(#starGlow)"
                 />
               </g>
             );
@@ -941,8 +906,41 @@ export default function BlackberryWormholeContent() {
         </svg>
       </div>
 
-      {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%)" }} />
+      {/* Blue Hyperspace Tunnel Effect (Star Wars style) */}
+      {(isWarping || isHyperhyperspace) && (
+        <>
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse at center, transparent 20%, rgba(150, 200, 255, 0.15) 60%, rgba(100, 150, 255, 0.3) 100%)",
+              animation: isHyperhyperspace ? "hyperspace-pulse 0.5s ease-in-out infinite" : "hyperspace-pulse 2s ease-in-out infinite"
+            }}
+          />
+          {/* Center Lens Flare */}
+          <div
+            className="absolute top-1/2 left-1/2 pointer-events-none"
+            style={{
+              width: "200px",
+              height: "200px",
+              transform: "translate(-50%, -50%)",
+              background: "radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(200, 220, 255, 0.2) 20%, transparent 50%)",
+              filter: "blur(30px)",
+              opacity: isHyperhyperspace ? 0.8 : 0.4,
+              animation: "hyperspace-pulse 1s ease-in-out infinite"
+            }}
+          />
+        </>
+      )}
+
+      {/* Enhanced Vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: isWarping
+            ? "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.85) 100%)"
+            : "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%)"
+        }}
+      />
 
       {/* White Flash */}
       {showWhiteFlash && (
@@ -980,22 +978,22 @@ export default function BlackberryWormholeContent() {
         </div>
       )}
 
-      {/* Ludicrous Speed Message */}
-      {showLudicrousMessage && (
+      {/* Hectic Speed Message */}
+      {showHecticMessage && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[100]">
           <div className="px-8 py-6 bg-black/80 rounded-xl" style={{
-            border: "3px solid #ff9d23",
-            boxShadow: "0 0 60px rgba(255, 157, 35, 0.8)"
+            border: "3px solid #ffffff",
+            boxShadow: "0 0 60px rgba(255, 255, 255, 0.8)"
           }}>
             <p className="text-4xl font-bold mb-2" style={{
-              background: "linear-gradient(135deg, #ff9d23 0%, #F4A259 50%, #FF0080 100%)",
+              background: "linear-gradient(135deg, #ffffff 0%, #bbdefb 50%, #64b5f6 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               textShadow: "0 0 40px rgba(255, 255, 255, 1)"
             }}>
-              LUDICROUS SPEED
+              HECTIC SPEED
             </p>
-            <p className="text-white text-sm text-center">They've gone to plaid!</p>
+            <p className="text-white text-sm text-center">Fast! Fast! Fast!</p>
           </div>
         </div>
       )}
@@ -1385,6 +1383,10 @@ export default function BlackberryWormholeContent() {
         @keyframes rainbow {
           0% { filter: hue-rotate(0deg); }
           100% { filter: hue-rotate(360deg); }
+        }
+        @keyframes hyperspace-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
         }
       `}</style>
     </div>
