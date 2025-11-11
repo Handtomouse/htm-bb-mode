@@ -15,6 +15,7 @@ interface Client {
   testimonial?: string;
   yearStarted?: number;
   results?: string;
+  logo?: string;
 }
 
 const SECTOR_COLORS: Record<string, string> = {
@@ -114,7 +115,7 @@ function ClientCell({
       <div className="absolute -top-[1px] -right-[1px] w-[1px] h-8 opacity-0 group-hover:opacity-60 transition-opacity duration-300 bg-white/30" />
       <div className="absolute -bottom-[1px] -left-[1px] w-8 h-[1px] opacity-0 group-hover:opacity-60 transition-opacity duration-300 bg-white/30" />
 
-      {/* Client name as wordmark with magnetic effect */}
+      {/* Client logo or name with magnetic effect */}
       <motion.div
         animate={{
           x: localMousePos.x,
@@ -126,12 +127,19 @@ function ClientCell({
           damping: 15,
           mass: 0.1
         }}
-        className="relative text-white/70 group-hover:text-white transition-all duration-500 text-center px-6 group-hover:tracking-[0.2em]"
-        style={{ letterSpacing: '0.15em' }}
+        className="relative text-center px-6 transition-all duration-500 group-hover:scale-105"
       >
-        <div className="text-[16px] md:text-[18px] lg:text-[20px] font-extralight group-hover:font-light uppercase transition-all duration-500 group-hover:scale-[1.02]">
-          {client.name}
-        </div>
+        {client.logo ? (
+          <img
+            src={client.logo}
+            alt={client.name}
+            className="max-w-[120px] md:max-w-[140px] lg:max-w-[160px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-opacity duration-500 filter brightness-0 invert"
+          />
+        ) : (
+          <div className="text-[16px] md:text-[18px] lg:text-[20px] font-extralight group-hover:font-light uppercase transition-all duration-500 text-white/70 group-hover:text-white group-hover:tracking-[0.2em]" style={{ letterSpacing: '0.15em' }}>
+            {client.name}
+          </div>
+        )}
 
         {/* Tagline reveal on hover */}
         {client.tagline && (

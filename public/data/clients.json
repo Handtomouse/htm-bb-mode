@@ -5,7 +5,8 @@
     "projects": 3,
     "featured": true,
     "status": "completed",
-    "website": "https://www.akqa.com"
+    "website": "https://www.akqa.com",
+    "logo": "/images/clients/akqa.png"
   },
   {
     "name": "Allegra Spender",
@@ -13,7 +14,8 @@
     "projects": 2,
     "featured": true,
     "status": "completed",
-    "website": "https://www.allegraspender.com.au"
+    "website": "https://www.allegraspender.com.au",
+    "logo": "/images/clients/allegra-spender.png"
   },
   {
     "name": "Allianz Retire Plus",
@@ -39,7 +41,8 @@
     "results": "Launched mobile banking platform with 250,000+ downloads in first 6 months",
     "deliverables": ["Mobile App", "UX Design", "API Integration", "Security Audit"],
     "testimonial": "Transformed our digital banking experience with innovative solutions.",
-    "workSamples": ["sample1", "sample2", "sample3"]
+    "workSamples": ["sample1", "sample2", "sample3"],
+    "logo": "/images/clients/bankwest.png"
   },
   {
     "name": "CareSuper",
@@ -47,7 +50,8 @@
     "projects": 3,
     "featured": true,
     "status": "completed",
-    "website": "https://www.caresuper.com.au"
+    "website": "https://www.caresuper.com.au",
+    "logo": "/images/clients/caresuper.png"
   },
   {
     "name": "DaFin",
@@ -56,7 +60,8 @@
     "featured": true,
     "status": "active",
     "tagline": "Premium surf accessories",
-    "website": "https://dafinsaustralia.com"
+    "website": "https://dafinsaustralia.com",
+    "logo": "/images/clients/dafin.png"
   },
   {
     "name": "Endoca Australia",
@@ -65,7 +70,8 @@
     "featured": false,
     "status": "active",
     "tagline": "Natural wellness products",
-    "website": "https://endoca.com.au"
+    "website": "https://endoca.com.au",
+    "logo": "/images/clients/endoca.png"
   },
   {
     "name": "Essence Global",
@@ -73,7 +79,8 @@
     "projects": 4,
     "featured": false,
     "status": "completed",
-    "website": "https://www.essencemediacom.com"
+    "website": "https://www.essencemediacom.com",
+    "logo": "/images/clients/essence.png"
   },
   {
     "name": "HESTA",
@@ -87,7 +94,8 @@
     "results": "Achieved 40% increase in member engagement and 28% growth in online account registrations",
     "deliverables": ["Brand Strategy", "Website Redesign", "Digital Campaign", "Member Portal"],
     "testimonial": "Exceptional strategic partner who delivered beyond expectations.",
-    "workSamples": ["sample1", "sample2", "sample3", "sample4"]
+    "workSamples": ["sample1", "sample2", "sample3", "sample4"],
+    "logo": "/images/clients/hesta.png"
   },
   {
     "name": "Hills Pet",
@@ -96,7 +104,8 @@
     "featured": false,
     "status": "completed",
     "tagline": "Science-backed pet nutrition",
-    "website": "https://www.hillspet.com.au"
+    "website": "https://www.hillspet.com.au",
+    "logo": "/images/clients/hills.png"
   },
   {
     "name": "Ferrari Australia",
@@ -108,7 +117,8 @@
     "yearStarted": 2021,
     "results": "Created premium digital showroom experience with VR configurator",
     "deliverables": ["Website", "VR Experience", "CRM Integration"],
-    "testimonial": "Captured the essence of Ferrari with stunning digital craftsmanship."
+    "testimonial": "Captured the essence of Ferrari with stunning digital craftsmanship.",
+    "logo": "/images/clients/ferrari.png"
   },
   {
     "name": "Fishbowl",
@@ -116,7 +126,8 @@
     "projects": 2,
     "featured": false,
     "status": "completed",
-    "website": "https://fishbowl.com.au"
+    "website": "https://fishbowl.com.au",
+    "logo": "/images/clients/fishbowl.png"
   },
   {
     "name": "Miss Double Bay",
@@ -124,7 +135,8 @@
     "projects": 1,
     "featured": false,
     "status": "active",
-    "tagline": "Sydney fashion destination"
+    "tagline": "Sydney fashion destination",
+    "logo": "/images/clients/miss-double-bay.png"
   },
   {
     "name": "Mullet Boards",
@@ -132,7 +144,8 @@
     "projects": 2,
     "featured": false,
     "status": "active",
-    "website": "https://www.mulletboards.com"
+    "website": "https://www.mulletboards.com",
+    "logo": "/images/clients/mullet-boards.png"
   },
   {
     "name": "RefundID",
@@ -140,7 +153,8 @@
     "projects": 3,
     "featured": false,
     "status": "completed",
-    "website": "https://www.refundid.com/au"
+    "website": "https://www.refundid.com/au",
+    "logo": "/images/clients/refundid.png"
   },
   {
     "name": "People's Choice",
@@ -149,7 +163,8 @@
     "featured": true,
     "status": "active",
     "tagline": "Customer-owned banking",
-    "website": "https://www.peopleschoice.com.au"
+    "website": "https://www.peopleschoice.com.au",
+    "logo": "/images/clients/peoples-choice.png"
   },
   {
     "name": "Salesforce",
@@ -161,6 +176,7 @@
     "yearStarted": 2017,
     "results": "Delivered enterprise integration platform serving 15,000+ users across APAC",
     "deliverables": ["Integration Platform", "Custom Components", "Training Program", "Documentation"],
-    "testimonial": "World-class technical expertise and project delivery."
+    "testimonial": "World-class technical expertise and project delivery.",
+    "logo": "/images/clients/salesforce.png"
   }
 ]
