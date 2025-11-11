@@ -201,8 +201,16 @@
     "logo": "/images/clients/miss-double-bay.png"
   },
   {
-    "name": "Miss Fisher's Murder Mysteries",
-    "sector": "Marketing / Media",
+    "name": "MapleMoon",
+    "sector": "Food & Beverage",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Premium maple syrup"
+  },
+  {
+    "name": "My Flower Man",
+    "sector": "Fashion / Lifestyle",
     "projects": 2,
     "featured": false,
     "status": "completed",
