@@ -130,7 +130,7 @@ function ClientCell({
           damping: 18,
           mass: 0.15
         }}
-        className="relative text-center px-6 transition-all duration-700 group-hover:scale-[1.08]"
+        className="relative text-center px-8 transition-all duration-700 group-hover:scale-[1.08]"
       >
         {client.logo ? (
           <img
@@ -139,7 +139,7 @@ function ClientCell({
             className="max-w-[140px] md:max-w-[180px] lg:max-w-[220px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-opacity duration-500 filter brightness-0 invert"
           />
         ) : (
-          <div className="relative px-6 py-3">
+          <div className="relative px-8 py-4">
             {/* Frosted backdrop */}
             <div className="absolute inset-0 backdrop-blur-[3px] bg-white/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-sm" />
 
@@ -180,7 +180,7 @@ function ClientCell({
       </motion.div>
 
       {/* Status indicator (minimal dot) */}
-      <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         <div
           className={`w-2 h-2 rounded-full ${client.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
           style={{ boxShadow: client.status === 'active' ? '0 0 8px #06ffa5' : 'none' }}
@@ -189,7 +189,7 @@ function ClientCell({
 
       {/* Website link indicator */}
       {client.website && (
-        <div className="absolute top-3 right-8 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+        <div className="absolute top-4 right-10 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
           <svg className="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
@@ -197,7 +197,7 @@ function ClientCell({
       )}
 
       {/* Projects count indicator (dot notation) */}
-      <div className="absolute bottom-3 left-3 flex gap-0.5 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+      <div className="absolute bottom-4 left-4 flex gap-0.5 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
         {Array.from({ length: Math.min(client.projects, 5) }).map((_, i) => (
           <div key={i} className="w-1 h-1 rounded-full bg-white/40" />
         ))}
@@ -208,14 +208,14 @@ function ClientCell({
 
       {/* Year started badge for long-term clients */}
       {isLongTerm && (
-        <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+        <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
           <span className="text-[8px] text-white/40 font-light tracking-wider">EST {client.yearStarted}</span>
         </div>
       )}
 
       {/* Testimonial indicator */}
       {client.testimonial && (
-        <div className="absolute bottom-3 left-12 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+        <div className="absolute bottom-4 left-16 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
           <svg className="w-3 h-3 text-white/40" fill="currentColor" viewBox="0 0 24 24">
             <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
           </svg>
@@ -223,9 +223,9 @@ function ClientCell({
       )}
 
       {/* Sector badge pill */}
-      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
+      <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
         <div
-          className="px-4 py-1.5 rounded-full text-[9px] font-light tracking-wider uppercase backdrop-blur-sm"
+          className="px-5 py-2 rounded-full text-[9px] font-light tracking-wider uppercase backdrop-blur-sm"
           style={{
             backgroundColor: `${sectorColor}15`,
             border: `1px solid ${sectorColor}30`,
@@ -330,17 +330,17 @@ export default function ClientsPage() {
       </motion.div>
 
       {/* Hero Section */}
-      <section className="h-screen flex items-center justify-center px-8">
+      <section className="h-screen flex items-center justify-center px-12 md:px-16 lg:px-20">
         <div className="max-w-6xl w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-16 leading-[0.9]">
+            <h1 className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-20 md:mb-24 leading-[0.9]">
               Clients
             </h1>
-            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.4] font-light tracking-wide max-w-4xl mb-12">
+            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.4] font-light tracking-wide max-w-4xl mb-16">
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.clients}</span> clients across{" "}
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.sectors}</span> industries.{" "}
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.projects}</span> projects delivered.
@@ -377,7 +377,7 @@ export default function ClientsPage() {
 
       {/* Luxury Divider */}
       <motion.div
-        className="max-w-[1600px] mx-auto px-12 lg:px-16 mb-20"
+        className="max-w-[1600px] mx-auto px-16 md:px-20 lg:px-24 mb-20"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
@@ -387,7 +387,7 @@ export default function ClientsPage() {
       </motion.div>
 
       {/* Logo Grid */}
-      <div ref={gridRef} className="max-w-[1600px] mx-auto px-12 lg:px-16 pb-32">
+      <div ref={gridRef} className="max-w-[1600px] mx-auto px-16 md:px-20 lg:px-24 pb-40 md:pb-48">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
           {clients.map((client, index) => {
             const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
@@ -417,9 +417,9 @@ export default function ClientsPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
-          className="mt-28 text-center"
+          className="mt-36 text-center"
         >
-          <div className="inline-block px-10 py-5 border border-white/5 rounded-sm backdrop-blur-sm">
+          <div className="inline-block px-12 py-6 border border-white/5 rounded-sm backdrop-blur-sm">
             <p className="text-[11px] md:text-[12px] lg:text-[13px] text-white/30 leading-[2.8] font-extralight tracking-[0.35em] uppercase">
               + 5 additional confidential projects
             </p>
@@ -432,7 +432,7 @@ export default function ClientsPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.4, delay: 1.0, ease: [0.43, 0.13, 0.23, 0.96] }}
-          className="mt-32 text-center"
+          className="mt-40 text-center"
         >
           <div className="max-w-2xl mx-auto">
             <h2 className="text-[38px] md:text-[48px] lg:text-[60px] font-light text-white/90 mb-8 leading-tight">
@@ -443,7 +443,7 @@ export default function ClientsPage() {
             </p>
             <a
               href="/contact"
-              className="inline-block px-16 py-5 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 hover:scale-105 active:scale-95"
+              className="inline-block px-20 py-6 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 hover:scale-105 active:scale-95"
             >
               Start Your Project
             </a>
@@ -479,7 +479,7 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 30, stiffness: 250 }}
-            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-16 md:p-20 lg:p-24 max-h-[85vh] overflow-y-auto"
+            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-12 sm:p-16 md:p-20 lg:p-24 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
             style={{
               boxShadow: `0 0 60px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
@@ -506,7 +506,7 @@ export default function ClientsPage() {
             {/* Close button */}
             <button
               onClick={() => setSelectedClient(null)}
-              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95"
+              className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95"
             >
               <div className="relative w-5 h-5">
                 <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white rotate-45 transition-all duration-500" />
@@ -519,7 +519,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-10 pb-10 relative"
+              className="mb-12 pb-12 relative"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               {selectedClient.logo ? (
@@ -536,7 +536,7 @@ export default function ClientsPage() {
               )}
 
               {/* Sector badge */}
-              <div className="mt-6">
+              <div className="mt-8">
                 <span
                   className="inline-block px-5 py-2 rounded-full text-[10px] font-light tracking-[0.25em] uppercase backdrop-blur-sm"
                   style={{
@@ -555,7 +555,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid md:grid-cols-2 gap-16 mb-16"
+              className="grid md:grid-cols-2 gap-20 mb-16"
             >
               {/* Left Column */}
               <div className="space-y-10">
