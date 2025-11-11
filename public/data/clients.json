@@ -38,14 +38,6 @@
     "deliverables": ["Website", "Retirement Calculator", "Content Strategy", "SEO Optimization"]
   },
   {
-    "name": "Anitaj",
-    "sector": "Fashion / Lifestyle",
-    "projects": 1,
-    "featured": false,
-    "status": "completed",
-    "logo": "/images/clients/anitaj.png"
-  },
-  {
     "name": "Arc Factory",
     "sector": "Creative Agency",
     "projects": 2,
