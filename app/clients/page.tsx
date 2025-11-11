@@ -136,10 +136,10 @@ function ClientCell({
           <img
             src={client.logo}
             alt={client.name}
-            className="max-w-[120px] md:max-w-[140px] lg:max-w-[160px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-opacity duration-500 filter brightness-0 invert"
+            className="max-w-[140px] md:max-w-[180px] lg:max-w-[220px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-opacity duration-500 filter brightness-0 invert"
           />
         ) : (
-          <div className="relative px-4 py-2">
+          <div className="relative px-6 py-3">
             {/* Frosted backdrop */}
             <div className="absolute inset-0 backdrop-blur-[2px] bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-sm" />
 
@@ -170,9 +170,9 @@ function ClientCell({
         {client.tagline && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
-            className="absolute top-full left-0 right-0 mt-3 opacity-0 group-hover:opacity-100 transition-all duration-500"
+            className="absolute top-full left-0 right-0 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500"
           >
-            <p className="text-[9px] md:text-[10px] text-white/50 font-light tracking-wider uppercase">
+            <p className="text-[10px] md:text-[11px] text-white/50 font-light tracking-wider uppercase">
               {client.tagline}
             </p>
           </motion.div>
@@ -182,7 +182,7 @@ function ClientCell({
       {/* Status indicator (minimal dot) */}
       <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         <div
-          className={`w-1.5 h-1.5 rounded-full ${client.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
+          className={`w-2 h-2 rounded-full ${client.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
           style={{ boxShadow: client.status === 'active' ? '0 0 8px #06ffa5' : 'none' }}
         />
       </div>
@@ -225,7 +225,7 @@ function ClientCell({
       {/* Sector badge pill */}
       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
         <div
-          className="px-3 py-1 rounded-full text-[8px] font-light tracking-wider uppercase backdrop-blur-sm"
+          className="px-4 py-1.5 rounded-full text-[9px] font-light tracking-wider uppercase backdrop-blur-sm"
           style={{
             backgroundColor: `${sectorColor}15`,
             border: `1px solid ${sectorColor}30`,
@@ -337,10 +337,10 @@ export default function ClientsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-[60px] md:text-[80px] lg:text-[100px] font-light text-[#ff9d23] mb-8 leading-[0.9]">
+            <h1 className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-16 leading-[0.9]">
               Clients
             </h1>
-            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.1] font-light tracking-wide max-w-4xl mb-8">
+            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.4] font-light tracking-wide max-w-4xl mb-12">
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.clients}</span> clients across{" "}
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.sectors}</span> industries.{" "}
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.projects}</span> projects delivered.
@@ -351,7 +351,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-3 text-[11px] text-white/40 font-light uppercase tracking-[0.2em] max-w-3xl"
+              className="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-4 text-[11px] text-white/40 font-light uppercase tracking-[0.2em] max-w-3xl"
             >
               {Object.entries(
                 clients.reduce((acc, client) => {
@@ -364,7 +364,7 @@ export default function ClientsPage() {
                 .map(([sector, count]) => (
                   <div key={sector} className="flex items-center gap-2">
                     <div
-                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ backgroundColor: SECTOR_COLORS[sector] || "#ff9d23" }}
                     />
                     <span>{sector}: {count}</span>
@@ -377,7 +377,7 @@ export default function ClientsPage() {
 
       {/* Luxury Divider */}
       <motion.div
-        className="max-w-7xl mx-auto px-8 mb-16"
+        className="max-w-[1600px] mx-auto px-12 lg:px-16 mb-20"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
@@ -387,7 +387,7 @@ export default function ClientsPage() {
       </motion.div>
 
       {/* Logo Grid */}
-      <div ref={gridRef} className="max-w-7xl mx-auto px-8 pb-32">
+      <div ref={gridRef} className="max-w-[1600px] mx-auto px-12 lg:px-16 pb-32">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
           {clients.map((client, index) => {
             const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
@@ -469,7 +469,7 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-8 md:p-12 max-h-[85vh] overflow-y-auto"
+            className="relative max-w-4xl w-full bg-[#0b0b0b] border border-white/10 p-12 md:p-16 lg:p-20 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
@@ -489,10 +489,10 @@ export default function ClientsPage() {
                 <img
                   src={selectedClient.logo}
                   alt={selectedClient.name}
-                  className="max-w-[200px] h-auto mx-auto md:mx-0 opacity-90 filter brightness-0 invert"
+                  className="max-w-[280px] h-auto mx-auto md:mx-0 opacity-90 filter brightness-0 invert"
                 />
               ) : (
-                <h2 className="text-[32px] md:text-[42px] font-thin text-white/90 tracking-[0.15em]">
+                <h2 className="text-[40px] md:text-[52px] font-thin text-white/90 tracking-[0.15em]">
                   {selectedClient.name}
                 </h2>
               )}
@@ -503,17 +503,17 @@ export default function ClientsPage() {
               {/* Left Column */}
               <div className="space-y-8">
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Sector</p>
+                  <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Sector</p>
                   <p className="text-[16px] text-white/80 font-light">{selectedClient.sector}</p>
                 </div>
 
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Projects Delivered</p>
+                  <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Projects Delivered</p>
                   <p className="text-[16px] text-white/80 font-light">{selectedClient.projects}</p>
                 </div>
 
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Status</p>
+                  <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Status</p>
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`} />
                     <p className="text-[16px] text-white/80 font-light capitalize">{selectedClient.status}</p>
@@ -522,14 +522,14 @@ export default function ClientsPage() {
 
                 {selectedClient.yearStarted && (
                   <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Relationship Since</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Relationship Since</p>
                     <p className="text-[16px] text-white/80 font-light">{selectedClient.yearStarted}</p>
                   </div>
                 )}
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Website</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Website</p>
                     <a
                       href={selectedClient.website}
                       target="_blank"
@@ -549,21 +549,21 @@ export default function ClientsPage() {
               <div className="space-y-8">
                 {selectedClient.tagline && (
                   <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Tagline</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Tagline</p>
                     <p className="text-[16px] text-white/80 font-light italic">{selectedClient.tagline}</p>
                   </div>
                 )}
 
                 {selectedClient.results && (
                   <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Results</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-2">Results</p>
                     <p className="text-[16px] text-white/80 font-light leading-relaxed">{selectedClient.results}</p>
                   </div>
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-3">Deliverables</p>
+                    <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-3">Deliverables</p>
                     <div className="flex flex-wrap gap-3">
                       {selectedClient.deliverables.map((item, i) => (
                         <span
@@ -581,9 +581,9 @@ export default function ClientsPage() {
 
             {/* Testimonial */}
             {selectedClient.testimonial && (
-              <div className="pt-8 border-t border-white/10">
-                <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-4">Testimonial</p>
-                <blockquote className="text-[18px] md:text-[20px] text-white/80 font-light italic leading-relaxed">
+              <div className="pt-12 border-t border-white/10">
+                <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] mb-4">Testimonial</p>
+                <blockquote className="text-[20px] md:text-[24px] text-white/80 font-light italic leading-[1.8]">
                   "{selectedClient.testimonial}"
                 </blockquote>
               </div>
