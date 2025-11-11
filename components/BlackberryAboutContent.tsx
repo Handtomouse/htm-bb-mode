@@ -477,7 +477,7 @@ export default function BlackberryAboutContent() {
 
         {/* Philosophy Section */}
 
-          <section className="h-[150vh] flex flex-col items-center justify-center space-y-8 md:space-y-12">
+          <section className="h-[150vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
           {/* Philosophy heading - consistent with other sections */}
           <motion.h2
             initial={{ opacity: 0 }}
@@ -503,7 +503,7 @@ export default function BlackberryAboutContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             whileHover={{ y: -8, boxShadow: '0 24px 48px rgba(255,157,35,0.15), 0 8px 16px rgba(0,0,0,0.3)' }}
-            className="relative border border-[#ff9d23]/20 bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-xl p-8 md:p-12 lg:p-16 max-w-4xl w-full transition-all duration-700 overflow-hidden"
+            className="relative border border-[#ff9d23]/20 bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-xl p-12 md:p-16 lg:p-20 max-w-5xl w-full transition-all duration-700 overflow-hidden"
             style={{
               borderTop: '1px solid rgba(255,157,35,0.3)',
               boxShadow: '0 16px 32px rgba(255,157,35,0.08), 0 4px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)'
@@ -520,13 +520,13 @@ export default function BlackberryAboutContent() {
             <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#ff9d23]/60" />
             <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#ff9d23]/60" />
 
-            <div className="relative space-y-8 text-[16px] md:text-[20px] lg:text-[24px] text-white/85 leading-[1.8] tracking-wide">
+            <div className="relative space-y-10 md:space-y-12 text-[18px] md:text-[22px] lg:text-[26px] text-white/85 leading-[1.8] tracking-wide">
               <motion.p
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.7 }}
-                className="group border-l-2 border-[#ff9d23]/30 pl-6 py-2 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)]"
+                className="group border-l-2 border-[#ff9d23]/30 pl-8 py-4 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)]"
               >
                 I work where ideas meet culture — finding the <em className="text-[#ff9d23]/90 not-italic font-medium">small, precise angle</em> no one else has noticed yet.
               </motion.p>
@@ -535,7 +535,7 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.85 }}
-                className="group border-l-2 border-[#ff9d23]/30 pl-6 py-2 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)]"
+                className="group border-l-2 border-[#ff9d23]/30 pl-8 py-4 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)]"
               >
                 Anyone can make something that looks current; the work is making something that still feels right in <em className="text-[#ff9d23]/90 not-italic font-medium">five years</em>.
               </motion.p>
@@ -544,7 +544,7 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 1.0 }}
-                className="group border-l-2 border-[#ff9d23]/30 pl-6 py-2 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)]"
+                className="group border-l-2 border-[#ff9d23]/30 pl-8 py-4 transition-all duration-300 hover:border-[#ff9d23]/60 hover:translate-x-1 hover:bg-[#ff9d23]/5 hover:text-white/95 hover:shadow-[0_0_20px_rgba(255,157,35,0.1)]"
               >
                 That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </motion.p>
@@ -557,9 +557,9 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative border-l-2 border-[#ff9d23]/40 bg-[#ff9d23]/5 backdrop-blur-sm pl-8 md:pl-12 pr-6 md:pr-8 py-6 md:py-8 max-w-4xl w-full"
+            className="relative border-l-2 border-[#ff9d23]/40 bg-[#ff9d23]/5 backdrop-blur-sm pl-16 md:pl-20 pr-8 md:pr-12 py-8 md:py-12 max-w-5xl w-full"
           >
-            <span className="absolute left-2 top-6 md:top-8 text-[24px] md:text-[32px] text-[#ff9d23]/60 leading-none font-bold">&gt;&gt;</span>
+            <span className="absolute left-4 md:left-6 top-8 md:top-12 text-[24px] md:text-[32px] text-[#ff9d23]/60 leading-none font-bold">&gt;&gt;</span>
             <blockquote className="text-[20px] md:text-[28px] lg:text-[36px] text-white/95 leading-[1.6] font-light tracking-wide">
               I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23]/90 font-medium">ideas with backbone</span> — things that stick because they mean something<motion.span
                 animate={{ opacity: [1, 0, 1] }}
