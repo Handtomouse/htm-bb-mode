@@ -486,35 +486,41 @@ export default function BlackberryAboutContent() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] mb-4">
+              <h2 className="text-[18px] md:text-[20px] lg:text-[24px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] mb-4">
                 Philosophy
               </h2>
               <div className="h-[1px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent mb-12 md:mb-16" />
             </motion.div>
 
-            {/* Philosophy statements - clean text */}
-            <div className="space-y-8 md:space-y-10 text-[20px] md:text-[24px] lg:text-[28px] text-white/90 leading-[1.8] tracking-wide">
+            {/* Philosophy statements - luxury hierarchy */}
+            <div className="space-y-10 md:space-y-12 lg:space-y-14">
+              {/* HERO statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-[32px] md:text-[42px] lg:text-[56px] text-white/95 leading-[1.5] font-light tracking-wide"
               >
                 I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-medium">small, precise angle</span> no one else has noticed yet.
               </motion.p>
+              {/* Secondary statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-[24px] md:text-[30px] lg:text-[38px] text-white/90 leading-[1.6] font-normal tracking-wide"
               >
                 Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-medium">five years</span>.
               </motion.p>
+              {/* Supporting statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.6 }}
+                className="text-[18px] md:text-[22px] lg:text-[26px] text-white/85 leading-[1.7] font-normal tracking-wide"
               >
                 That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </motion.p>
@@ -529,13 +535,13 @@ export default function BlackberryAboutContent() {
               className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-12 md:my-16"
             />
 
-            {/* Pull-quote - clean text with chevron */}
+            {/* Pull-quote - statement piece */}
             <motion.blockquote
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 1.0 }}
-              className="text-[22px] md:text-[28px] lg:text-[32px] text-white/95 leading-[1.7] font-light tracking-wide"
+              className="text-[28px] md:text-[36px] lg:text-[44px] text-white/95 leading-[1.6] font-light tracking-wide"
             >
               <span className="text-[#ff9d23]/60 font-bold mr-3">&gt;&gt;</span>
               I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-medium">ideas with backbone</span> — things that stick because they mean something<motion.span
