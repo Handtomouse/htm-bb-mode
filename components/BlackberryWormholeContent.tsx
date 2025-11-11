@@ -770,9 +770,9 @@ export default function BlackberryWormholeContent() {
 
       {/* Mouse Trail & Shimmer Particles removed for pure Star Wars aesthetic */}
 
-      {/* Starfield - centered at (240, 400) for BB screen */}
-      <div className="absolute inset-0">
-        <svg width="100%" height="100%" viewBox="0 0 480 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", top: 0, left: 0 }}>
+      {/* Starfield - centered at (240, 400) for BB screen, clipped to screen */}
+      <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
+        <svg width="100%" height="100%" viewBox="0 0 480 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", top: 0, left: 0, overflow: 'hidden' }}>
           {/* SVG Filters for Star Wars-style glow */}
           <defs>
             <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
