@@ -172,9 +172,9 @@ export default function BlackberryAboutContent() {
       // Back-to-top button after 300px
       setShowBackToTop(scrollTop > 300);
 
-      // Hero fade: 400px→800px range
-      const heroFadeStart = 400;
-      const heroFadeEnd = 800;
+      // Hero fade: 300px→1000px range (gentler exit)
+      const heroFadeStart = 300;
+      const heroFadeEnd = 1000;
       const heroFade = Math.max(0, Math.min(1, 1 - (scrollTop - heroFadeStart) / (heroFadeEnd - heroFadeStart)));
       setHeroOpacity(heroFade);
 
@@ -191,20 +191,20 @@ export default function BlackberryAboutContent() {
         const distanceFromCenter = sectionCenter - viewportCenter;
 
         // TYPING ANIMATION: Based on distance from center (not viewport %)
-        // Starts when section center is 400px below viewport center
-        // Completes when section center is 72px below viewport center (accounting for status bar offset)
-        // Total range: 328px of scrolling
+        // Starts when section center is 500px below viewport center
+        // Completes when section center is 50px below viewport center
+        // Total range: 450px of scrolling (smoother, more luxurious)
         let scrollProgress = 0;
 
-        if (distanceFromCenter > 400) {
-          // Section center more than 400px below viewport center - not started
+        if (distanceFromCenter > 500) {
+          // Section center more than 500px below viewport center - not started
           scrollProgress = 0;
-        } else if (distanceFromCenter > 72) {
-          // Section center between 400px below and 72px below center
-          // Progress from 0 to 1 over 328px of scrolling
-          scrollProgress = (400 - distanceFromCenter) / 328;
+        } else if (distanceFromCenter > 50) {
+          // Section center between 500px below and 50px below center
+          // Progress from 0 to 1 over 450px of scrolling
+          scrollProgress = (500 - distanceFromCenter) / 450;
         } else {
-          // Section center at 72px below viewport center or higher - complete
+          // Section center at 50px below viewport center or higher - complete
           scrollProgress = 1;
         }
 
@@ -234,8 +234,8 @@ export default function BlackberryAboutContent() {
 
         setTypewriterOpacity(Math.max(0, Math.min(1, fadeOpacity)));
 
-        // Headline opacity: Fade in when typewriter ≥ 80% complete
-        const headlineFade = clampedProgress >= 0.8 ? Math.min(1, (clampedProgress - 0.8) / 0.15) : 0;
+        // Headline opacity: Fade in when typewriter ≥ 70% complete (smoother reveal)
+        const headlineFade = clampedProgress >= 0.7 ? Math.min(1, (clampedProgress - 0.7) / 0.25) : 0;
         setHeadlineOpacity(headlineFade);
       }
 
@@ -388,7 +388,7 @@ export default function BlackberryAboutContent() {
               marginTop: '-72px',
               opacity: heroOpacity,
               transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
-              transition: 'opacity 0.3s ease, transform 0.3s ease',
+              transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease',
               pointerEvents: heroOpacity < 0.5 ? 'none' : 'auto',
               zIndex: heroOpacity < 0.5 ? -1 : 20,
               visibility: heroOpacity < 0.05 ? 'hidden' : 'visible'
@@ -440,7 +440,7 @@ export default function BlackberryAboutContent() {
         </motion.div>
 
         {/* Scroll spacer - responsive height (Fix #4) */}
-        <div className="h-[20vh] md:h-[25vh] lg:h-[30vh]" aria-hidden="true" />
+        <div className="h-[10vh] md:h-[12vh] lg:h-[15vh]" aria-hidden="true" />
 
         {/* Hero Text Content - Responsive height (Fix #5) */}
         <section
@@ -450,7 +450,7 @@ export default function BlackberryAboutContent() {
             scrollSnapAlign: isMobile ? 'none' : 'start',
             scrollSnapStop: isMobile ? 'normal' : 'always',
             opacity: typewriterOpacity,
-            transition: 'opacity 0.3s ease-out'
+            transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Manifesto with scroll-driven typewriter effect */}
@@ -475,6 +475,16 @@ export default function BlackberryAboutContent() {
 
         </section>
 
+        {/* Transition zone - connects typewriter to Philosophy */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-xs mx-auto my-16 md:my-20 lg:my-24 h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent"
+          style={{ transformOrigin: 'center' }}
+        />
+
         {/* Philosophy Section - Centered with Title */}
 
           <section className="min-h-screen flex flex-col items-center justify-center py-12 md:py-16 lg:py-20 scroll-smooth">
@@ -482,10 +492,10 @@ export default function BlackberryAboutContent() {
 
             {/* Section Title - "Philosophy" */}
             <motion.div
-              initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
-              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.6, delay: -0.2, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: 1.8, delay: 0, ease: [0.16, 1, 0.3, 1] }}
               style={{marginBottom: '40vh'}}
             >
               <h2 className="text-[48px] md:text-[64px] lg:text-[80px] font-light text-[#ff9d23]/70 tracking-[0.15em] uppercase mb-8 text-center">
@@ -1011,11 +1021,17 @@ function TypewriterManifesto({
   const beforeAccent = splitIndex >= 0 ? displayedText.slice(0, splitIndex) : displayedText;
   const accentPart = splitIndex >= 0 ? displayedText.slice(splitIndex) : "";
 
+  // Subtle scale effect as typewriter completes (0.7 → 1.0 becomes scale 1.0 → 1.03)
+  const scaleValue = scrollProgress >= 0.7 ? 1 + ((scrollProgress - 0.7) / 0.3) * 0.03 : 1;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      animate={{
+        opacity: 1,
+        scale: scaleValue
+      }}
+      transition={{ duration: 0.8, scale: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
       className="text-[24px] md:text-[36px] lg:text-[48px] font-medium text-white leading-[1.4] tracking-[0.08em]"
       style={{
         textShadow: '0 1px 2px rgba(255,157,35,0.1)',
@@ -1028,7 +1044,13 @@ function TypewriterManifesto({
         {accentPart}
       </span>
       {showCursor && (
-        <span className="text-[#ff9d23]/90 animate-pulse">|</span>
+        <motion.span
+          animate={{ opacity: [0.9, 0.3, 0.9] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="text-[#ff9d23]/90"
+        >
+          |
+        </motion.span>
       )}
     </motion.div>
   );
