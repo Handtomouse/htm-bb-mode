@@ -615,22 +615,22 @@ export default function ClientsPage() {
               {/* Left Column - Key Info */}
               <div className="space-y-14">
                 <div>
-                  <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
+                  <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-7 flex items-center gap-2">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
-                  <p className="text-[20px] text-white/90 font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[24px] text-white/90 font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-7 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
                     </p>
-                    <p className="text-[18px] text-white/80 font-light">
+                    <p className="text-[22px] text-white/80 font-light">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
-                      <span className="block text-[14px] text-white/40 mt-1">
+                      <span className="block text-[15px] text-white/40 mt-3">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
@@ -639,7 +639,7 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
+                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-7 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
                     </p>
@@ -647,7 +647,7 @@ export default function ClientsPage() {
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group text-[18px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative"
+                      className="group text-[20px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative"
                       style={{
                         textShadow: '0 0 0 transparent',
                         transition: 'all 0.5s ease'
