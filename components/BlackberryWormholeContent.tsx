@@ -942,9 +942,9 @@ export default function BlackberryWormholeContent() {
         }}
       />
 
-      {/* White Flash */}
+      {/* White Flash - Covers entire viewport including OS UI */}
       {showWhiteFlash && (
-        <div className="absolute inset-0 bg-white z-[200]" style={{ animation: "white-flash 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards" }} />
+        <div className="fixed inset-0 bg-white z-[9999]" style={{ animation: "white-flash 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards" }} />
       )}
 
       {/* Abort Feedback */}
@@ -981,19 +981,21 @@ export default function BlackberryWormholeContent() {
       {/* Hectic Speed Message */}
       {showHecticMessage && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[100]">
-          <div className="px-8 py-6 bg-black/80 rounded-xl" style={{
-            border: "3px solid #ffffff",
-            boxShadow: "0 0 60px rgba(255, 255, 255, 0.8)"
+          <div className="px-12 py-10 bg-black/90 rounded-xl" style={{
+            border: "4px solid #ffffff",
+            boxShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8)",
+            animation: "hectic-speed-entrance 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+            transform: "scale(1.1)"
           }}>
-            <p className="text-4xl font-bold mb-2" style={{
+            <p className="text-5xl font-bold mb-3" style={{
               background: "linear-gradient(135deg, #ffffff 0%, #bbdefb 50%, #64b5f6 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              textShadow: "0 0 40px rgba(255, 255, 255, 1)"
+              textShadow: "0 0 50px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8)"
             }}>
               HECTIC SPEED
             </p>
-            <p className="text-white text-sm text-center">Fast! Fast! Fast!</p>
+            <p className="text-white text-base text-center font-bold">Fast! Fast! Fast!</p>
           </div>
         </div>
       )}
@@ -1367,6 +1369,16 @@ export default function BlackberryWormholeContent() {
           20% { opacity: 1; }
           60% { opacity: 1; }
           100% { opacity: 0; }
+        }
+        @keyframes hectic-speed-entrance {
+          0% {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1.1);
+            opacity: 1;
+          }
         }
         @keyframes button-pulse {
           0%, 100% {

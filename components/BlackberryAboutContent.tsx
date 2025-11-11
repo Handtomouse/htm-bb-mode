@@ -477,7 +477,7 @@ export default function BlackberryAboutContent() {
 
         {/* Philosophy Section - Clean Text Only */}
 
-          <section className="h-[150vh] flex flex-col items-center justify-center py-24 md:py-32 lg:py-40">
+          <section className="min-h-screen flex flex-col items-center py-24 md:py-32 lg:py-40">
           <div className="max-w-6xl w-full px-12 md:px-16 lg:px-24">
             {/* Philosophy heading with divider */}
             <motion.div
@@ -489,18 +489,18 @@ export default function BlackberryAboutContent() {
               <h2 className="text-[18px] md:text-[20px] lg:text-[24px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] mb-4">
                 Philosophy
               </h2>
-              <div className="h-[2px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent opacity-60 mb-16 md:mb-20 lg:mb-24" />
+              <div className="h-[2px] bg-gradient-to-r from-[#ff9d23]/40 via-[#ff9d23]/10 to-transparent opacity-60 mb-24 md:mb-32 lg:mb-40" />
             </motion.div>
 
             {/* Philosophy statements - luxury hierarchy */}
-            <div className="space-y-16 md:space-y-20 lg:space-y-24">
+            <div className="space-y-24 md:space-y-32 lg:space-y-40">
               {/* HERO statement */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.0, delay: 0.3 }}
-                className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.4] font-light tracking-tight max-w-5xl"
+                className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.6] font-light tracking-tight max-w-5xl py-6 md:py-8"
                 style={{ wordSpacing: '0.1em' }}
               >
                 I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>small, precise angle</span> no one else has noticed yet.
@@ -511,7 +511,7 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.0, delay: 0.5 }}
-                className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.7] font-normal tracking-normal max-w-4xl pl-4 md:pl-6"
+                className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.8] font-normal tracking-normal max-w-4xl pl-4 md:pl-6 py-6 md:py-8"
               >
                 Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>five years</span>.
               </motion.p>
@@ -521,7 +521,7 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.0, delay: 0.7 }}
-                className="text-[18px] md:text-[22px] lg:text-[26px] text-white/90 leading-[1.9] font-normal tracking-wide max-w-3xl pl-4 md:pl-6"
+                className="text-[18px] md:text-[22px] lg:text-[26px] text-white/90 leading-[2.0] font-normal tracking-wide max-w-3xl pl-4 md:pl-6 py-6 md:py-8"
               >
                 That comes from <em className="text-white/95 italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </motion.p>
@@ -532,8 +532,8 @@ export default function BlackberryAboutContent() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-12 md:my-16"
+              transition={{ duration: 1.0, delay: 0.9 }}
+              className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-32 md:my-40 lg:my-48"
             />
 
             {/* Pull-quote - statement piece */}
@@ -541,11 +541,11 @@ export default function BlackberryAboutContent() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 1.0 }}
-              className="text-[28px] md:text-[36px] lg:text-[44px] text-white/95 leading-[1.6] font-light tracking-wide"
+              transition={{ duration: 1.0, delay: 1.2 }}
+              className="text-[28px] md:text-[36px] lg:text-[44px] text-white leading-[1.5] font-extralight tracking-tight pl-8 md:pl-12"
             >
               <span className="text-[#ff9d23]/60 font-bold mr-3">&gt;&gt;</span>
-              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-medium">ideas with backbone</span> — things that stick because they mean something<motion.span
+              I'm not interested in trends or templates. I'm interested in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>ideas with backbone</span> — things that stick because they mean something<motion.span
                 animate={{ opacity: [1, 0, 1] }}
                 transition={{ duration: 0.6, repeat: Infinity, ease: "steps(1)" }}
                 className="inline-block ml-1 text-[#ff9d23]/80"
