@@ -682,7 +682,10 @@ export default function BlackberryWormholeContent() {
       style={{
         background: "#0b0b0b",
         transition: 'opacity 0.2s ease',
-        animation: isHyperhyperspace ? 'screen-shake 0.1s infinite' : 'none',
+        animation: isHyperhyperspace ? 'screen-shake-intense 0.08s infinite' :
+                   (hecticSpeed ? 'screen-shake-strong 0.1s infinite' :
+                   (isWarping ? 'screen-shake-medium 0.15s infinite' :
+                   (boost ? 'screen-shake-light 0.2s infinite' : 'none'))),
         opacity: isFadingOut ? 0 : 1
       }}
     >
@@ -755,8 +758,14 @@ export default function BlackberryWormholeContent() {
           {filteredStars.map((star) => {
             const perspective = 1000;
             const scale = perspective / (perspective + star.z);
-            const x = star.x * scale + 240;
-            const y = star.y * scale + 400;
+
+            // Parallax depth effect based on layer (background moves slower than foreground)
+            const parallaxMultipliers = [0.3, 0.6, 1.0]; // Layer 0 = slowest, Layer 2 = fastest
+            const parallaxX = mousePos.x * parallaxMultipliers[star.layer];
+            const parallaxY = mousePos.y * parallaxMultipliers[star.layer];
+
+            const x = star.x * scale + 240 + parallaxX;
+            const y = star.y * scale + 400 + parallaxY;
 
             const layerSizeMultipliers = [0.8, 1.2, 1.6];
             const layerOpacityMultipliers = [0.5, 0.8, 1];
@@ -840,16 +849,56 @@ export default function BlackberryWormholeContent() {
               animation: "hyperspace-pulse 1s ease-in-out infinite"
             }}
           />
+
+          {/* Horizontal Lens Flare Streaks */}
+          <div className="absolute inset-0 pointer-events-none" style={{ overflow: 'hidden' }}>
+            <div
+              className="absolute left-0 top-1/2"
+              style={{
+                width: '100%',
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                transform: 'translateY(-50%)',
+                opacity: isHyperhyperspace ? 0.9 : 0.6,
+                animation: 'lens-flare-horizontal 1.5s ease-in-out infinite'
+              }}
+            />
+            <div
+              className="absolute left-0 top-1/2"
+              style={{
+                width: '100%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent 0%, rgba(150,200,255,0.6) 50%, transparent 100%)',
+                transform: 'translateY(calc(-50% - 10px))',
+                opacity: isHyperhyperspace ? 0.7 : 0.4,
+                animation: 'lens-flare-horizontal 1.5s ease-in-out infinite 0.2s'
+              }}
+            />
+            <div
+              className="absolute left-0 top-1/2"
+              style={{
+                width: '100%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent 0%, rgba(150,200,255,0.6) 50%, transparent 100%)',
+                transform: 'translateY(calc(-50% + 10px))',
+                opacity: isHyperhyperspace ? 0.7 : 0.4,
+                animation: 'lens-flare-horizontal 1.5s ease-in-out infinite 0.4s'
+              }}
+            />
+          </div>
         </>
       )}
 
-      {/* Enhanced Vignette */}
+      {/* Enhanced Vignette with graduated darkness */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: isWarping
-            ? "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.85) 100%)"
-            : "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%)"
+          background: isHyperhyperspace
+            ? "radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.95) 100%)"
+            : (isWarping || hecticSpeed
+              ? "radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.85) 100%)"
+              : "radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.7) 100%)"),
+          transition: 'background 0.3s ease'
         }}
       />
 
@@ -889,26 +938,48 @@ export default function BlackberryWormholeContent() {
         </div>
       )}
 
-      {/* Hectic Speed Message */}
+      {/* Hectic Speed Message with Speed Lines */}
       {showHecticMessage && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[100]">
-          <div className="px-12 py-10 bg-black/90 rounded-xl" style={{
-            border: "4px solid #ffffff",
-            boxShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8)",
-            animation: "hectic-speed-entrance 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-            transform: "scale(1.1)"
-          }}>
-            <p className="text-5xl font-bold mb-3" style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #bbdefb 50%, #64b5f6 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              textShadow: "0 0 50px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8)"
-            }}>
-              HECTIC SPEED
-            </p>
-            <p className="text-white text-base text-center font-bold">Fast! Fast! Fast!</p>
+        <>
+          {/* Speed Lines (Comic book style motion lines) */}
+          <div className="absolute inset-0 pointer-events-none z-[99]" style={{ overflow: 'hidden' }}>
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute"
+                style={{
+                  left: '50%',
+                  top: '50%',
+                  width: '200%',
+                  height: '3px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)',
+                  transform: `translate(-50%, -50%) rotate(${i * 30}deg)`,
+                  transformOrigin: 'center',
+                  animation: `speed-line-pulse 0.3s ease-out ${i * 0.02}s infinite`
+                }}
+              />
+            ))}
           </div>
-        </div>
+
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[100]">
+            <div className="px-12 py-10 bg-black/90 rounded-xl" style={{
+              border: "4px solid #ffffff",
+              boxShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8)",
+              animation: "hectic-speed-entrance 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+              transform: "scale(1.1)"
+            }}>
+              <p className="text-5xl font-bold mb-3" style={{
+                background: "linear-gradient(135deg, #ffffff 0%, #bbdefb 50%, #64b5f6 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: "0 0 50px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8)"
+              }}>
+                HECTIC SPEED
+              </p>
+              <p className="text-white text-base text-center font-bold">Fast! Fast! Fast!</p>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Countdown Overlay */}
@@ -1167,7 +1238,7 @@ export default function BlackberryWormholeContent() {
                     setSelectedCategory(cat);
                     playSound('beep');
                   }}
-                  className="transition-all hover:scale-105 active:scale-95"
+                  className="transition-all hover:scale-110 active:scale-95"
                   style={{
                     fontFamily: "monospace",
                     fontSize: "0.75rem",
@@ -1178,7 +1249,20 @@ export default function BlackberryWormholeContent() {
                     border: `1px solid ${isSelected ? "#ff9d23" : "rgba(255, 255, 255, 0.2)"}`,
                     borderRadius: "8px",
                     padding: "0.5rem 0.75rem",
-                    boxShadow: isSelected ? "0 0 20px rgba(255, 157, 35, 0.3)" : "none"
+                    boxShadow: isSelected ? "0 0 20px rgba(255, 157, 35, 0.3)" : "none",
+                    filter: isSelected ? "drop-shadow(0 0 10px rgba(255, 157, 35, 0.5))" : "none"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.boxShadow = "0 0 15px rgba(255, 157, 35, 0.2)";
+                      e.currentTarget.style.filter = "drop-shadow(0 0 5px rgba(255, 157, 35, 0.3))";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.filter = "none";
+                    }
                   }}
                 >
                   {cat === 'weirdFun' ? 'Weird' : cat}
@@ -1262,7 +1346,27 @@ export default function BlackberryWormholeContent() {
           0% { transform: rotateY(90deg); opacity: 0; }
           100% { transform: rotateY(0deg); opacity: 1; }
         }
-        @keyframes screen-shake {
+        /* Graduated screen shake intensity levels */
+        @keyframes screen-shake-light {
+          0%, 100% { transform: translate(0, 0); }
+          25% { transform: translate(-2px, 2px); }
+          50% { transform: translate(2px, -2px); }
+          75% { transform: translate(-2px, -2px); }
+        }
+        @keyframes screen-shake-medium {
+          0%, 100% { transform: translate(0, 0); }
+          25% { transform: translate(-4px, 4px); }
+          50% { transform: translate(4px, -4px); }
+          75% { transform: translate(-4px, -4px); }
+        }
+        @keyframes screen-shake-strong {
+          0%, 100% { transform: translate(0, 0); }
+          20% { transform: translate(-6px, 5px); }
+          40% { transform: translate(5px, -6px); }
+          60% { transform: translate(-5px, -5px); }
+          80% { transform: translate(6px, 6px); }
+        }
+        @keyframes screen-shake-intense {
           0% { transform: translate(0, 0); }
           10% { transform: translate(-8px, 6px); }
           20% { transform: translate(6px, -8px); }
@@ -1290,6 +1394,15 @@ export default function BlackberryWormholeContent() {
             transform: scale(1.1);
             opacity: 1;
           }
+        }
+        @keyframes speed-line-pulse {
+          0% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(1.2); }
+        }
+        @keyframes lens-flare-horizontal {
+          0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
+          50% { opacity: 1; transform: scaleX(1.2); }
         }
         @keyframes button-pulse {
           0%, 100% {

@@ -500,7 +500,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0, delay: 0.3 }}
-              className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.8] font-light tracking-normal mb-[60vh] md:mb-[70vh] lg:mb-[80vh]"
+              className="text-[28px] md:text-[36px] lg:text-[56px] text-white leading-[1.8] font-light tracking-normal mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
               style={{ wordSpacing: '0.1em' }}
             >
               I work where ideas meet culture — finding the <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>small, precise angle</span> no one else has noticed yet.
@@ -512,7 +512,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.0, delay: 0.5 }}
-              className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.8] font-normal tracking-normal mb-[60vh] md:mb-[70vh] lg:mb-[80vh]"
+              className="text-[24px] md:text-[30px] lg:text-[38px] text-white/95 leading-[1.8] font-normal tracking-normal mb-[100vh] md:mb-[110vh] lg:mb-[120vh]"
               style={{ wordSpacing: '0.1em' }}
             >
               Anyone can make something that looks current; the work is making something that still feels right in <span className="text-[#ff9d23] font-semibold" style={{ textShadow: '0 0 20px rgba(255,157,35,0.4)' }}>five years</span>.
