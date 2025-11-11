@@ -30,6 +30,14 @@
     "deliverables": ["Website", "Retirement Calculator", "Content Strategy", "SEO Optimization"]
   },
   {
+    "name": "Anitaj",
+    "sector": "Fashion / Lifestyle",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/anitaj.png"
+  },
+  {
     "name": "Bankwest",
     "sector": "Banking",
     "projects": 5,
@@ -41,8 +49,15 @@
     "results": "Launched mobile banking platform with 250,000+ downloads in first 6 months",
     "deliverables": ["Mobile App", "UX Design", "API Integration", "Security Audit"],
     "testimonial": "Transformed our digital banking experience with innovative solutions.",
-    "workSamples": ["sample1", "sample2", "sample3"],
     "logo": "/images/clients/bankwest.png"
+  },
+  {
+    "name": "Betoota Advocate",
+    "sector": "Marketing / Media",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Australia's oldest newspaper"
   },
   {
     "name": "CareSuper",
@@ -83,31 +98,6 @@
     "logo": "/images/clients/essence.png"
   },
   {
-    "name": "HESTA",
-    "sector": "Superannuation",
-    "projects": 6,
-    "featured": true,
-    "status": "active",
-    "tagline": "Industry super for health and community",
-    "website": "https://www.hesta.com.au",
-    "yearStarted": 2019,
-    "results": "Achieved 40% increase in member engagement and 28% growth in online account registrations",
-    "deliverables": ["Brand Strategy", "Website Redesign", "Digital Campaign", "Member Portal"],
-    "testimonial": "Exceptional strategic partner who delivered beyond expectations.",
-    "workSamples": ["sample1", "sample2", "sample3", "sample4"],
-    "logo": "/images/clients/hesta.png"
-  },
-  {
-    "name": "Hills Pet",
-    "sector": "Pet Care",
-    "projects": 2,
-    "featured": false,
-    "status": "completed",
-    "tagline": "Science-backed pet nutrition",
-    "website": "https://www.hillspet.com.au",
-    "logo": "/images/clients/hills.png"
-  },
-  {
     "name": "Ferrari Australia",
     "sector": "Automotive / Luxury",
     "projects": 3,
@@ -130,6 +120,54 @@
     "logo": "/images/clients/fishbowl.png"
   },
   {
+    "name": "HESTA",
+    "sector": "Superannuation",
+    "projects": 6,
+    "featured": true,
+    "status": "active",
+    "tagline": "Industry super for health and community",
+    "website": "https://www.hesta.com.au",
+    "yearStarted": 2019,
+    "results": "Achieved 40% increase in member engagement and 28% growth in online account registrations",
+    "deliverables": ["Brand Strategy", "Website Redesign", "Digital Campaign", "Member Portal"],
+    "testimonial": "Exceptional strategic partner who delivered beyond expectations.",
+    "logo": "/images/clients/hesta.png"
+  },
+  {
+    "name": "Hills Pet",
+    "sector": "Pet Care",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Science-backed pet nutrition",
+    "website": "https://www.hillspet.com.au",
+    "logo": "/images/clients/hills.png"
+  },
+  {
+    "name": "Jac+Jack",
+    "sector": "Fashion / Lifestyle",
+    "projects": 2,
+    "featured": false,
+    "status": "active",
+    "tagline": "Contemporary Australian fashion"
+  },
+  {
+    "name": "Lewis Continental Kitchen",
+    "sector": "Food & Beverage",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "tagline": "Modern Italian dining"
+  },
+  {
+    "name": "MedBox",
+    "sector": "Health / Wellness",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/medbox.png"
+  },
+  {
     "name": "Miss Double Bay",
     "sector": "Fashion / Lifestyle",
     "projects": 1,
@@ -137,6 +175,14 @@
     "status": "active",
     "tagline": "Sydney fashion destination",
     "logo": "/images/clients/miss-double-bay.png"
+  },
+  {
+    "name": "Miss Fisher's Murder Mysteries",
+    "sector": "Marketing / Media",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/mfm.png"
   },
   {
     "name": "Mullet Boards",
@@ -148,15 +194,6 @@
     "logo": "/images/clients/mullet-boards.png"
   },
   {
-    "name": "RefundID",
-    "sector": "Financial Services",
-    "projects": 3,
-    "featured": false,
-    "status": "completed",
-    "website": "https://www.refundid.com/au",
-    "logo": "/images/clients/refundid.png"
-  },
-  {
     "name": "People's Choice",
     "sector": "Financial Services",
     "projects": 4,
@@ -165,6 +202,15 @@
     "tagline": "Customer-owned banking",
     "website": "https://www.peopleschoice.com.au",
     "logo": "/images/clients/peoples-choice.png"
+  },
+  {
+    "name": "RefundID",
+    "sector": "Financial Services",
+    "projects": 3,
+    "featured": false,
+    "status": "completed",
+    "website": "https://www.refundid.com/au",
+    "logo": "/images/clients/refundid.png"
   },
   {
     "name": "Salesforce",
@@ -178,5 +224,95 @@
     "deliverables": ["Integration Platform", "Custom Components", "Training Program", "Documentation"],
     "testimonial": "World-class technical expertise and project delivery.",
     "logo": "/images/clients/salesforce.png"
+  },
+  {
+    "name": "Sculpture by the Sea",
+    "sector": "Creative Agency",
+    "projects": 3,
+    "featured": true,
+    "status": "active",
+    "tagline": "World's largest free sculpture exhibition",
+    "website": "https://sculpturebythesea.com",
+    "logo": "/images/clients/sculptures.svg"
+  },
+  {
+    "name": "Softlite",
+    "sector": "Surfing / Lifestyle",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/softlite.png"
+  },
+  {
+    "name": "Stealth",
+    "sector": "Surfing / Lifestyle",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/stealth.png"
+  },
+  {
+    "name": "Stulz",
+    "sector": "Technology / CRM",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/stulz.png"
+  },
+  {
+    "name": "Swich",
+    "sector": "Financial Services",
+    "projects": 3,
+    "featured": false,
+    "status": "active",
+    "logo": "/images/clients/swich.png"
+  },
+  {
+    "name": "The Char",
+    "sector": "Food & Beverage",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/the-char.png"
+  },
+  {
+    "name": "Undercard",
+    "sector": "Marketing / Media",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/undercard.png"
+  },
+  {
+    "name": "Verde Remedy",
+    "sector": "Health / Wellness",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/verde-remedy.png"
+  },
+  {
+    "name": "Voddami",
+    "sector": "Food & Beverage",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/voddami.png"
+  },
+  {
+    "name": "Woofa",
+    "sector": "Pet Care",
+    "projects": 1,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/woofa.png"
+  },
+  {
+    "name": "World Bodyboards",
+    "sector": "Surfing / Lifestyle",
+    "projects": 2,
+    "featured": false,
+    "status": "completed",
+    "logo": "/images/clients/worldbodyboards.png"
   }
 ]
