@@ -225,7 +225,7 @@ function ClientCell({
       {/* Sector badge pill */}
       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
         <div
-          className="px-2 py-0.5 rounded-full text-[8px] font-light tracking-wider uppercase backdrop-blur-sm"
+          className="px-3 py-1 rounded-full text-[8px] font-light tracking-wider uppercase backdrop-blur-sm"
           style={{
             backgroundColor: `${sectorColor}15`,
             border: `1px solid ${sectorColor}30`,
@@ -340,43 +340,40 @@ export default function ClientsPage() {
             <h1 className="text-[60px] md:text-[80px] lg:text-[100px] font-light text-[#ff9d23] mb-8 leading-[0.9]">
               Clients
             </h1>
-            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.1] font-light tracking-wide max-w-4xl">
+            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.1] font-light tracking-wide max-w-4xl mb-8">
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.clients}</span> clients across{" "}
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.sectors}</span> industries.{" "}
               <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.projects}</span> projects delivered.
             </p>
+
+            {/* Sector Distribution */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-3 text-[11px] text-white/40 font-light uppercase tracking-[0.2em] max-w-3xl"
+            >
+              {Object.entries(
+                clients.reduce((acc, client) => {
+                  acc[client.sector] = (acc[client.sector] || 0) + 1;
+                  return acc;
+                }, {} as Record<string, number>)
+              )
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6)
+                .map(([sector, count]) => (
+                  <div key={sector} className="flex items-center gap-2">
+                    <div
+                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: SECTOR_COLORS[sector] || "#ff9d23" }}
+                    />
+                    <span>{sector}: {count}</span>
+                  </div>
+                ))}
+            </motion.div>
           </motion.div>
         </div>
       </section>
-
-      {/* Sector Distribution Bar */}
-      <motion.div
-        className="max-w-7xl mx-auto px-8 mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <div className="flex flex-wrap gap-6 justify-center text-[11px] text-white/40 font-light uppercase tracking-[0.2em]">
-          {Object.entries(
-            clients.reduce((acc, client) => {
-              acc[client.sector] = (acc[client.sector] || 0) + 1;
-              return acc;
-            }, {} as Record<string, number>)
-          )
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 6)
-            .map(([sector, count]) => (
-              <div key={sector} className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: SECTOR_COLORS[sector] || "#ff9d23" }}
-                />
-                <span>{sector}: {count}</span>
-              </div>
-            ))}
-        </div>
-      </motion.div>
 
       {/* Luxury Divider */}
       <motion.div
@@ -400,28 +397,16 @@ export default function ClientsPage() {
             const sectorIndex = Object.keys(SECTOR_COLORS).indexOf(client.sector);
             const delay = (sectorIndex * 0.1) + (index * 0.015);
 
-            // Check if this is the first client of a new letter
-            const currentLetter = client.name[0].toUpperCase();
-            const prevLetter = index > 0 ? clients[index - 1].name[0].toUpperCase() : '';
-            const showLetterHeader = currentLetter !== prevLetter;
-
             return (
-              <>
-                {showLetterHeader && (
-                  <div key={`letter-${currentLetter}`} className="col-span-full border-b border-white/5 py-3 px-4">
-                    <span className="text-[10px] text-white/30 font-light tracking-[0.3em] uppercase">{currentLetter}</span>
-                  </div>
-                )}
-                <ClientCell
-                  key={client.name}
-                  client={client}
-                  sectorColor={sectorColor}
-                  isLongTerm={isLongTerm}
-                  delay={delay}
-                  onHoverChange={setIsHovering}
-                  onClick={() => setSelectedClient(client)}
-                />
-              </>
+              <ClientCell
+                key={client.name}
+                client={client}
+                sectorColor={sectorColor}
+                isLongTerm={isLongTerm}
+                delay={delay}
+                onHoverChange={setIsHovering}
+                onClick={() => setSelectedClient(client)}
+              />
             );
           })}
         </div>
@@ -514,9 +499,9 @@ export default function ClientsPage() {
             </div>
 
             {/* Client Details Grid */}
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div className="grid md:grid-cols-2 gap-12 mb-12">
               {/* Left Column */}
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
                   <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Sector</p>
                   <p className="text-[16px] text-white/80 font-light">{selectedClient.sector}</p>
@@ -561,7 +546,7 @@ export default function ClientsPage() {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {selectedClient.tagline && (
                   <div>
                     <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Tagline</p>
@@ -578,12 +563,12 @@ export default function ClientsPage() {
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-2">Deliverables</p>
-                    <div className="flex flex-wrap gap-2">
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-3">Deliverables</p>
+                    <div className="flex flex-wrap gap-3">
                       {selectedClient.deliverables.map((item, i) => (
                         <span
                           key={i}
-                          className="px-3 py-1 text-[12px] bg-white/5 border border-white/10 text-white/70 font-light rounded-sm"
+                          className="px-4 py-2 text-[12px] bg-white/5 border border-white/10 text-white/70 font-light rounded-sm"
                         >
                           {item}
                         </span>
