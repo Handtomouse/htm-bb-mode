@@ -641,8 +641,7 @@ export default function ClientsPage() {
               animation: 'modalPulse 3s ease-in-out infinite'
             }}
           >
-            {/* Vignette overlay */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(11,11,11,0.08) 100%)' }} />
+            {/* Vignette overlay - removed for better text readability */}
             {/* Noise texture */}
             <div
               className="absolute inset-0 opacity-[0.01] pointer-events-none mix-blend-overlay"
@@ -713,7 +712,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-24 pb-24 relative text-center"
+              className="mb-32 pb-32 relative text-center"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               {selectedClient.logo ? (
@@ -762,7 +761,7 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-16 pl-4"
+                className="space-y-20 pl-4"
               >
                 <div>
                   <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
@@ -826,13 +825,13 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-16 pl-6"
+                className="space-y-20 pl-6"
               >
                 {selectedClient.tagline && (
                   <div>
                     <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-8">Tagline</p>
                     <p
-                      className="text-[20px] text-white/85 leading-[1.9] bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent mt-2"
+                      className="text-[20px] text-white/85 leading-[1.9] bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent mt-4"
                       style={{
                         fontFamily: 'Georgia, "Times New Roman", serif',
                         fontStyle: 'italic',
