@@ -685,7 +685,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23]"
+            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23] mb-12 md:mb-16"
             style={{
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
@@ -696,7 +696,7 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
             <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.15} />
             <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.3} />
-            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={0.45} />
+            <LuxuryStatCard label="Years Active" value="5" delay={0.45} />
             <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.6} />
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.75} />
           </div>
@@ -1134,12 +1134,12 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
   // Context mapping for each stat
   const contextMap: Record<string, { icon: string; text: string }> = {
-    "Projects": { icon: "📊", text: "Since 2020 • S'WICH, MapleMoon, Jac+Jack, and 57 more brands across hospitality, fashion, and tech" },
-    "Retention": { icon: "🔄", text: "3 of 4 clients return • Built on systems they can actually run without us" },
-    "Repeat Clients": { icon: "🤝", text: "Nearly half come back • Long-term partnerships, not one-offs" },
-    "Avg Project": { icon: "💰", text: "$10k–$25k range • 4-8 weeks • Strategy included, not extra" },
-    "Response": { icon: "⚡", text: "Usually 4h • Async-first workflow • Weekly 30min syncs" },
-    "Industries": { icon: "🎯", text: "Hospitality • Fashion • Tech • More • No cookie-cutter approaches" }
+    "Projects": { icon: "", text: "Since 2020. Includes S'WICH, MapleMoon, Jac+Jack, and 57 more brands across hospitality, fashion, and tech." },
+    "Retention": { icon: "", text: "75% of clients return. We build systems they can actually run without us." },
+    "Repeat Clients": { icon: "", text: "Nearly half come back for additional projects. Long-term partnerships, not one-offs." },
+    "Years Active": { icon: "", text: "Established 2020. Consistent work across brand strategy, campaign creative, and content systems." },
+    "Response": { icon: "", text: "48 hour average response time. Usually 4 hours. Async-first workflow with weekly 30-minute syncs." },
+    "Industries": { icon: "", text: "Work spans hospitality, fashion, tech, and more. No cookie-cutter approaches — every brief is different." }
   };
 
   const context = contextMap[label] || { icon: "✨", text: "More context coming soon" };
@@ -1301,9 +1301,6 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             boxShadow: '0 0 30px rgba(255,157,35,0.2), 0 10px 50px rgba(0,0,0,0.4)'
           }}
         >
-          {/* Icon */}
-          <div className="text-[32px] mb-3 opacity-80">{context.icon}</div>
-
           {/* Context Text */}
           <p
             className="text-[14px] md:text-[16px] leading-[1.6] text-white/90"
