@@ -1141,6 +1141,9 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   const [gradientRotation, setGradientRotation] = useState(0); // Improvement #15: Gradient border
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 }); // Improvement #17: Card spotlight
   const [numberPulse, setNumberPulse] = useState(false); // Improvement #21: Number pulse on complete
+  const [sheenRotation, setSheenRotation] = useState(0); // Luxury #4: Metallic sheen rotation
+  const [silkRotation, setSilkRotation] = useState(0); // Luxury #6: Silk texture rotation
+  const [clickScale, setClickScale] = useState(1); // Luxury #13: Haptic click feedback
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -1153,9 +1156,9 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     const strength = 0.25; // Improvement #4: Enhanced parallax
     setOffset({ x: deltaX * strength, y: deltaY * strength });
 
-    // Improvement #23: 3D tilt based on mouse position
-    const rotateX = -(deltaY / rect.height) * 15; // Max 15deg tilt
-    const rotateY = (deltaX / rect.width) * 15;
+    // Luxury #10: 3D tilt with ±8deg constraint (more refined)
+    const rotateX = -(deltaY / rect.height) * 8; // Max 8deg tilt
+    const rotateY = (deltaX / rect.width) * 8;
     setRotation({ x: rotateX, y: rotateY });
 
     // Improvement #17: Track mouse position for spotlight (0-1 range)
@@ -1187,23 +1190,27 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       return;
     }
 
-    const duration = 1500;
-    const steps = 60;
+    // Luxury #12: Weighted count-up (2200ms, elegant easing)
+    const duration = 2200;
+    const steps = 66;
     const stepDuration = duration / steps;
     let currentStep = 0;
 
     const interval = setInterval(() => {
       currentStep++;
       const progress = currentStep / steps;
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      // Luxury #12: Elegant easing curve (slow start, accelerate, decelerate)
+      const easedProgress = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
       const currentValue = targetNum * easedProgress;
 
       if (currentStep >= steps) {
         setCountedValue(value);
         clearInterval(interval);
-        // Improvement #21: Trigger pulse on count complete
+        // Luxury #12: Trigger pulse with scale bounce on complete
         setNumberPulse(true);
-        setTimeout(() => setNumberPulse(false), 400);
+        setTimeout(() => setNumberPulse(false), 500);
       } else {
         const formatted = suffix.includes('%') || suffix.includes('+')
           ? Math.floor(currentValue)
@@ -1213,8 +1220,10 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     }, stepDuration);
   }, [value, hasAnimated]);
 
-  // Improvement #38: Click to reset animation
+  // Luxury #13: Click with haptic tactile feedback
   const handleClick = () => {
+    setClickScale(0.98);
+    setTimeout(() => setClickScale(1), 150);
     setHasAnimated(false);
     setCountedValue("0");
     setTimeout(() => animateValue(), 100);
@@ -1223,22 +1232,26 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   return (
     <motion.div
       ref={cardRef}
-      // Improvement #1: Remove blur, #7: Add bounce scale
+      // Luxury #9: Spring physics entrance with overshoot
       initial={{ opacity: 0, y: 20, scale: 0.85 }}
-      whileInView={{ opacity: 1, y: 0, scale: [0.85, 1.05, 1] }}
+      whileInView={{ opacity: 1, y: 0, scale: 1.02 }}
       viewport={{ once: true, amount: 0.3, margin: "-100px" }}
-      // Improvement #6: Increased stagger
+      // Luxury #9: Weighted physics with 0.5s stagger
       transition={{
-        delay,
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
-        scale: { times: [0, 0.7, 1], duration: 0.8 }
+        delay: delay * 0.5,
+        type: "spring",
+        stiffness: 80,
+        damping: 20,
+        opacity: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+        scale: { type: "spring", stiffness: 100, damping: 15 }
       }}
       onViewportEnter={animateValue}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => {
         setIsHovered(true);
         setGradientRotation(360); // Improvement #15: Rotate gradient on hover
+        setSheenRotation(360); // Luxury #4: Rotate champagne sheen
+        setSilkRotation(180); // Luxury #6: Rotate silk texture
       }}
       onMouseLeave={() => {
         setOffset({ x: 0, y: 0 });
@@ -1246,6 +1259,8 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         setIsHovered(false);
         setMousePos({ x: 0.5, y: 0.5 });
         setGradientRotation(0);
+        setSheenRotation(0);
+        setSilkRotation(0);
       }}
       onClick={handleClick}
       // Improvement #15: Gradient border, #18: Enhanced glow, #26: Breathing idle
@@ -1259,30 +1274,43 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           '0 0 50px rgba(255,157,35,0.5), inset 0 0 15px rgba(255,157,35,0.15)',
           '0 0 40px rgba(255,157,35,0.3), inset 0 0 10px rgba(255,157,35,0.1)'
         ],
-        scale: isHovered ? 1 : [1, 1.01, 1],
+        scale: isHovered ? clickScale : [clickScale, 1.015 * clickScale, clickScale],
         borderWidth: isHovered ? '3px' : '2px'
       }}
       transition={{
         boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-        scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+        scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
         borderWidth: { duration: 0.3 }
       }}
       style={{
-        // Improvement #22: Card elevation on hover (translateZ for 3D lift)
-        transform: `translate(${offset.x}px, ${offset.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) ${isHovered ? 'translateZ(20px)' : 'translateZ(0px)'}`,
+        // Luxury #10: Silk-smooth hover lift with 3D
+        transform: `translate(${offset.x}px, ${offset.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) ${isHovered ? 'translateZ(40px)' : 'translateZ(0px)'}`,
         transformStyle: 'preserve-3d',
         willChange: 'transform',
-        // Improvement #15: Gradient border that rotates on hover
-        borderImage: `linear-gradient(${gradientRotation}deg, #ff9d23 0%, #ffb84d 50%, #ff9d23 100%) 1`,
+        // Luxury #7: Crystal prismatic multi-layer border
+        border: '3px solid transparent',
+        borderImage: `linear-gradient(${gradientRotation}deg, #e6c98f 0%, #d4af37 50%, #e6c98f 100%) 1`,
         borderImageSlice: 1,
-        // Improvement #17: Layered backgrounds with spotlight
+        boxShadow: `
+          0 8px 32px rgba(0,0,0,0.3),
+          0 2px 8px rgba(255,157,35,0.2),
+          inset 0 1px 0 rgba(255,255,255,0.15),
+          inset 0 -1px 0 rgba(0,0,0,0.3),
+          0 0 8px rgba(255,157,35,0.4)
+        `,
+        // Luxury #4-8: Layered luxury backgrounds
         background: `
+          radial-gradient(circle at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
           radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(255,157,35,0.15) 0%, transparent 50%),
+          linear-gradient(${sheenRotation}deg, #e6c98f 0%, #f5e4c3 25%, #d4af37 50%, #f5e4c3 75%, #e6c98f 100%),
           linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%)
         `,
-        backdropFilter: 'blur(12px)'
+        backgroundBlendMode: 'overlay, lighten, color-dodge, normal',
+        backdropFilter: 'blur(20px)',
+        filter: 'brightness(1.1) contrast(1.05)',
+        transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease, box-shadow 0.3s ease'
       }}
-      className="border-2 p-8 md:p-10 lg:p-12 text-center transition-all duration-700 cursor-pointer aspect-[3/4] hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+      className="border-2 p-10 md:p-14 lg:p-16 text-center transition-all duration-700 cursor-pointer aspect-[5/6] hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black flex flex-col justify-between overflow-hidden"
       tabIndex={0}
     >
       {/* Improvement #1: Enhanced number hierarchy, #3: Number + unit separation, #6: Tabular nums, #7: Line height, #16: Number gradient, #21: Number pulse */}
@@ -1290,11 +1318,12 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         className="leading-[0.9]"
         style={{ fontVariantNumeric: 'tabular-nums' }}
         animate={{
-          scale: numberPulse ? [1, 1.1, 1] : 1
+          scale: numberPulse ? [1, 1.05, 1] : 1
         }}
         transition={{
-          duration: 0.4,
-          ease: [0.16, 1, 0.3, 1]
+          duration: 0.5,
+          ease: [0.34, 1.56, 0.64, 1],
+          times: [0, 0.6, 1]
         }}
       >
         {(() => {
@@ -1302,20 +1331,31 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           return (
             <>
               <span
-                className="text-[56px] md:text-[72px] lg:text-[96px] font-[900] tracking-[-0.02em]"
+                className="text-[42px] md:text-[54px] lg:text-[68px] font-[900] tracking-[-0.04em]"
                 style={{
-                  textShadow: numberPulse ? '0 0 30px rgba(255,157,35,0.6)' : '0 0 20px rgba(255,157,35,0.3)',
-                  background: numberPulse ? 'linear-gradient(135deg, #ffb84d 0%, #ffd580 50%, #ffb84d 100%)' : 'linear-gradient(135deg, #ff9d23 0%, #ffb84d 50%, #ff9d23 100%)',
+                  textShadow: numberPulse ? '0 0 30px rgba(255,157,35,0.6)' : '0 1px 2px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.2)',
+                  background: numberPulse ? 'linear-gradient(165deg, #f5e4c3 0%, #d4af37 40%, #e6c98f 70%, #f5e4c3 100%)' : 'linear-gradient(165deg, #f5e4c3 0%, #d4af37 40%, #e6c98f 70%, #f5e4c3 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  fontVariantNumeric: 'proportional-nums',
+                  fontOpticalSizing: 'auto'
                 }}
               >
                 {prefix}{number}
               </span>
               {suffix && (
-                <span className="text-[34px] md:text-[43px] lg:text-[58px] font-[900] text-[#ff9d23]/60 align-super" style={{ verticalAlign: 'super', fontSize: '0.6em' }}>
+                <span className="text-[24px] md:text-[32px] lg:text-[40px] font-[900] align-super"
+                  style={{
+                    verticalAlign: 'super',
+                    fontSize: '0.57em',
+                    opacity: 0.45,
+                    color: '#e5c88f',
+                    transform: 'translate(2px, -18px)',
+                    display: 'inline-block',
+                    transition: 'opacity 0.3s ease 0.1s'
+                  }}>
                   {suffix}
                 </span>
               )}
@@ -1323,15 +1363,17 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           );
         })()}
       </motion.div>
-      {/* Improvement #2: Refined label typography, #24: Letter-by-letter label reveal */}
+      {/* Luxury #16: Refined label typography with elegant spacing */}
       <motion.div
-        className="text-[18px] md:text-[22px] lg:text-[26px] text-white/80 font-medium uppercase tracking-[0.10em] leading-[1.2]"
+        className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.18em] leading-[1.2]"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         style={{
           marginTop: '8px',
-          textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+          color: 'rgba(229,200,143,0.75)',
+          fontWeight: 400
         }}
       >
         {label.split('').map((char, i) => (
@@ -1341,46 +1383,50 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               hidden: { opacity: 0, y: 10 },
               visible: { opacity: 1, y: 0 }
             }}
-            transition={{ delay: delay + 0.8 + (i * 0.03), duration: 0.2 }}
+            transition={{ delay: delay + 0.8 + (i * 0.05), duration: 0.25 }}
           >
             {char === ' ' ? '\u00A0' : char}
           </motion.span>
         ))}
       </motion.div>
 
-      {/* Improvement #4: Improved "Since 2020" typography */}
+      {/* Luxury #19: Refined time period indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ delay: delay + 1.2, duration: 0.6 }}
-        className="text-[12px] md:text-[14px] lg:text-[16px] text-white/40 uppercase tracking-[0.15em] pt-2 border-t border-white/10"
-        style={{ marginTop: '6px' }}
+        transition={{ delay: delay + 1.6, duration: 0.6 }}
+        className="text-[11px] md:text-[13px] lg:text-[15px] uppercase tracking-[0.15em] pt-2 border-t border-white/10"
+        style={{
+          marginTop: '16px',
+          color: 'rgba(229,200,143,0.5)',
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+        }}
       >
         Since 2020
       </motion.div>
 
-      {/* Improvement #13: Progress bar spacing, #20: Progress bar shimmer, #30: Animated progress bar */}
+      {/* Luxury #18: Premium champagne progress bar with shimmer */}
       <motion.div
-        className="w-full h-[3px] bg-white/10 rounded-full overflow-hidden relative"
+        className="w-full h-[4px] bg-white/10 rounded-[2px] overflow-hidden relative"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ delay: delay + 1.4 }}
+        transition={{ delay: delay + 1.8 }}
         style={{
-          marginTop: '8px',
-          boxShadow: '0 0 4px rgba(0,0,0,0.3)'
+          marginTop: '12px',
+          boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.3)'
         }}
       >
         <motion.div
-          className="h-full rounded-full relative overflow-hidden"
+          className="h-full rounded-[2px] relative overflow-hidden"
           initial={{ width: "0%" }}
           whileInView={{ width: value.includes('%') ? value : value.includes('+') ? "100%" : "85%" }}
           viewport={{ once: true }}
-          transition={{ delay: delay + 1.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: delay + 1.9, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            background: 'linear-gradient(90deg, rgba(255,157,35,0.6) 0%, #ff9d23 100%)',
-            boxShadow: '0 0 8px rgba(255,157,35,0.4)'
+            background: 'linear-gradient(90deg, #e6c98f 0%, #d4af37 50%, #e6c98f 100%)',
+            boxShadow: '0 0 10px rgba(212,175,55,0.5), inset 0 1px 0 rgba(255,255,255,0.3)'
           }}
         >
           {/* Shimmer overlay */}
@@ -1390,12 +1436,14 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               x: ['-100%', '100%']
             }}
             transition={{
-              delay: delay + 2.7,
-              duration: 1.5,
+              delay: delay + 3.3,
+              duration: 1.8,
+              repeat: Infinity,
+              repeatDelay: 2,
               ease: 'easeInOut'
             }}
             style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)'
+              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)'
             }}
           />
         </motion.div>
