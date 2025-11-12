@@ -631,21 +631,21 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0, rotate: 0 }}
             exit={{ scale: 0.92, y: 20, rotate: -2 }}
             transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
-            className="relative max-w-5xl w-full bg-[#0b0b0b] border-2 p-16 sm:p-20 md:p-24 lg:p-32 max-h-[90vh] overflow-y-auto scroll-smooth"
+            className="relative max-w-5xl w-full bg-[#0b0b0b] border p-16 sm:p-20 md:p-24 lg:p-32 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
               borderImage: `linear-gradient(135deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40, transparent, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40) 1`,
-              boxShadow: `0 0 80px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}25, 0 0 120px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}15`,
+              boxShadow: `0 0 40px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}15, 0 0 60px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}08`,
               scrollbarWidth: 'thin',
               scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`,
               animation: 'modalPulse 3s ease-in-out infinite'
             }}
           >
             {/* Vignette overlay */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(11,11,11,0.3) 100%)' }} />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(11,11,11,0.08) 100%)' }} />
             {/* Noise texture */}
             <div
-              className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay"
+              className="absolute inset-0 opacity-[0.01] pointer-events-none mix-blend-overlay"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
                 backgroundSize: '200px 200px'
@@ -653,14 +653,14 @@ export default function ClientsPage() {
             />
 
             {/* Corner accents - all 4 corners */}
-            <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 opacity-50" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
 
             {/* Scroll fade gradients - more pronounced */}
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0b0b0b] via-[#0b0b0b]/90 to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/90 to-transparent pointer-events-none z-10" />
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0b0b0b] via-[#0b0b0b]/50 to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/50 to-transparent pointer-events-none z-10" />
             {/* Close button with sector color accent and ripple */}
             <button
               onClick={(e) => {
@@ -701,7 +701,7 @@ export default function ClientsPage() {
                 transition={{ duration: 0.5, delay: 0.05 }}
                 className="absolute top-0 left-0 px-8 py-3 bg-gradient-to-r from-transparent to-transparent"
                 style={{
-                  background: `linear-gradient(90deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40, transparent)`
+                  background: `linear-gradient(90deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}25, transparent)`
                 }}
               >
                 <span className="text-[10px] font-light tracking-[0.3em] uppercase text-white/70">Featured Client</span>
@@ -732,12 +732,12 @@ export default function ClientsPage() {
               {/* Sector badge inline with status */}
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <span
-                  className="inline-block px-8 py-3 rounded-full text-[11px] font-light tracking-[0.25em] uppercase backdrop-blur-sm transition-all duration-500 hover:scale-105"
+                  className="inline-block px-8 py-3 rounded-full text-[11px] font-light tracking-[0.25em] uppercase transition-all duration-500 hover:scale-105"
                   style={{
                     backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
                     border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
                     color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23',
-                    boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`
+                    boxShadow: `0 0 8px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10`
                   }}
                 >
                   {selectedClient.sector}
@@ -756,29 +756,29 @@ export default function ClientsPage() {
             </motion.div>
 
             {/* Client Details Grid - Asymmetric */}
-            <div className="grid md:grid-cols-[40%_60%] gap-28 mb-24">
+            <div className="grid md:grid-cols-[40%_60%] gap-24 mb-24">
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-16"
+                className="space-y-16 pl-4"
               >
                 <div>
                   <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
-                  <p className="text-[24px] text-white/90 font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[24px] text-white/90 font-light tabular-nums pl-2">{selectedClient.projects.toLocaleString()}</p>
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div>
                     <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
                     </p>
-                    <p className="text-[22px] text-white/80 font-light">
+                    <p className="text-[22px] text-white/80 font-light pl-2">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
                       <span className="block text-[15px] text-white/40 mt-4">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
@@ -790,7 +790,7 @@ export default function ClientsPage() {
                 {selectedClient.website && (
                   <div>
                     <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                      <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
                     </p>
                     <a
@@ -826,7 +826,7 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-16"
+                className="space-y-16 pl-6"
               >
                 {selectedClient.tagline && (
                   <div>
@@ -846,7 +846,7 @@ export default function ClientsPage() {
                 )}
 
                 {selectedClient.results && (
-                  <div className="p-12 bg-white/[0.02] border border-white/5 rounded-sm">
+                  <div className="p-10 bg-white/[0.02] border border-white/5 rounded-sm">
                     <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                       Results
@@ -870,7 +870,7 @@ export default function ClientsPage() {
                           transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
                           className="px-8 py-4 text-[13px] bg-white/5 border border-white/10 text-white/75 rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
                           style={{
-                            boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                            boxShadow: '0 1px 6px rgba(0,0,0,0.15)',
                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                             letterSpacing: '0.02em',
                             fontWeight: 400
@@ -925,8 +925,8 @@ if (typeof document !== 'undefined' && !document.querySelector('#modal-animation
   style.id = 'modal-animations';
   style.textContent = `
     @keyframes modalPulse {
-      0%, 100% { box-shadow: 0 0 80px rgba(255, 157, 35, 0.25), 0 0 120px rgba(255, 157, 35, 0.15); }
-      50% { box-shadow: 0 0 100px rgba(255, 157, 35, 0.35), 0 0 140px rgba(255, 157, 35, 0.20); }
+      0%, 100% { box-shadow: 0 0 40px rgba(255, 157, 35, 0.15), 0 0 60px rgba(255, 157, 35, 0.08); }
+      50% { box-shadow: 0 0 50px rgba(255, 157, 35, 0.20), 0 0 70px rgba(255, 157, 35, 0.12); }
     }
     @keyframes ripple {
       0%, 100% { box-shadow: 0 0 12px #06ffa5, 0 0 20px rgba(6, 255, 165, 0.25); }
