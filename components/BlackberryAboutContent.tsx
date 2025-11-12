@@ -1165,6 +1165,20 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     }
   };
 
+  // Parse first sentence for subtle hierarchy
+  const parseFirstSentence = (text: string) => {
+    const match = text.match(/^[^.!?]+[.!?]/);
+    if (match) {
+      return {
+        firstSentence: match[0],
+        rest: text.substring(match[0].length).trim()
+      };
+    }
+    return { firstSentence: text, rest: '' };
+  };
+
+  const { firstSentence, rest } = parseFirstSentence(context.text);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -1277,14 +1291,15 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute top-3 left-3 text-[10px] px-3 py-1.5 rounded"
+              className="absolute top-3 left-3 text-[10px] px-3 py-1.5 rounded uppercase tracking-wider"
               style={{
                 background: 'rgba(255,157,35,0.2)',
                 color: '#ff9d23',
-                border: '1px solid rgba(255,157,35,0.4)'
+                border: '1px solid rgba(255,157,35,0.4)',
+                fontWeight: 600
               }}
             >
-              ⚡ Viewed
+              VIEWED
             </motion.div>
           )}
         </div>
@@ -1295,35 +1310,48 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            border: '3px solid rgba(255,157,35,0.5)',
+            border: isHovered && isFlipped ? '2px solid rgba(255,157,35,0.6)' : '2px solid rgba(255,157,35,0.5)',
             background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(255,255,255,0.05) 100%)',
             backdropFilter: 'blur(20px) saturate(1.2)',
-            boxShadow: '0 0 40px rgba(255,157,35,0.25), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.1)'
+            boxShadow: isHovered && isFlipped
+              ? '0 0 50px rgba(255,157,35,0.35), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.15)'
+              : '0 0 40px rgba(255,157,35,0.25), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.1)',
+            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Context Text */}
-          <div className="max-w-[85%] mx-auto">
+          <motion.div
+            className="max-w-[85%] mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isFlipped ? 1 : 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+          >
             <p
-              className="text-[14px] md:text-[16px] leading-[1.7] text-white/95"
+              className="text-[14px] md:text-[16px] leading-[1.7] text-white"
               style={{
                 fontWeight: 450,
-                letterSpacing: '0.02em'
+                letterSpacing: '0.02em',
+                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
               }}
             >
-              {context.text}
+              <span style={{ fontWeight: 500 }}>{firstSentence}</span>
+              {rest && ` ${rest}`}
             </p>
-          </div>
+          </motion.div>
 
           {/* Flip Back Hint */}
-          <div
-            className="absolute bottom-4 right-4 text-[10px] text-white/50 uppercase tracking-[0.15em]"
+          <motion.div
+            className="absolute bottom-4 right-4 text-[10px] text-white/60 uppercase tracking-[0.15em]"
             style={{
               fontWeight: 500,
               textShadow: '0 0 10px rgba(255,157,35,0.3)'
             }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isFlipped ? 1 : 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
           >
             Tap to flip back
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </motion.div>

@@ -626,15 +626,48 @@ export default function ClientsPage() {
               scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`
             }}
           >
-            {/* Corner accents - all 4 corners */}
-            <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            {/* Corner accents - all 4 corners with staggered animation */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.15 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2"
+              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.15 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2"
+              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.15 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2"
+              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.15 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2"
+              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
+            />
 
             {/* Scroll fade gradients - lighter */}
             <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#141414] via-[#141414]/20 to-transparent pointer-events-none z-10" />
             <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#141414] via-[#141414]/20 to-transparent pointer-events-none z-10" />
+
+            {/* Left edge sector-colored accent line */}
+            <motion.div
+              initial={{ opacity: 0, scaleY: 0 }}
+              animate={{ opacity: 0.2, scaleY: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="absolute top-0 bottom-0 left-0 w-[2px] origin-top"
+              style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
+            />
             {/* Close button with sector color accent and ripple */}
             <button
               onClick={(e) => {
@@ -647,7 +680,7 @@ export default function ClientsPage() {
                 setTimeout(() => ripple.remove(), 600);
                 setSelectedClient(null);
               }}
-              className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95 overflow-hidden"
+              className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-115 active:scale-95 overflow-hidden"
               style={{
                 boxShadow: `0 0 0 0 ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}00`,
                 transition: 'all 0.5s ease'
@@ -687,15 +720,15 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-32 pb-32 relative text-center"
+              className="mb-28 pb-28 relative text-center"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
               {selectedClient.logo ? (
                 <img
                   src={selectedClient.logo}
                   alt={selectedClient.name}
-                  className="max-w-[380px] h-auto mx-auto opacity-90 filter brightness-0 invert mb-8"
-                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 4px 12px rgba(255,255,255,0.15))' }}
+                  className="max-w-[320px] h-auto mx-auto opacity-90 filter brightness-0 invert mb-8"
+                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255,255,255,0.08))' }}
                 />
               ) : (
                 <h2 className="text-[40px] md:text-[52px] font-thin text-white/90 tracking-[0.15em] mb-8">
@@ -704,9 +737,9 @@ export default function ClientsPage() {
               )}
 
               {/* Sector badge inline with status */}
-              <div className="flex items-center justify-center gap-4 flex-wrap">
+              <div className="flex items-center justify-center gap-6 flex-wrap">
                 <span
-                  className="inline-block px-8 py-3 rounded-full text-[11px] font-light tracking-[0.25em] uppercase transition-all duration-500 hover:scale-105"
+                  className="inline-block px-8 py-3 rounded-full text-[11px] font-light tracking-[0.25em] uppercase transition-all duration-500 hover:scale-105 hover:brightness-110"
                   style={{
                     backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
                     border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
@@ -718,9 +751,9 @@ export default function ClientsPage() {
                 </span>
                 <div className="flex items-center gap-2 px-5 py-2.5 bg-white/5 rounded-full">
                   <div
-                    className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
+                    className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-[#ffd700]'}`}
                     style={{
-                      boxShadow: selectedClient.status === 'active' ? '0 0 12px #06ffa5, 0 0 20px #06ffa540' : 'none',
+                      boxShadow: selectedClient.status === 'active' ? '0 0 12px #06ffa5, 0 0 20px #06ffa540' : '0 0 8px rgba(255, 215, 0, 0.4)',
                       animation: selectedClient.status === 'active' ? 'ripple 2s ease-in-out infinite' : 'none'
                     }}
                   />
@@ -730,7 +763,7 @@ export default function ClientsPage() {
             </motion.div>
 
             {/* Client Details Grid - Asymmetric */}
-            <div className="grid md:grid-cols-[40%_60%] gap-24 mb-24">
+            <div className="grid md:grid-cols-[35%_65%] gap-24 mb-24 mt-4">
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -806,7 +839,7 @@ export default function ClientsPage() {
                   <div>
                     <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8">Tagline</p>
                     <p
-                      className="text-[20px] text-white/92 leading-[1.9] bg-gradient-to-r from-white/95 to-white/75 bg-clip-text text-transparent mt-4"
+                      className="text-[22px] text-white/92 leading-[1.9] bg-gradient-to-r from-white/95 to-white/75 bg-clip-text text-transparent mt-4"
                       style={{
                         fontFamily: 'Georgia, "Times New Roman", serif',
                         fontStyle: 'italic',
@@ -820,7 +853,7 @@ export default function ClientsPage() {
                 )}
 
                 {selectedClient.results && (
-                  <div className="p-10 bg-white/[0.01] border border-white/5 rounded-sm">
+                  <div className="p-10 bg-white/[0.01] border border-white/5 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
                     <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                       Results
@@ -835,7 +868,7 @@ export default function ClientsPage() {
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                       Deliverables
                     </p>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-4">
                       {selectedClient.deliverables.map((item, i) => (
                         <motion.span
                           key={i}
@@ -870,14 +903,14 @@ export default function ClientsPage() {
                 <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-10">Testimonial</p>
 
                 {/* Large opening quote */}
-                <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
+                <div className="absolute left-0 top-16 text-[140px] leading-none text-white/5 font-serif select-none">"</div>
 
                 <blockquote className="relative text-[26px] md:text-[32px] text-white/92 font-light italic leading-[1.85] pl-24 mb-4">
                   {selectedClient.testimonial}
                 </blockquote>
 
                 {/* Large closing quote */}
-                <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
+                <div className="text-right text-[140px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
 
                 {/* Client attribution */}
                 <p className="text-right text-[14px] text-white/50 font-light tracking-wider mt-6">
