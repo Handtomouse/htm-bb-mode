@@ -1125,9 +1125,24 @@ function TypewriterManifesto({
   );
 }
 
-// Understated Stat Card - Match Hero Aesthetic
+// Interactive Flip Card - Reveals Story Behind Numbers
 function LuxuryStatCard({ label, value, delay }: { label: string; value: string; delay: number }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [hasFlippedBefore, setHasFlippedBefore] = useState(false);
+  const [showViewed, setShowViewed] = useState(false);
+
+  // Context mapping for each stat
+  const contextMap: Record<string, { icon: string; text: string }> = {
+    "Projects": { icon: "📊", text: "Since 2020 • S'WICH, MapleMoon, Jac+Jack, and 57 more brands across hospitality, fashion, and tech" },
+    "Retention": { icon: "🔄", text: "3 of 4 clients return • Built on systems they can actually run without us" },
+    "Repeat Clients": { icon: "🤝", text: "Nearly half come back • Long-term partnerships, not one-offs" },
+    "Avg Project": { icon: "💰", text: "$10k–$25k range • 4-8 weeks • Strategy included, not extra" },
+    "Response": { icon: "⚡", text: "Usually 4h • Async-first workflow • Weekly 30min syncs" },
+    "Industries": { icon: "🎯", text: "Hospitality • Fashion • Tech • More • No cookie-cutter approaches" }
+  };
+
+  const context = contextMap[label] || { icon: "✨", text: "More context coming soon" };
 
   // Parse number and unit separately for styling
   const parseValue = (val: string) => {
@@ -1141,9 +1156,17 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
   const { prefix, number, suffix } = parseValue(value);
 
+  const handleFlip = () => {
+    setIsFlipped(!isFlipped);
+    if (!hasFlippedBefore) {
+      setHasFlippedBefore(true);
+      setShowViewed(true);
+      setTimeout(() => setShowViewed(false), 3000);
+    }
+  };
+
   return (
     <motion.div
-      // Simple fade-in like Hero sections
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
@@ -1152,58 +1175,153 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         duration: 0.6,
         ease: [0.16, 1, 0.3, 1]
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="p-5 md:p-8 text-center aspect-[4/3] flex flex-col justify-center"
-      style={{
-        border: isHovered ? '1px solid rgba(255,157,35,0.4)' : '1px solid rgba(255,157,35,0.2)',
-        background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: isHovered ? '0 0 20px rgba(255,157,35,0.15)' : 'none',
-        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-      }}
+      style={{ perspective: '1000px' }}
+      className="relative aspect-[4/3]"
     >
-      {/* Refined number display with subtle gradient */}
-      <div
-        className="text-[42px] md:text-[54px] lg:text-[68px] font-extrabold"
+      {/* Flip Container */}
+      <motion.div
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          letterSpacing: '-0.04em',
-          background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          textShadow: isHovered
-            ? '0 0 60px rgba(255,157,35,0.6), 0 0 100px rgba(255,157,35,0.3), 0 0 120px rgba(255,157,35,0.15)'
-            : '0 0 30px rgba(255,157,35,0.3)',
-          transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+          transformStyle: 'preserve-3d',
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          cursor: 'pointer'
         }}
+        onClick={handleFlip}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onKeyDown={(e) => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            handleFlip();
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`${label}: ${value}. Click to reveal more information.`}
       >
-        {prefix}{number}
-        {suffix && (
-          <span
-            className="text-[24px]"
+        {/* Front Side */}
+        <div
+          className="absolute inset-0 p-5 md:p-8 text-center flex flex-col justify-center"
+          style={{
+            backfaceVisibility: 'hidden',
+            border: isHovered ? '1px solid rgba(255,157,35,0.4)' : '1px solid rgba(255,157,35,0.2)',
+            background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(10px)',
+            boxShadow: isHovered
+              ? '0 0 20px rgba(255,157,35,0.15), 0 5px 30px rgba(0,0,0,0.3)'
+              : hasFlippedBefore
+                ? '0 0 8px rgba(255,157,35,0.08)'
+                : 'none',
+            transform: isHovered ? 'translateY(-2px) translateZ(10px)' : 'translateY(0) translateZ(0)',
+            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}
+        >
+          {/* Corner Fold Hint */}
+          {isHovered && !isFlipped && (
+            <div
+              className="absolute top-0 right-0 w-8 h-8"
+              style={{
+                background: 'linear-gradient(225deg, rgba(255,157,35,0.3) 0%, transparent 50%)',
+                clipPath: 'polygon(100% 0, 100% 100%, 0 0)'
+              }}
+            />
+          )}
+
+          {/* Number Display */}
+          <div
+            className="text-[42px] md:text-[54px] lg:text-[68px] font-extrabold"
             style={{
-              opacity: 0.35,
-              verticalAlign: 'super'
+              letterSpacing: '-0.04em',
+              background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: isHovered
+                ? 'drop-shadow(0 0 60px rgba(255,157,35,0.6)) drop-shadow(0 0 100px rgba(255,157,35,0.3)) drop-shadow(0 0 120px rgba(255,157,35,0.15))'
+                : 'drop-shadow(0 0 30px rgba(255,157,35,0.3))',
+              transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
           >
-            {suffix}
-          </span>
-        )}
-      </div>
+            {prefix}{number}
+            {suffix && (
+              <span
+                className="text-[24px]"
+                style={{
+                  opacity: 0.35,
+                  verticalAlign: 'super'
+                }}
+              >
+                {suffix}
+              </span>
+            )}
+          </div>
 
-      {/* Refined label with enhanced tracking */}
-      <div
-        className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-6"
-        style={{
-          color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
-          transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
-        }}
-      >
-        {label}
-      </div>
+          {/* Label */}
+          <div
+            className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-6"
+            style={{
+              color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
+              transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
+            }}
+          >
+            {label}
+          </div>
+
+          {/* Viewed Badge */}
+          {showViewed && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute top-3 left-3 text-[10px] px-2 py-1 rounded"
+              style={{
+                background: 'rgba(255,157,35,0.2)',
+                color: '#ff9d23',
+                border: '1px solid rgba(255,157,35,0.4)'
+              }}
+            >
+              ⚡ Viewed
+            </motion.div>
+          )}
+        </div>
+
+        {/* Back Side */}
+        <div
+          className="absolute inset-0 p-5 md:p-8 text-left flex flex-col justify-center"
+          style={{
+            backfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+            border: '2px solid rgba(255,157,35,0.5)',
+            background: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(15px)',
+            boxShadow: '0 0 30px rgba(255,157,35,0.2), 0 10px 50px rgba(0,0,0,0.4)'
+          }}
+        >
+          {/* Icon */}
+          <div className="text-[32px] mb-3 opacity-80">{context.icon}</div>
+
+          {/* Context Text */}
+          <p
+            className="text-[14px] md:text-[16px] leading-[1.6] text-white/90"
+            style={{
+              fontWeight: 400
+            }}
+          >
+            {context.text}
+          </p>
+
+          {/* Flip Back Hint */}
+          <div
+            className="absolute bottom-3 right-3 text-[10px] text-white/40 uppercase tracking-wider"
+          >
+            Tap to flip back
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
