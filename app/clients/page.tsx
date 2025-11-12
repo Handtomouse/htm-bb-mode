@@ -781,12 +781,12 @@ export default function ClientsPage() {
                 </div>
 
                 {selectedClient.yearStarted && (
-                  <div className="relative pb-8">
-                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                  <div className="relative pb-8 pl-4">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-3 pl-6">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
                     </p>
-                    <p className="text-[22px] text-white/92 font-light pl-6">
+                    <p className="text-[22px] text-white/92 font-light pl-8">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
                       <span className="block text-[15px] text-white/50 mt-4 ml-6">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
@@ -797,8 +797,8 @@ export default function ClientsPage() {
                 )}
 
                 {selectedClient.website && (
-                  <div className="relative">
-                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                  <div className="relative pl-4">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-3 pl-6">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
                     </p>
@@ -841,8 +841,8 @@ export default function ClientsPage() {
                 className="space-y-20 pl-16 pr-6"
               >
                 {selectedClient.tagline && (
-                  <div>
-                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8">Tagline</p>
+                  <div className="pl-2">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8 pl-4">Tagline</p>
                     <p
                       className="text-[22px] text-white/92 leading-[1.9] bg-gradient-to-r from-white/95 to-white/75 bg-clip-text text-transparent mt-4 pl-2"
                       style={{
@@ -859,7 +859,7 @@ export default function ClientsPage() {
 
                 {selectedClient.results && (
                   <div className="px-14 py-12 bg-white/[0.01] border border-white/5 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8 flex items-center gap-3 pl-4">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                       Results
                     </p>
@@ -868,8 +868,8 @@ export default function ClientsPage() {
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
-                  <div>
-                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                  <div className="pl-2">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-3 pl-4">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                       Deliverables
                     </p>
