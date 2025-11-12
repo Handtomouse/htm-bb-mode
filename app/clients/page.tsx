@@ -83,6 +83,22 @@ function ClientCell({
       onClick={onClick}
       className="group relative aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-700 overflow-hidden cursor-none hover:scale-[1.02] active:scale-[0.98]"
     >
+      {/* Light streak reveal effect */}
+      <motion.div
+        initial={{ x: '-100%', opacity: 0 }}
+        whileInView={{ x: '200%', opacity: [0, 1, 1, 0] }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 1.2,
+          delay: delay + 0.1,
+          ease: [0.43, 0.13, 0.23, 0.96]
+        }}
+        className="absolute inset-y-0 w-[40%] pointer-events-none"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${sectorColor}30, transparent)`,
+          filter: 'blur(20px)'
+        }}
+      />
       {/* Noise texture overlay */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none mix-blend-overlay"
@@ -106,11 +122,20 @@ function ClientCell({
         />
       )}
 
-      {/* Sector color indicator with gradient */}
+      {/* Sector color indicator with gradient - horizontal top */}
       <div
         className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700"
         style={{
           background: `linear-gradient(90deg, transparent 0%, ${sectorColor} 50%, transparent 100%)`
+        }}
+      />
+
+      {/* Sector color indicator - vertical left stripe */}
+      <div
+        className="absolute top-0 bottom-0 left-0 w-[3px] opacity-0 group-hover:opacity-80 transition-all duration-700"
+        style={{
+          background: `linear-gradient(180deg, ${sectorColor}00 0%, ${sectorColor} 50%, ${sectorColor}00 100%)`,
+          boxShadow: `0 0 12px ${sectorColor}60`
         }}
       />
 
@@ -136,7 +161,17 @@ function ClientCell({
           <img
             src={client.logo}
             alt={client.name}
-            className="max-w-[140px] md:max-w-[180px] lg:max-w-[220px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-opacity duration-500 filter brightness-0 invert"
+            className="max-w-[140px] md:max-w-[180px] lg:max-w-[220px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-all duration-500 filter brightness-0 invert"
+            style={{
+              filter: 'brightness(0) invert(1) drop-shadow(0 4px 8px rgba(0,0,0,0.3)) drop-shadow(0 8px 24px rgba(0,0,0,0.2))',
+              transition: 'all 0.5s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.filter = `brightness(0) invert(1) drop-shadow(0 6px 12px rgba(255,255,255,0.4)) drop-shadow(0 12px 32px ${sectorColor}60)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.filter = 'brightness(0) invert(1) drop-shadow(0 4px 8px rgba(0,0,0,0.3)) drop-shadow(0 8px 24px rgba(0,0,0,0.2))';
+            }}
           />
         ) : (
           <div className="relative px-8 py-4">
@@ -252,18 +287,34 @@ export default function ClientsPage() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [ctaMousePos, setCtaMousePos] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLAnchorElement>(null);
 
-  // ESC key to close modal
+  // ESC key to close modal, Arrow keys to navigate
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && selectedClient) {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      if (!selectedClient) return;
+
+      if (e.key === 'Escape') {
         setSelectedClient(null);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const currentIndex = clients.findIndex(c => c.name === selectedClient.name);
+        if (currentIndex === -1) return;
+
+        let nextIndex;
+        if (e.key === 'ArrowLeft') {
+          nextIndex = currentIndex === 0 ? clients.length - 1 : currentIndex - 1;
+        } else {
+          nextIndex = currentIndex === clients.length - 1 ? 0 : currentIndex + 1;
+        }
+        setSelectedClient(clients[nextIndex]);
       }
     };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [selectedClient]);
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [selectedClient, clients]);
 
   // Load clients
   useEffect(() => {
@@ -310,10 +361,40 @@ export default function ClientsPage() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  // Scroll tracking for parallax
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0b0b0b] flex items-center justify-center">
-        <p className="text-[#ff9d23] text-xl font-light">Loading...</p>
+      <div className="min-h-screen bg-[#0b0b0b] text-white">
+        {/* Hero Skeleton */}
+        <section className="h-screen flex items-center justify-center px-12 md:px-16 lg:px-20">
+          <div className="max-w-6xl w-full">
+            <div className="h-32 bg-gradient-to-r from-white/5 to-white/10 rounded-sm mb-20 animate-pulse" />
+            <div className="h-8 bg-gradient-to-r from-white/5 to-white/10 rounded-sm mb-6 max-w-2xl animate-pulse" />
+            <div className="h-4 bg-gradient-to-r from-white/5 to-white/10 rounded-sm mb-2 max-w-md animate-pulse" />
+          </div>
+        </section>
+
+        {/* Grid Skeleton */}
+        <div className="max-w-[1600px] mx-auto px-16 md:px-20 lg:px-24 pb-40">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
+            {Array.from({ length: 16 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b]"
+              >
+                <div className="w-32 h-8 bg-gradient-to-r from-white/5 to-white/10 rounded-sm animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -348,13 +429,27 @@ export default function ClientsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-20 md:mb-24 leading-[0.9]">
+            <h1
+              className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-20 md:mb-24 leading-[0.9]"
+              style={{
+                textShadow: '0 0 40px rgba(255, 157, 35, 0.4), 0 0 80px rgba(255, 157, 35, 0.2)',
+                WebkitTextStroke: '0.5px rgba(255, 157, 35, 0.3)',
+                transform: `translateY(${scrollY * 0.3}px)`,
+                opacity: 1 - (scrollY / 800)
+              }}
+            >
               Clients
             </h1>
-            <p className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.4] font-light tracking-wide max-w-4xl mb-16">
-              <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.clients}</span> clients across{" "}
-              <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.sectors}</span> industries.{" "}
-              <span className="tabular-nums text-[#ff9d23]/90">{animatedStats.projects}</span> projects delivered.
+            <p
+              className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.4] font-light tracking-wide max-w-4xl mb-16"
+              style={{
+                transform: `translateY(${scrollY * 0.15}px)`,
+                opacity: 1 - (scrollY / 1000)
+              }}
+            >
+              <span className="tabular-nums bg-gradient-to-r from-[#ff9d23] via-[#ffbe0b] to-[#ff9d23] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">{animatedStats.clients}</span> clients across{" "}
+              <span className="tabular-nums bg-gradient-to-r from-[#ff9d23] via-[#ffbe0b] to-[#ff9d23] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ animationDelay: '0.3s' }}>{animatedStats.sectors}</span> industries.{" "}
+              <span className="tabular-nums bg-gradient-to-r from-[#ff9d23] via-[#ffbe0b] to-[#ff9d23] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ animationDelay: '0.6s' }}>{animatedStats.projects}</span> projects delivered.
             </p>
 
             {/* Sector Distribution */}
@@ -372,14 +467,36 @@ export default function ClientsPage() {
               )
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 6)
-                .map(([sector, count]) => (
-                  <div key={sector} className="flex items-center gap-2">
+                .map(([sector, count], i) => (
+                  <motion.div
+                    key={sector}
+                    className="flex items-center gap-2 group cursor-default transition-all duration-500 hover:text-white/70"
+                    animate={{
+                      y: [0, -4, 0]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                      ease: "easeInOut"
+                    }}
+                  >
                     <div
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: SECTOR_COLORS[sector] || "#ff9d23" }}
+                      className="w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all duration-500 group-hover:scale-125"
+                      style={{
+                        backgroundColor: SECTOR_COLORS[sector] || "#ff9d23",
+                        boxShadow: `0 0 0 ${SECTOR_COLORS[sector] || "#ff9d23"}00`,
+                        transition: 'all 0.5s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow = `0 0 16px ${SECTOR_COLORS[sector] || "#ff9d23"}80, 0 0 28px ${SECTOR_COLORS[sector] || "#ff9d23"}40`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = `0 0 0 transparent`;
+                      }}
                     />
                     <span>{sector}: {count}</span>
-                  </div>
+                  </motion.div>
                 ))}
             </motion.div>
           </motion.div>
@@ -452,12 +569,32 @@ export default function ClientsPage() {
             <p className="text-[15px] md:text-[17px] text-white/50 font-light leading-relaxed mb-14 tracking-wide">
               Let's create something exceptional together. From concept to launch, we deliver digital experiences that drive results.
             </p>
-            <a
+            <motion.a
+              ref={ctaRef}
               href="/contact"
-              className="inline-block px-20 py-6 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 hover:scale-105 active:scale-95"
+              className="inline-block px-20 py-6 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95"
+              onMouseMove={(e) => {
+                if (!ctaRef.current) return;
+                const rect = ctaRef.current.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) * 0.15;
+                const y = (e.clientY - rect.top - rect.height / 2) * 0.15;
+                setCtaMousePos({ x, y });
+              }}
+              onMouseLeave={() => setCtaMousePos({ x: 0, y: 0 })}
+              animate={{
+                x: ctaMousePos.x,
+                y: ctaMousePos.y,
+                scale: ctaMousePos.x !== 0 || ctaMousePos.y !== 0 ? 1.05 : 1
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 150,
+                damping: 20,
+                mass: 0.2
+              }}
             >
               Start Your Project
-            </a>
+            </motion.a>
           </div>
         </motion.div>
       </div>
@@ -473,7 +610,11 @@ export default function ClientsPage() {
           onClick={() => setSelectedClient(null)}
         >
           {/* Backdrop with enhanced blur and noise */}
-          <div className="absolute inset-0 bg-black/92 backdrop-blur-2xl">
+          <div className="absolute inset-0 bg-black/92">
+            {/* Multi-layer blur for depth */}
+            <div className="absolute inset-0 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 backdrop-blur-[8px]" />
+            <div className="absolute inset-0 backdrop-blur-[20px]" />
             {/* Noise texture overlay */}
             <div
               className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
@@ -520,10 +661,19 @@ export default function ClientsPage() {
             {/* Scroll fade gradients - more pronounced */}
             <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0b0b0b] via-[#0b0b0b]/90 to-transparent pointer-events-none z-10" />
             <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/90 to-transparent pointer-events-none z-10" />
-            {/* Close button with sector color accent */}
+            {/* Close button with sector color accent and ripple */}
             <button
-              onClick={() => setSelectedClient(null)}
-              className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95"
+              onClick={(e) => {
+                // Create ripple effect
+                const btn = e.currentTarget;
+                const ripple = document.createElement('div');
+                ripple.className = 'absolute inset-0 rounded-full animate-ripple-click';
+                ripple.style.background = `radial-gradient(circle, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}60 0%, transparent 70%)`;
+                btn.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+                setSelectedClient(null);
+              }}
+              className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-110 active:scale-95 overflow-hidden"
               style={{
                 boxShadow: `0 0 0 0 ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}00`,
                 transition: 'all 0.5s ease'
@@ -537,7 +687,7 @@ export default function ClientsPage() {
                 e.currentTarget.style.boxShadow = '0 0 0 0 transparent';
               }}
             >
-              <div className="relative w-5 h-5">
+              <div className="relative w-5 h-5 z-10">
                 <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white rotate-45 transition-all duration-500" />
                 <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 group-hover:bg-white -rotate-45 transition-all duration-500" />
               </div>
@@ -606,14 +756,14 @@ export default function ClientsPage() {
             </motion.div>
 
             {/* Client Details Grid - Asymmetric */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid md:grid-cols-[40%_60%] gap-28 mb-24"
-            >
+            <div className="grid md:grid-cols-[40%_60%] gap-28 mb-24">
               {/* Left Column - Key Info */}
-              <div className="space-y-14">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-14"
+              >
                 <div>
                   <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-7 flex items-center gap-2">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -669,14 +819,29 @@ export default function ClientsPage() {
                     </a>
                   </div>
                 )}
-              </div>
+              </motion.div>
 
               {/* Right Column - Main Content */}
-              <div className="space-y-14">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="space-y-14"
+              >
                 {selectedClient.tagline && (
                   <div>
                     <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-5">Tagline</p>
-                    <p className="text-[20px] text-white/85 font-light italic leading-relaxed bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent">{selectedClient.tagline}</p>
+                    <p
+                      className="text-[20px] text-white/85 leading-relaxed bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent"
+                      style={{
+                        fontFamily: 'Georgia, "Times New Roman", serif',
+                        fontStyle: 'italic',
+                        fontWeight: 300,
+                        letterSpacing: '0.02em'
+                      }}
+                    >
+                      "{selectedClient.tagline}"
+                    </p>
                   </div>
                 )}
 
@@ -703,9 +868,12 @@ export default function ClientsPage() {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                          className="px-7 py-3.5 text-[13px] bg-white/5 border border-white/10 text-white/75 font-light rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
+                          className="px-7 py-3.5 text-[13px] bg-white/5 border border-white/10 text-white/75 rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
                           style={{
-                            boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
+                            boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                            fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+                            letterSpacing: '0.02em',
+                            fontWeight: 400
                           }}
                         >
                           {item}
@@ -714,8 +882,8 @@ export default function ClientsPage() {
                     </div>
                   </div>
                 )}
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
 
             {/* Testimonial with decorative quotes */}
             {selectedClient.testimonial && (
@@ -737,6 +905,11 @@ export default function ClientsPage() {
 
                 {/* Large closing quote */}
                 <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
+
+                {/* Client attribution */}
+                <p className="text-right text-[14px] text-white/40 font-light tracking-wider mt-6">
+                  — {selectedClient.name}
+                </p>
               </motion.div>
             )}
           </motion.div>
@@ -756,6 +929,20 @@ style.textContent = `
   @keyframes ripple {
     0%, 100% { box-shadow: 0 0 12px #06ffa5, 0 0 20px rgba(6, 255, 165, 0.25); }
     50% { box-shadow: 0 0 16px #06ffa5, 0 0 30px rgba(6, 255, 165, 0.40); }
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: 0% center; }
+  }
+  @keyframes ripple-click {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+  .animate-shimmer {
+    animation: shimmer 4s linear infinite;
+  }
+  .animate-ripple-click {
+    animation: ripple-click 0.6s ease-out forwards;
   }
 `;
 if (typeof document !== 'undefined' && !document.querySelector('#modal-animations')) {
