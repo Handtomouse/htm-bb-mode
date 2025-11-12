@@ -763,20 +763,20 @@ export default function ClientsPage() {
             </motion.div>
 
             {/* Client Details Grid - Asymmetric */}
-            <div className="grid md:grid-cols-[35%_65%] gap-24 mb-24 mt-4 px-4">
+            <div className="grid md:grid-cols-[35%_65%] gap-24 mb-24 mt-4 px-6">
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-20 pl-12 pr-8"
+                className="space-y-20 pl-16 pr-8"
               >
-                <div className="relative pb-8">
-                  <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                <div className="relative pb-8 pl-4">
+                  <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-3 pl-6">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
-                  <p className="text-[24px] text-white/92 font-light tabular-nums pl-6">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[24px] text-white/92 font-light tabular-nums pl-8">{selectedClient.projects.toLocaleString()}</p>
                   <div className="absolute bottom-0 left-4 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 

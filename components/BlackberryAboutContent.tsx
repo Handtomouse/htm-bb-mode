@@ -685,7 +685,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23] mb-16 md:mb-20 lg:mb-24"
+            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23] mb-24 md:mb-32 lg:mb-40"
             style={{
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
