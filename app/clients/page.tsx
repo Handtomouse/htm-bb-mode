@@ -771,16 +771,17 @@ export default function ClientsPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="space-y-20 pl-4"
               >
-                <div>
+                <div className="relative pb-8">
                   <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
                   <p className="text-[24px] text-white/92 font-light tabular-nums pl-2">{selectedClient.projects.toLocaleString()}</p>
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
                 {selectedClient.yearStarted && (
-                  <div>
+                  <div className="relative pb-8">
                     <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
@@ -791,11 +792,12 @@ export default function ClientsPage() {
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
+                    <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                   </div>
                 )}
 
                 {selectedClient.website && (
-                  <div>
+                  <div className="relative">
                     <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
@@ -804,16 +806,19 @@ export default function ClientsPage() {
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group text-[20px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative"
+                      className="group text-[20px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative px-3 py-2 -mx-3 -my-2 rounded-sm"
                       style={{
                         textShadow: '0 0 0 transparent',
+                        backgroundColor: 'transparent',
                         transition: 'all 0.5s ease'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.textShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}80`;
+                        e.currentTarget.style.backgroundColor = `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}08`;
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.textShadow = '0 0 0 transparent';
+                        e.currentTarget.style.backgroundColor = 'transparent';
                       }}
                     >
                       <span className="relative">
@@ -875,11 +880,17 @@ export default function ClientsPage() {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                          className="px-8 py-4 text-[13px] bg-white/3 border border-white/10 text-white/75 rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
+                          className="px-8 py-4 text-[13px] bg-white/3 border border-white/10 text-white/75 rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
                           style={{
                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                             letterSpacing: '0.02em',
                             fontWeight: 400
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = SECTOR_COLORS[selectedClient.sector] || '#ff9d23';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                           }}
                         >
                           {item}
