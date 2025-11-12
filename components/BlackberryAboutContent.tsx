@@ -1291,29 +1291,36 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
         {/* Back Side */}
         <div
-          className="absolute inset-0 p-5 md:p-8 text-left flex flex-col justify-center"
+          className="absolute inset-0 p-8 md:p-10 text-left flex flex-col justify-center"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            border: '2px solid rgba(255,157,35,0.5)',
-            background: 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(15px)',
-            boxShadow: '0 0 30px rgba(255,157,35,0.2), 0 10px 50px rgba(0,0,0,0.4)'
+            border: '3px solid rgba(255,157,35,0.5)',
+            background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(255,255,255,0.05) 100%)',
+            backdropFilter: 'blur(20px) saturate(1.2)',
+            boxShadow: '0 0 40px rgba(255,157,35,0.25), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.1)'
           }}
         >
           {/* Context Text */}
-          <p
-            className="text-[14px] md:text-[16px] leading-[1.6] text-white/90"
-            style={{
-              fontWeight: 400
-            }}
-          >
-            {context.text}
-          </p>
+          <div className="max-w-[85%] mx-auto">
+            <p
+              className="text-[14px] md:text-[16px] leading-[1.7] text-white/95"
+              style={{
+                fontWeight: 450,
+                letterSpacing: '0.02em'
+              }}
+            >
+              {context.text}
+            </p>
+          </div>
 
           {/* Flip Back Hint */}
           <div
-            className="absolute bottom-3 right-3 text-[10px] text-white/40 uppercase tracking-wider"
+            className="absolute bottom-4 right-4 text-[10px] text-white/50 uppercase tracking-[0.15em]"
+            style={{
+              fontWeight: 500,
+              textShadow: '0 0 10px rgba(255,157,35,0.3)'
+            }}
           >
             Tap to flip back
           </div>
