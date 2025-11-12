@@ -678,8 +678,8 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          {/* Improvement #9: Background gradient */}
-          <section className="relative h-[140vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
+          {/* Improvement #9: Background gradient, #10: Section padding, #14: Section height */}
+          <section className="relative h-[130vh] flex flex-col items-center justify-center space-y-12 md:space-y-16 px-6 md:px-8 lg:px-12" style={{ scrollMarginTop: '4rem' }}>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/3 to-transparent pointer-events-none" />
 
           <motion.h2
@@ -687,18 +687,24 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/60 backdrop-blur-md py-4"
+            className="sticky top-8 z-10 text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.12em] bg-black/60 backdrop-blur-md py-4"
+            style={{
+              background: 'linear-gradient(135deg, #ff9d23 0%, #ffb84d 50%, #ff9d23 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
           >
             By The Numbers
           </motion.h2>
-          {/* Improvement #10: Responsive grid, #11: Luxury spacing */}
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-14 max-w-6xl mx-auto">
+          {/* Improvement #9: Grid gaps, #10: Max-width, #11: Responsive breakpoints */}
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-16 lg:gap-20 row-gap-12 md:row-gap-20 lg:row-gap-24 max-w-7xl mx-auto w-full">
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
-            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.35} />
-            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.70} />
-            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={1.05} />
-            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={1.40} />
-            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={1.75} />
+            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.2} />
+            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.4} />
+            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={0.3} />
+            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.1} />
+            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.35} />
           </div>
           </section>
         
@@ -1132,6 +1138,9 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   const [hasAnimated, setHasAnimated] = useState(false);
   const [rotation, setRotation] = useState({ x: 0, y: 0 }); // Improvement #23: 3D perspective
   const [isHovered, setIsHovered] = useState(false);
+  const [gradientRotation, setGradientRotation] = useState(0); // Improvement #15: Gradient border
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 }); // Improvement #17: Card spotlight
+  const [numberPulse, setNumberPulse] = useState(false); // Improvement #21: Number pulse on complete
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -1148,6 +1157,21 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     const rotateX = -(deltaY / rect.height) * 15; // Max 15deg tilt
     const rotateY = (deltaX / rect.width) * 15;
     setRotation({ x: rotateX, y: rotateY });
+
+    // Improvement #17: Track mouse position for spotlight (0-1 range)
+    const relX = (e.clientX - rect.left) / rect.width;
+    const relY = (e.clientY - rect.top) / rect.height;
+    setMousePos({ x: relX, y: relY });
+  };
+
+  // Parse number and unit separately for styling
+  const parseValue = (val: string) => {
+    const numericMatch = val.match(/[\d.]+/);
+    if (!numericMatch) return { prefix: '', number: val, suffix: '' };
+
+    const prefix = val.substring(0, numericMatch.index);
+    const suffix = val.substring(numericMatch.index! + numericMatch[0].length);
+    return { prefix, number: numericMatch[0], suffix };
   };
 
   // Improvement #2: Count-up animation
@@ -1155,15 +1179,14 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     if (hasAnimated) return;
     setHasAnimated(true);
 
-    const numericMatch = value.match(/[\d.]+/);
-    if (!numericMatch) {
+    const { prefix, number, suffix } = parseValue(value);
+    const targetNum = parseFloat(number);
+
+    if (isNaN(targetNum)) {
       setCountedValue(value);
       return;
     }
 
-    const targetNum = parseFloat(numericMatch[0]);
-    const prefix = value.substring(0, numericMatch.index);
-    const suffix = value.substring(numericMatch.index! + numericMatch[0].length);
     const duration = 1500;
     const steps = 60;
     const stepDuration = duration / steps;
@@ -1178,6 +1201,9 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       if (currentStep >= steps) {
         setCountedValue(value);
         clearInterval(interval);
+        // Improvement #21: Trigger pulse on count complete
+        setNumberPulse(true);
+        setTimeout(() => setNumberPulse(false), 400);
       } else {
         const formatted = suffix.includes('%') || suffix.includes('+')
           ? Math.floor(currentValue)
@@ -1210,43 +1236,103 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       }}
       onViewportEnter={animateValue}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setGradientRotation(360); // Improvement #15: Rotate gradient on hover
+      }}
       onMouseLeave={() => {
         setOffset({ x: 0, y: 0 });
         setRotation({ x: 0, y: 0 });
         setIsHovered(false);
+        setMousePos({ x: 0.5, y: 0.5 });
+        setGradientRotation(0);
       }}
       onClick={handleClick}
-      whileHover={{ borderColor: ACCENT }}
-      // Improvement #26: Breathing idle animation + #3: Pulse glow
+      // Improvement #15: Gradient border, #18: Enhanced glow, #26: Breathing idle
       animate={{
-        boxShadow: [
-          '0 0 40px rgba(255,157,35,0.3)',
-          '0 0 50px rgba(255,157,35,0.5)',
-          '0 0 40px rgba(255,157,35,0.3)'
+        boxShadow: isHovered ? [
+          '0 0 60px rgba(255,157,35,0.5), inset 0 0 20px rgba(255,157,35,0.15)',
+          '0 0 80px rgba(255,157,35,0.7), inset 0 0 30px rgba(255,157,35,0.25)',
+          '0 0 60px rgba(255,157,35,0.5), inset 0 0 20px rgba(255,157,35,0.15)'
+        ] : [
+          '0 0 40px rgba(255,157,35,0.3), inset 0 0 10px rgba(255,157,35,0.1)',
+          '0 0 50px rgba(255,157,35,0.5), inset 0 0 15px rgba(255,157,35,0.15)',
+          '0 0 40px rgba(255,157,35,0.3), inset 0 0 10px rgba(255,157,35,0.1)'
         ],
-        scale: isHovered ? 1 : [1, 1.01, 1]
+        scale: isHovered ? 1 : [1, 1.01, 1],
+        borderWidth: isHovered ? '3px' : '2px'
       }}
       transition={{
         boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-        scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+        scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+        borderWidth: { duration: 0.3 }
       }}
       style={{
-        transform: `translate(${offset.x}px, ${offset.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+        // Improvement #22: Card elevation on hover (translateZ for 3D lift)
+        transform: `translate(${offset.x}px, ${offset.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) ${isHovered ? 'translateZ(20px)' : 'translateZ(0px)'}`,
         transformStyle: 'preserve-3d',
-        willChange: 'transform'
+        willChange: 'transform',
+        // Improvement #15: Gradient border that rotates on hover
+        borderImage: `linear-gradient(${gradientRotation}deg, #ff9d23 0%, #ffb84d 50%, #ff9d23 100%) 1`,
+        borderImageSlice: 1,
+        // Improvement #17: Layered backgrounds with spotlight
+        background: `
+          radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(255,157,35,0.15) 0%, transparent 50%),
+          linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%)
+        `,
+        backdropFilter: 'blur(12px)'
       }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm p-10 md:p-12 lg:p-16 text-center transition-all duration-700 cursor-pointer aspect-[4/3] hover:cursor-pointer"
+      className="border-2 p-8 md:p-10 lg:p-12 text-center transition-all duration-700 cursor-pointer aspect-[3/4] hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+      tabIndex={0}
     >
-      <div className="text-[48px] md:text-[64px] lg:text-[84px] font-black text-[#ff9d23] tabular-nums leading-none" style={{ textShadow: '0 0 20px rgba(255,157,35,0.3)' }}>
-        {countedValue}
-      </div>
-      {/* Improvement #24: Letter-by-letter label reveal */}
+      {/* Improvement #1: Enhanced number hierarchy, #3: Number + unit separation, #6: Tabular nums, #7: Line height, #16: Number gradient, #21: Number pulse */}
       <motion.div
-        className="text-[16px] md:text-[20px] lg:text-[24px] text-white/80 font-medium uppercase mt-6 tracking-[0.12em]"
+        className="leading-[0.9]"
+        style={{ fontVariantNumeric: 'tabular-nums' }}
+        animate={{
+          scale: numberPulse ? [1, 1.1, 1] : 1
+        }}
+        transition={{
+          duration: 0.4,
+          ease: [0.16, 1, 0.3, 1]
+        }}
+      >
+        {(() => {
+          const { prefix, number, suffix } = parseValue(countedValue);
+          return (
+            <>
+              <span
+                className="text-[56px] md:text-[72px] lg:text-[96px] font-[900] tracking-[-0.02em]"
+                style={{
+                  textShadow: numberPulse ? '0 0 30px rgba(255,157,35,0.6)' : '0 0 20px rgba(255,157,35,0.3)',
+                  background: numberPulse ? 'linear-gradient(135deg, #ffb84d 0%, #ffd580 50%, #ffb84d 100%)' : 'linear-gradient(135deg, #ff9d23 0%, #ffb84d 50%, #ff9d23 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {prefix}{number}
+              </span>
+              {suffix && (
+                <span className="text-[34px] md:text-[43px] lg:text-[58px] font-[900] text-[#ff9d23]/60 align-super" style={{ verticalAlign: 'super', fontSize: '0.6em' }}>
+                  {suffix}
+                </span>
+              )}
+            </>
+          );
+        })()}
+      </motion.div>
+      {/* Improvement #2: Refined label typography, #24: Letter-by-letter label reveal */}
+      <motion.div
+        className="text-[18px] md:text-[22px] lg:text-[26px] text-white/80 font-medium uppercase tracking-[0.10em] leading-[1.2]"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
+        style={{
+          marginTop: '8px',
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+        }}
       >
         {label.split('').map((char, i) => (
           <motion.span
@@ -1262,31 +1348,70 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         ))}
       </motion.div>
 
-      {/* Improvement #31: Time period indicator */}
+      {/* Improvement #4: Improved "Since 2020" typography */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: delay + 1.2, duration: 0.6 }}
-        className="text-[11px] md:text-[13px] text-white/40 uppercase tracking-wider mt-2"
+        className="text-[12px] md:text-[14px] lg:text-[16px] text-white/40 uppercase tracking-[0.15em] pt-2 border-t border-white/10"
+        style={{ marginTop: '6px' }}
       >
         Since 2020
       </motion.div>
 
-      {/* Improvement #30: Animated progress bar */}
+      {/* Improvement #13: Progress bar spacing, #20: Progress bar shimmer, #30: Animated progress bar */}
       <motion.div
-        className="mt-4 w-full h-[2px] bg-white/10 rounded-full overflow-hidden"
+        className="w-full h-[3px] bg-white/10 rounded-full overflow-hidden relative"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: delay + 1.4 }}
+        style={{
+          marginTop: '8px',
+          boxShadow: '0 0 4px rgba(0,0,0,0.3)'
+        }}
       >
         <motion.div
-          className="h-full bg-gradient-to-r from-[#ff9d23]/60 to-[#ff9d23] rounded-full"
+          className="h-full rounded-full relative overflow-hidden"
           initial={{ width: "0%" }}
           whileInView={{ width: value.includes('%') ? value : value.includes('+') ? "100%" : "85%" }}
           viewport={{ once: true }}
           transition={{ delay: delay + 1.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            background: 'linear-gradient(90deg, rgba(255,157,35,0.6) 0%, #ff9d23 100%)',
+            boxShadow: '0 0 8px rgba(255,157,35,0.4)'
+          }}
+        >
+          {/* Shimmer overlay */}
+          <motion.div
+            className="absolute inset-0 w-[200%]"
+            animate={{
+              x: ['-100%', '100%']
+            }}
+            transition={{
+              delay: delay + 2.7,
+              duration: 1.5,
+              ease: 'easeInOut'
+            }}
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)'
+            }}
+          />
+        </motion.div>
+        {/* Subtle pulse after completion */}
+        <motion.div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0, 0, 0, 0.3, 0] }}
+          transition={{
+            delay: delay + 2.8,
+            duration: 0.6,
+            times: [0, 0.8, 0.85, 0.9, 0.95, 1]
+          }}
+          style={{
+            background: 'linear-gradient(90deg, rgba(255,157,35,0.6) 0%, #ff9d23 100%)'
+          }}
         />
       </motion.div>
     </motion.div>
