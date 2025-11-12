@@ -609,21 +609,8 @@ export default function ClientsPage() {
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
           onClick={() => setSelectedClient(null)}
         >
-          {/* Backdrop with enhanced blur and noise */}
-          <div className="absolute inset-0 bg-black/92">
-            {/* Multi-layer blur for depth */}
-            <div className="absolute inset-0 backdrop-blur-[2px]" />
-            <div className="absolute inset-0 backdrop-blur-[8px]" />
-            <div className="absolute inset-0 backdrop-blur-[20px]" />
-            {/* Noise texture overlay */}
-            <div
-              className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                backgroundSize: '200px 200px'
-              }}
-            />
-          </div>
+          {/* Backdrop - simplified and lighter */}
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-[10px]" />
 
           {/* Modal Content */}
           <motion.div
@@ -631,35 +618,23 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0, rotate: 0 }}
             exit={{ scale: 0.92, y: 20, rotate: -2 }}
             transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
-            className="relative max-w-5xl w-full bg-[#0b0b0b] border p-16 sm:p-20 md:p-24 lg:p-32 max-h-[90vh] overflow-y-auto scroll-smooth"
+            className="relative max-w-5xl w-full bg-[#141414] border border-white/10 p-16 sm:p-20 md:p-24 lg:p-32 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
-              borderImage: `linear-gradient(135deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40, transparent, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40) 1`,
-              boxShadow: `0 0 40px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}15, 0 0 60px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}08`,
+              boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10, 0 0 30px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}05`,
               scrollbarWidth: 'thin',
-              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`,
-              animation: 'modalPulse 3s ease-in-out infinite'
+              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`
             }}
           >
-            {/* Vignette overlay - removed for better text readability */}
-            {/* Noise texture */}
-            <div
-              className="absolute inset-0 opacity-[0.01] pointer-events-none mix-blend-overlay"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                backgroundSize: '200px 200px'
-              }}
-            />
-
             {/* Corner accents - all 4 corners */}
-            <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 opacity-30" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 opacity-15" style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
 
-            {/* Scroll fade gradients - more pronounced */}
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0b0b0b] via-[#0b0b0b]/50 to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/50 to-transparent pointer-events-none z-10" />
+            {/* Scroll fade gradients - lighter */}
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#141414] via-[#141414]/20 to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#141414] via-[#141414]/20 to-transparent pointer-events-none z-10" />
             {/* Close button with sector color accent and ripple */}
             <button
               onClick={(e) => {
@@ -714,7 +689,7 @@ export default function ClientsPage() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="mb-32 pb-32 relative text-center"
             >
-              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
               {selectedClient.logo ? (
                 <img
                   src={selectedClient.logo}
@@ -764,22 +739,22 @@ export default function ClientsPage() {
                 className="space-y-20 pl-4"
               >
                 <div>
-                  <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                  <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
-                  <p className="text-[24px] text-white/90 font-light tabular-nums pl-2">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[24px] text-white/92 font-light tabular-nums pl-2">{selectedClient.projects.toLocaleString()}</p>
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
                     </p>
-                    <p className="text-[22px] text-white/80 font-light pl-2">
+                    <p className="text-[22px] text-white/92 font-light pl-2">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
-                      <span className="block text-[15px] text-white/40 mt-4">
+                      <span className="block text-[15px] text-white/50 mt-4">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
@@ -788,7 +763,7 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
                     </p>
@@ -829,9 +804,9 @@ export default function ClientsPage() {
               >
                 {selectedClient.tagline && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-8">Tagline</p>
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8">Tagline</p>
                     <p
-                      className="text-[20px] text-white/85 leading-[1.9] bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent mt-4"
+                      className="text-[20px] text-white/92 leading-[1.9] bg-gradient-to-r from-white/95 to-white/75 bg-clip-text text-transparent mt-4"
                       style={{
                         fontFamily: 'Georgia, "Times New Roman", serif',
                         fontStyle: 'italic',
@@ -845,18 +820,18 @@ export default function ClientsPage() {
                 )}
 
                 {selectedClient.results && (
-                  <div className="p-10 bg-white/[0.02] border border-white/5 rounded-sm">
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                  <div className="p-10 bg-white/[0.01] border border-white/5 rounded-sm">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                       Results
                     </p>
-                    <p className="text-[18px] md:text-[20px] text-white/85 font-light leading-[1.9]">{selectedClient.results}</p>
+                    <p className="text-[18px] md:text-[20px] text-white/92 font-light leading-[1.9]">{selectedClient.results}</p>
                   </div>
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
+                    <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-9 flex items-center gap-2">
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                       Deliverables
                     </p>
@@ -867,9 +842,8 @@ export default function ClientsPage() {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                          className="px-8 py-4 text-[13px] bg-white/5 border border-white/10 text-white/75 rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
+                          className="px-8 py-4 text-[13px] bg-white/3 border border-white/10 text-white/75 rounded-sm transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:scale-105"
                           style={{
-                            boxShadow: '0 1px 6px rgba(0,0,0,0.15)',
                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                             letterSpacing: '0.02em',
                             fontWeight: 400
@@ -892,13 +866,13 @@ export default function ClientsPage() {
                 transition={{ duration: 0.6, delay: 0.35 }}
                 className="pt-28 relative"
               >
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                <p className="text-[12px] text-white/40 uppercase tracking-[0.3em] mb-10">Testimonial</p>
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+                <p className="text-[12px] text-white/50 uppercase tracking-[0.3em] mb-10">Testimonial</p>
 
                 {/* Large opening quote */}
                 <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
 
-                <blockquote className="relative text-[26px] md:text-[32px] text-white/85 font-light italic leading-[1.85] pl-24 mb-4">
+                <blockquote className="relative text-[26px] md:text-[32px] text-white/92 font-light italic leading-[1.85] pl-24 mb-4">
                   {selectedClient.testimonial}
                 </blockquote>
 
@@ -906,7 +880,7 @@ export default function ClientsPage() {
                 <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
 
                 {/* Client attribution */}
-                <p className="text-right text-[14px] text-white/40 font-light tracking-wider mt-6">
+                <p className="text-right text-[14px] text-white/50 font-light tracking-wider mt-6">
                   — {selectedClient.name}
                 </p>
               </motion.div>

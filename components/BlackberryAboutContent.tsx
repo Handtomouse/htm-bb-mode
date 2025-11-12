@@ -685,7 +685,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23] mb-12 md:mb-16"
+            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23] mb-16 md:mb-20 lg:mb-24"
             style={{
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
@@ -1277,7 +1277,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute top-3 left-3 text-[10px] px-2 py-1 rounded"
+              className="absolute top-3 left-3 text-[10px] px-3 py-1.5 rounded"
               style={{
                 background: 'rgba(255,157,35,0.2)',
                 color: '#ff9d23',
