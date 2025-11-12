@@ -696,7 +696,7 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
             <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.15} />
             <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.3} />
-            <LuxuryStatCard label="Years Active" value="5" delay={0.45} />
+            <LuxuryStatCard label="Years Active" value="6" delay={0.45} />
             <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.6} />
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.75} />
           </div>
@@ -1134,10 +1134,10 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
   // Context mapping for each stat
   const contextMap: Record<string, { icon: string; text: string }> = {
-    "Projects": { icon: "", text: "Since 2020. Includes S'WICH, MapleMoon, Jac+Jack, and 57 more brands across hospitality, fashion, and tech." },
-    "Retention": { icon: "", text: "75% of clients return. We build systems they can actually run without us." },
+    "Projects": { icon: "", text: "Since 2019. Includes S'WICH, MapleMoon, Jac+Jack, and 57 more brands across hospitality, fashion, and tech." },
+    "Retention": { icon: "", text: "78% of clients return. We build systems they can actually run without us." },
     "Repeat Clients": { icon: "", text: "Nearly half come back for additional projects. Long-term partnerships, not one-offs." },
-    "Years Active": { icon: "", text: "Established 2020. Consistent work across brand strategy, campaign creative, and content systems." },
+    "Years Active": { icon: "", text: "Established 2019. Consistent work across brand strategy, campaign creative, and content systems." },
     "Response": { icon: "", text: "48 hour average response time. Usually 4 hours. Async-first workflow with weekly 30-minute syncs." },
     "Industries": { icon: "", text: "Work spans hospitality, fashion, tech, and more. No cookie-cutter approaches — every brief is different." }
   };
@@ -1321,7 +1321,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         >
           {/* Context Text */}
           <motion.div
-            className="max-w-[85%] mx-auto"
+            className="w-full px-2 md:px-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}
             transition={{ delay: 0.1, duration: 0.3 }}
