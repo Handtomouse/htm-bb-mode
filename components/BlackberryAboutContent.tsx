@@ -678,7 +678,7 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative h-[120vh] flex flex-col items-center justify-center space-y-12 md:space-y-16 px-6 md:px-8 lg:px-12" style={{ scrollMarginTop: '4rem' }}>
+          <section className="relative h-[120vh] flex flex-col items-center justify-center space-y-12 md:space-y-16 px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -692,13 +692,13 @@ export default function BlackberryAboutContent() {
           >
             By The Numbers
           </motion.h2>
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 max-w-6xl mx-auto w-full">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 max-w-5xl mx-auto w-full">
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
-            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.2} />
-            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.4} />
-            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={0.3} />
-            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.1} />
-            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.35} />
+            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.15} />
+            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.3} />
+            <LuxuryStatCard label="Avg Project" value={data.stats.avgProjectValue} delay={0.45} />
+            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.6} />
+            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.75} />
           </div>
           </section>
         
@@ -1154,38 +1154,53 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="p-6 md:p-8 text-center aspect-[4/3] flex flex-col justify-center"
+      className="p-5 md:p-8 text-center aspect-[4/3] flex flex-col justify-center"
       style={{
         border: isHovered ? '1px solid rgba(255,157,35,0.4)' : '1px solid rgba(255,157,35,0.2)',
-        background: 'rgba(0,0,0,0.6)',
+        background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(10px)',
-        transition: 'all 0.3s ease'
+        boxShadow: isHovered ? '0 0 20px rgba(255,157,35,0.15)' : 'none',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
       }}
     >
-      {/* Simple number display matching Hero aesthetic */}
+      {/* Refined number display with subtle gradient */}
       <div
-        className="text-[42px] md:text-[54px] lg:text-[68px] font-bold text-[#ff9d23]"
+        className="text-[42px] md:text-[54px] lg:text-[68px] font-extrabold"
         style={{
+          letterSpacing: '-0.04em',
+          background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
           textShadow: isHovered
-            ? '0 0 60px rgba(255,157,35,0.6), 0 0 100px rgba(255,157,35,0.3)'
+            ? '0 0 60px rgba(255,157,35,0.6), 0 0 100px rgba(255,157,35,0.3), 0 0 120px rgba(255,157,35,0.15)'
             : '0 0 30px rgba(255,157,35,0.3)',
-          transition: 'all 0.3s ease'
+          transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
       >
-        {(() => {
-          const { prefix, number, suffix } = parseValue(value);
-          return (
-            <>
-              {prefix}{number}
-              {suffix && <span className="text-[28px]">{suffix}</span>}
-            </>
-          );
-        })()}
+        {prefix}{number}
+        {suffix && (
+          <span
+            className="text-[24px]"
+            style={{
+              opacity: 0.35,
+              verticalAlign: 'super'
+            }}
+          >
+            {suffix}
+          </span>
+        )}
       </div>
 
-      {/* Simple label matching Hero aesthetic */}
+      {/* Refined label with enhanced tracking */}
       <div
-        className="text-[18px] md:text-[22px] lg:text-[26px] text-white/50 uppercase tracking-[0.02em] mt-4"
+        className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-6"
+        style={{
+          color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
+          transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
+        }}
       >
         {label}
       </div>
