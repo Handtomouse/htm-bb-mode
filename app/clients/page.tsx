@@ -920,32 +920,32 @@ export default function ClientsPage() {
 }
 
 // Add CSS keyframes for animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes modalPulse {
-    0%, 100% { box-shadow: 0 0 80px rgba(255, 157, 35, 0.25), 0 0 120px rgba(255, 157, 35, 0.15); }
-    50% { box-shadow: 0 0 100px rgba(255, 157, 35, 0.35), 0 0 140px rgba(255, 157, 35, 0.20); }
-  }
-  @keyframes ripple {
-    0%, 100% { box-shadow: 0 0 12px #06ffa5, 0 0 20px rgba(6, 255, 165, 0.25); }
-    50% { box-shadow: 0 0 16px #06ffa5, 0 0 30px rgba(6, 255, 165, 0.40); }
-  }
-  @keyframes shimmer {
-    0% { background-position: 200% center; }
-    100% { background-position: 0% center; }
-  }
-  @keyframes ripple-click {
-    0% { transform: scale(0); opacity: 1; }
-    100% { transform: scale(3); opacity: 0; }
-  }
-  .animate-shimmer {
-    animation: shimmer 4s linear infinite;
-  }
-  .animate-ripple-click {
-    animation: ripple-click 0.6s ease-out forwards;
-  }
-`;
 if (typeof document !== 'undefined' && !document.querySelector('#modal-animations')) {
+  const style = document.createElement('style');
   style.id = 'modal-animations';
+  style.textContent = `
+    @keyframes modalPulse {
+      0%, 100% { box-shadow: 0 0 80px rgba(255, 157, 35, 0.25), 0 0 120px rgba(255, 157, 35, 0.15); }
+      50% { box-shadow: 0 0 100px rgba(255, 157, 35, 0.35), 0 0 140px rgba(255, 157, 35, 0.20); }
+    }
+    @keyframes ripple {
+      0%, 100% { box-shadow: 0 0 12px #06ffa5, 0 0 20px rgba(6, 255, 165, 0.25); }
+      50% { box-shadow: 0 0 16px #06ffa5, 0 0 30px rgba(6, 255, 165, 0.40); }
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% center; }
+      100% { background-position: 0% center; }
+    }
+    @keyframes ripple-click {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+    .animate-shimmer {
+      animation: shimmer 4s linear infinite;
+    }
+    .animate-ripple-click {
+      animation: ripple-click 0.6s ease-out forwards;
+    }
+  `;
   document.head.appendChild(style);
 }
