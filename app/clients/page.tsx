@@ -668,7 +668,7 @@ export default function ClientsPage() {
               className="flex items-center justify-center gap-8 flex-wrap mb-12"
             >
               <span
-                className="inline-block px-12 py-5 rounded-full text-[12px] font-light tracking-[0.15em] uppercase transition-all duration-500 hover:scale-105"
+                className="inline-block px-12 py-5 rounded-full text-[11px] font-light tracking-[0.2em] uppercase transition-all duration-500 hover:scale-105"
                 style={{
                   backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
                   border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
@@ -685,7 +685,7 @@ export default function ClientsPage() {
                       animation: selectedClient.status === 'active' ? 'ripple 2s ease-in-out infinite' : 'none'
                     }}
                   />
-                  <span className="text-[11px] text-white uppercase tracking-wider font-light">{selectedClient.status}</span>
+                  <span className="text-[11px] text-white uppercase tracking-[0.2em] font-light">{selectedClient.status}</span>
                 </div>
             </motion.div>
 
@@ -701,11 +701,11 @@ export default function ClientsPage() {
                 <img
                   src={selectedClient.logo}
                   alt={selectedClient.name}
-                  className="max-w-[360px] h-auto mx-auto opacity-100 filter brightness-0 invert"
+                  className="max-w-[280px] h-auto mx-auto opacity-100 filter brightness-0 invert"
                   style={{ filter: 'brightness(0) invert(1) drop-shadow(0 4px 12px rgba(255,255,255,0.15))' }}
                 />
               ) : (
-                <h2 className="text-[40px] md:text-[52px] font-thin text-white tracking-[0.15em]">
+                <h2 className="text-[48px] font-thin text-white tracking-[0.08em]">
                   {selectedClient.name}
                 </h2>
               )}
@@ -729,21 +729,21 @@ export default function ClientsPage() {
                 }`}
               >
                 <div className="relative pb-6">
-                  <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
+                  <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
                     Projects Delivered
                   </p>
-                  <p className="text-[32px] text-white font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[32px] text-white font-light tabular-nums leading-[1.1]">{selectedClient.projects.toLocaleString()}</p>
                   <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div className="relative pb-6">
-                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
                       Timeline
                     </p>
-                    <p className="text-[32px] text-white font-light">
+                    <p className="text-[32px] text-white font-light leading-[1.1]">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
-                      <span className="block text-[14px] text-white/70 mt-5">
+                      <span className="block text-[15px] text-white/80 mt-5">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
@@ -753,14 +753,14 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div className="relative">
-                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
                       Website
                     </p>
                     <a
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group text-[18px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative px-6 py-2 -mx-6 -my-2 rounded-sm"
+                      className="group text-[16px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative px-6 py-2 -mx-6 -my-2 rounded-sm"
                       style={{
                         textShadow: '0 0 0 transparent',
                         backgroundColor: 'transparent',
@@ -797,7 +797,7 @@ export default function ClientsPage() {
                 >
                   {selectedClient.tagline && (
                     <div>
-                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">Tagline</p>
+                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Tagline</p>
                       <p className="text-[18px] text-white leading-[1.8] font-light">
                         {selectedClient.tagline}
                       </p>
@@ -805,8 +805,8 @@ export default function ClientsPage() {
                   )}
 
                   {selectedClient.results && (
-                    <div className="px-16 py-16 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
+                    <div className="px-12 py-12 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
+                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
                         Results
                       </p>
                       <p className="text-[18px] text-white font-light leading-[1.8]">{selectedClient.results}</p>
@@ -815,7 +815,7 @@ export default function ClientsPage() {
 
                   {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                     <div>
-                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
+                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
                         Deliverables
                       </p>
                       <div className="flex flex-wrap gap-4">
@@ -825,10 +825,10 @@ export default function ClientsPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                            className="px-12 py-6 text-[12px] bg-white/5 border border-white/10 text-white rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
+                            className="px-8 py-4 text-[12px] bg-white/5 border border-white/10 text-white rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
                           style={{
                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-                            letterSpacing: '0.02em',
+                            letterSpacing: '0.04em',
                             fontWeight: 400
                           }}
                           onMouseEnter={(e) => {
@@ -854,15 +854,15 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="pt-16 relative"
+                className="pt-16 relative max-w-[700px] mx-auto"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-                <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">Testimonial</p>
+                <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Testimonial</p>
 
                 {/* Large opening quote */}
                 <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
 
-                <blockquote className="relative text-[24px] text-white font-light italic leading-[1.8] pl-24 mb-4">
+                <blockquote className="relative text-[20px] text-white font-light italic leading-[1.8] pl-16 mb-4">
                   {selectedClient.testimonial}
                 </blockquote>
 
@@ -870,7 +870,7 @@ export default function ClientsPage() {
                 <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
 
                 {/* Client attribution */}
-                <p className="text-right text-[16px] text-white/50 font-light tracking-wider mt-6">
+                <p className="text-right text-[14px] text-white/60 font-light tracking-[0.15em] mt-6">
                   — {selectedClient.name}
                 </p>
               </motion.div>
