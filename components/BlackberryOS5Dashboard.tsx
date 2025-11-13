@@ -10,6 +10,7 @@ import BlackberryWormholeContent from "./BlackberryWormholeContent";
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
 const BlackberrySettingsContent = lazy(() => import("./BlackberrySettingsContent"));
+const BlackberrySettingsContentNew = lazy(() => import("./BlackberrySettingsContentNew"));
 const BlackberryShowreelContent = lazy(() => import("./BlackberryShowreelContent"));
 const BlackberryFavouritesContent = lazy(() => import("./BlackberryFavouritesContent"));
 const BlackberryGamesContent = lazy(() => import("./BlackberryGamesContent"));
@@ -1007,7 +1008,7 @@ function AppContent({ appId }: { appId: string }) {
           <BlackberryAboutContent />
         ) : appId === "settings" ? (
           <Suspense fallback={<BBSkeletonCard />}>
-            <BlackberrySettingsContent />
+            <BlackberrySettingsContentNew />
           </Suspense>
         ) : appId === "contact" ? (
           <Suspense fallback={<BBSkeletonCard />}>
