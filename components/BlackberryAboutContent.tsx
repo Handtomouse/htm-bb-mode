@@ -1157,9 +1157,9 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
     "Projects": { text: "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.", since: "Since 2020" },
     "Retention": { text: "3 in 4 clients return. Systems that outlast the engagement.", comparison: "2.2× industry avg" },
     "Repeat Clients": { text: "45% return within 18 months. Long-term partnerships over one-off projects.", since: "Since 2020" },
-    "Years Active": { text: "5 years. 60+ brands. Zero template work.", since: "Est. 2020" },
-    "Response": { text: "48hr average. Usually 4hr. Async cadence with weekly 30min syncs." },
-    "Industries": { text: "8 sectors. Hospitality to health tech. Every brief gets fresh eyes.", since: "Since 2020" }
+    "Years Active": { text: "5 years. 60+ brands. Every one custom.", since: "Est. 2020" },
+    "Response": { text: "48hr average. Usually within 4hr. Async work, weekly syncs." },
+    "Industries": { text: "8 sectors. Fashion to health. Fresh eyes, every time.", since: "Since 2020" }
   };
 
   const contextData = contextMap[label] || { text: "More context coming soon" };
