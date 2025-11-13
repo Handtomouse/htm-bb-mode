@@ -702,9 +702,6 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.4} index={4} />
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} index={5} />
           </div>
-
-          {/* Improvement #15: Viewed progress dots */}
-          <ViewedProgressDots />
           </section>
         
 
@@ -1130,39 +1127,6 @@ function TypewriterManifesto({
   );
 }
 
-// Improvement #15: Viewed Progress Dots Component
-const viewedCardsState = { current: new Set<number>() };
-
-function ViewedProgressDots() {
-  const [viewedCards, setViewedCards] = useState<Set<number>>(new Set());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setViewedCards(new Set(viewedCardsState.current));
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="flex gap-2 mt-6">
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <motion.div
-          key={i}
-          className="w-2 h-2 rounded-full"
-          style={{
-            background: viewedCards.has(i) ? '#ff9d23' : 'rgba(255,157,35,0.2)',
-            boxShadow: viewedCards.has(i) ? '0 0 8px rgba(255,157,35,0.6)' : 'none'
-          }}
-          animate={{
-            scale: viewedCards.has(i) ? [1, 1.3, 1] : 1
-          }}
-          transition={{ duration: 0.3 }}
-        />
-      ))}
-    </div>
-  );
-}
-
 // Interactive Flip Card - Reveals Story Behind Numbers (25 Luxury Improvements)
 function LuxuryStatCard({ label, value, delay, index }: { label: string; value: string; delay: number; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -1213,13 +1177,12 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
 
   const { prefix, number, suffix } = parseValue(value);
 
-  // Improvement #11: Enhanced flip feedback with tracking
+  // Improvement #11: Enhanced flip feedback
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
     if (!hasFlippedBefore) {
       setHasFlippedBefore(true);
       setShowViewed(true);
-      viewedCardsState.current.add(index); // Track for progress dots
       setTimeout(() => setShowViewed(false), 3000);
     }
   };
@@ -1392,13 +1355,6 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               />
             )}
-
-            {/* Improvement #18: Verified checkmark icon */}
-            {contextData.comparison || contextData.since ? (
-              <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#ff9d23] flex items-center justify-center text-[8px] sm:text-[10px]" style={{ boxShadow: '0 2px 8px rgba(255,157,35,0.4)' }}>
-                ✓
-              </div>
-            ) : null}
           </div>
 
           {/* Label with Improvement #5: Refined tracking for luxury magazine feel */}
