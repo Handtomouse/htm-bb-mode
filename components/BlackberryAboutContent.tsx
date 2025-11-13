@@ -1133,16 +1133,16 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   const [showViewed, setShowViewed] = useState(false);
 
   // Context mapping for each stat
-  const contextMap: Record<string, { icon: string; text: string }> = {
-    "Projects": { icon: "", text: "Since 2019. Includes S'WICH, MapleMoon, Jac+Jack, and 57 more brands across hospitality, fashion, and tech." },
-    "Retention": { icon: "", text: "78% of clients return. We build systems they can actually run without us." },
-    "Repeat Clients": { icon: "", text: "Nearly half come back for additional projects. Long-term partnerships, not one-offs." },
-    "Years Active": { icon: "", text: "Established 2019. Consistent work across brand strategy, campaign creative, and content systems." },
-    "Response": { icon: "", text: "48 hour average response time. Usually 4 hours. Async-first workflow with weekly 30-minute syncs." },
-    "Industries": { icon: "", text: "Work spans hospitality, fashion, tech, and more. No cookie-cutter approaches — every brief is different." }
+  const contextMap: Record<string, { icon: string; text: string; category: string }> = {
+    "Projects": { icon: "", text: "60+ brands since 2019. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.", category: "SCOPE" },
+    "Retention": { icon: "", text: "3 in 4 clients return. Systems that outlast the engagement.", category: "PROVEN" },
+    "Repeat Clients": { icon: "", text: "45% return within 18 months. Long-term partnerships over one-off projects.", category: "PROVEN" },
+    "Years Active": { icon: "", text: "6 years. 60+ brands. Zero template work.", category: "SCOPE" },
+    "Response": { icon: "", text: "48hr average. Usually 4hr. Async cadence with weekly 30min syncs.", category: "SPEED" },
+    "Industries": { icon: "", text: "8 sectors. Hospitality to health tech. Every brief gets fresh eyes.", category: "SCOPE" }
   };
 
-  const context = contextMap[label] || { icon: "✨", text: "More context coming soon" };
+  const context = contextMap[label] || { icon: "✨", text: "More context coming soon", category: "SCOPE" };
 
   // Parse number and unit separately for styling
   const parseValue = (val: string) => {
@@ -1178,6 +1178,30 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   };
 
   const { firstSentence, rest } = parseFirstSentence(context.text);
+
+  // Helper to wrap numbers in gold gradient spans
+  const highlightNumbers = (text: string) => {
+    const parts = text.split(/(\d+[%+]?)/g);
+    return parts.map((part, i) => {
+      if (/\d+[%+]?/.test(part)) {
+        return (
+          <span
+            key={i}
+            style={{
+              background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              fontWeight: 600
+            }}
+          >
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
 
   return (
     <motion.div
@@ -1309,7 +1333,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         </div>
 
         {/* Back Side */}
-        <div
+        <motion.div
           className="absolute inset-0 p-6 md:p-12 text-center flex flex-col justify-center active:scale-[0.98]"
           style={{
             backfaceVisibility: 'hidden',
@@ -1326,10 +1350,35 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             boxShadow: isHovered && isFlipped
               ? '0 0 35px rgba(255,157,35,0.3), 0 10px 50px rgba(0,0,0,0.4), inset 0 0 25px rgba(255,157,35,0.12)'
               : '0 0 28px rgba(255,157,35,0.2), 0 10px 50px rgba(0,0,0,0.4), inset 0 0 25px rgba(255,157,35,0.08)',
-            borderTop: isFlipped ? '1px solid rgba(255,157,35,0.3)' : 'none',
+            borderTop: isFlipped ? '1px solid rgba(255,157,35,0.5)' : 'none',
             transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
+          animate={{
+            scale: isFlipped ? [1, 1.003, 1] : 1
+          }}
+          transition={{
+            scale: {
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
         >
+          {/* Micro-Label */}
+          <motion.div
+            className="absolute top-4 left-4 text-[9px] uppercase tracking-[0.2em]"
+            style={{
+              opacity: 0.5,
+              color: '#ff9d23',
+              fontWeight: 600
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isFlipped ? 0.5 : 0 }}
+            transition={{ delay: 0.15, duration: 0.3 }}
+          >
+            CONTEXT
+          </motion.div>
+
           {/* Context Text */}
           <motion.div
             className="w-full px-4 md:px-6"
@@ -1338,22 +1387,49 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             transition={{ delay: 0.1, duration: 0.3 }}
           >
             <p
-              className="text-[12px] sm:text-[16px] md:text-[18px] leading-[1.8] text-white"
+              className="text-[13px] sm:text-[17px] md:text-[18px] leading-[1.65] sm:leading-[1.8] text-white"
               style={{
                 fontWeight: 400,
                 letterSpacing: '0.01em',
-                textShadow: '0 2px 4px rgba(0,0,0,0.4)'
+                textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.2)'
               }}
             >
-              <span style={{ fontWeight: 600 }}>{firstSentence}</span>
-              {rest && ` ${rest}`}
+              <span
+                style={{
+                  fontWeight: 600,
+                  letterSpacing: '0.005em',
+                  background: 'linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.95) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                {highlightNumbers(firstSentence)}
+              </span>
+              {rest && <span style={{ opacity: 0.92 }}> {highlightNumbers(rest)}</span>}
             </p>
+          </motion.div>
+
+          {/* Category Indicator */}
+          <motion.div
+            className="absolute bottom-5 left-5 text-[8px] uppercase tracking-[0.15em]"
+            style={{
+              opacity: 0.4,
+              color: '#ff9d23',
+              fontWeight: 600
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isFlipped ? 0.4 : 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
+            {context.category}
           </motion.div>
 
           {/* Flip Back Hint */}
           <motion.div
-            className="absolute bottom-4 right-4 text-[9px] sm:text-[11px] text-white/70 uppercase tracking-[0.15em]"
+            className="absolute bottom-5 right-5 text-[9px] sm:text-[11px] uppercase tracking-[0.15em]"
             style={{
+              color: 'rgba(255,255,255,0.6)',
               fontWeight: 500,
               textShadow: '0 0 12px rgba(255,157,35,0.4)'
             }}
@@ -1363,7 +1439,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           >
             Tap to flip back
           </motion.div>
-        </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
