@@ -1333,7 +1333,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             animate={{ opacity: isFlipped ? 1 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="max-w-[280px] sm:max-w-[340px] md:max-w-[420px] mx-auto text-left">
+            <div className="max-w-[280px] sm:max-w-[340px] md:max-w-[420px] mx-auto text-center">
               {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
               <div
                 className="text-[17px] sm:text-[20px] md:text-[22px] mb-2.5 sm:mb-3 leading-[1.5]"
