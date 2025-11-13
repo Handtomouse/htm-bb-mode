@@ -678,7 +678,7 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative min-h-[100vh] flex flex-col items-center justify-center gap-8 md:gap-16 lg:gap-20 px-4 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          <section className="relative min-h-[100vh] flex flex-col items-center justify-center gap-4 md:gap-16 lg:gap-20 px-4 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -692,7 +692,7 @@ export default function BlackberryAboutContent() {
           >
             By The Numbers
           </motion.h2>
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
+          <div className="relative grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 sm:gap-x-8 sm:gap-y-12 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
             <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} />
             <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} />
@@ -1190,7 +1190,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         ease: [0.16, 1, 0.3, 1]
       }}
       style={{ perspective: '1000px' }}
-      className="relative aspect-[3/4] sm:aspect-[4/3]"
+      className="relative aspect-[1/1] sm:aspect-[4/3]"
     >
       {/* Flip Container */}
       <motion.div
@@ -1218,7 +1218,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       >
         {/* Front Side */}
         <div
-          className="absolute inset-0 p-5 sm:p-6 md:p-10 text-center flex flex-col justify-center active:scale-[0.98]"
+          className="absolute inset-0 p-3 sm:p-6 md:p-10 text-center flex flex-col justify-center active:scale-[0.98]"
           style={{
             backfaceVisibility: 'hidden',
             border: isHovered ? '1.5px solid rgba(255,157,35,0.4)' : '1.5px solid rgba(255,157,35,0.2)',
@@ -1246,7 +1246,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
           {/* Number Display */}
           <div
-            className="text-[36px] md:text-[54px] lg:text-[68px] font-extrabold"
+            className="text-[28px] md:text-[54px] lg:text-[68px] font-extrabold"
             style={{
               letterSpacing: '-0.04em',
               background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
@@ -1263,7 +1263,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             {prefix}{number}
             {suffix && (
               <span
-                className="text-[24px] md:text-[36px] lg:text-[44px]"
+                className="text-[18px] md:text-[36px] lg:text-[44px]"
                 style={{
                   opacity: 0.9,
                   marginLeft: '0.1em',
@@ -1280,7 +1280,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
           {/* Label */}
           <div
-            className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-4 sm:mt-6"
+            className="text-[14px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-3 sm:mt-6"
             style={{
               color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
               transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
@@ -1310,7 +1310,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
         {/* Back Side */}
         <div
-          className="absolute inset-0 p-10 md:p-12 text-center flex flex-col justify-center active:scale-[0.98]"
+          className="absolute inset-0 p-6 md:p-12 text-center flex flex-col justify-center active:scale-[0.98]"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
@@ -1338,7 +1338,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             transition={{ delay: 0.1, duration: 0.3 }}
           >
             <p
-              className="text-[14px] sm:text-[16px] md:text-[18px] leading-[1.8] text-white"
+              className="text-[12px] sm:text-[16px] md:text-[18px] leading-[1.8] text-white"
               style={{
                 fontWeight: 400,
                 letterSpacing: '0.01em',
