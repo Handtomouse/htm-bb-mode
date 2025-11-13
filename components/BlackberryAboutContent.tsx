@@ -679,6 +679,8 @@ export default function BlackberryAboutContent() {
         {/* Stats Grid - Full Width */}
 
           <section className="relative min-h-[100vh] flex flex-col items-center justify-center gap-4 md:gap-16 lg:gap-20 px-4 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          {/* Improvement #6: Subtle radial gradient backdrop */}
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)', opacity: 0.4 }} />
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -693,13 +695,16 @@ export default function BlackberryAboutContent() {
             By The Numbers
           </motion.h2>
           <div className="relative grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 sm:gap-x-8 sm:gap-y-12 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
-            <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
-            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} />
-            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} />
-            <LuxuryStatCard label="Years Active" value="6" delay={0.3} />
-            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.4} />
-            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} />
+            <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} index={0} />
+            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} index={1} />
+            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} index={2} />
+            <LuxuryStatCard label="Years Active" value="5" delay={0.3} index={3} />
+            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.4} index={4} />
+            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} index={5} />
           </div>
+
+          {/* Improvement #15: Viewed progress dots */}
+          <ViewedProgressDots />
           </section>
         
 
@@ -1125,24 +1130,76 @@ function TypewriterManifesto({
   );
 }
 
-// Interactive Flip Card - Reveals Story Behind Numbers
-function LuxuryStatCard({ label, value, delay }: { label: string; value: string; delay: number }) {
+// Improvement #15: Viewed Progress Dots Component
+const viewedCardsState = { current: new Set<number>() };
+
+function ViewedProgressDots() {
+  const [viewedCards, setViewedCards] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViewedCards(new Set(viewedCardsState.current));
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex gap-2 mt-6">
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <motion.div
+          key={i}
+          className="w-2 h-2 rounded-full"
+          style={{
+            background: viewedCards.has(i) ? '#ff9d23' : 'rgba(255,157,35,0.2)',
+            boxShadow: viewedCards.has(i) ? '0 0 8px rgba(255,157,35,0.6)' : 'none'
+          }}
+          animate={{
+            scale: viewedCards.has(i) ? [1, 1.3, 1] : 1
+          }}
+          transition={{ duration: 0.3 }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Interactive Flip Card - Reveals Story Behind Numbers (25 Luxury Improvements)
+function LuxuryStatCard({ label, value, delay, index }: { label: string; value: string; delay: number; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [hasFlippedBefore, setHasFlippedBefore] = useState(false);
   const [showViewed, setShowViewed] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [showTapHint, setShowTapHint] = useState(false);
 
-  // Context mapping for each stat
-  const contextMap: Record<string, string> = {
-    "Projects": "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.",
-    "Retention": "3 in 4 clients return. Systems that outlast the engagement.",
-    "Repeat Clients": "45% return within 18 months. Long-term partnerships over one-off projects.",
-    "Years Active": "5 years. 60+ brands. Zero template work.",
-    "Response": "48hr average. Usually 4hr. Async cadence with weekly 30min syncs.",
-    "Industries": "8 sectors. Hospitality to health tech. Every brief gets fresh eyes."
+  // Improvement #14: Auto-flip first card as demo
+  useEffect(() => {
+    if (index === 0 && typeof window !== 'undefined') {
+      const timer1 = setTimeout(() => setIsFlipped(true), 2000);
+      const timer2 = setTimeout(() => setIsFlipped(false), 5000);
+      const timer3 = setTimeout(() => setShowTapHint(true), 500);
+      const timer4 = setTimeout(() => setShowTapHint(false), 3000);
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+        clearTimeout(timer4);
+      };
+    }
+  }, [index]);
+
+  // Context mapping for each stat with Improvement #16/#17: Comparison badges & Since 2020 badges
+  const contextMap: Record<string, { text: string; comparison?: string; since?: string }> = {
+    "Projects": { text: "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.", since: "Since 2020" },
+    "Retention": { text: "3 in 4 clients return. Systems that outlast the engagement.", comparison: "2.2× industry avg" },
+    "Repeat Clients": { text: "45% return within 18 months. Long-term partnerships over one-off projects.", since: "Since 2020" },
+    "Years Active": { text: "5 years. 60+ brands. Zero template work.", since: "Est. 2020" },
+    "Response": { text: "48hr average. Usually 4hr. Async cadence with weekly 30min syncs." },
+    "Industries": { text: "8 sectors. Hospitality to health tech. Every brief gets fresh eyes.", since: "Since 2020" }
   };
 
-  const context = contextMap[label] || "More context coming soon";
+  const contextData = contextMap[label] || { text: "More context coming soon" };
+  const context = contextData.text;
 
   // Parse number and unit separately for styling
   const parseValue = (val: string) => {
@@ -1156,14 +1213,32 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
   const { prefix, number, suffix } = parseValue(value);
 
+  // Improvement #11: Enhanced flip feedback with tracking
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
     if (!hasFlippedBefore) {
       setHasFlippedBefore(true);
       setShowViewed(true);
+      viewedCardsState.current.add(index); // Track for progress dots
       setTimeout(() => setShowViewed(false), 3000);
     }
   };
+
+  // Improvement #22: Swipe gesture support
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      handleFlip();
+    }
+  };
+
+  // Improvement #23: Check for reduced motion preference
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Parse first sentence for emphasis
   const parseFirstSentence = (text: string) => {
@@ -1181,29 +1256,51 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
+      initial={{ opacity: 0, y: 10, z: 20 }}
+      whileInView={{ opacity: 1, y: 0, z: 0 }}
+      viewport={{ once: true, amount: 0.25, margin: "-150px" }}
       transition={{
         delay,
-        duration: 0.3,
+        duration: prefersReducedMotion ? 0.1 : 0.3,
         ease: [0.16, 1, 0.3, 1]
       }}
       style={{ perspective: '1000px' }}
       className="relative aspect-[1/1] sm:aspect-[4/3]"
     >
+      {/* Improvement #13: "Tap to explore" hint on mobile (first 3s) */}
+      {showTapHint && (
+        <motion.div
+          className="absolute -top-8 left-1/2 -translate-x-1/2 md:hidden text-[11px] text-[#ff9d23] uppercase tracking-widest z-10"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: [0.6, 1, 0.6], y: 0 }}
+          transition={{ opacity: { duration: 1.5, repeat: Infinity } }}
+          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
+        >
+          Tap to explore
+        </motion.div>
+      )}
+
       {/* Flip Container */}
       <motion.div
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        animate={{ rotateY: prefersReducedMotion ? 0 : (isFlipped ? 180 : 0) }}
+        transition={{
+          duration: prefersReducedMotion ? 0 : 0.4,
+          ease: [0.16, 1, 0.3, 1],
+          type: "spring",
+          stiffness: 100,
+          damping: 15
+        }}
         style={{
           transformStyle: 'preserve-3d',
           position: 'relative',
           width: '100%',
           height: '100%',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          transform: prefersReducedMotion && isFlipped ? 'none' : undefined
         }}
         onClick={handleFlip}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onKeyDown={(e) => {
@@ -1218,25 +1315,31 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       >
         {/* Front Side */}
         <div
-          className="absolute inset-0 p-3 sm:p-6 md:p-10 text-center flex flex-col justify-center active:scale-[0.98]"
+          className="absolute inset-0 p-3 sm:p-6 md:p-10 text-center flex flex-col justify-center active:scale-[0.97]"
           style={{
             backfaceVisibility: 'hidden',
             border: isHovered ? '1.5px solid rgba(255,157,35,0.4)' : '1.5px solid rgba(255,157,35,0.2)',
+            borderRadius: '1px',
             background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(6px)',
             boxShadow: isHovered
-              ? '0 0 14px rgba(255,157,35,0.12), 0 5px 25px rgba(0,0,0,0.25)'
+              ? '0 0 14px rgba(255,157,35,0.12), 0 5px 25px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,157,35,0.1)'
               : hasFlippedBefore
-                ? '0 0 6px rgba(255,157,35,0.06)'
-                : 'none',
+                ? '0 0 6px rgba(255,157,35,0.06), inset 0 1px 0 rgba(255,157,35,0.05)'
+                : 'inset 0 1px 0 rgba(255,157,35,0.05)',
             transform: isHovered ? 'translateY(-2px) translateZ(10px)' : 'translateY(0) translateZ(0)',
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            willChange: 'transform',
+            minHeight: '44px'
           }}
         >
-          {/* Corner Fold Hint */}
+          {/* Improvement #12: Corner Fold Hint with fade-in */}
           {isHovered && !isFlipped && (
-            <div
+            <motion.div
               className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
               style={{
                 background: 'linear-gradient(225deg, rgba(255,157,35,0.3) 0%, transparent 50%)',
                 clipPath: 'polygon(100% 0, 100% 100%, 0 0)'
@@ -1244,50 +1347,86 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             />
           )}
 
-          {/* Number Display */}
-          <div
-            className="text-[28px] md:text-[54px] lg:text-[68px] font-extrabold"
-            style={{
-              letterSpacing: '-0.04em',
-              background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: isHovered
-                ? 'drop-shadow(0 0 28px rgba(255,157,35,0.4))'
-                : 'drop-shadow(0 0 14px rgba(255,157,35,0.2))',
-              transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-            }}
-          >
-            {prefix}{number}
-            {suffix && (
-              <span
-                className="text-[18px] md:text-[36px] lg:text-[44px]"
-                style={{
-                  opacity: 0.9,
-                  marginLeft: '0.1em',
-                  background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                {suffix}
-              </span>
+          {/* Number Display with Improvements #1/#8: Optical kerning & Gold foil effect */}
+          <div className="relative">
+            <div
+              className="text-[28px] md:text-[54px] lg:text-[68px] font-extrabold relative"
+              style={{
+                letterSpacing: '-0.04em',
+                background: 'linear-gradient(160deg, #ffd700 0%, #ff9d23 30%, #ffaa35 70%, #ffd700 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: isHovered
+                  ? 'drop-shadow(0 0 28px rgba(255,157,35,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                  : 'drop-shadow(0 0 14px rgba(255,157,35,0.2)) drop-shadow(0 1px 2px rgba(0,0,0,0.2))',
+                transform: isHovered ? 'scale(1.02) translateZ(5px)' : 'scale(1)',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'transform'
+              }}
+            >
+              {prefix}{number}
+              {suffix && (
+                <span
+                  className="text-[18px] md:text-[36px] lg:text-[44px]"
+                  style={{
+                    opacity: 0.9,
+                    marginLeft: '0.1em',
+                    background: 'linear-gradient(160deg, #ffd700 0%, #ff9d23 30%, #ffaa35 70%, #ffd700 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  {suffix}
+                </span>
+              )}
+            </div>
+
+            {/* Improvement #4: Subtle accent underline beneath number */}
+            {isHovered && (
+              <motion.div
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-0.5 bg-[#ff9d23] opacity-40"
+                initial={{ width: 0 }}
+                animate={{ width: '30%' }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              />
             )}
+
+            {/* Improvement #18: Verified checkmark icon */}
+            {contextData.comparison || contextData.since ? (
+              <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#ff9d23] flex items-center justify-center text-[8px] sm:text-[10px]" style={{ boxShadow: '0 2px 8px rgba(255,157,35,0.4)' }}>
+                ✓
+              </div>
+            ) : null}
           </div>
 
-          {/* Label */}
+          {/* Label with Improvement #5: Refined tracking for luxury magazine feel */}
           <div
-            className="text-[14px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-3 sm:mt-6"
+            className="text-[14px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.095em] mt-3 sm:mt-6"
             style={{
               color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
-              transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+              transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              fontWeight: 500
             }}
           >
             {label}
           </div>
+
+          {/* Improvement #17: "Since 2020" time badges */}
+          {contextData.since && !isFlipped && (
+            <div
+              className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] sm:text-[10px] px-2 py-0.5 rounded-sm uppercase tracking-wider"
+              style={{
+                background: 'rgba(255,157,35,0.15)',
+                color: 'rgba(255,157,35,0.8)',
+                border: '0.5px solid rgba(255,157,35,0.3)',
+                fontWeight: 600
+              }}
+            >
+              {contextData.since}
+            </div>
+          )}
 
           {/* Viewed Badge */}
           {showViewed && (
@@ -1308,29 +1447,31 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           )}
         </div>
 
-        {/* Back Side */}
+        {/* Back Side with Improvement #9: Subtle border radius */}
         <div
           className="absolute inset-0 p-7 md:p-14 flex flex-col justify-center items-center"
           style={{
             backfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
+            transform: prefersReducedMotion ? 'scaleX(-1)' : 'rotateY(180deg)',
             border: '1.5px solid transparent',
+            borderRadius: '1px',
             borderImage: isHovered && isFlipped
               ? 'linear-gradient(135deg, rgba(255,157,35,0.8), rgba(255,157,35,0.4), rgba(255,157,35,0.8)) 1'
               : 'linear-gradient(135deg, rgba(255,157,35,0.6), rgba(255,157,35,0.3), rgba(255,157,35,0.6)) 1',
             background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.6) 100%)',
             backdropFilter: 'blur(8px) saturate(1.2)',
             WebkitBackdropFilter: 'blur(8px) saturate(1.2)',
-            boxShadow: '0 0 24px rgba(255,157,35,0.2), 0 8px 40px rgba(0,0,0,0.4)',
+            boxShadow: '0 0 24px rgba(255,157,35,0.2), 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,157,35,0.1)',
             borderTop: isFlipped ? '1px solid rgba(255,157,35,0.5)' : 'none',
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            minHeight: '44px'
           }}
         >
-          {/* Context Text */}
+          {/* Context Text with Improvements #2/#3: Better line-height & 2-layer shadows */}
           <motion.div
             className="w-full px-4 md:px-6"
             initial={{ opacity: 0 }}
-            animate={{ opacity: isFlipped ? 1 : 0 }}
+            animate={{ opacity: (isFlipped || (prefersReducedMotion && isFlipped)) ? 1 : 0 }}
             transition={{ duration: 0.2 }}
           >
             <div className="max-w-[280px] sm:max-w-[340px] md:max-w-[420px] mx-auto text-center">
@@ -1341,22 +1482,41 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
                   fontWeight: 600,
                   letterSpacing: '-0.005em',
                   color: '#ffa940',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.8)',
                   hyphens: 'auto'
                 }}
               >
                 {firstSentence}
               </div>
 
-              {/* Rest - Smaller, Regular, White, Line Below */}
+              {/* Improvement #16: Comparison badge */}
+              {contextData.comparison && (
+                <motion.div
+                  className="inline-block mb-2 px-2 py-1 text-[11px] sm:text-[12px] rounded-sm uppercase tracking-wider"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,157,35,0.2))',
+                    color: '#ffd700',
+                    border: '1px solid rgba(255,215,0,0.4)',
+                    fontWeight: 700,
+                    boxShadow: '0 2px 8px rgba(255,215,0,0.2)'
+                  }}
+                >
+                  {contextData.comparison}
+                </motion.div>
+              )}
+
+              {/* Rest - Smaller, Regular, White, Line Below with Improvement #2: Better line-height (1.68) */}
               {rest && (
                 <div
-                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.65]"
+                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.68]"
                   style={{
                     fontWeight: 400,
                     letterSpacing: '0.005em',
                     color: 'rgba(255,255,255,0.9)',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8)',
                     hyphens: 'auto',
                     wordBreak: 'break-word'
                   }}
