@@ -6,12 +6,32 @@ import { useEffect, useRef, useState } from "react";
 export interface Settings {
   dockMode: "mono" | "bb";
   sound: boolean;
+  theme: "dark" | "light" | "auto";
+  accentColor: string;
+  fontSize: "small" | "medium" | "large";
+  reducedMotion: boolean;
+  animationSpeed: number; // 0.5 to 2.0
+  highContrast: boolean;
+  brightness: number; // 0 to 100
+  volume: number; // 0 to 100
+  trackingEnabled: boolean;
+  analyticsEnabled: boolean;
 }
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>({
     dockMode: "mono",
     sound: true,
+    theme: "dark",
+    accentColor: "#ff9d23",
+    fontSize: "medium",
+    reducedMotion: false,
+    animationSpeed: 1.0,
+    highContrast: false,
+    brightness: 80,
+    volume: 70,
+    trackingEnabled: false,
+    analyticsEnabled: false,
   });
 
   // Load from localStorage on mount
@@ -23,6 +43,16 @@ export function useSettings() {
         setSettings({
           dockMode: parsed.dockMode ?? "mono",
           sound: typeof parsed.sound === "boolean" ? parsed.sound : true,
+          theme: parsed.theme ?? "dark",
+          accentColor: parsed.accentColor ?? "#ff9d23",
+          fontSize: parsed.fontSize ?? "medium",
+          reducedMotion: parsed.reducedMotion ?? false,
+          animationSpeed: parsed.animationSpeed ?? 1.0,
+          highContrast: parsed.highContrast ?? false,
+          brightness: parsed.brightness ?? 80,
+          volume: parsed.volume ?? 70,
+          trackingEnabled: parsed.trackingEnabled ?? false,
+          analyticsEnabled: parsed.analyticsEnabled ?? false,
         });
       }
     } catch (e) {
