@@ -721,7 +721,7 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} index={0} />
             <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} index={1} />
             <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} index={2} />
-            <LuxuryStatCard label="Years Active" value="5" delay={0.3} index={3} />
+            <LuxuryStatCard label="Years Active" value="6" delay={0.3} index={3} />
             <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.4} index={4} />
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} index={5} />
           </div>
@@ -1175,14 +1175,14 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
     }
   }, [index]);
 
-  // Context mapping for each stat with Improvement #16/#17: Comparison badges & Since 2020 badges
+  // Context mapping for each stat
   const contextMap: Record<string, { text: string; comparison?: string; since?: string }> = {
-    "Projects": { text: "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.", since: "Since 2020" },
-    "Retention": { text: "3 in 4 clients return. Systems that outlast the engagement.", comparison: "2.2× industry avg" },
-    "Repeat Clients": { text: "45% return within 18 months. Long-term partnerships over one-off projects.", since: "Since 2020" },
-    "Years Active": { text: "5 years. 60+ brands. Every one custom.", since: "Est. 2020" },
-    "Response": { text: "48hr average. Usually within 4hr. Async work, weekly syncs." },
-    "Industries": { text: "8 sectors. Fashion to health. Fresh eyes, every time.", since: "Since 2020" }
+    "Projects": { text: "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice." },
+    "Retention": { text: "3 in 4 clients return. Systems that outlast the engagement." },
+    "Repeat Clients": { text: "45% return within 18 months. Long-term partnerships over one-off projects." },
+    "Years Active": { text: "6 years. 38+ brands. Built for the long game." },
+    "Response": { text: "48hr average. Usually within 4hr. Clear communication, efficient delivery." },
+    "Industries": { text: "8 sectors. Hospitality to healthcare. Diverse experience, focused execution." }
   };
 
   const contextData = contextMap[label] || { text: "More context coming soon" };
@@ -1340,7 +1340,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
           {/* Number Display with Improvements #1/#8: Optical kerning & Gold foil effect */}
           <div className="relative">
             <div
-              className="text-[28px] md:text-[54px] lg:text-[68px] font-extrabold relative"
+              className="text-[38px] md:text-[73px] lg:text-[92px] font-extrabold relative"
               style={{
                 letterSpacing: '-0.04em',
                 background: 'linear-gradient(160deg, #ffd700 0%, #ff9d23 30%, #ffaa35 70%, #ffd700 100%)',
@@ -1358,7 +1358,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
               {prefix}{number}
               {suffix && (
                 <span
-                  className="text-[18px] md:text-[36px] lg:text-[44px]"
+                  className="text-[24px] md:text-[49px] lg:text-[59px]"
                   style={{
                     opacity: 0.9,
                     marginLeft: '0.1em',
@@ -1372,16 +1372,6 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
                 </span>
               )}
             </div>
-
-            {/* Improvement #4: Subtle accent underline beneath number */}
-            {isHovered && (
-              <motion.div
-                className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-0.5 bg-[#ff9d23] opacity-40"
-                initial={{ width: 0 }}
-                animate={{ width: '30%' }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              />
-            )}
           </div>
 
           {/* Label with Improvement #5: Refined tracking for luxury magazine feel */}
