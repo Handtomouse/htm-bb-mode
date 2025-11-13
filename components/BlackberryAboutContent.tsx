@@ -1133,16 +1133,16 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
   const [showViewed, setShowViewed] = useState(false);
 
   // Context mapping for each stat
-  const contextMap: Record<string, { icon: string; text: string; category: string }> = {
-    "Projects": { icon: "", text: "60+ brands since 2019. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.", category: "SCOPE" },
-    "Retention": { icon: "", text: "3 in 4 clients return. Systems that outlast the engagement.", category: "PROVEN" },
-    "Repeat Clients": { icon: "", text: "45% return within 18 months. Long-term partnerships over one-off projects.", category: "PROVEN" },
-    "Years Active": { icon: "", text: "6 years. 60+ brands. Zero template work.", category: "SCOPE" },
-    "Response": { icon: "", text: "48hr average. Usually 4hr. Async cadence with weekly 30min syncs.", category: "SPEED" },
-    "Industries": { icon: "", text: "8 sectors. Hospitality to health tech. Every brief gets fresh eyes.", category: "SCOPE" }
+  const contextMap: Record<string, string> = {
+    "Projects": "60+ brands since 2019. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.",
+    "Retention": "3 in 4 clients return. Systems that outlast the engagement.",
+    "Repeat Clients": "45% return within 18 months. Long-term partnerships over one-off projects.",
+    "Years Active": "6 years. 60+ brands. Zero template work.",
+    "Response": "48hr average. Usually 4hr. Async cadence with weekly 30min syncs.",
+    "Industries": "8 sectors. Hospitality to health tech. Every brief gets fresh eyes."
   };
 
-  const context = contextMap[label] || { icon: "✨", text: "More context coming soon", category: "SCOPE" };
+  const context = contextMap[label] || "More context coming soon";
 
   // Parse number and unit separately for styling
   const parseValue = (val: string) => {
@@ -1165,7 +1165,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     }
   };
 
-  // Parse first sentence for subtle hierarchy
+  // Parse first sentence for emphasis
   const parseFirstSentence = (text: string) => {
     const match = text.match(/^[^.!?]+[.!?]/);
     if (match) {
@@ -1177,40 +1177,16 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
     return { firstSentence: text, rest: '' };
   };
 
-  const { firstSentence, rest } = parseFirstSentence(context.text);
-
-  // Helper to wrap numbers in gold gradient spans
-  const highlightNumbers = (text: string) => {
-    const parts = text.split(/(\d+[%+]?)/g);
-    return parts.map((part, i) => {
-      if (/\d+[%+]?/.test(part)) {
-        return (
-          <span
-            key={i}
-            style={{
-              background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              fontWeight: 600
-            }}
-          >
-            {part}
-          </span>
-        );
-      }
-      return part;
-    });
-  };
+  const { firstSentence, rest } = parseFirstSentence(context);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{
         delay,
-        duration: 0.6,
+        duration: 0.3,
         ease: [0.16, 1, 0.3, 1]
       }}
       style={{ perspective: '1000px' }}
@@ -1219,7 +1195,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       {/* Flip Container */}
       <motion.div
         animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         style={{
           transformStyle: 'preserve-3d',
           position: 'relative',
@@ -1247,14 +1223,14 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             backfaceVisibility: 'hidden',
             border: isHovered ? '1.5px solid rgba(255,157,35,0.4)' : '1.5px solid rgba(255,157,35,0.2)',
             background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(10px)',
+            backdropFilter: 'blur(6px)',
             boxShadow: isHovered
               ? '0 0 14px rgba(255,157,35,0.12), 0 5px 25px rgba(0,0,0,0.25)'
               : hasFlippedBefore
                 ? '0 0 6px rgba(255,157,35,0.06)'
                 : 'none',
             transform: isHovered ? 'translateY(-2px) translateZ(10px)' : 'translateY(0) translateZ(0)',
-            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Corner Fold Hint */}
@@ -1278,10 +1254,10 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               filter: isHovered
-                ? 'drop-shadow(0 0 42px rgba(255,157,35,0.5)) drop-shadow(0 0 70px rgba(255,157,35,0.25)) drop-shadow(0 0 84px rgba(255,157,35,0.12))'
-                : 'drop-shadow(0 0 21px rgba(255,157,35,0.25))',
+                ? 'drop-shadow(0 0 28px rgba(255,157,35,0.4))'
+                : 'drop-shadow(0 0 14px rgba(255,157,35,0.2))',
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
           >
             {prefix}{number}
@@ -1307,7 +1283,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             className="text-[14px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-3 sm:mt-6"
             style={{
               color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
-              transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
+              transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
           >
             {label}
@@ -1333,113 +1309,59 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         </div>
 
         {/* Back Side */}
-        <motion.div
-          className="absolute inset-0 p-6 md:p-12 text-center flex flex-col justify-center active:scale-[0.98]"
+        <div
+          className="absolute inset-0 p-7 md:p-14 text-center flex flex-col justify-center"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            border: isHovered && isFlipped
-              ? '1.5px solid transparent'
-              : '1.5px solid transparent',
+            border: '1.5px solid transparent',
             borderImage: isHovered && isFlipped
               ? 'linear-gradient(135deg, rgba(255,157,35,0.8), rgba(255,157,35,0.4), rgba(255,157,35,0.8)) 1'
               : 'linear-gradient(135deg, rgba(255,157,35,0.6), rgba(255,157,35,0.3), rgba(255,157,35,0.6)) 1',
-            background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.4) 100%)',
-            backdropFilter: 'blur(12px) saturate(1.2)',
-            WebkitBackdropFilter: 'blur(12px) saturate(1.2)',
-            boxShadow: isHovered && isFlipped
-              ? '0 0 35px rgba(255,157,35,0.3), 0 10px 50px rgba(0,0,0,0.4), inset 0 0 25px rgba(255,157,35,0.12)'
-              : '0 0 28px rgba(255,157,35,0.2), 0 10px 50px rgba(0,0,0,0.4), inset 0 0 25px rgba(255,157,35,0.08)',
+            background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.6) 100%)',
+            backdropFilter: 'blur(8px) saturate(1.2)',
+            WebkitBackdropFilter: 'blur(8px) saturate(1.2)',
+            boxShadow: '0 0 24px rgba(255,157,35,0.2), 0 8px 40px rgba(0,0,0,0.4)',
             borderTop: isFlipped ? '1px solid rgba(255,157,35,0.5)' : 'none',
-            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-          }}
-          animate={{
-            scale: isFlipped ? [1, 1.003, 1] : 1
-          }}
-          transition={{
-            scale: {
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
-          {/* Micro-Label */}
-          <motion.div
-            className="absolute top-4 left-4 text-[9px] uppercase tracking-[0.2em]"
-            style={{
-              opacity: 0.5,
-              color: '#ff9d23',
-              fontWeight: 600
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isFlipped ? 0.5 : 0 }}
-            transition={{ delay: 0.15, duration: 0.3 }}
-          >
-            CONTEXT
-          </motion.div>
-
           {/* Context Text */}
           <motion.div
             className="w-full px-4 md:px-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}
-            transition={{ delay: 0.1, duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
             <p
-              className="text-[13px] sm:text-[17px] md:text-[18px] leading-[1.65] sm:leading-[1.8] text-white"
+              className="text-[15px] sm:text-[18px] md:text-[20px] leading-[1.7] text-white"
               style={{
                 fontWeight: 400,
                 letterSpacing: '0.01em',
-                textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.2)'
+                textShadow: '0 2px 4px rgba(0,0,0,0.8)'
               }}
             >
-              <span
-                style={{
-                  fontWeight: 600,
-                  letterSpacing: '0.005em',
-                  background: 'linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.95) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                {highlightNumbers(firstSentence)}
+              <span style={{ fontWeight: 600 }}>
+                {firstSentence}
               </span>
-              {rest && <span style={{ opacity: 0.92 }}> {highlightNumbers(rest)}</span>}
+              {rest && <span style={{ opacity: 0.9 }}> {rest}</span>}
             </p>
-          </motion.div>
-
-          {/* Category Indicator */}
-          <motion.div
-            className="absolute bottom-5 left-5 text-[8px] uppercase tracking-[0.15em]"
-            style={{
-              opacity: 0.4,
-              color: '#ff9d23',
-              fontWeight: 600
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isFlipped ? 0.4 : 0 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-          >
-            {context.category}
           </motion.div>
 
           {/* Flip Back Hint */}
           <motion.div
-            className="absolute bottom-5 right-5 text-[9px] sm:text-[11px] uppercase tracking-[0.15em]"
+            className="absolute bottom-6 left-0 right-0 text-center text-[11px] uppercase tracking-[0.15em]"
             style={{
-              color: 'rgba(255,255,255,0.6)',
-              fontWeight: 500,
-              textShadow: '0 0 12px rgba(255,157,35,0.4)'
+              color: 'rgba(255,255,255,0.5)',
+              fontWeight: 500
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
             Tap to flip back
           </motion.div>
-        </motion.div>
+        </div>
       </motion.div>
     </motion.div>
   );
