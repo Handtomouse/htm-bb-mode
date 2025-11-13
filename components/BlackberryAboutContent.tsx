@@ -101,7 +101,7 @@ export default function BlackberryAboutContent() {
   const typewriterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/data/about.json?v=2")
+    fetch("/data/about.json?v=3")
       .then((res) => res.json())
       .then((json) => setData(json));
   }, []);
@@ -1263,10 +1263,10 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             {prefix}{number}
             {suffix && (
               <span
-                className="text-[24px]"
+                className="text-[28px] md:text-[36px] lg:text-[44px]"
                 style={{
-                  opacity: 0.35,
-                  verticalAlign: 'super'
+                  opacity: 0.85,
+                  marginLeft: '0.1em'
                 }}
               >
                 {suffix}
