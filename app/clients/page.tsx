@@ -770,7 +770,7 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-24 pl-20 pr-8"
+                className="space-y-24 pl-8 sm:pl-12 md:pl-16 lg:pl-20 pr-8"
               >
                 <div className="relative pb-8">
                   <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3">
@@ -839,7 +839,7 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-24 pl-12 pr-6"
+                className="space-y-24 pl-8 sm:pl-10 md:pl-12 lg:pl-16 pr-6"
               >
                 {selectedClient.tagline && (
                   <div>
