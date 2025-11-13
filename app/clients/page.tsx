@@ -712,7 +712,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.05 }}
-              className="flex items-center justify-center gap-6 flex-wrap mb-12"
+              className="flex items-center justify-center gap-8 flex-wrap mb-12"
             >
               <span
                 className="inline-block px-12 py-5 rounded-full text-[12px] font-light tracking-[0.15em] uppercase transition-all duration-500 hover:scale-105"
@@ -741,7 +741,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-20 pb-20 relative text-center"
+              className="mb-24 pb-24 relative text-center"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
               {selectedClient.logo ? (
@@ -758,32 +758,39 @@ export default function ClientsPage() {
               )}
             </motion.div>
 
-            {/* Client Details Grid - Asymmetric */}
-            <div className="grid md:grid-cols-[40%_60%] gap-20 mb-24 mt-4">
+            {/* Client Details Grid - Conditional Layout */}
+            <div className={`mb-24 ${
+              (selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length)
+                ? 'grid md:grid-cols-2 gap-24'
+                : 'flex justify-center'
+            }`}>
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-16 pr-8"
-                style={{ paddingLeft: '40px' }}
+                className={`space-y-20 ${
+                  !(selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length)
+                    ? 'max-w-[600px]'
+                    : ''
+                }`}
               >
-                <div className="relative pb-8">
-                  <p className="text-[14px] text-white/65 uppercase tracking-[0.15em] mb-12">
+                <div className="relative pb-6">
+                  <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
                     Projects Delivered
                   </p>
-                  <p className="text-[28px] text-white font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[24px] text-white font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
                   <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
                 {selectedClient.yearStarted && (
-                  <div className="relative pb-8">
-                    <p className="text-[14px] text-white/65 uppercase tracking-[0.15em] mb-12">
+                  <div className="relative pb-6">
+                    <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
                       Timeline
                     </p>
-                    <p className="text-[26px] text-white font-light">
+                    <p className="text-[24px] text-white font-light">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
-                      <span className="block text-[15px] text-white/50 mt-5">
+                      <span className="block text-[14px] text-white/50 mt-5">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
@@ -793,14 +800,14 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div className="relative">
-                    <p className="text-[14px] text-white/65 uppercase tracking-[0.15em] mb-12">
+                    <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
                       Website
                     </p>
                     <a
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group text-[24px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative px-6 pl-6 py-2 -mx-6 -my-2 rounded-sm"
+                      className="group text-[18px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative px-6 py-2 -mx-6 -my-2 rounded-sm"
                       style={{
                         textShadow: '0 0 0 transparent',
                         backgroundColor: 'transparent',
@@ -827,44 +834,45 @@ export default function ClientsPage() {
                 )}
               </motion.div>
 
-              {/* Right Column - Main Content */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-16 pl-8 sm:pl-10 md:pl-12 lg:pl-16 pr-6"
-              >
-                {selectedClient.tagline && (
-                  <div>
-                    <p className="text-[14px] text-white/65 uppercase tracking-[0.15em] mb-12">Tagline</p>
-                    <p className="text-[20px] text-white/80 leading-[1.8] font-light">
-                      {selectedClient.tagline}
-                    </p>
-                  </div>
-                )}
+              {/* Right Column - Main Content - Only render if content exists */}
+              {(selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length) && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="space-y-20 pl-16"
+                >
+                  {selectedClient.tagline && (
+                    <div>
+                      <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">Tagline</p>
+                      <p className="text-[18px] text-white/80 leading-[1.8] font-light">
+                        {selectedClient.tagline}
+                      </p>
+                    </div>
+                  )}
 
-                {selectedClient.results && (
-                  <div className="px-12 py-12 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                    <p className="text-[14px] text-white/65 uppercase tracking-[0.15em] mb-12">
-                      Results
-                    </p>
-                    <p className="text-[21px] text-white font-light leading-[2.2]">{selectedClient.results}</p>
-                  </div>
-                )}
+                  {selectedClient.results && (
+                    <div className="px-16 py-16 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
+                      <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                        Results
+                      </p>
+                      <p className="text-[18px] text-white font-light leading-[1.8]">{selectedClient.results}</p>
+                    </div>
+                  )}
 
-                {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
-                  <div>
-                    <p className="text-[14px] text-white/65 uppercase tracking-[0.15em] mb-12">
-                      Deliverables
-                    </p>
-                    <div className="flex flex-wrap gap-5">
-                      {selectedClient.deliverables.map((item, i) => (
-                        <motion.span
-                          key={i}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                          className="px-11 py-5.5 text-[13px] bg-white/5 border border-white/10 text-white/85 rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
+                  {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
+                    <div>
+                      <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                        Deliverables
+                      </p>
+                      <div className="flex flex-wrap gap-4">
+                        {selectedClient.deliverables.map((item, i) => (
+                          <motion.span
+                            key={i}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
+                            className="px-12 py-6 text-[12px] bg-white/5 border border-white/10 text-white/85 rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
                           style={{
                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                             letterSpacing: '0.02em',
@@ -878,12 +886,13 @@ export default function ClientsPage() {
                           }}
                         >
                           {item}
-                        </motion.span>
-                      ))}
+                          </motion.span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </motion.div>
+                  )}
+                </motion.div>
+              )}
             </div>
 
             {/* Testimonial with decorative quotes */}
@@ -892,23 +901,23 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="pt-32 relative"
+                className="pt-24 relative"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-                <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10">Testimonial</p>
+                <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">Testimonial</p>
 
                 {/* Large opening quote */}
-                <div className="absolute left-0 top-16 text-[140px] leading-none text-white/5 font-serif select-none">"</div>
+                <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
 
-                <blockquote className="relative text-[26px] md:text-[32px] text-white/95 font-light italic leading-[2.0] pl-28 mb-4">
+                <blockquote className="relative text-[24px] text-white font-light italic leading-[1.8] pl-24 mb-4">
                   {selectedClient.testimonial}
                 </blockquote>
 
                 {/* Large closing quote */}
-                <div className="text-right text-[140px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
+                <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
 
                 {/* Client attribution */}
-                <p className="text-right text-[14px] text-white/50 font-light tracking-wider mt-6">
+                <p className="text-right text-[16px] text-white/50 font-light tracking-wider mt-6">
                   — {selectedClient.name}
                 </p>
               </motion.div>
