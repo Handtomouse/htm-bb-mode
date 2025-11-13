@@ -101,7 +101,7 @@ export default function BlackberryAboutContent() {
   const typewriterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/data/about.json")
+    fetch("/data/about.json?v=2")
       .then((res) => res.json())
       .then((json) => setData(json));
   }, []);
