@@ -764,26 +764,26 @@ export default function ClientsPage() {
             </motion.div>
 
             {/* Client Details Grid - Asymmetric */}
-            <div className="grid md:grid-cols-[35%_65%] gap-28 mb-24 mt-4 px-6">
+            <div className="grid md:grid-cols-[35%_65%] gap-28 mb-24 mt-4">
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-24 pl-16 pr-8"
+                className="space-y-24 pl-20 pr-8"
               >
-                <div className="relative pb-8 pl-4">
-                  <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3 pl-6">
+                <div className="relative pb-8">
+                  <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Projects Delivered
                   </p>
                   <p className="text-[28px] text-white/95 font-light tabular-nums pl-8">{selectedClient.projects.toLocaleString()}</p>
-                  <div className="absolute bottom-0 left-4 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
                 {selectedClient.yearStarted && (
-                  <div className="relative pb-8 pl-4">
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3 pl-6">
+                  <div className="relative pb-8">
+                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       Timeline
                     </p>
@@ -793,13 +793,13 @@ export default function ClientsPage() {
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
-                    <div className="absolute bottom-0 left-4 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                    <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                   </div>
                 )}
 
                 {selectedClient.website && (
-                  <div className="relative pl-4">
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3 pl-6">
+                  <div className="relative">
+                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                       Website
                     </p>
@@ -839,11 +839,11 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-24 pl-16 pr-6"
+                className="space-y-24 pl-12 pr-6"
               >
                 {selectedClient.tagline && (
-                  <div className="pl-2">
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 pl-4">Tagline</p>
+                  <div>
+                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10">Tagline</p>
                     <p
                       className="text-[22px] text-white/95 leading-[2.0] bg-gradient-to-r from-white/95 to-white/75 bg-clip-text text-transparent mt-4 pl-2"
                       style={{
@@ -860,7 +860,7 @@ export default function ClientsPage() {
 
                 {selectedClient.results && (
                   <div className="px-14 py-14 bg-white/[0.01] border border-white/5 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3 pl-4">
+                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                       Results
                     </p>
@@ -869,8 +869,8 @@ export default function ClientsPage() {
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
-                  <div className="pl-2">
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3 pl-4">
+                  <div>
+                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 flex items-center gap-3">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                       Deliverables
                     </p>
@@ -909,15 +909,15 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="pt-28 relative px-4"
+                className="pt-28 relative"
               >
-                <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-                <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10 pl-4">Testimonial</p>
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+                <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-10">Testimonial</p>
 
                 {/* Large opening quote */}
-                <div className="absolute left-4 top-16 text-[140px] leading-none text-white/5 font-serif select-none">"</div>
+                <div className="absolute left-0 top-16 text-[140px] leading-none text-white/5 font-serif select-none">"</div>
 
-                <blockquote className="relative text-[26px] md:text-[32px] text-white/95 font-light italic leading-[2.0] pl-32 mb-4">
+                <blockquote className="relative text-[26px] md:text-[32px] text-white/95 font-light italic leading-[2.0] pl-28 mb-4">
                   {selectedClient.testimonial}
                 </blockquote>
 
@@ -925,7 +925,7 @@ export default function ClientsPage() {
                 <div className="text-right text-[140px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
 
                 {/* Client attribution */}
-                <p className="text-right text-[14px] text-white/50 font-light tracking-wider mt-6 pr-8">
+                <p className="text-right text-[14px] text-white/50 font-light tracking-wider mt-6">
                   — {selectedClient.name}
                 </p>
               </motion.div>
