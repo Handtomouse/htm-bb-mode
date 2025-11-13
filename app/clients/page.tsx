@@ -611,7 +611,7 @@ export default function ClientsPage() {
           onClick={() => setSelectedClient(null)}
         >
           {/* Backdrop - simplified and lighter */}
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-[10px]" />
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-[6px]" />
 
           {/* Modal Content */}
           <motion.div
@@ -619,7 +619,7 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0, rotate: 0 }}
             exit={{ scale: 0.92, y: 20, rotate: -2 }}
             transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
-            className="relative max-w-6xl w-full bg-[#141414] border border-white/10 p-8 sm:p-12 md:p-16 lg:p-20 max-h-[90vh] overflow-y-auto scroll-smooth"
+            className="relative max-w-6xl w-full bg-[#1a1a1a] border border-white/5 p-8 sm:p-12 md:p-16 lg:p-20 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
               boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10, 0 0 30px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}05`,
@@ -630,45 +630,36 @@ export default function ClientsPage() {
             {/* Corner accents - all 4 corners with staggered animation */}
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.15 }}
+              animate={{ opacity: 0.08 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2"
               style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
             />
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.15 }}
+              animate={{ opacity: 0.08 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2"
               style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
             />
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.15 }}
+              animate={{ opacity: 0.08 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2"
               style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
             />
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.15 }}
+              animate={{ opacity: 0.08 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2"
               style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
             />
 
             {/* Scroll fade gradients - lighter */}
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#141414] via-[#141414]/20 to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#141414] via-[#141414]/20 to-transparent pointer-events-none z-10" />
-
-            {/* Left edge sector-colored accent line */}
-            <motion.div
-              initial={{ opacity: 0, scaleY: 0 }}
-              animate={{ opacity: 0.2, scaleY: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-0 bottom-0 left-0 w-[2px] origin-top"
-              style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
-            />
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#1a1a1a] via-[#1a1a1a]/10 to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/10 to-transparent pointer-events-none z-10" />
             {/* Close button with sector color accent and ripple */}
             <button
               onClick={(e) => {
@@ -716,41 +707,24 @@ export default function ClientsPage() {
               </motion.div>
             )}
 
-            {/* Client Logo/Name */}
+            {/* Badges - moved above logo */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-36 pb-36 relative text-center"
+              transition={{ duration: 0.5, delay: 0.05 }}
+              className="flex items-center justify-center gap-6 flex-wrap mb-12"
             >
-              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-              {selectedClient.logo ? (
-                <img
-                  src={selectedClient.logo}
-                  alt={selectedClient.name}
-                  className="max-w-[360px] h-auto mx-auto opacity-90 filter brightness-0 invert mb-12"
-                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255,255,255,0.08))' }}
-                />
-              ) : (
-                <h2 className="text-[40px] md:text-[52px] font-thin text-white/90 tracking-[0.15em] mb-12">
-                  {selectedClient.name}
-                </h2>
-              )}
-
-              {/* Sector badge inline with status */}
-              <div className="flex items-center justify-center gap-8 flex-wrap">
-                <span
-                  className="inline-block px-12 py-5 rounded-full text-[11px] font-light tracking-[0.25em] uppercase transition-all duration-500 hover:scale-105 hover:brightness-110"
-                  style={{
-                    backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
-                    border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
-                    color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23',
-                    boxShadow: `0 0 8px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10`
-                  }}
-                >
-                  {selectedClient.sector}
-                </span>
-                <div className="flex items-center gap-2 px-7 py-3.5 bg-white/5 rounded-full">
+              <span
+                className="inline-block px-12 py-5 rounded-full text-[11px] font-light tracking-[0.15em] uppercase transition-all duration-500 hover:scale-105"
+                style={{
+                  backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
+                  border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
+                  color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23'
+                }}
+              >
+                {selectedClient.sector}
+              </span>
+              <div className="flex items-center gap-2 px-5 py-2.5 bg-white/5 rounded-full">
                   <div
                     className={`w-2 h-2 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-[#ffd700]'}`}
                     style={{
@@ -758,50 +732,68 @@ export default function ClientsPage() {
                       animation: selectedClient.status === 'active' ? 'ripple 2s ease-in-out infinite' : 'none'
                     }}
                   />
-                  <span className="text-[10px] text-white/60 uppercase tracking-wider font-light">{selectedClient.status}</span>
+                  <span className="text-[10px] text-white/50 uppercase tracking-wider font-light">{selectedClient.status}</span>
                 </div>
-              </div>
+            </motion.div>
+
+            {/* Client Logo/Name */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="mb-20 pb-20 relative text-center"
+            >
+              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              {selectedClient.logo ? (
+                <img
+                  src={selectedClient.logo}
+                  alt={selectedClient.name}
+                  className="max-w-[360px] h-auto mx-auto opacity-100 filter brightness-0 invert"
+                  style={{ filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255,255,255,0.08))' }}
+                />
+              ) : (
+                <h2 className="text-[40px] md:text-[52px] font-thin text-white tracking-[0.15em]">
+                  {selectedClient.name}
+                </h2>
+              )}
             </motion.div>
 
             {/* Client Details Grid - Asymmetric */}
-            <div className="grid md:grid-cols-[35%_65%] gap-32 mb-24 mt-4">
+            <div className="grid md:grid-cols-[40%_60%] gap-20 mb-24 mt-4">
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-28 pr-8"
-                style={{ paddingLeft: '80px' }}
+                className="space-y-16 pr-8"
+                style={{ paddingLeft: '40px' }}
               >
                 <div className="relative pb-8">
-                  <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-12 flex items-center gap-3">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <p className="text-[13px] text-white/50 uppercase tracking-[0.15em] mb-12">
                     Projects Delivered
                   </p>
-                  <p className="text-[32px] text-white/95 font-light tabular-nums pl-8">{selectedClient.projects.toLocaleString()}</p>
-                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                  <p className="text-[28px] text-white font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div className="relative pb-8">
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-12 flex items-center gap-3">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    <p className="text-[13px] text-white/50 uppercase tracking-[0.15em] mb-12">
                       Timeline
                     </p>
-                    <p className="text-[30px] text-white/95 font-light pl-8">
+                    <p className="text-[26px] text-white font-light">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
-                      <span className="block text-[15px] text-white/50 mt-5 ml-6">
+                      <span className="block text-[15px] text-white/50 mt-5">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
-                    <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-10" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                    <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                   </div>
                 )}
 
                 {selectedClient.website && (
                   <div className="relative">
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-12 flex items-center gap-3">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                    <p className="text-[13px] text-white/50 uppercase tracking-[0.15em] mb-12">
                       Website
                     </p>
                     <a
@@ -840,42 +832,32 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-28 pl-8 sm:pl-10 md:pl-12 lg:pl-16 pr-6"
+                className="space-y-16 pl-8 sm:pl-10 md:pl-12 lg:pl-16 pr-6"
               >
                 {selectedClient.tagline && (
                   <div>
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-12">Tagline</p>
-                    <p
-                      className="text-[24px] text-white/95 leading-[2.0] bg-gradient-to-r from-white/95 to-white/75 bg-clip-text text-transparent mt-6 pl-2"
-                      style={{
-                        fontFamily: 'Georgia, "Times New Roman", serif',
-                        fontStyle: 'italic',
-                        fontWeight: 300,
-                        letterSpacing: '0.02em'
-                      }}
-                    >
-                      "{selectedClient.tagline}"
+                    <p className="text-[13px] text-white/50 uppercase tracking-[0.15em] mb-12">Tagline</p>
+                    <p className="text-[20px] text-white/80 leading-[1.8] font-light">
+                      {selectedClient.tagline}
                     </p>
                   </div>
                 )}
 
                 {selectedClient.results && (
-                  <div className="px-16 py-16 bg-white/[0.01] border border-white/5 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-12 flex items-center gap-3">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                  <div className="px-12 py-12 border border-white/5 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
+                    <p className="text-[13px] text-white/50 uppercase tracking-[0.15em] mb-12">
                       Results
                     </p>
-                    <p className="text-[21px] text-white/95 font-light leading-[2.2] pl-2">{selectedClient.results}</p>
+                    <p className="text-[21px] text-white font-light leading-[2.2]">{selectedClient.results}</p>
                   </div>
                 )}
 
                 {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                   <div>
-                    <p className="text-[13px] text-white/60 uppercase tracking-[0.25em] mb-12 flex items-center gap-3">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    <p className="text-[13px] text-white/50 uppercase tracking-[0.15em] mb-12">
                       Deliverables
                     </p>
-                    <div className="flex flex-wrap gap-5 pl-2">
+                    <div className="flex flex-wrap gap-5">
                       {selectedClient.deliverables.map((item, i) => (
                         <motion.span
                           key={i}
