@@ -1433,7 +1433,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
             <div className="max-w-[280px] sm:max-w-[340px] md:max-w-[420px] mx-auto text-center">
               {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
               <div
-                className="text-[17px] sm:text-[20px] md:text-[22px] mb-2.5 sm:mb-3 leading-[1.5]"
+                className="text-[17px] sm:text-[20px] md:text-[22px] mb-3 sm:mb-4 leading-[1.5]"
                 style={{
                   fontWeight: 600,
                   letterSpacing: '-0.005em',
@@ -1467,7 +1467,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
               {/* Rest - Smaller, Regular, White, Line Below with Improvement #2: Better line-height (1.68) */}
               {rest && (
                 <div
-                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.68]"
+                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.68] mt-1 sm:mt-1.5"
                   style={{
                     fontWeight: 400,
                     letterSpacing: '0.005em',
