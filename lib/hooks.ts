@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { loadSettings, saveSettings, DEFAULT_SETTINGS } from "./settingsValidation";
 
 // Settings hook with localStorage persistence
 export interface Settings {
@@ -19,55 +20,21 @@ export interface Settings {
 }
 
 export function useSettings() {
-  const [settings, setSettings] = useState<Settings>({
-    dockMode: "mono",
-    sound: true,
-    theme: "dark",
-    accentColor: "#ff9d23",
-    fontSize: "medium",
-    reducedMotion: false,
-    animationSpeed: 1.0,
-    highContrast: false,
-    brightness: 80,
-    volume: 70,
-    trackingEnabled: false,
-    analyticsEnabled: false,
-  });
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount with validation
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("htm-bb-settings");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setSettings({
-          dockMode: parsed.dockMode ?? "mono",
-          sound: typeof parsed.sound === "boolean" ? parsed.sound : true,
-          theme: parsed.theme ?? "dark",
-          accentColor: parsed.accentColor ?? "#ff9d23",
-          fontSize: parsed.fontSize ?? "medium",
-          reducedMotion: parsed.reducedMotion ?? false,
-          animationSpeed: parsed.animationSpeed ?? 1.0,
-          highContrast: parsed.highContrast ?? false,
-          brightness: parsed.brightness ?? 80,
-          volume: parsed.volume ?? 70,
-          trackingEnabled: parsed.trackingEnabled ?? false,
-          analyticsEnabled: parsed.analyticsEnabled ?? false,
-        });
-      }
-    } catch (e) {
-      console.error("Failed to load settings:", e);
-    }
+    const loaded = loadSettings();
+    setSettings(loaded);
+    setIsLoaded(true);
   }, []);
 
-  // Save to localStorage on change
+  // Save to localStorage on change (with validation)
   useEffect(() => {
-    try {
-      localStorage.setItem("htm-bb-settings", JSON.stringify(settings));
-    } catch (e) {
-      console.error("Failed to save settings:", e);
-    }
-  }, [settings]);
+    if (!isLoaded) return; // Don't save initial state
+    saveSettings(settings);
+  }, [settings, isLoaded]);
 
   return [settings, setSettings] as const;
 }

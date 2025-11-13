@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSettings } from "@/lib/hooks";
+import { DEFAULT_SETTINGS } from "@/lib/settingsValidation";
+import { PRESETS, type Preset } from "@/lib/settingsPresets";
+import { exportSettings, importSettings } from "@/lib/settingsValidation";
 import BBPageHeader from "./BBPageHeader";
+import ConfirmationModal from "./ConfirmationModal";
+import EnhancedSlider from "./EnhancedSlider";
 
 const ACCENT = "#FF9D23";
 
@@ -19,16 +24,23 @@ const ACCENT_COLORS = [
 interface ToastMessage {
   id: number;
   message: string;
-  type: "success" | "info";
+  type: "success" | "info" | "warning" | "error";
 }
 
 export default function BlackberrySettingsContentNew() {
   const [settings, setSettings] = useSettings();
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [showPresetsModal, setShowPresetsModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const showToast = (message: string, type: "success" | "info" = "success") => {
+  const showToast = (message: string, type: ToastMessage["type"] = "success") => {
     const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, type }]);
+    // Queue system: max 3 toasts
+    setToasts((prev) => {
+      const newToasts = [...prev, { id, message, type }];
+      return newToasts.slice(-3); // Keep only last 3
+    });
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 2500);
@@ -42,44 +54,168 @@ export default function BlackberrySettingsContentNew() {
     showToast(`${String(key)} updated`, "success");
   };
 
-  const resetSettings = () => {
-    setSettings({
-      dockMode: "mono",
-      sound: true,
-      theme: "dark",
-      accentColor: "#ff9d23",
-      fontSize: "medium",
-      reducedMotion: false,
-      animationSpeed: 1.0,
-      highContrast: false,
-      brightness: 80,
-      volume: 70,
-      trackingEnabled: false,
-      analyticsEnabled: false,
-    });
-    showToast("Settings reset", "info");
+  const confirmResetSettings = () => {
+    setSettings(DEFAULT_SETTINGS);
+    setShowResetModal(false);
+    showToast("Settings reset to defaults", "info");
+  };
+
+  const handleExportSettings = () => {
+    try {
+      const json = exportSettings(settings);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `htm-bb-settings-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Settings exported", "success");
+    } catch (error) {
+      showToast("Export failed", "error");
+    }
+  };
+
+  const handleImportSettings = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = event.target?.result as string;
+        const imported = importSettings(json);
+        if (imported) {
+          setSettings(imported);
+          showToast("Settings imported", "success");
+        } else {
+          showToast("Invalid settings file", "error");
+        }
+      } catch (error) {
+        showToast("Import failed", "error");
+      }
+    };
+    reader.readAsText(file);
+    // Reset input
+    e.target.value = "";
+  };
+
+  const applyPreset = (preset: Preset) => {
+    setSettings(preset.settings);
+    setShowPresetsModal(false);
+    showToast(`Applied "${preset.name}" preset`, "success");
   };
 
   return (
     <div className="relative">
-      {/* Toast Notifications */}
+      {/* Toast Notifications with Queue System */}
       <div className="fixed top-2 right-2 z-50 space-y-2 pointer-events-none">
-        {toasts.map((toast) => (
-          <motion.div
-            key={toast.id}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            className={`pointer-events-auto px-3 py-2 border backdrop-blur-sm text-xs ${
-              toast.type === "success"
-                ? "border-[#06ffa5]/30 bg-[#06ffa5]/10 text-[#06ffa5]"
-                : "border-[#ff9d23]/30 bg-[#ff9d23]/10 text-[#ff9d23]"
-            }`}
-          >
-            {toast.message}
-          </motion.div>
-        ))}
+        <AnimatePresence mode="popLayout">
+          {toasts.map((toast, index) => (
+            <motion.div
+              key={toast.id}
+              initial={{ opacity: 0, x: 50, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 50, scale: 0.9 }}
+              layout
+              className={`pointer-events-auto px-3 py-2 border backdrop-blur-sm text-xs flex items-center gap-2 ${
+                toast.type === "success"
+                  ? "border-[#06ffa5]/30 bg-[#06ffa5]/10 text-[#06ffa5]"
+                  : toast.type === "error"
+                  ? "border-[#ef4444]/30 bg-[#ef4444]/10 text-[#ef4444]"
+                  : toast.type === "warning"
+                  ? "border-[#fbbf24]/30 bg-[#fbbf24]/10 text-[#fbbf24]"
+                  : "border-[#ff9d23]/30 bg-[#ff9d23]/10 text-[#ff9d23]"
+              }`}
+              onClick={() => setToasts((prev) => prev.filter((t) => t.id !== toast.id))}
+            >
+              {/* Icon */}
+              <span className="text-sm">
+                {toast.type === "success" ? "✓" : toast.type === "error" ? "✕" : toast.type === "warning" ? "⚠" : "ℹ"}
+              </span>
+              {/* Message */}
+              <span>{toast.message}</span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {/* Reset Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showResetModal}
+        title="Reset All Settings"
+        message="Are you sure you want to reset all settings to their default values? This action cannot be undone."
+        confirmText="Reset"
+        cancelText="Cancel"
+        confirmVariant="danger"
+        onConfirm={confirmResetSettings}
+        onCancel={() => setShowResetModal(false)}
+      />
+
+      {/* Presets Modal */}
+      <AnimatePresence>
+        {showPresetsModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPresetsModal(false)}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
+            />
+
+            {/* Modal */}
+            <div className="fixed inset-0 flex items-center justify-center p-4 z-[101] pointer-events-none">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="w-full max-w-md bg-black border border-white/20 p-6 pointer-events-auto max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-lg font-medium text-white uppercase tracking-wider mb-4">
+                  Preset Themes
+                </h2>
+                <div className="space-y-3">
+                  {PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => applyPreset(preset)}
+                      className="w-full text-left p-4 border border-white/10 bg-black/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 transition-all duration-300"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl">{preset.icon}</span>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-white uppercase tracking-wider mb-1">
+                            {preset.name}
+                          </div>
+                          <div className="text-xs text-white/60">{preset.description}</div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setShowPresetsModal(false)}
+                  className="mt-4 w-full px-4 py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs uppercase tracking-wider transition-all duration-300"
+                >
+                  Close
+                </button>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Hidden file input for import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        onChange={handleImportSettings}
+        className="hidden"
+      />
 
       <BBPageHeader title="SETTINGS" subtitle="Customize your experience" />
 
@@ -177,26 +313,14 @@ export default function BlackberrySettingsContentNew() {
             </div>
 
             {/* Brightness Slider */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs text-white/70 uppercase tracking-wider">
-                  Brightness
-                </label>
-                <span className="text-[#ff9d23] text-xs tabular-nums">
-                  {settings.brightness}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min="20"
-                max="100"
-                value={settings.brightness}
-                onChange={(e) =>
-                  updateSetting("brightness", Number(e.target.value))
-                }
-                className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ff9d23] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white/20"
-              />
-            </div>
+            <EnhancedSlider
+              label="Brightness"
+              value={settings.brightness}
+              min={20}
+              max={100}
+              unit="%"
+              onChange={(value) => updateSetting("brightness", value)}
+            />
           </div>
         </SettingCard>
 
@@ -233,29 +357,15 @@ export default function BlackberrySettingsContentNew() {
             />
 
             {/* Volume Slider */}
-            <div
-              className={`transition-opacity duration-300 ${
-                settings.sound ? "opacity-100" : "opacity-50"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs text-white/70 uppercase tracking-wider">
-                  Volume
-                </label>
-                <span className="text-[#ff9d23] text-xs tabular-nums">
-                  {settings.volume}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={settings.volume}
-                onChange={(e) => updateSetting("volume", Number(e.target.value))}
-                disabled={!settings.sound}
-                className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ff9d23] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
+            <EnhancedSlider
+              label="Volume"
+              value={settings.volume}
+              min={0}
+              max={100}
+              unit="%"
+              onChange={(value) => updateSetting("volume", value)}
+              disabled={!settings.sound}
+            />
 
             {/* Reduced Motion */}
             <ToggleSetting
@@ -266,32 +376,17 @@ export default function BlackberrySettingsContentNew() {
             />
 
             {/* Animation Speed */}
-            <div
-              className={`transition-opacity duration-300 ${
-                settings.reducedMotion ? "opacity-50" : "opacity-100"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs text-white/70 uppercase tracking-wider">
-                  Animation Speed
-                </label>
-                <span className="text-[#ff9d23] text-xs tabular-nums">
-                  {settings.animationSpeed.toFixed(1)}×
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0.5"
-                max="2"
-                step="0.1"
-                value={settings.animationSpeed}
-                onChange={(e) =>
-                  updateSetting("animationSpeed", Number(e.target.value))
-                }
-                disabled={settings.reducedMotion}
-                className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ff9d23] [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
+            <EnhancedSlider
+              label="Animation Speed"
+              value={settings.animationSpeed}
+              min={0.5}
+              max={2.0}
+              step={0.1}
+              unit="×"
+              onChange={(value) => updateSetting("animationSpeed", value)}
+              disabled={settings.reducedMotion}
+              formatValue={(v) => `${v.toFixed(1)}×`}
+            />
 
             {/* High Contrast */}
             <ToggleSetting
@@ -348,11 +443,36 @@ export default function BlackberrySettingsContentNew() {
           </div>
         </SettingCard>
 
-        {/* Reset Button */}
-        <div className="pt-4">
+        {/* Actions Section */}
+        <div className="pt-4 space-y-3">
+          {/* Presets */}
           <button
-            onClick={resetSettings}
-            className="w-full px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-500"
+            onClick={() => setShowPresetsModal(true)}
+            className="w-full px-4 py-3 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-wider transition-all duration-300"
+          >
+            Load Preset Theme
+          </button>
+
+          {/* Import/Export */}
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={handleExportSettings}
+              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300"
+            >
+              Export
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300"
+            >
+              Import
+            </button>
+          </div>
+
+          {/* Reset */}
+          <button
+            onClick={() => setShowResetModal(true)}
+            className="w-full px-4 py-3 border border-white/20 hover:border-[#ef4444] hover:bg-[#ef4444]/5 text-xs text-white/70 hover:text-[#ef4444] uppercase tracking-wider transition-all duration-300"
           >
             Reset All Settings
           </button>
