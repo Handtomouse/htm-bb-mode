@@ -1405,7 +1405,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
 
         {/* Back Side with Improvement #9: Subtle border radius */}
         <div
-          className="absolute inset-0 p-7 md:p-14 flex flex-col justify-center items-center"
+          className="absolute inset-0 p-5 sm:p-6 md:p-10 lg:p-12 flex flex-col justify-center items-center"
           style={{
             backfaceVisibility: 'hidden',
             transform: prefersReducedMotion ? 'scaleX(-1)' : 'rotateY(180deg)',
@@ -1425,12 +1425,12 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
         >
           {/* Context Text with Improvements #2/#3: Better line-height & 2-layer shadows */}
           <motion.div
-            className="w-full px-4 md:px-6"
+            className="w-full px-2 sm:px-3 md:px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: (isFlipped || (prefersReducedMotion && isFlipped)) ? 1 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="max-w-[280px] sm:max-w-[340px] md:max-w-[420px] mx-auto text-center">
+            <div className="max-w-[300px] sm:max-w-[380px] md:max-w-[460px] lg:max-w-[500px] mx-auto text-center">
               {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
               <div
                 className="text-[17px] sm:text-[20px] md:text-[22px] mb-3 sm:mb-4 leading-[1.5]"
