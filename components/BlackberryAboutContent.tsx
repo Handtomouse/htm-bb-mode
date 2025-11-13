@@ -678,14 +678,14 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative h-[120vh] flex flex-col items-center justify-center px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          <section className="relative h-[120vh] flex flex-col items-center justify-center gap-24 md:gap-32 lg:gap-40 px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23] mb-24 md:mb-32 lg:mb-40"
+            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23]"
             style={{
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
