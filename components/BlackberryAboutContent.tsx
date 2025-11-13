@@ -1266,7 +1266,11 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
                 className="text-[28px] md:text-[36px] lg:text-[44px]"
                 style={{
                   opacity: 0.85,
-                  marginLeft: '0.1em'
+                  marginLeft: '0.1em',
+                  background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
                 }}
               >
                 {suffix}
