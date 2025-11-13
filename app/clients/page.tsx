@@ -67,8 +67,10 @@ function ClientCell({
   };
 
   return (
-    <motion.div
+    <motion.button
       ref={cellRef}
+      type="button"
+      aria-label={`View details for ${client.name}${client.tagline ? ` - ${client.tagline}` : ''}${client.sector ? ` (${client.sector})` : ''}`}
       initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
       whileInView={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
       viewport={{ once: true }}
@@ -82,7 +84,13 @@ function ClientCell({
       onMouseEnter={() => onHoverChange(true)}
       onMouseExit={() => onHoverChange(false)}
       onClick={onClick}
-      className="group relative aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-700 overflow-hidden cursor-none hover:scale-[1.02] active:scale-[0.98]"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className="group relative aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-700 overflow-hidden hover:cursor-pointer hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0b0b0b] focus:z-10"
     >
       {/* Light streak reveal effect */}
       <motion.div
@@ -161,7 +169,7 @@ function ClientCell({
         {client.logo ? (
           <img
             src={client.logo}
-            alt={client.name}
+            alt={`${client.name} logo${client.tagline ? ` - ${client.tagline}` : ''}${client.sector ? ` (${client.sector})` : ''}`}
             className="max-w-[140px] md:max-w-[180px] lg:max-w-[220px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-all duration-500 filter brightness-0 invert"
             style={{
               filter: 'brightness(0) invert(1) drop-shadow(0 4px 8px rgba(0,0,0,0.3)) drop-shadow(0 8px 24px rgba(0,0,0,0.2))',
@@ -202,13 +210,15 @@ function ClientCell({
           </div>
         )}
 
-        {/* Tagline reveal on hover */}
+        {/* Tagline always visible */}
         {client.tagline && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
-            className="absolute top-full left-0 right-0 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: delay + 0.3 }}
+            className="absolute top-full left-0 right-0 mt-4"
           >
-            <p className="text-[10px] md:text-[11px] text-white/50 font-light tracking-wider uppercase">
+            <p className="text-[10px] md:text-[11px] text-white/70 font-light tracking-wider uppercase">
               {client.tagline}
             </p>
           </motion.div>
@@ -216,16 +226,16 @@ function ClientCell({
       </motion.div>
 
       {/* Status indicator (minimal dot) */}
-      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true">
         <div
-          className={`w-2 h-2 rounded-full ${client.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/30'}`}
+          className={`w-2 h-2 rounded-full ${client.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/50'}`}
           style={{ boxShadow: client.status === 'active' ? '0 0 8px #06ffa5' : 'none' }}
         />
       </div>
 
       {/* Website link indicator */}
       {client.website && (
-        <div className="absolute top-4 right-10 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+        <div className="absolute top-4 right-10 opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true">
           <svg className="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
@@ -233,26 +243,26 @@ function ClientCell({
       )}
 
       {/* Projects count indicator (dot notation) */}
-      <div className="absolute bottom-4 left-4 flex gap-0.5 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
+      <div className="absolute bottom-4 left-4 flex gap-0.5 opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true">
         {Array.from({ length: Math.min(client.projects, 5) }).map((_, i) => (
-          <div key={i} className="w-1 h-1 rounded-full bg-white/40" />
+          <div key={i} className="w-1 h-1 rounded-full bg-white/60" />
         ))}
         {client.projects > 5 && (
-          <span className="text-[8px] text-white/40 ml-1">+{client.projects - 5}</span>
+          <span className="text-[8px] text-white/60 ml-1">+{client.projects - 5}</span>
         )}
       </div>
 
       {/* Year started badge for long-term clients */}
       {isLongTerm && (
-        <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
-          <span className="text-[8px] text-white/40 font-light tracking-wider">EST {client.yearStarted}</span>
+        <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true">
+          <span className="text-[8px] text-white/60 font-light tracking-wider">EST {client.yearStarted}</span>
         </div>
       )}
 
       {/* Testimonial indicator */}
       {client.testimonial && (
-        <div className="absolute bottom-4 left-16 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
-          <svg className="w-3 h-3 text-white/40" fill="currentColor" viewBox="0 0 24 24">
+        <div className="absolute bottom-4 left-16 opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true">
+          <svg className="w-3 h-3 text-white/60" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
           </svg>
         </div>
@@ -277,7 +287,7 @@ function ClientCell({
         className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500 pointer-events-none"
         style={{ backgroundColor: sectorColor }}
       />
-    </motion.div>
+    </motion.button>
   );
 }
 
@@ -402,8 +412,18 @@ export default function ClientsPage() {
 
   return (
     <div className="min-h-screen bg-[#0b0b0b] text-white scroll-smooth">
+      {/* Skip Navigation */}
+      <a
+        href="#client-grid"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-white focus:text-black focus:font-medium focus:rounded-sm focus:outline-none focus:ring-2 focus:ring-[#ff9d23]"
+      >
+        Skip to client grid
+      </a>
+
       {/* Custom Cursor */}
       <motion.div
+        aria-hidden="true"
+        role="presentation"
         className="fixed w-8 h-8 pointer-events-none z-50 mix-blend-difference"
         animate={{
           x: cursorPos.x - 16,
@@ -442,7 +462,9 @@ export default function ClientsPage() {
               Clients
             </h1>
             <p
-              className="text-[17px] md:text-[19px] lg:text-[21px] text-white/60 leading-[2.4] font-light tracking-wide max-w-4xl mb-16"
+              role="status"
+              aria-live="polite"
+              className="text-[17px] md:text-[19px] lg:text-[21px] text-white/75 leading-[2.4] font-light tracking-wide max-w-4xl mb-16"
               style={{
                 transform: `translateY(${scrollY * 0.15}px)`,
                 opacity: 1 - (scrollY / 1000)
@@ -458,7 +480,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-4 text-[11px] text-white/40 font-light uppercase tracking-[0.2em] max-w-3xl"
+              className="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-4 text-[11px] text-white/65 font-light uppercase tracking-[0.2em] max-w-3xl"
             >
               {Object.entries(
                 clients.reduce((acc, client) => {
@@ -483,6 +505,7 @@ export default function ClientsPage() {
                     }}
                   >
                     <div
+                      aria-hidden="true"
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all duration-500 group-hover:scale-125"
                       style={{
                         backgroundColor: SECTOR_COLORS[sector] || "#ff9d23",
@@ -516,7 +539,7 @@ export default function ClientsPage() {
       </motion.div>
 
       {/* Logo Grid */}
-      <div ref={gridRef} className="max-w-[1600px] mx-auto px-16 md:px-20 lg:px-24 pb-40 md:pb-48">
+      <div id="client-grid" ref={gridRef} className="max-w-[1600px] mx-auto px-16 md:px-20 lg:px-24 pb-40 md:pb-48">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
           {clients.map((client, index) => {
             const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
@@ -549,8 +572,11 @@ export default function ClientsPage() {
           className="mt-36 text-center"
         >
           <div className="inline-block px-12 py-6 border border-white/5 rounded-sm backdrop-blur-sm">
-            <p className="text-[11px] md:text-[12px] lg:text-[13px] text-white/30 leading-[2.8] font-extralight tracking-[0.35em] uppercase">
-              + 5 additional confidential projects
+            <p className="text-[11px] md:text-[12px] lg:text-[13px] text-white/50 leading-[2.8] font-extralight tracking-[0.35em] uppercase">
+              + 5 Additional Confidential Projects
+            </p>
+            <p className="text-[9px] text-white/40 mt-2 normal-case tracking-normal">
+              (Client agreements prevent public disclosure)
             </p>
           </div>
         </motion.div>
@@ -564,16 +590,17 @@ export default function ClientsPage() {
           className="mt-40 text-center"
         >
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-[38px] md:text-[48px] lg:text-[60px] font-light text-white/90 mb-8 leading-tight">
+            <h2 className="text-[38px] md:text-[48px] lg:text-[60px] font-light text-white mb-8 leading-tight">
               Ready to join them?
             </h2>
-            <p className="text-[15px] md:text-[17px] text-white/50 font-light leading-relaxed mb-14 tracking-wide">
+            <p className="text-[15px] md:text-[17px] text-white/70 font-light leading-relaxed mb-14 tracking-wide">
               Let's create something exceptional together. From concept to launch, we deliver digital experiences that drive results.
             </p>
             <motion.a
               ref={ctaRef}
               href="/contact"
-              className="inline-block px-20 py-6 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95"
+              aria-label="Start your project - Contact us to begin working together"
+              className="inline-block px-20 py-6 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0b0b0b]"
               onMouseMove={(e) => {
                 if (!ctaRef.current) return;
                 const rect = ctaRef.current.getBoundingClientRect();
@@ -609,6 +636,9 @@ export default function ClientsPage() {
           transition={{ duration: 0.4 }}
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
           onClick={() => setSelectedClient(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="client-modal-title"
         >
           {/* Backdrop - simplified and lighter */}
           <div className="absolute inset-0 bg-black/75 backdrop-blur-[6px]" />
@@ -627,8 +657,12 @@ export default function ClientsPage() {
               scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`
             }}
           >
+            <h2 id="client-modal-title" className="sr-only">
+              {selectedClient.name} Details
+            </h2>
             {/* Close button with sector color accent and ripple */}
             <button
+              aria-label="Close client details"
               onClick={(e) => {
                 // Create ripple effect
                 const btn = e.currentTarget;
@@ -639,7 +673,7 @@ export default function ClientsPage() {
                 setTimeout(() => ripple.remove(), 600);
                 setSelectedClient(null);
               }}
-              className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-115 active:scale-95 overflow-hidden"
+              className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-115 active:scale-95 overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
               style={{
                 boxShadow: `0 0 0 0 ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}00`,
                 transition: 'all 0.5s ease'
