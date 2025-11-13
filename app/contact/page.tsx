@@ -64,25 +64,37 @@ export default function ContactPage() {
   return (
     <main className="min-h-[100svh] bg-[var(--bg)] text-[var(--ink)]">
       {/* Header */}
-      <section className="mx-auto max-w-3xl px-4 pt-10 pb-6">
-        <h1 className="font-heading text-4xl font-bold tracking-tight uppercase">
+      <section className="mx-auto max-w-5xl px-12 md:px-16 lg:px-20 pt-20 pb-12">
+        <h1 className="font-heading text-[52px] md:text-[64px] lg:text-[72px] font-bold leading-[0.95] uppercase">
           <span className="slash-accent">/</span> CONTACT
         </h1>
-        <p className="mt-2 text-sm text-[var(--muted)]">
+        <p className="mt-6 text-[17px] md:text-[19px] leading-[2] text-white/75 font-light tracking-wide">
           Smart, efficient creative. Sydney-based, global reach.
         </p>
       </section>
 
       {/* Quick Actions */}
-      <section className="mx-auto max-w-3xl px-4">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <section className="mx-auto max-w-5xl px-12 md:px-16 lg:px-20">
+        <div className="grid grid-cols-2 gap-4 md:gap-6 sm:grid-cols-4">
           <a
             href="tel:+61XXXXXXXXX"
             aria-label="Call HandToMouse"
-            className="group border border-[var(--grid)] bg-[var(--panel)] p-4 hover:border-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            style={{ transition: 'all 0.5s ease' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+            }}
           >
-            <div className="text-xs text-[var(--muted)]">Call</div>
-            <div className="mt-1 text-sm font-medium group-hover:text-[var(--accent)]">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Call</div>
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
               +61 ••• ••• •••
             </div>
           </a>
@@ -90,10 +102,22 @@ export default function ContactPage() {
             type="button"
             onClick={() => navigator.clipboard?.writeText("hello@handtomouse.com")}
             aria-label="Copy email to clipboard"
-            className="group border border-[var(--grid)] bg-[var(--panel)] p-4 text-left hover:border-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 text-left hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            style={{ transition: 'all 0.5s ease' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+            }}
           >
-            <div className="text-xs text-[var(--muted)]">Copy Email</div>
-            <div className="mt-1 text-sm font-medium group-hover:text-[var(--accent)]">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Copy Email</div>
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
               hello@handtomouse.com
             </div>
           </button>
@@ -102,20 +126,44 @@ export default function ContactPage() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open Instagram"
-            className="group border border-[var(--grid)] bg-[var(--panel)] p-4 hover:border-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            style={{ transition: 'all 0.5s ease' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+            }}
           >
-            <div className="text-xs text-[var(--muted)]">Instagram</div>
-            <div className="mt-1 text-sm font-medium group-hover:text-[var(--accent)]">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Instagram</div>
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
               @handtomouse
             </div>
           </a>
           <a
             href="/HTM_CV_or_Capabilities.pdf"
             aria-label="Download CV or Capabilities"
-            className="group border border-[var(--grid)] bg-[var(--panel)] p-4 hover:border-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            style={{ transition: 'all 0.5s ease' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+            }}
           >
-            <div className="text-xs text-[var(--muted)]">Download</div>
-            <div className="mt-1 text-sm font-medium group-hover:text-[var(--accent)]">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+            <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Download</div>
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
               CV / Capabilities
             </div>
           </a>
@@ -123,38 +171,43 @@ export default function ContactPage() {
       </section>
 
       {/* Form */}
-      <section ref={formAnchorRef} className="mx-auto max-w-3xl px-4 pt-6 pb-16">
-        <div className="border border-[var(--grid)] bg-[var(--panel)] p-4 sm:p-6">
-          <div className="mb-4">
-            <h2 className="font-heading text-lg font-semibold">Let's make something sharp.</h2>
-            <p className="mt-1 text-sm text-[var(--muted)]">
+      <section ref={formAnchorRef} className="mx-auto max-w-5xl px-12 md:px-16 lg:px-20 pt-12 pb-40 md:pb-48">
+        <div
+          className="relative border border-white/5 bg-[#0a0a0a] p-12 sm:p-16 md:p-20 lg:p-28"
+          style={{
+            boxShadow: '0 0 20px #ff9d2310, 0 0 30px #ff9d2305'
+          }}
+        >
+          <div className="mb-12">
+            <h2 className="font-heading text-[24px] font-semibold leading-tight tracking-wide">Let's make something sharp.</h2>
+            <p className="mt-4 text-[15px] text-white/65 leading-relaxed tracking-wide">
               Tell me what you're trying to achieve—budget and timing help me move fast.
             </p>
           </div>
           <ContactFormInternal focusAnchorRef={formAnchorRef} />
         </div>
-        <p className="mt-4 text-xs text-[var(--muted)]">
+        <p className="mt-8 text-[13px] text-white/65 tracking-wide">
           I usually reply within 1 business day. Sydney (AEST/AEDT).
         </p>
       </section>
 
       {/* Mobile sticky actions */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--grid)] bg-[var(--bg)]/90 p-2 backdrop-blur supports-[backdrop-filter]:bg-[var(--bg)]/60 md:hidden">
-        <div className="mx-auto grid max-w-3xl grid-cols-3 gap-2 px-2">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[var(--bg)]/90 p-4 backdrop-blur-md supports-[backdrop-filter]:bg-[var(--bg)]/60 md:hidden">
+        <div className="mx-auto grid max-w-3xl grid-cols-3 gap-3 px-2">
           <a
             href="tel:+61XXXXXXXXX"
-            className="border border-[var(--grid)] bg-[var(--panel)] py-2 text-center text-sm font-medium hover:border-[var(--accent)]"
+            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[#ff9d23] transition-all duration-500"
           >
             Call
           </a>
           <a
             href="mailto:hello@handtomouse.com"
-            className="border border-[var(--grid)] bg-[var(--panel)] py-2 text-center text-sm font-medium hover:border-[var(--accent)]"
+            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[#ff9d23] transition-all duration-500"
           >
             Email
           </a>
           <button
-            className="border border-[var(--grid)] bg-[var(--panel)] py-2 text-center text-sm font-medium hover:border-[var(--accent)]"
+            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[#ff9d23] transition-all duration-500"
             onClick={() => {
               const anchor = document.querySelector('#contact-form') as HTMLElement | null;
               anchor?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
@@ -594,17 +647,18 @@ function ContactFormInternal({
       )}
 
       {/* Mode toggle */}
-      <div className="mb-4 inline-flex overflow-hidden border border-[var(--grid)]" role="tablist" aria-label="Message mode">
+      <div className="mb-8 inline-flex overflow-hidden border border-white/10" role="tablist" aria-label="Message mode">
         {(["quick", "brief"] as const).map((m) => (
           <button
             key={m}
             type="button"
             onClick={() => setMode(m)}
-            className={`px-3 py-2 font-mono text-sm font-medium uppercase tracking-wide ${
+            className={`px-8 py-4 font-mono text-[15px] font-medium uppercase tracking-[0.2em] transition-all duration-500 ${
               mode === m
-                ? "bg-[var(--accent)] text-black"
-                : "bg-[var(--bg)] text-[var(--ink)] hover:text-[var(--accent)]"
+                ? "bg-[#ff9d23] text-black"
+                : "bg-[var(--bg)] text-[var(--ink)] hover:text-[#ff9d23]"
             }`}
+            style={mode === m ? { boxShadow: '0 0 20px #ff9d2360' } : {}}
             aria-selected={mode === m}
             role="tab"
           >
@@ -617,7 +671,7 @@ function ContactFormInternal({
         id="contact-form"
         noValidate
         aria-busy={submitting}
-        className="space-y-3"
+        className="space-y-6 md:space-y-8"
         onSubmit={onSubmit}
         onKeyDown={onKeyDown}
         onDragOver={onDragOver}
@@ -638,9 +692,9 @@ function ContactFormInternal({
         </div>
 
         {/* Name + Email */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:gap-8 sm:grid-cols-2">
           <div>
-            <label htmlFor="name" className="mb-1 block font-mono text-xs text-[var(--muted)]">Name*</label>
+            <label htmlFor="name" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Name*</label>
             <input
               id="name"
               ref={nameRef}
@@ -654,8 +708,10 @@ function ContactFormInternal({
               value={data.name}
               onChange={(e) => setData({ ...data, name: e.target.value })}
               onBlur={onBlurTrim("name")}
-              className={`w-full border px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)] ${
-                errors.name ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30" : "border-[var(--grid)] bg-[var(--bg)]"
+              className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 ${
+                errors.name
+                  ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
+                  : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               }`}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey && formValid) {
@@ -665,11 +721,11 @@ function ContactFormInternal({
               }}
             />
             {errors.name && (
-              <p id="err-name" className="mt-1 text-xs text-[var(--accent-2)]">{errors.name}</p>
+              <p id="err-name" className="mt-2 text-[13px] text-[var(--accent-2)]">{errors.name}</p>
             )}
           </div>
           <div>
-            <label htmlFor="email" className="mb-1 block font-mono text-xs text-[var(--muted)]">Email*</label>
+            <label htmlFor="email" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Email*</label>
             <input
               id="email"
               ref={emailRef}
@@ -683,8 +739,10 @@ function ContactFormInternal({
               value={data.email}
               onChange={(e) => setData({ ...data, email: e.target.value })}
               onBlur={onBlurTrim("email")}
-              className={`w-full border px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)] ${
-                errors.email ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30" : "border-[var(--grid)] bg-[var(--bg)]"
+              className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 ${
+                errors.email
+                  ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
+                  : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               }`}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey && formValid) {
@@ -697,14 +755,14 @@ function ContactFormInternal({
               <button
                 type="button"
                 id="email-suggestion"
-                className="mt-1 text-[11px] underline decoration-dotted underline-offset-4 text-[var(--muted)] hover:text-[var(--accent)]"
+                className="mt-2 text-[13px] underline decoration-dotted underline-offset-4 text-white/65 hover:text-[#ff9d23] transition-colors duration-500"
                 onClick={() => setData((d) => ({ ...d, email: emailSuggestion }))}
               >
                 Did you mean <span className="font-mono">{emailSuggestion}</span>?
               </button>
             )}
             {errors.email && (
-              <p id="err-email" className="mt-1 text-xs text-[var(--accent-2)]">{errors.email}</p>
+              <p id="err-email" className="mt-2 text-[13px] text-[var(--accent-2)]">{errors.email}</p>
             )}
           </div>
         </div>
@@ -712,7 +770,7 @@ function ContactFormInternal({
         {/* Company (brief) */}
         {mode === "brief" && (
           <div>
-            <label htmlFor="company" className="mb-1 block font-mono text-xs text-[var(--muted)]">Company</label>
+            <label htmlFor="company" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Company</label>
             <input
               id="company"
               ref={companyRef}
@@ -722,21 +780,21 @@ function ContactFormInternal({
               value={data.company}
               onChange={(e) => setData({ ...data, company: e.target.value })}
               onBlur={onBlurTrim("company")}
-              className="w-full border border-[var(--grid)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"
+              className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
             />
           </div>
         )}
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="mb-1 block font-mono text-xs text-[var(--muted)]">
+          <label htmlFor="message" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">
             {mode === "quick" ? "Message* (≥ 30 chars)" : "Project summary* (≥ 30 chars)"}
           </label>
           <textarea
             id="message"
             ref={messageRef}
             required
-            rows={6}
+            rows={8}
             maxLength={5000}
             onInput={resizeTextArea}
             aria-invalid={Boolean(errors.message) || undefined}
@@ -744,69 +802,71 @@ function ContactFormInternal({
             value={data.message}
             onChange={(e) => setData({ ...data, message: e.target.value })}
             onBlur={onBlurTrim("message")}
-            className={`w-full border px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)] ${
-              errors.message ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30" : "border-[var(--grid)] bg-[var(--bg)]"
+            className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] leading-relaxed outline-none transition-all duration-500 ${
+              errors.message
+                ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
+                : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
             }`}
           />
           {!errors.message && (
-            <p id="hint-message" className="mt-1 text-xs text-[var(--muted)]">Minimum 30 characters.</p>
+            <p id="hint-message" className="mt-2 text-[13px] text-white/65">Minimum 30 characters.</p>
           )}
-          <div className="mt-1 flex items-center gap-2 text-[11px] text-[var(--muted)]">
-            <meter min={0} max={goal} value={progress} className="h-1 w-28"></meter>
-            <span className={remaining > 0 ? "text-[var(--muted)]" : "text-[var(--accent-3)]"}>
+          <div className="mt-2 flex items-center gap-3 text-[13px] text-white/65">
+            <meter min={0} max={goal} value={progress} className="h-1 w-32"></meter>
+            <span className={remaining > 0 ? "text-white/65" : "text-[var(--accent-3)]"}>
               {remaining > 0 ? `${remaining} more chars…` : "Good to go"}
             </span>
           </div>
           {errors.message && (
-            <p id="err-message" className="mt-1 text-xs text-[var(--accent-2)]">{errors.message}</p>
+            <p id="err-message" className="mt-2 text-[13px] text-[var(--accent-2)]">{errors.message}</p>
           )}
         </div>
 
         {/* Brief-only fields */}
         {mode === "brief" && (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:gap-8 sm:grid-cols-2">
             <div>
-              <label htmlFor="budget" className="mb-1 block font-mono text-xs text-[var(--muted)]">Budget (rough)</label>
+              <label htmlFor="budget" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Budget (rough)</label>
               <select
                 id="budget"
                 value={data.budget}
                 onChange={(e) => setData({ ...data, budget: e.target.value })}
-                className="w-full border border-[var(--grid)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"
+                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               >
                 <option value="">Select…</option>
                 {BUDGETS.map((b) => (
                   <option key={b} value={b}>{b}</option>
                 ))}
               </select>
-              <p className="mt-1 text-[11px] text-[var(--muted)]">A ballpark helps me scope efficiently.</p>
+              <p className="mt-2 text-[13px] text-white/65">A ballpark helps me scope efficiently.</p>
             </div>
             <div>
-              <label htmlFor="timeline" className="mb-1 block font-mono text-xs text-[var(--muted)]">Timeline</label>
+              <label htmlFor="timeline" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Timeline</label>
               <select
                 id="timeline"
                 value={data.timeline}
                 onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                className="w-full border border-[var(--grid)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"
+                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               >
                 <option value="">Select…</option>
                 {TIMELINES.map((t) => (
                   <option key={t} value={t}>{t}</option>
                 ))}
               </select>
-              <p className="mt-1 text-[11px] text-[var(--muted)]">Even rough timing keeps us aligned.</p>
+              <p className="mt-2 text-[13px] text-white/65">Even rough timing keeps us aligned.</p>
             </div>
 
             <div className="sm:col-span-2">
-              <fieldset className="border border-[var(--grid)] p-3">
-                <legend className="px-1 font-mono text-xs text-[var(--muted)]">Services</legend>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <fieldset className="border border-white/10 p-6 md:p-8">
+                <legend className="px-3 font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Services</legend>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                   {SERVICES.map((s) => {
                     const checked = data.services?.includes(s) ?? false;
                     return (
-                      <label key={s} className="inline-flex cursor-pointer items-center gap-2 font-mono text-sm text-[var(--ink)]">
+                      <label key={s} className="inline-flex cursor-pointer items-center gap-3 font-mono text-[15px] text-[var(--ink)] hover:text-white/90 transition-colors duration-500">
                         <input
                           type="checkbox"
-                          className="h-4 w-4 appearance-none border border-[var(--grid)] bg-[var(--bg)] checked:bg-[var(--accent)]"
+                          className="h-5 w-5 appearance-none border border-white/10 bg-[var(--bg)] checked:bg-[#ff9d23] transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
                           checked={checked}
                           onChange={(e) => {
                             const next = new Set(data.services);
@@ -820,12 +880,19 @@ function ContactFormInternal({
                   })}
                 </div>
                 {data.services && data.services.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="mt-6 flex flex-wrap gap-3">
                     {data.services.map((s) => (
                       <button
                         key={s}
                         type="button"
-                        className="border border-[var(--grid)] bg-[var(--bg)] px-2 py-1 font-mono text-[11px] hover:border-[var(--accent)]"
+                        className="border border-white/10 bg-[var(--bg)] px-8 py-4 font-mono text-[13px] hover:border-[#ff9d23] hover:text-[#ff9d23] transition-all duration-500"
+                        style={{ transition: 'all 0.5s ease' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.boxShadow = '0 0 15px #ff9d2320';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                         aria-label={`Remove ${s}`}
                         onClick={() => setData({ ...data, services: (data.services||[]).filter((x) => x !== s) })}
                       >
@@ -838,7 +905,7 @@ function ContactFormInternal({
             </div>
 
             <div>
-              <label htmlFor="referral" className="mb-1 block font-mono text-xs text-[var(--muted)]">How did you hear about HTM?</label>
+              <label htmlFor="referral" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">How did you hear about HTM?</label>
               <input
                 id="referral"
                 type="text"
@@ -847,11 +914,11 @@ function ContactFormInternal({
                 value={data.referral}
                 onChange={(e) => setData({ ...data, referral: e.target.value })}
                 onBlur={onBlurTrim("referral")}
-                className="w-full border border-[var(--grid)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"
+                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               />
             </div>
             <div>
-              <label htmlFor="attachment_url" className="mb-1 block font-mono text-xs text-[var(--muted)]">Attachment link (URL)</label>
+              <label htmlFor="attachment_url" className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Attachment link (URL)</label>
               <input
                 id="attachment_url"
                 type="url"
@@ -861,12 +928,14 @@ function ContactFormInternal({
                 value={data.attachment_url}
                 onChange={(e) => setData({ ...data, attachment_url: e.target.value })}
                 onBlur={onBlurTrim("attachment_url")}
-                className={`w-full border px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)] ${
-                  errors.attachment_url ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30" : "border-[var(--grid)] bg-[var(--bg)]"
+                className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 ${
+                  errors.attachment_url
+                    ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
+                    : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
                 }`}
               />
               {errors.attachment_url && (
-                <p className="mt-1 text-xs text-[var(--accent-2)]">{errors.attachment_url}</p>
+                <p className="mt-2 text-[13px] text-[var(--accent-2)]">{errors.attachment_url}</p>
               )}
             </div>
           </div>
@@ -874,25 +943,32 @@ function ContactFormInternal({
 
         {/* Attachments (files) */}
         <div>
-          <label className="mb-1 block font-mono text-xs text-[var(--muted)]">Attachments (up to {MAX_FILES} files, ≤{MAX_FILE_SIZE_MB}MB each)</label>
-          <div className="border border-dashed border-[var(--grid)] bg-[var(--bg)] p-3">
+          <label className="mb-3 block font-mono text-[13px] text-white/65 uppercase tracking-[0.15em]">Attachments (up to {MAX_FILES} files, ≤{MAX_FILE_SIZE_MB}MB each)</label>
+          <div className="border border-dashed border-white/10 bg-[var(--bg)] p-8 md:p-10">
             <input
               ref={fileInputRef}
               type="file"
               multiple
               onChange={onPickFiles}
               accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.zip,.rar,.7z,.txt,.csv,.doc,.docx,.ppt,.pptx,.key,.pages,.numbers,.ai,.psd,.xd"
-              className="block w-full font-mono text-xs text-[var(--muted)] file:mr-3 file:border file:border-[var(--grid)] file:bg-[var(--panel)] file:px-2 file:py-1 file:text-xs file:text-[var(--ink)] hover:file:border-[var(--accent)]"
+              className="block w-full font-mono text-[13px] text-white/65 file:mr-4 file:border file:border-white/10 file:bg-[var(--panel)] file:px-5 file:py-3 file:text-[13px] file:text-[var(--ink)] hover:file:border-[#ff9d23] file:transition-all file:duration-500"
               aria-describedby="hint-attachments"
             />
-            <p id="hint-attachments" className="mt-1 text-[11px] text-[var(--muted)]">Drag & drop files here, or use the picker. You can also paste a link above.</p>
-            {filesError && <p className="mt-1 text-xs text-[var(--accent-2)]">{filesError}</p>}
+            <p id="hint-attachments" className="mt-3 text-[13px] text-white/65">Drag & drop files here, or use the picker. You can also paste a link above.</p>
+            {filesError && <p className="mt-2 text-[13px] text-[var(--accent-2)]">{filesError}</p>}
             {files.length > 0 && (
-              <ul className="mt-2 space-y-1 font-mono text-xs text-[var(--muted)]">
+              <ul className="mt-4 space-y-3 font-mono text-[13px] text-white/65">
                 {files.map((f, i) => (
-                  <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2">
-                    <span className="truncate">{f.name} <span className="text-[var(--muted)]">({Math.ceil(f.size/1024)} KB)</span></span>
-                    <button type="button" className="border border-[var(--grid)] bg-[var(--panel)] px-2 py-0.5 text-[11px] hover:border-[var(--accent)]" onClick={() => removeFile(i)} aria-label={`Remove ${f.name}`}>Remove</button>
+                  <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-4">
+                    <span className="truncate">{f.name} <span className="text-white/50">({Math.ceil(f.size/1024)} KB)</span></span>
+                    <button
+                      type="button"
+                      className="border border-white/10 bg-[var(--panel)] px-4 py-2 text-[12px] hover:border-[#ff9d23] hover:text-[#ff9d23] transition-all duration-500"
+                      onClick={() => removeFile(i)}
+                      aria-label={`Remove ${f.name}`}
+                    >
+                      Remove
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -901,34 +977,45 @@ function ContactFormInternal({
         </div>
 
         {/* Consent */}
-        <label className="mt-2 inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)]">
+        <label className="mt-4 inline-flex items-center gap-3 font-mono text-[13px] text-white/65 cursor-pointer">
           <input
             type="checkbox"
             checked={data.consent}
             onChange={(e) => setData({ ...data, consent: e.target.checked })}
-            className="h-4 w-4 appearance-none border border-[var(--grid)] bg-[var(--bg)] checked:bg-[var(--accent)]"
+            className="h-5 w-5 appearance-none border border-white/10 bg-[var(--bg)] checked:bg-[#ff9d23] transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
           />
           I agree to be contacted about this enquiry.
         </label>
 
         {/* Submit Row */}
-        <div className="flex flex-wrap items-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center gap-6 pt-8">
           <button
             data-submit
             type="submit"
             disabled={!formValid}
-            className={`inline-flex items-center gap-2 border-3 px-4 py-2 font-mono text-sm font-semibold ${
+            className={`inline-flex items-center gap-3 px-12 py-5 font-mono text-[15px] font-semibold uppercase tracking-[0.2em] transition-all duration-500 ${
               formValid
-                ? "border-[var(--accent)] bg-[var(--accent)] text-black"
-                : "border-[var(--grid)] bg-[var(--panel)] text-[var(--muted)]"
+                ? "border border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.02]"
+                : "border border-white/10 bg-[var(--panel)] text-white/40 cursor-not-allowed"
             }`}
+            style={formValid ? { boxShadow: '0 0 30px #ff9d2360' } : {}}
+            onMouseEnter={(e) => {
+              if (formValid) {
+                e.currentTarget.style.boxShadow = '0 0 40px #ff9d2380';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (formValid) {
+                e.currentTarget.style.boxShadow = '0 0 30px #ff9d2360';
+              }
+            }}
           >
             {mode === "quick" ? "Send message" : "Send project brief"}
             {submitting && <span className="animate-pulse">…</span>}
           </button>
 
           {(disabledByTimer || cooldown>0) && (
-            <span className="align-middle font-mono text-xs text-[var(--muted)]">
+            <span className="align-middle font-mono text-[13px] text-white/65">
               {disabledByTimer ? `Submitting enabled in ${countdown}s` : `Ready in ${cooldown}s`}
             </span>
           )}
