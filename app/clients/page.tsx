@@ -1,5 +1,6 @@
 "use client";
 
+// Force cache invalidation - updated 2025-11-13
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
