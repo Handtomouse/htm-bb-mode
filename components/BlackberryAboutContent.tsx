@@ -1439,7 +1439,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
                   letterSpacing: '-0.005em',
                   color: '#ffa940',
                   textShadow: '0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.8)',
-                  hyphens: 'auto'
+                  textAlign: 'center'
                 }}
               >
                 {firstSentence}
@@ -1470,11 +1470,11 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
                   className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.68] mt-1 sm:mt-1.5"
                   style={{
                     fontWeight: 400,
-                    letterSpacing: '0.005em',
+                    letterSpacing: '0',
                     color: 'rgba(255,255,255,0.9)',
                     textShadow: '0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8)',
-                    hyphens: 'auto',
-                    wordBreak: 'break-word'
+                    textAlign: 'center',
+                    wordBreak: 'normal'
                   }}
                 >
                   {rest}
