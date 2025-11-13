@@ -678,21 +678,21 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative h-[120vh] flex flex-col items-center justify-center gap-24 md:gap-32 lg:gap-40 px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          <section className="relative h-[110vh] flex flex-col items-center justify-center gap-12 md:gap-16 lg:gap-20 px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[32px] md:text-[42px] lg:text-[56px] font-bold uppercase text-center tracking-[0.3em] text-[#ff9d23]"
+            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold uppercase text-center tracking-[0.15em] text-[#ff9d23]"
             style={{
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
           >
             By The Numbers
           </motion.h2>
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 max-w-5xl mx-auto w-full">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
             <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.15} />
             <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.3} />
@@ -1218,7 +1218,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       >
         {/* Front Side */}
         <div
-          className="absolute inset-0 p-5 md:p-8 text-center flex flex-col justify-center"
+          className="absolute inset-0 p-6 md:p-10 text-center flex flex-col justify-center"
           style={{
             backfaceVisibility: 'hidden',
             border: isHovered ? '1px solid rgba(255,157,35,0.4)' : '1px solid rgba(255,157,35,0.2)',
@@ -1265,7 +1265,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               <span
                 className="text-[28px] md:text-[36px] lg:text-[44px]"
                 style={{
-                  opacity: 0.85,
+                  opacity: 0.9,
                   marginLeft: '0.1em',
                   background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
                   WebkitBackgroundClip: 'text',
