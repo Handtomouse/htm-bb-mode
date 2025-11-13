@@ -1310,7 +1310,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
         {/* Back Side */}
         <div
-          className="absolute inset-0 p-7 md:p-14 text-center flex flex-col justify-center"
+          className="absolute inset-0 p-7 md:p-14 flex flex-col justify-center items-center"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
@@ -1333,15 +1333,16 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             animate={{ opacity: isFlipped ? 1 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div>
+            <div className="max-w-[280px] sm:max-w-[340px] md:max-w-[420px] mx-auto text-left">
               {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
               <div
-                className="text-[17px] sm:text-[20px] md:text-[22px] mb-3 sm:mb-4 leading-[1.6]"
+                className="text-[17px] sm:text-[20px] md:text-[22px] mb-2.5 sm:mb-3 leading-[1.5]"
                 style={{
                   fontWeight: 600,
-                  letterSpacing: '0.01em',
+                  letterSpacing: '-0.005em',
                   color: '#ffa940',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.8)'
+                  textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                  hyphens: 'auto'
                 }}
               >
                 {firstSentence}
@@ -1350,12 +1351,14 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               {/* Rest - Smaller, Regular, White, Line Below */}
               {rest && (
                 <div
-                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.7]"
+                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.65]"
                   style={{
                     fontWeight: 400,
-                    letterSpacing: '0.01em',
+                    letterSpacing: '0.005em',
                     color: 'rgba(255,255,255,0.9)',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.8)'
+                    textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                    hyphens: 'auto',
+                    wordBreak: 'break-word'
                   }}
                 >
                   {rest}
