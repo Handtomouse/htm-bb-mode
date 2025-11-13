@@ -619,7 +619,7 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0, rotate: 0 }}
             exit={{ scale: 0.92, y: 20, rotate: -2 }}
             transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
-            className="relative max-w-6xl w-full bg-[#141414] border border-white/10 p-16 sm:p-20 md:p-24 lg:p-32 max-h-[90vh] overflow-y-auto scroll-smooth"
+            className="relative max-w-6xl w-full bg-[#141414] border border-white/10 p-8 sm:p-12 md:p-16 lg:p-20 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
               boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10, 0 0 30px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}05`,
