@@ -7,6 +7,18 @@ import Image from "next/image";
 const ACCENT = "#ff9d23";
 const ACCENT_HOVER = "#FFB84D";
 
+const STAT_CARD_VARS = {
+  '--card-padding': '32px',
+  '--card-gap': '48px',
+  '--card-border': '1.5px solid rgba(255, 157, 35, 0.35)',
+  '--card-radius': '1px',
+  '--card-shadow': '0 0 32px rgba(255, 157, 35, 0.15)',
+  '--heading-mt': '0',
+  '--heading-mb': '16px',
+  '--body-mb': '24px',
+  '--badge-height': '22px'
+} as React.CSSProperties;
+
 interface AboutData {
   hero: {
     title: string;
@@ -678,7 +690,10 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative min-h-[100vh] flex flex-col items-center justify-center gap-4 md:gap-16 lg:gap-20 px-4 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          <section
+            className="relative min-h-[100vh] flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32"
+            style={{ scrollMarginTop: '4rem', ...STAT_CARD_VARS }}
+          >
           {/* Improvement #6: Subtle radial gradient backdrop */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)', opacity: 0.4 }} />
 
@@ -694,7 +709,15 @@ export default function BlackberryAboutContent() {
           >
             By The Numbers
           </motion.h2>
-          <div className="relative grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 sm:gap-x-8 sm:gap-y-12 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
+          <div
+            className="relative w-full max-w-6xl mx-auto"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: 'var(--card-gap)',
+              alignItems: 'stretch'
+            }}
+          >
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} index={0} />
             <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} index={1} />
             <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} index={2} />
@@ -1227,8 +1250,11 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
         duration: prefersReducedMotion ? 0.1 : 0.3,
         ease: [0.16, 1, 0.3, 1]
       }}
-      style={{ perspective: '1000px' }}
-      className="relative aspect-[1/1] sm:aspect-[4/3]"
+      className="relative w-full"
+      style={{
+        perspective: '1000px',
+        aspectRatio: '4 / 3'
+      }}
     >
       {/* Improvement #13: "Tap to explore" hint on mobile (first 3s) */}
       {showTapHint && (
@@ -1278,22 +1304,23 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
       >
         {/* Front Side */}
         <div
-          className="absolute inset-0 p-3 sm:p-6 md:p-10 text-center flex flex-col justify-center active:scale-[0.97]"
           style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 'var(--card-padding)',
             backfaceVisibility: 'hidden',
-            border: isHovered ? '1.5px solid rgba(255,157,35,0.4)' : '1.5px solid rgba(255,157,35,0.2)',
-            borderRadius: '1px',
+            border: 'var(--card-border)',
+            borderRadius: 'var(--card-radius)',
+            boxShadow: isHovered
+              ? '0 0 14px rgba(255,157,35,0.25), var(--card-shadow)'
+              : 'var(--card-shadow)',
             background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(6px)',
-            boxShadow: isHovered
-              ? '0 0 14px rgba(255,157,35,0.12), 0 5px 25px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,157,35,0.1)'
-              : hasFlippedBefore
-                ? '0 0 6px rgba(255,157,35,0.06), inset 0 1px 0 rgba(255,157,35,0.05)'
-                : 'inset 0 1px 0 rgba(255,157,35,0.05)',
-            transform: isHovered ? 'translateY(-2px) translateZ(10px)' : 'translateY(0) translateZ(0)',
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-            willChange: 'transform',
-            minHeight: '44px'
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Improvement #12: Corner Fold Hint with fade-in */}
@@ -1372,12 +1399,23 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
           {/* Improvement #17: "Since 2020" time badges */}
           {contextData.since && !isFlipped && (
             <div
-              className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] sm:text-[10px] px-2 py-0.5 rounded-sm uppercase tracking-wider"
               style={{
+                position: 'absolute',
+                bottom: 16,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                height: 'var(--badge-height)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 8px',
+                fontSize: '10px',
                 background: 'rgba(255,157,35,0.15)',
                 color: 'rgba(255,157,35,0.8)',
                 border: '0.5px solid rgba(255,157,35,0.3)',
-                fontWeight: 600
+                borderRadius: '2px',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
               }}
             >
               {contextData.since}
@@ -1405,22 +1443,21 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
 
         {/* Back Side with Improvement #9: Subtle border radius */}
         <div
-          className="absolute inset-0 p-5 sm:p-6 md:p-10 lg:p-12 flex flex-col justify-center items-center"
           style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 'var(--card-padding)',
             backfaceVisibility: 'hidden',
             transform: prefersReducedMotion ? 'scaleX(-1)' : 'rotateY(180deg)',
-            border: '1.5px solid transparent',
-            borderRadius: '1px',
-            borderImage: isHovered && isFlipped
-              ? 'linear-gradient(135deg, rgba(255,157,35,0.8), rgba(255,157,35,0.4), rgba(255,157,35,0.8)) 1'
-              : 'linear-gradient(135deg, rgba(255,157,35,0.6), rgba(255,157,35,0.3), rgba(255,157,35,0.6)) 1',
+            border: 'var(--card-border)',
+            borderRadius: 'var(--card-radius)',
+            boxShadow: 'var(--card-shadow)',
             background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.6) 100%)',
-            backdropFilter: 'blur(8px) saturate(1.2)',
-            WebkitBackdropFilter: 'blur(8px) saturate(1.2)',
-            boxShadow: '0 0 24px rgba(255,157,35,0.2), 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,157,35,0.1)',
-            borderTop: isFlipped ? '1px solid rgba(255,157,35,0.5)' : 'none',
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-            minHeight: '44px'
+            backdropFilter: 'blur(8px) saturate(1.2)'
           }}
         >
           {/* Context Text with Improvements #2/#3: Better line-height & 2-layer shadows */}
@@ -1433,9 +1470,11 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
             <div className="max-w-[300px] sm:max-w-[380px] md:max-w-[460px] lg:max-w-[500px] mx-auto text-center">
               {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
               <div
-                className="text-[17px] sm:text-[20px] md:text-[22px] mb-3 sm:mb-4 leading-[1.5]"
+                className="text-[17px] sm:text-[20px] md:text-[22px]"
                 style={{
+                  margin: 'var(--heading-mt) 0 var(--heading-mb) 0',
                   fontWeight: 600,
+                  lineHeight: 1.5,
                   letterSpacing: '-0.005em',
                   color: '#ffa940',
                   textShadow: '0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.8)',
@@ -1467,9 +1506,11 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
               {/* Rest - Smaller, Regular, White, Line Below with Improvement #2: Better line-height (1.68) */}
               {rest && (
                 <div
-                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.68] mt-1 sm:mt-1.5"
+                  className="text-[15px] sm:text-[17px] md:text-[19px]"
                   style={{
+                    margin: '0 0 var(--body-mb) 0',
                     fontWeight: 400,
+                    lineHeight: 1.68,
                     letterSpacing: '0',
                     color: 'rgba(255,255,255,0.9)',
                     textShadow: '0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8)',
@@ -1485,10 +1526,17 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
 
           {/* Flip Back Hint */}
           <motion.div
-            className="absolute bottom-6 left-0 right-0 text-center text-[11px] uppercase tracking-[0.15em]"
             style={{
+              position: 'absolute',
+              bottom: 16,
+              left: 0,
+              right: 0,
+              textAlign: 'center',
+              fontSize: '11px',
               color: 'rgba(255,255,255,0.5)',
-              fontWeight: 500
+              fontWeight: 500,
+              textTransform: 'uppercase',
+              letterSpacing: '0.15em'
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}
