@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import confetti from "canvas-confetti";
+import BBPageHeader from "./BBPageHeader";
 
 const ACCENT = "#FF9D23";
 
@@ -149,14 +150,24 @@ export default function BlackberryContactContent() {
       try {
         localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
         setSavedMsg("Saved");
-        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        window.setTimeout(() => setSavedMsg(""), reduce ? 1200 : 600);
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.setTimeout(() => setSavedMsg("") , reduce ? 1200 : 600);
       } catch {}
     }, 400);
-    return () => {
-      if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
-    };
+    return () => { if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current); };
   }, [data]);
+
+  // Leave-page protection
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if ((data.message?.trim()?.length || 0) > 0 && !submitting) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [data.message, submitting]);
 
   function showToast(type: "success" | "error" | "info", msg: string) {
     const id = Date.now();
@@ -172,8 +183,7 @@ export default function BlackberryContactContent() {
     if (name.length < 2 || name.length > 80) e.name = "Please enter 2–80 characters.";
     if (!isEmail(email)) e.email = "Enter a valid email.";
     if (message.length < 30) e.message = `Add ${30 - message.length} more characters.`;
-    if (payload.attachment_url && !isValidHttpUrl(payload.attachment_url))
-      e.attachment_url = "Enter a valid URL (http/https).";
+    if (payload.attachment_url && !isValidHttpUrl(payload.attachment_url)) e.attachment_url = "Enter a valid URL (http/https).";
     if (payload.website && payload.website.trim() !== "") e.summary = "Spam detected.";
     return e;
   };
@@ -191,13 +201,7 @@ export default function BlackberryContactContent() {
     const e = computeErrors(data);
     const fe = validateFiles(files);
     return (
-      Object.keys(e).length === 0 &&
-      !fe &&
-      data.consent &&
-      !disabledByTimer &&
-      online &&
-      !submitting &&
-      cooldown === 0
+      Object.keys(e).length === 0 && !fe && data.consent && !disabledByTimer && online && !submitting && cooldown === 0
     );
   }, [data, files, disabledByTimer, online, submitting, cooldown]);
 
@@ -205,7 +209,7 @@ export default function BlackberryContactContent() {
     if (e.name) return nameRef.current?.focus();
     if (e.email) return emailRef.current?.focus();
     if (e.message) return messageRef.current?.focus();
-    if (e.attachment_url) return (document.getElementById("attachment_url") as HTMLInputElement | null)?.focus();
+    if (e.attachment_url) return (document.getElementById('attachment_url') as HTMLInputElement|null)?.focus();
     if (e.summary && companyRef.current) return companyRef.current.focus();
   };
 
@@ -243,10 +247,7 @@ export default function BlackberryContactContent() {
     if (Object.keys(e).length > 0 || !trimmed.consent || disabledByTimer || !online) {
       setErrors(e);
       focusFirstError(e);
-      showToast(
-        "error",
-        e.summary || (online ? "Please fix the highlighted fields." : "You're offline. Submit when back online.")
-      );
+      showToast("error", e.summary || (online ? "Please fix the highlighted fields." : "You're offline. Submit when back online."));
       announce("Validation errors in form");
       return;
     }
@@ -263,7 +264,7 @@ export default function BlackberryContactContent() {
       if (files.length > 0) {
         const form = new FormData();
         form.append("payload", JSON.stringify(trimmed));
-        files.forEach((f, i) => form.append(`file${i + 1}`, f, f.name));
+        files.forEach((f, i) => form.append(`file${i+1}`, f, f.name));
         res = await fetch("/api/contact", { method: "POST", body: form, signal: submitAbortRef.current.signal });
       } else {
         res = await fetch("/api/contact", {
@@ -289,13 +290,13 @@ export default function BlackberryContactContent() {
       });
 
       // Success confetti animation
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ["#F4A259", "#FF9D23", "#FFB84D", "#FFC266"],
+          colors: ['#F4A259', '#FF9D23', '#FFB84D', '#FFC266'],
         });
         setTimeout(() => {
           confetti({
@@ -303,7 +304,7 @@ export default function BlackberryContactContent() {
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ["#F4A259", "#FF9D23"],
+            colors: ['#F4A259', '#FF9D23'],
           });
         }, 250);
         setTimeout(() => {
@@ -312,16 +313,14 @@ export default function BlackberryContactContent() {
             angle: 120,
             spread: 55,
             origin: { x: 1 },
-            colors: ["#F4A259", "#FF9D23"],
+            colors: ['#F4A259', '#FF9D23'],
           });
         }, 400);
       }
 
       showToast("success", "Thanks—got it. I'll reply within 1 business day.");
       announce("Message sent successfully");
-      try {
-        localStorage.removeItem(DRAFT_KEY);
-      } catch {}
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
       setData((d) => ({
         ...d,
         name: "",
@@ -353,27 +352,21 @@ export default function BlackberryContactContent() {
     return () => window.clearInterval(t);
   }, [cooldown]);
 
-  // Prevent backspace from navigating back when not in input field
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Backspace") {
-        const activeElement = document.activeElement as HTMLElement;
-        const isInputField =
-          activeElement?.tagName === "INPUT" ||
-          activeElement?.tagName === "TEXTAREA" ||
-          activeElement?.tagName === "SELECT" ||
-          activeElement?.isContentEditable;
-
-        if (!isInputField) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown, { capture: true });
-    return () => document.removeEventListener("keydown", handleKeyDown, { capture: true });
-  }, []);
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      const form = e.currentTarget as HTMLElement;
+      (form.querySelector('[data-submit]') as HTMLButtonElement | null)?.click();
+      return;
+    }
+    if (e.key === "Escape" && toast) { setToast(null); return; }
+    if (e.altKey && (e.key === "r" || e.key === "R")) {
+      e.preventDefault();
+      setData((d) => ({ ...d, name: "", email: "", message: "", company: "", budget: "", timeline: "", services: [], referral: "", attachment_url: "" }));
+      setFiles([]);
+      showToast("info", "Form cleared");
+      return;
+    }
+  };
 
   const onBlurTrim = (k: keyof Payload) => (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const v = (e.target.value || "").trim();
@@ -382,11 +375,9 @@ export default function BlackberryContactContent() {
 
   const remaining = Math.max(0, 30 - (data.message?.trim().length || 0));
   const goal = 30;
-  const progress = Math.min(goal, data.message?.trim().length || 0);
+  const progress = Math.min(goal, (data.message?.trim().length || 0));
 
-  const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
+  const onDragOver = (e: React.DragEvent) => { e.preventDefault(); };
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const dt = e.dataTransfer;
@@ -415,20 +406,9 @@ export default function BlackberryContactContent() {
     setFiles((arr) => arr.filter((_, i) => i !== idx));
   };
 
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, []);
-
   return (
-    <div>
-      <h1 className="mb-5 font-mono text-5xl uppercase text-white md:mb-10 md:text-7xl">
-        <span style={{ color: ACCENT }}>/</span> CONTACT
-      </h1>
+    <div className="w-full h-full overflow-y-auto px-6 md:px-8 py-6">
+      <BBPageHeader title="CONTACT" subtitle="Let's make something sharp" />
 
       <div ref={srLiveRef} className="sr-only" role="status" aria-live="assertive" />
 
@@ -437,412 +417,378 @@ export default function BlackberryContactContent() {
       </div>
 
       {!online && (
-        <div className="mb-3 border border-red-400 bg-red-400/20 p-2 text-xs text-red-400 md:p-3 md:text-sm">
+        <div className="mb-4 border border-red-400 bg-red-400/20 p-3 text-sm text-red-400">
           You're offline. You can keep typing—submit when back online.
         </div>
       )}
 
       {savedMsg && (
-        <div className="mb-2 text-sm text-white/50" aria-live="polite">
-          {savedMsg}
-        </div>
+        <div className="mb-3 text-xs text-white/50" aria-live="polite">{savedMsg}</div>
       )}
 
       {toast && (
-        <div className="pointer-events-none fixed right-2 top-2 z-50 md:right-4 md:top-4">
+        <div className="pointer-events-none fixed right-4 top-4 z-50">
           <div
-            className={`pointer-events-auto border p-4 text-base shadow-lg md:p-7 md:text-2xl ${
+            className={`pointer-events-auto border p-3 text-sm shadow-lg ${
               toast.type === "success"
-                ? "border-green-400 bg-green-400/30 text-white"
+                ? "border-green-400 bg-green-400/20 text-green-400"
                 : toast.type === "error"
-                  ? "border-red-400 bg-red-400/30 text-white"
-                  : "border-white/10 bg-black/70 text-white"
+                ? "border-red-400 bg-red-400/20 text-red-400"
+                : "border-white/20 bg-white/10 text-white"
             }`}
             role="status"
             aria-live="polite"
-            tabIndex={-1}
           >
             {toast.msg}
           </div>
         </div>
       )}
 
-      {/* Mode toggle */}
-      <div className="mb-5 grid grid-cols-2 gap-2 md:mb-10 md:gap-3">
-        {(["quick", "brief"] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => setMode(m)}
-            className={`rounded-none border-2 px-4 py-4 text-xl font-bold uppercase transition-all md:rounded-sm md:border-3 md:px-6 md:py-7 md:text-3xl ${
-              mode === m ? "border-[#FF9D23] bg-[#FF9D23] text-black shadow-xl" : "border-white/40 bg-white/5 text-white hover:border-white/60 hover:bg-white/10 hover:shadow-lg"
-            }`}
-          >
-            {m === "quick" ? "Quick Message" : "Project Brief"}
-          </button>
-        ))}
+      {/* Quick Actions */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <a
+          href="tel:+61XXXXXXXXX"
+          className="group relative border border-white/5 bg-[#131313] p-4 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] overflow-hidden hover:scale-[1.02]"
+          style={{ transition: 'all 0.5s ease' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
+          <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="text-xs text-white/65 uppercase tracking-wider">Call</div>
+          <div className="mt-1 text-sm font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
+            +61 ••• •••
+          </div>
+        </a>
+        <button
+          type="button"
+          onClick={() => navigator.clipboard?.writeText("hello@handtomouse.com")}
+          className="group relative border border-white/5 bg-[#131313] p-4 text-left hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] overflow-hidden hover:scale-[1.02]"
+          style={{ transition: 'all 0.5s ease' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
+          <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
+          <div className="text-xs text-white/65 uppercase tracking-wider">Copy Email</div>
+          <div className="mt-1 text-sm font-medium group-hover:text-[#ff9d23] transition-colors duration-500 truncate">
+            hello@htm.com
+          </div>
+        </button>
       </div>
 
-      <form
-        id="contact-form"
-        noValidate
-        aria-busy={submitting}
-        className="space-y-4 md:space-y-7"
-        onSubmit={onSubmit}
-        onDragOver={onDragOver}
-        onDrop={onDrop}
+      {/* Form Container */}
+      <div
+        className="relative border border-white/5 bg-[#0a0a0a] p-8 sm:p-12 mb-6"
+        style={{
+          boxShadow: '0 0 20px #ff9d2310'
+        }}
       >
-        {/* Honeypot */}
-        <div className="sr-only" aria-hidden>
-          <label htmlFor="website">Website</label>
-          <input
-            id="website"
-            name="website"
-            autoComplete="off"
-            tabIndex={-1}
-            value={data.website}
-            onChange={(e) => setData({ ...data, website: e.target.value })}
-            className="h-0 w-0 opacity-0"
-          />
-        </div>
-
-        {/* Name + Email */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-7">
-          <div>
-            <label htmlFor="name" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-              Name*
-            </label>
-            <input
-              id="name"
-              ref={nameRef}
-              type="text"
-              required
-              maxLength={120}
-              autoComplete="name"
-              aria-invalid={Boolean(errors.name) || undefined}
-              aria-describedby={errors.name ? "err-name" : undefined}
-              value={data.name}
-              onChange={(e) => setData({ ...data, name: e.target.value })}
-              onBlur={onBlurTrim("name")}
-              className={`w-full border bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2 ${
-                errors.name ? "border-red-400 bg-red-400/20" : "border-white/10"
+        {/* Mode toggle */}
+        <div className="mb-6 inline-flex overflow-hidden border border-white/10" role="tablist">
+          {(["quick", "brief"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMode(m)}
+              className={`px-6 py-3 font-mono text-sm font-medium uppercase tracking-wider transition-all duration-500 ${
+                mode === m
+                  ? "bg-[#ff9d23] text-black"
+                  : "bg-[#0b0b0b] text-white hover:text-[#ff9d23]"
               }`}
-            />
-            {errors.name && (
-              <p id="err-name" className="mt-1 text-sm text-red-400 md:mt-2 md:text-2xl">
-                {errors.name}
-              </p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="email" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-              Email*
-            </label>
-            <input
-              id="email"
-              ref={emailRef}
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              required
-              maxLength={254}
-              aria-invalid={Boolean(errors.email) || undefined}
-              aria-describedby={errors.email ? "err-email" : emailSuggestion ? "email-suggestion" : undefined}
-              value={data.email}
-              onChange={(e) => setData({ ...data, email: e.target.value })}
-              onBlur={onBlurTrim("email")}
-              className={`w-full border bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2 ${
-                errors.email ? "border-red-400 bg-red-400/20" : "border-white/10"
-              }`}
-            />
-            {emailSuggestion && !errors.email && (
-              <button
-                type="button"
-                id="email-suggestion"
-                className="mt-2 text-sm text-white/50 underline decoration-dotted underline-offset-4 hover:text-[#FF9D23]"
-                onClick={() => setData((d) => ({ ...d, email: emailSuggestion }))}
-              >
-                Did you mean {emailSuggestion}?
-              </button>
-            )}
-            {errors.email && (
-              <p id="err-email" className="mt-1 text-sm text-red-400 md:mt-2 md:text-2xl">
-                {errors.email}
-              </p>
-            )}
-          </div>
+              style={mode === m ? { boxShadow: '0 0 20px #ff9d2360' } : {}}
+              role="tab"
+            >
+              {m === "quick" ? "Quick" : "Brief"}
+            </button>
+          ))}
         </div>
 
-        {/* Company (brief) */}
-        {mode === "brief" && (
-          <div>
-            <label htmlFor="company" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-              Company
-            </label>
+        <form
+          noValidate
+          className="space-y-5"
+          onSubmit={onSubmit}
+          onKeyDown={onKeyDown}
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+        >
+          {/* Honeypot */}
+          <div className="sr-only" aria-hidden>
             <input
-              id="company"
-              ref={companyRef}
-              type="text"
-              maxLength={120}
-              autoComplete="organization"
-              value={data.company}
-              onChange={(e) => setData({ ...data, company: e.target.value })}
-              onBlur={onBlurTrim("company")}
-              className="w-full border border-white/10 bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2"
+              id="website"
+              name="website"
+              autoComplete="off"
+              tabIndex={-1}
+              value={data.website}
+              onChange={(e) => setData({ ...data, website: e.target.value })}
+              className="h-0 w-0 opacity-0"
             />
           </div>
-        )}
 
-        {/* Message */}
-        <div>
-          <label htmlFor="message" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-            {mode === "quick" ? "What's on your mind?*" : "Tell me about your project*"}
-          </label>
-          <textarea
-            id="message"
-            ref={messageRef}
-            required
-            rows={4}
-            maxLength={5000}
-            onInput={resizeTextArea}
-            aria-invalid={Boolean(errors.message) || undefined}
-            aria-describedby={errors.message ? "err-message" : "hint-message"}
-            value={data.message}
-            onChange={(e) => setData({ ...data, message: e.target.value })}
-            onBlur={onBlurTrim("message")}
-            className={`w-full border bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2 ${
-              errors.message ? "border-red-400 bg-red-400/20" : "border-white/10"
-            }`}
-          />
-          {!errors.message && (
-            <p id="hint-message" className="mt-2 text-sm text-white/50 md:text-2xl">
-              Give me something to work with — 30 characters minimum.
-            </p>
-          )}
-          <div className="mt-2 flex items-center gap-2 text-sm text-white/50 md:gap-4 md:text-2xl">
-            <meter min={0} max={goal} value={progress} className="h-3 w-full max-w-56 md:h-5"></meter>
-            <span className={remaining > 0 ? "text-white/50" : "text-green-400"}>
-              {remaining > 0 ? `${remaining} to go` : "That'll do"}
-            </span>
-          </div>
-          {errors.message && (
-            <p id="err-message" className="mt-1 text-sm text-red-400 md:mt-2 md:text-2xl">
-              {errors.message}
-            </p>
-          )}
-        </div>
-
-        {/* Brief-only fields */}
-        {mode === "brief" && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-7">
-              <div>
-                <label htmlFor="budget" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-                  What's the budget?
-                </label>
-                <select
-                  id="budget"
-                  value={data.budget}
-                  onChange={(e) => setData({ ...data, budget: e.target.value })}
-                  className="w-full border border-white/10 bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2"
-                >
-                  <option value="" className="text-lg md:text-3xl">Select…</option>
-                  {BUDGETS.map((b) => (
-                    <option key={b} value={b} className="text-lg md:text-3xl">
-                      {b}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="timeline" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-                  When do you need this?
-                </label>
-                <select
-                  id="timeline"
-                  value={data.timeline}
-                  onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                  className="w-full border border-white/10 bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2"
-                >
-                  <option value="" className="text-lg md:text-3xl">Select…</option>
-                  {TIMELINES.map((t) => (
-                    <option key={t} value={t} className="text-lg md:text-3xl">
-                      {t}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
+          {/* Name + Email */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <fieldset className="border border-white/10 p-3 md:border-2 md:p-5">
-                <legend className="px-2 text-base font-semibold text-white/90 md:px-3 md:text-2xl">Services</legend>
-                <div className="grid grid-cols-1 gap-3 xs:grid-cols-2 md:gap-5">
+              <label htmlFor="name" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Name*</label>
+              <input
+                id="name"
+                ref={nameRef}
+                type="text"
+                required
+                maxLength={120}
+                autoComplete="name"
+                value={data.name}
+                onChange={(e) => setData({ ...data, name: e.target.value })}
+                onBlur={onBlurTrim("name")}
+                className={`w-full border px-4 py-3 text-sm text-white outline-none transition-all duration-500 ${
+                  errors.name
+                    ? "border-red-400 bg-red-400/20 animate-pulse"
+                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                }`}
+              />
+              {errors.name && (
+                <p className="mt-1 text-xs text-red-400">{errors.name}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="email" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Email*</label>
+              <input
+                id="email"
+                ref={emailRef}
+                type="email"
+                required
+                maxLength={254}
+                autoComplete="email"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+                onBlur={onBlurTrim("email")}
+                className={`w-full border px-4 py-3 text-sm text-white outline-none transition-all duration-500 ${
+                  errors.email
+                    ? "border-red-400 bg-red-400/20 animate-pulse"
+                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                }`}
+              />
+              {emailSuggestion && !errors.email && (
+                <button
+                  type="button"
+                  className="mt-1 text-xs underline text-white/65 hover:text-[#ff9d23]"
+                  onClick={() => setData((d) => ({ ...d, email: emailSuggestion }))}
+                >
+                  Did you mean {emailSuggestion}?
+                </button>
+              )}
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-400">{errors.email}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Company (brief) */}
+          {mode === "brief" && (
+            <div>
+              <label htmlFor="company" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Company</label>
+              <input
+                id="company"
+                ref={companyRef}
+                type="text"
+                maxLength={120}
+                value={data.company}
+                onChange={(e) => setData({ ...data, company: e.target.value })}
+                onBlur={onBlurTrim("company")}
+                className="w-full border border-white/10 bg-[#0b0b0b] px-4 py-3 text-sm text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+              />
+            </div>
+          )}
+
+          {/* Message */}
+          <div>
+            <label htmlFor="message" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">
+              {mode === "quick" ? "Message* (≥ 30 chars)" : "Brief* (≥ 30 chars)"}
+            </label>
+            <textarea
+              id="message"
+              ref={messageRef}
+              required
+              rows={6}
+              maxLength={5000}
+              onInput={resizeTextArea}
+              value={data.message}
+              onChange={(e) => setData({ ...data, message: e.target.value })}
+              onBlur={onBlurTrim("message")}
+              className={`w-full border px-4 py-3 text-sm text-white leading-relaxed outline-none transition-all duration-500 ${
+                errors.message
+                  ? "border-red-400 bg-red-400/20 animate-pulse"
+                  : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+              }`}
+            />
+            {!errors.message && (
+              <p className="mt-1 text-xs text-white/65">Minimum 30 characters.</p>
+            )}
+            <div className="mt-1 flex items-center gap-2 text-xs text-white/65">
+              <meter min={0} max={goal} value={progress} className="h-1 w-24"></meter>
+              <span className={remaining > 0 ? "text-white/65" : "text-green-400"}>
+                {remaining > 0 ? `${remaining} more` : "Good"}
+              </span>
+            </div>
+            {errors.message && (
+              <p className="mt-1 text-xs text-red-400">{errors.message}</p>
+            )}
+          </div>
+
+          {/* Brief-only fields */}
+          {mode === "brief" && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="budget" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Budget</label>
+                  <select
+                    id="budget"
+                    value={data.budget}
+                    onChange={(e) => setData({ ...data, budget: e.target.value })}
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-4 py-3 text-sm text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                  >
+                    <option value="">Select…</option>
+                    {BUDGETS.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="timeline" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Timeline</label>
+                  <select
+                    id="timeline"
+                    value={data.timeline}
+                    onChange={(e) => setData({ ...data, timeline: e.target.value })}
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-4 py-3 text-sm text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                  >
+                    <option value="">Select…</option>
+                    {TIMELINES.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <fieldset className="border border-white/10 p-4">
+                <legend className="px-2 font-mono text-xs text-white/65 uppercase tracking-wider">Services</legend>
+                <div className="grid grid-cols-2 gap-3">
                   {SERVICES.map((s) => {
                     const checked = data.services?.includes(s) ?? false;
                     return (
-                      <label key={s} className="inline-flex cursor-pointer items-center gap-2 text-base text-white md:text-2xl">
+                      <label key={s} className="inline-flex cursor-pointer items-center gap-2 font-mono text-xs text-white hover:text-white/90 transition-colors duration-500">
                         <input
                           type="checkbox"
-                          className="h-6 w-6 accent-[#FF9D23] md:h-8 md:w-8"
+                          className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[#ff9d23] transition-all duration-500"
                           checked={checked}
                           onChange={(e) => {
                             const next = new Set(data.services);
-                            if (e.target.checked) next.add(s);
-                            else next.delete(s);
+                            if (e.target.checked) next.add(s); else next.delete(s);
                             setData({ ...data, services: Array.from(next) });
                           }}
                         />
-                        <span>{s}</span>
+                        <span className="text-xs">{s}</span>
                       </label>
                     );
                   })}
                 </div>
               </fieldset>
             </div>
+          )}
 
-            <div>
-              <label htmlFor="referral" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-                How'd you find me?
-              </label>
-              <input
-                id="referral"
-                type="text"
-                maxLength={200}
-                autoComplete="off"
-                value={data.referral}
-                onChange={(e) => setData({ ...data, referral: e.target.value })}
-                onBlur={onBlurTrim("referral")}
-                className="w-full border border-white/10 bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="attachment_url" className="mb-2 block text-base font-semibold tracking-wide text-white/90 md:mb-5 md:text-2xl">
-                Attachment link (URL)
-              </label>
-              <input
-                id="attachment_url"
-                type="url"
-                placeholder="https://..."
-                maxLength={1000}
-                autoComplete="off"
-                value={data.attachment_url}
-                onChange={(e) => setData({ ...data, attachment_url: e.target.value })}
-                onBlur={onBlurTrim("attachment_url")}
-                className={`w-full border bg-black/30 px-4 py-3 text-lg text-white outline-none focus:border-[#FF9D23] focus:ring-1 focus:ring-[#FF9D23]/20 md:border-2 md:px-7 md:py-6 md:text-3xl md:focus:ring-2 ${
-                  errors.attachment_url ? "border-red-400 bg-red-400/20" : "border-white/10"
-                }`}
-              />
-              {errors.attachment_url && <p className="mt-1 text-sm text-red-400 md:mt-2 md:text-2xl">{errors.attachment_url}</p>}
-            </div>
-          </div>
-        )}
-
-        {/* Grid: Attachments + Submit */}
-        <div className="mt-8 mb-16 grid grid-cols-1 gap-6 md:mb-24 md:mt-16 md:gap-10 lg:grid-cols-2">
-          {/* Attachments */}
+          {/* Files */}
           <div>
-            <label className="mb-1.5 block text-base font-semibold tracking-wide text-white/90 md:mb-4 md:text-2xl">
-              Attachments (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB each)
-            </label>
-            <div className="border border-white/15 bg-black/20 p-3 pb-8 transition-colors hover:border-white/25 md:border-2 md:p-5 md:pb-12">
-              <p className="mb-2 pl-3 text-sm text-white/70 md:mb-3 md:pl-4 md:text-xl">
-                Drop files here or click to browse — {files.length === 0 ? "No File Chosen" : `${files.length} file${files.length === 1 ? "" : "s"} selected`}
-              </p>
-              <div className="flex justify-center px-3 py-2 pb-10 md:px-4 md:py-3 md:pb-14">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  onChange={onPickFiles}
-                  accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.zip,.rar,.7z,.txt,.csv,.doc,.docx"
-                  className="block text-sm text-white/50 file:mr-3 file:cursor-pointer file:rounded-none file:border file:border-[#FF9D23]/50 file:bg-black/70 file:px-12 file:py-3 file:text-sm file:font-bold file:text-white file:transition-all hover:file:border-[#FF9D23] hover:file:bg-[#FF9D23]/20 md:text-xl md:file:rounded-sm md:file:border-2 md:file:px-20 md:file:py-5 md:file:text-xl"
-                />
-              </div>
-              {filesError && <p className="mt-2 text-sm text-red-400 md:mt-3 md:text-2xl">{filesError}</p>}
+            <label className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Files (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB)</label>
+            <div className="border border-dashed border-white/10 bg-[#0b0b0b] p-4">
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={onPickFiles}
+                accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.zip"
+                className="block w-full font-mono text-xs text-white/65 file:mr-3 file:border file:border-white/10 file:bg-[#131313] file:px-3 file:py-2 file:text-xs file:text-white hover:file:border-[#ff9d23]"
+              />
+              <p className="mt-2 text-xs text-white/65">Drag & drop files here</p>
+              {filesError && <p className="mt-1 text-xs text-red-400">{filesError}</p>}
               {files.length > 0 && (
-                <div className="px-3 md:px-4">
-                  <ul className="mt-2 space-y-1 text-sm text-white/50 md:mt-3 md:space-y-1.5 md:text-xl">
-                    {files.map((f, i) => (
-                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2">
-                        <span className="truncate">
-                          {f.name} ({Math.ceil(f.size / 1024)} KB)
-                        </span>
-                        <button
-                          type="button"
-                          className="rounded border border-white/10 bg-black/50 px-3 py-1 text-base hover:border-[#FF9D23] md:border-2 md:px-4 md:py-2 md:text-lg"
-                          onClick={() => removeFile(i)}
-                        >
-                          ×
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ul className="mt-3 space-y-2 font-mono text-xs text-white/65">
+                  {files.map((f, i) => (
+                    <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2">
+                      <span className="truncate">{f.name}</span>
+                      <button
+                        type="button"
+                        className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[#ff9d23] hover:text-[#ff9d23]"
+                        onClick={() => removeFile(i)}
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
           </div>
 
+          {/* Consent */}
+          <label className="inline-flex items-center gap-2 font-mono text-xs text-white/65 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.consent}
+              onChange={(e) => setData({ ...data, consent: e.target.checked })}
+              className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[#ff9d23] transition-all duration-500"
+            />
+            I agree to be contacted
+          </label>
+
           {/* Submit */}
-          <div>
-            <label className="mb-1.5 block text-base font-semibold tracking-wide text-white/90 md:mb-4 md:text-2xl">
-              Fire it off
-            </label>
-            <div className="border border-white/15 bg-black/20 p-3 pb-8 transition-colors hover:border-white/25 md:border-2 md:p-5 md:pb-12">
-              <p className="mb-2 pl-3 text-sm text-white/70 md:mb-3 md:pl-4 md:text-xl">
-                {disabledByTimer ? `Ready in ${countdown}s` : cooldown > 0 ? `Wait ${cooldown}s` : "Good to go?"}
-              </p>
-              <div className="flex justify-center px-3 py-2 pb-10 md:px-4 md:py-3 md:pb-14">
-                <button
-                  data-submit
-                  type="submit"
-                  disabled={!formValid}
-                  style={{
-                    width: "auto",
-                    borderRadius: isDesktop ? "0.125rem" : "0",
-                    border: isDesktop ? "2px solid rgba(255, 157, 35, 0.5)" : "1px solid rgba(255, 157, 35, 0.5)",
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    padding: isDesktop ? "1.25rem 5rem" : "0.75rem 4rem",
-                    fontSize: isDesktop ? "1.25rem" : "0.875rem",
-                    lineHeight: isDesktop ? "1.75rem" : "1.25rem",
-                    fontWeight: "bold",
-                    color: "white",
-                    cursor: formValid ? "pointer" : "not-allowed",
-                    opacity: formValid ? 1 : 0.5,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (formValid) {
-                      e.currentTarget.style.border = isDesktop ? "2px solid rgb(255, 157, 35)" : "1px solid rgb(255, 157, 35)";
-                      e.currentTarget.style.backgroundColor = "rgba(255, 157, 35, 0.2)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.border = isDesktop ? "2px solid rgba(255, 157, 35, 0.5)" : "1px solid rgba(255, 157, 35, 0.5)";
-                    e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-                  }}
-                  className="transition-all"
-                >
-                  {mode === "quick" ? "SEND →" : "SEND BRIEF →"}
-                  {submitting && <span className="animate-pulse">…</span>}
-                </button>
-              </div>
-            </div>
+          <div className="flex flex-wrap items-center gap-4 pt-4">
+            <button
+              data-submit
+              type="submit"
+              disabled={!formValid}
+              className={`inline-flex items-center gap-2 px-8 py-3 font-mono text-sm font-semibold uppercase tracking-wider transition-all duration-500 ${
+                formValid
+                  ? "border border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.02]"
+                  : "border border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
+              }`}
+              style={formValid ? { boxShadow: '0 0 30px #ff9d2360' } : {}}
+              onMouseEnter={(e) => {
+                if (formValid) {
+                  e.currentTarget.style.boxShadow = '0 0 40px #ff9d2380';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (formValid) {
+                  e.currentTarget.style.boxShadow = '0 0 30px #ff9d2360';
+                }
+              }}
+            >
+              {mode === "quick" ? "Send" : "Send Brief"}
+              {submitting && <span className="animate-pulse">…</span>}
+            </button>
+
+            {(disabledByTimer || cooldown>0) && (
+              <span className="text-xs text-white/65">
+                {disabledByTimer ? `Ready in ${countdown}s` : `Wait ${cooldown}s`}
+              </span>
+            )}
           </div>
-        </div>
+        </form>
+      </div>
 
-        {/* Consent */}
-        <label className="inline-flex items-center gap-2 text-base text-white/80 md:text-2xl">
-          <input
-            type="checkbox"
-            checked={data.consent}
-            onChange={(e) => setData({ ...data, consent: e.target.checked })}
-            className="h-6 w-6 accent-[#FF9D23] md:h-8 md:w-8"
-          />
-          Yeah, you can reply to this.
-        </label>
-      </form>
-
-      <div className="mt-4 text-center text-sm text-white/50 md:mt-6 md:text-2xl">I'll get back to you within 24 hours (Sydney time)</div>
+      <p className="text-xs text-white/65 text-center">
+        Usually reply within 1 business day. Sydney (AEST/AEDT).
+      </p>
     </div>
   );
 }
