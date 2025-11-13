@@ -1134,10 +1134,10 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
   // Context mapping for each stat
   const contextMap: Record<string, string> = {
-    "Projects": "60+ brands since 2019. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.",
+    "Projects": "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.",
     "Retention": "3 in 4 clients return. Systems that outlast the engagement.",
     "Repeat Clients": "45% return within 18 months. Long-term partnerships over one-off projects.",
-    "Years Active": "6 years. 60+ brands. Zero template work.",
+    "Years Active": "5 years. 60+ brands. Zero template work.",
     "Response": "48hr average. Usually 4hr. Async cadence with weekly 30min syncs.",
     "Industries": "8 sectors. Hospitality to health tech. Every brief gets fresh eyes."
   };
@@ -1333,19 +1333,35 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             animate={{ opacity: isFlipped ? 1 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <p
-              className="text-[15px] sm:text-[18px] md:text-[20px] leading-[1.7] text-white"
-              style={{
-                fontWeight: 400,
-                letterSpacing: '0.01em',
-                textShadow: '0 2px 4px rgba(0,0,0,0.8)'
-              }}
-            >
-              <span style={{ fontWeight: 600 }}>
+            <div>
+              {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
+              <div
+                className="text-[17px] sm:text-[20px] md:text-[22px] mb-3 sm:mb-4 leading-[1.6]"
+                style={{
+                  fontWeight: 600,
+                  letterSpacing: '0.01em',
+                  color: '#ffa940',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.8)'
+                }}
+              >
                 {firstSentence}
-              </span>
-              {rest && <span style={{ opacity: 0.9 }}> {rest}</span>}
-            </p>
+              </div>
+
+              {/* Rest - Smaller, Regular, White, Line Below */}
+              {rest && (
+                <div
+                  className="text-[15px] sm:text-[17px] md:text-[19px] leading-[1.7]"
+                  style={{
+                    fontWeight: 400,
+                    letterSpacing: '0.01em',
+                    color: 'rgba(255,255,255,0.9)',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.8)'
+                  }}
+                >
+                  {rest}
+                </div>
+              )}
+            </div>
           </motion.div>
 
           {/* Flip Back Hint */}
