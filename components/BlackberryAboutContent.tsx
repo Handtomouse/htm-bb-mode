@@ -678,27 +678,27 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative h-[110vh] flex flex-col items-center justify-center gap-12 md:gap-16 lg:gap-20 px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          <section className="relative min-h-[100vh] flex flex-col items-center justify-center gap-8 md:gap-16 lg:gap-20 px-4 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold uppercase text-center tracking-[0.15em] text-[#ff9d23]"
+            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold uppercase text-center tracking-[0.12em] md:tracking-[0.15em] text-[#ff9d23]"
             style={{
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
           >
             By The Numbers
           </motion.h2>
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 md:gap-x-12 md:gap-y-14 lg:gap-x-14 lg:gap-y-16 max-w-5xl mx-auto w-full">
             <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} />
-            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.15} />
-            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.3} />
-            <LuxuryStatCard label="Years Active" value="6" delay={0.45} />
-            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.6} />
-            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.75} />
+            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} />
+            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} />
+            <LuxuryStatCard label="Years Active" value="6" delay={0.3} />
+            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.4} />
+            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} />
           </div>
           </section>
         
@@ -1190,7 +1190,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
         ease: [0.16, 1, 0.3, 1]
       }}
       style={{ perspective: '1000px' }}
-      className="relative aspect-[4/3]"
+      className="relative aspect-[3/4] sm:aspect-[4/3]"
     >
       {/* Flip Container */}
       <motion.div
@@ -1218,16 +1218,16 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
       >
         {/* Front Side */}
         <div
-          className="absolute inset-0 p-6 md:p-10 text-center flex flex-col justify-center"
+          className="absolute inset-0 p-5 sm:p-6 md:p-10 text-center flex flex-col justify-center active:scale-[0.98]"
           style={{
             backfaceVisibility: 'hidden',
-            border: isHovered ? '1px solid rgba(255,157,35,0.4)' : '1px solid rgba(255,157,35,0.2)',
+            border: isHovered ? '1.5px solid rgba(255,157,35,0.4)' : '1.5px solid rgba(255,157,35,0.2)',
             background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(10px)',
             boxShadow: isHovered
-              ? '0 0 20px rgba(255,157,35,0.15), 0 5px 30px rgba(0,0,0,0.3)'
+              ? '0 0 14px rgba(255,157,35,0.12), 0 5px 25px rgba(0,0,0,0.25)'
               : hasFlippedBefore
-                ? '0 0 8px rgba(255,157,35,0.08)'
+                ? '0 0 6px rgba(255,157,35,0.06)'
                 : 'none',
             transform: isHovered ? 'translateY(-2px) translateZ(10px)' : 'translateY(0) translateZ(0)',
             transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
@@ -1236,7 +1236,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
           {/* Corner Fold Hint */}
           {isHovered && !isFlipped && (
             <div
-              className="absolute top-0 right-0 w-8 h-8"
+              className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8"
               style={{
                 background: 'linear-gradient(225deg, rgba(255,157,35,0.3) 0%, transparent 50%)',
                 clipPath: 'polygon(100% 0, 100% 100%, 0 0)'
@@ -1246,7 +1246,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
           {/* Number Display */}
           <div
-            className="text-[42px] md:text-[54px] lg:text-[68px] font-extrabold"
+            className="text-[36px] md:text-[54px] lg:text-[68px] font-extrabold"
             style={{
               letterSpacing: '-0.04em',
               background: 'linear-gradient(180deg, #ff9d23 0%, #ffaa35 100%)',
@@ -1254,8 +1254,8 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               filter: isHovered
-                ? 'drop-shadow(0 0 60px rgba(255,157,35,0.6)) drop-shadow(0 0 100px rgba(255,157,35,0.3)) drop-shadow(0 0 120px rgba(255,157,35,0.15))'
-                : 'drop-shadow(0 0 30px rgba(255,157,35,0.3))',
+                ? 'drop-shadow(0 0 42px rgba(255,157,35,0.5)) drop-shadow(0 0 70px rgba(255,157,35,0.25)) drop-shadow(0 0 84px rgba(255,157,35,0.12))'
+                : 'drop-shadow(0 0 21px rgba(255,157,35,0.25))',
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
               transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
@@ -1263,7 +1263,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             {prefix}{number}
             {suffix && (
               <span
-                className="text-[28px] md:text-[36px] lg:text-[44px]"
+                className="text-[24px] md:text-[36px] lg:text-[44px]"
                 style={{
                   opacity: 0.9,
                   marginLeft: '0.1em',
@@ -1280,7 +1280,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
           {/* Label */}
           <div
-            className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-6"
+            className="text-[18px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.08em] mt-4 sm:mt-6"
             style={{
               color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
               transition: 'color 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
@@ -1295,7 +1295,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute top-3 left-3 text-[10px] px-3 py-1.5 rounded uppercase tracking-wider"
+              className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] px-3 py-1.5 rounded uppercase tracking-wider"
               style={{
                 background: 'rgba(255,157,35,0.2)',
                 color: '#ff9d23',
@@ -1310,21 +1310,22 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
         {/* Back Side */}
         <div
-          className="absolute inset-0 p-10 md:p-12 text-center flex flex-col justify-center"
+          className="absolute inset-0 p-10 md:p-12 text-center flex flex-col justify-center active:scale-[0.98]"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
             border: isHovered && isFlipped
-              ? '2px solid transparent'
-              : '2px solid transparent',
+              ? '1.5px solid transparent'
+              : '1.5px solid transparent',
             borderImage: isHovered && isFlipped
               ? 'linear-gradient(135deg, rgba(255,157,35,0.8), rgba(255,157,35,0.4), rgba(255,157,35,0.8)) 1'
               : 'linear-gradient(135deg, rgba(255,157,35,0.6), rgba(255,157,35,0.3), rgba(255,157,35,0.6)) 1',
             background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.4) 100%)',
-            backdropFilter: 'blur(25px) saturate(1.2)',
+            backdropFilter: 'blur(12px) saturate(1.2)',
+            WebkitBackdropFilter: 'blur(12px) saturate(1.2)',
             boxShadow: isHovered && isFlipped
-              ? '0 0 50px rgba(255,157,35,0.35), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.15)'
-              : '0 0 40px rgba(255,157,35,0.25), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.1)',
+              ? '0 0 35px rgba(255,157,35,0.3), 0 10px 50px rgba(0,0,0,0.4), inset 0 0 25px rgba(255,157,35,0.12)'
+              : '0 0 28px rgba(255,157,35,0.2), 0 10px 50px rgba(0,0,0,0.4), inset 0 0 25px rgba(255,157,35,0.08)',
             borderTop: isFlipped ? '1px solid rgba(255,157,35,0.3)' : 'none',
             transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
@@ -1337,7 +1338,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
             transition={{ delay: 0.1, duration: 0.3 }}
           >
             <p
-              className="text-[16px] md:text-[18px] leading-[1.8] text-white"
+              className="text-[14px] sm:text-[16px] md:text-[18px] leading-[1.8] text-white"
               style={{
                 fontWeight: 400,
                 letterSpacing: '0.01em',
@@ -1351,7 +1352,7 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
           {/* Flip Back Hint */}
           <motion.div
-            className="absolute bottom-4 right-4 text-[11px] text-white/70 uppercase tracking-[0.15em]"
+            className="absolute bottom-4 right-4 text-[9px] sm:text-[11px] text-white/70 uppercase tracking-[0.15em]"
             style={{
               fontWeight: 500,
               textShadow: '0 0 12px rgba(255,157,35,0.4)'
