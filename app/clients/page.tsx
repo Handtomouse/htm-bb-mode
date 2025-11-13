@@ -619,7 +619,7 @@ export default function ClientsPage() {
             animate={{ scale: 1, y: 0, rotate: 0 }}
             exit={{ scale: 0.92, y: 20, rotate: -2 }}
             transition={{ type: "spring", damping: 30, stiffness: 250, delay: 0.05 }}
-            className="relative max-w-6xl w-full bg-[#1a1a1a] border border-white/5 p-8 sm:p-12 md:p-16 lg:p-20 max-h-[90vh] overflow-y-auto scroll-smooth"
+            className="relative max-w-6xl w-full bg-[#0a0a0a] border border-white/5 p-8 sm:p-12 md:p-16 lg:p-20 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
               boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10, 0 0 30px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}05`,
@@ -627,39 +627,6 @@ export default function ClientsPage() {
               scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`
             }}
           >
-            {/* Corner accents - all 4 corners with staggered animation */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.08 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2"
-              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.08 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2"
-              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.08 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2"
-              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.08 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2"
-              style={{ borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}
-            />
-
-            {/* Scroll fade gradients - lighter */}
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#1a1a1a] via-[#1a1a1a]/10 to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/10 to-transparent pointer-events-none z-10" />
             {/* Close button with sector color accent and ripple */}
             <button
               onClick={(e) => {
@@ -692,20 +659,6 @@ export default function ClientsPage() {
               </div>
             </button>
 
-            {/* Featured Client Banner */}
-            {selectedClient.featured && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.05 }}
-                className="absolute top-0 left-0 px-8 py-3 bg-gradient-to-r from-transparent to-transparent"
-                style={{
-                  background: `linear-gradient(90deg, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}25, transparent)`
-                }}
-              >
-                <span className="text-[11px] font-light tracking-[0.3em] uppercase text-white/90">Featured Client</span>
-              </motion.div>
-            )}
 
             {/* Badges - moved above logo */}
             <motion.div
@@ -732,7 +685,7 @@ export default function ClientsPage() {
                       animation: selectedClient.status === 'active' ? 'ripple 2s ease-in-out infinite' : 'none'
                     }}
                   />
-                  <span className="text-[11px] text-white/70 uppercase tracking-wider font-light">{selectedClient.status}</span>
+                  <span className="text-[11px] text-white uppercase tracking-wider font-light">{selectedClient.status}</span>
                 </div>
             </motion.div>
 
@@ -741,7 +694,7 @@ export default function ClientsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-24 pb-24 relative text-center"
+              className="mb-16 pb-16 relative text-center"
             >
               <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
               {selectedClient.logo ? (
@@ -761,7 +714,7 @@ export default function ClientsPage() {
             {/* Client Details Grid - Conditional Layout */}
             <div className={`mb-24 ${
               (selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length)
-                ? 'grid md:grid-cols-2 gap-24'
+                ? 'grid md:grid-cols-2 gap-16'
                 : 'flex justify-center'
             }`}>
               {/* Left Column - Key Info */}
@@ -769,28 +722,28 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className={`space-y-20 ${
+                className={`space-y-12 ${
                   !(selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length)
                     ? 'max-w-[600px]'
                     : ''
                 }`}
               >
                 <div className="relative pb-6">
-                  <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                  <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
                     Projects Delivered
                   </p>
-                  <p className="text-[24px] text-white font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
+                  <p className="text-[32px] text-white font-light tabular-nums">{selectedClient.projects.toLocaleString()}</p>
                   <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
                 {selectedClient.yearStarted && (
                   <div className="relative pb-6">
-                    <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
                       Timeline
                     </p>
-                    <p className="text-[24px] text-white font-light">
+                    <p className="text-[32px] text-white font-light">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
-                      <span className="block text-[14px] text-white/50 mt-5">
+                      <span className="block text-[14px] text-white/70 mt-5">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
@@ -800,7 +753,7 @@ export default function ClientsPage() {
 
                 {selectedClient.website && (
                   <div className="relative">
-                    <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
                       Website
                     </p>
                     <a
@@ -840,12 +793,12 @@ export default function ClientsPage() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="space-y-20 pl-16"
+                  className="space-y-12"
                 >
                   {selectedClient.tagline && (
                     <div>
-                      <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">Tagline</p>
-                      <p className="text-[18px] text-white/80 leading-[1.8] font-light">
+                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">Tagline</p>
+                      <p className="text-[18px] text-white leading-[1.8] font-light">
                         {selectedClient.tagline}
                       </p>
                     </div>
@@ -853,7 +806,7 @@ export default function ClientsPage() {
 
                   {selectedClient.results && (
                     <div className="px-16 py-16 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                      <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
                         Results
                       </p>
                       <p className="text-[18px] text-white font-light leading-[1.8]">{selectedClient.results}</p>
@@ -862,7 +815,7 @@ export default function ClientsPage() {
 
                   {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
                     <div>
-                      <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">
+                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">
                         Deliverables
                       </p>
                       <div className="flex flex-wrap gap-4">
@@ -872,7 +825,7 @@ export default function ClientsPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                            className="px-12 py-6 text-[12px] bg-white/5 border border-white/10 text-white/85 rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
+                            className="px-12 py-6 text-[12px] bg-white/5 border border-white/10 text-white rounded-sm transition-all duration-500 hover:bg-white/10 hover:scale-105"
                           style={{
                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                             letterSpacing: '0.02em',
@@ -901,10 +854,10 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="pt-24 relative"
+                className="pt-16 relative"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-                <p className="text-[16px] text-white/75 uppercase tracking-[0.15em] mb-8">Testimonial</p>
+                <p className="text-[14px] text-white font-medium uppercase tracking-[0.15em] mb-8">Testimonial</p>
 
                 {/* Large opening quote */}
                 <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
