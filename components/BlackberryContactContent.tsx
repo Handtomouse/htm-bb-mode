@@ -3,6 +3,17 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import BBPageHeader from "./BBPageHeader";
+import { useSettings, useClickSound } from "@/lib/hooks";
+import {
+  isDisposableEmail,
+  getTemplateByKeyword,
+  getCharacterWarningLevel,
+  formatTimeAgo,
+  getFileTypeIcon,
+  formatFileSize,
+  KEYBOARD_SHORTCUTS,
+  getCompletionSummary,
+} from "@/lib/formUtils";
 
 const ACCENT = "#FF9D23";
 
@@ -55,6 +66,10 @@ const TIMELINES = ["ASAP (this month)", "1–3 months", "3+ months", "Exploring"
 const SERVICES = ["Branding", "Packaging", "Web/Next.js", "Campaign", "Strategy", "Other"] as const;
 
 export default function BlackberryContactContent() {
+  // Improvement #8: Settings integration
+  const [settings] = useSettings();
+  const playClickSound = useClickSound(settings.sound);
+
   const [mode, setMode] = useState<ContactMode>("quick");
   const [data, setData] = useState<Payload>({
     mode: "quick",
@@ -73,20 +88,27 @@ export default function BlackberryContactContent() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false); // Improvement #20
   const [toast, setToast] = useState<{ type: "success" | "error" | "info"; msg: string; id: number } | null>(null);
   const [countdown, setCountdown] = useState(7);
   const [online, setOnline] = useState(true);
   const [cooldown, setCooldown] = useState(0);
   const [savedMsg, setSavedMsg] = useState<string>("");
+  const [lastSavedTime, setLastSavedTime] = useState<number | null>(null); // Improvement #9
   const [files, setFiles] = useState<File[]>([]);
   const [filesError, setFilesError] = useState<string>("");
+  const [isDragging, setIsDragging] = useState(false); // Improvement #5
+  const [copiedEmail, setCopiedEmail] = useState(false); // Improvement #3
+  const [showShortcuts, setShowShortcuts] = useState(false); // Improvement #13
   const submitAbortRef = useRef<AbortController | null>(null);
   const saveTimerRef = useRef<number | null>(null);
+  const lastSavedIntervalRef = useRef<number | null>(null);
 
   const nameRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
   const messageRef = useRef<HTMLTextAreaElement | null>(null);
   const companyRef = useRef<HTMLInputElement | null>(null);
+  const budgetRef = useRef<HTMLSelectElement | null>(null); // Improvement #2
   const srLiveRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -133,7 +155,7 @@ export default function BlackberryContactContent() {
     };
   }, []);
 
-  // Draft persistence
+  // Draft persistence with Improvement #9: timestamp tracking
   const DRAFT_KEY = "bb-contact-draft";
   useEffect(() => {
     try {
@@ -141,21 +163,36 @@ export default function BlackberryContactContent() {
       if (raw) {
         const parsed = JSON.parse(raw);
         setData((d) => ({ ...d, ...parsed }));
+        setLastSavedTime(Date.now());
       }
     } catch {}
   }, []);
+
   useEffect(() => {
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     saveTimerRef.current = window.setTimeout(() => {
       try {
         localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+        const now = Date.now();
+        setLastSavedTime(now);
         setSavedMsg("Saved");
-        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = settings.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         window.setTimeout(() => setSavedMsg("") , reduce ? 1200 : 600);
       } catch {}
     }, 400);
     return () => { if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current); };
-  }, [data]);
+  }, [data, settings.reducedMotion]);
+
+  // Improvement #9: Update "last saved" indicator every 5 seconds
+  useEffect(() => {
+    if (lastSavedIntervalRef.current) window.clearInterval(lastSavedIntervalRef.current);
+    if (lastSavedTime) {
+      lastSavedIntervalRef.current = window.setInterval(() => {
+        setLastSavedTime((prev) => prev); // Trigger re-render for formatTimeAgo
+      }, 5000);
+    }
+    return () => { if (lastSavedIntervalRef.current) window.clearInterval(lastSavedIntervalRef.current); };
+  }, [lastSavedTime]);
 
   // Leave-page protection
   useEffect(() => {
@@ -289,14 +326,22 @@ export default function BlackberryContactContent() {
         attachments: files.length,
       });
 
-      // Success confetti animation
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Improvement #18: Enhanced confetti with settings respect
+      const prefersReducedMotion = settings.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
+        // Success sound
+        if (settings.sound) playClickSound();
+
+        // BB-themed confetti with custom shapes
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
           colors: ['#F4A259', '#FF9D23', '#FFB84D', '#FFC266'],
+          shapes: ['square', 'circle'],
+          gravity: 1,
+          drift: 0,
+          ticks: 200,
         });
         setTimeout(() => {
           confetti({
@@ -305,6 +350,7 @@ export default function BlackberryContactContent() {
             spread: 55,
             origin: { x: 0 },
             colors: ['#F4A259', '#FF9D23'],
+            shapes: ['square'],
           });
         }, 250);
         setTimeout(() => {
@@ -313,30 +359,38 @@ export default function BlackberryContactContent() {
             angle: 120,
             spread: 55,
             origin: { x: 1 },
-            colors: ['#F4A259', '#FF9D23'],
+            colors: ['#FFB84D', '#FFC266'],
+            shapes: ['square'],
           });
         }, 400);
       }
 
+      // Improvement #20: Success state
+      setSubmitSuccess(true);
       showToast("success", "Thanks—got it. I'll reply within 1 business day.");
       announce("Message sent successfully");
       try { localStorage.removeItem(DRAFT_KEY); } catch {}
-      setData((d) => ({
-        ...d,
-        name: "",
-        email: "",
-        message: "",
-        company: "",
-        budget: "",
-        timeline: "",
-        services: [],
-        referral: "",
-        attachment_url: "",
-        website: "",
-      }));
-      setFiles([]);
-      nameRef.current?.focus();
-      setCooldown(2);
+      setLastSavedTime(null);
+
+      // Don't clear form immediately - show success state first
+      setTimeout(() => {
+        setData((d) => ({
+          ...d,
+          name: "",
+          email: "",
+          message: "",
+          company: "",
+          budget: "",
+          timeline: "",
+          services: [],
+          referral: "",
+          attachment_url: "",
+          website: "",
+        }));
+        setFiles([]);
+        nameRef.current?.focus();
+        setCooldown(2);
+      }, 3000);
     } catch (err: any) {
       console.error(err);
       showToast("error", err?.message || "Couldn't send just now. Please try again when online.");
@@ -352,18 +406,48 @@ export default function BlackberryContactContent() {
     return () => window.clearInterval(t);
   }, [cooldown]);
 
+  // Improvement #13: Enhanced keyboard shortcuts
   const onKeyDown = (e: React.KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
       const form = e.currentTarget as HTMLElement;
       (form.querySelector('[data-submit]') as HTMLButtonElement | null)?.click();
       return;
     }
-    if (e.key === "Escape" && toast) { setToast(null); return; }
+    if (e.key === "Escape") {
+      if (toast) setToast(null);
+      if (showShortcuts) setShowShortcuts(false);
+      return;
+    }
     if (e.altKey && (e.key === "r" || e.key === "R")) {
       e.preventDefault();
       setData((d) => ({ ...d, name: "", email: "", message: "", company: "", budget: "", timeline: "", services: [], referral: "", attachment_url: "" }));
       setFiles([]);
       showToast("info", "Form cleared");
+      announce("Form cleared");
+      return;
+    }
+    // Improvement #13: Mode switching shortcuts
+    if (e.altKey && (e.key === "q" || e.key === "Q")) {
+      e.preventDefault();
+      setMode("quick");
+      playClickSound();
+      showToast("info", "Switched to Quick mode");
+      announce("Switched to Quick message mode");
+      return;
+    }
+    if (e.altKey && (e.key === "b" || e.key === "B")) {
+      e.preventDefault();
+      setMode("brief");
+      playClickSound();
+      showToast("info", "Switched to Brief mode");
+      announce("Switched to Project brief mode");
+      return;
+    }
+    // Toggle shortcuts help
+    if (e.key === "?" && e.shiftKey) {
+      e.preventDefault();
+      setShowShortcuts((prev) => !prev);
+      announce(showShortcuts ? "Keyboard shortcuts hidden" : "Keyboard shortcuts displayed");
       return;
     }
   };
@@ -377,16 +461,51 @@ export default function BlackberryContactContent() {
   const goal = 30;
   const progress = Math.min(goal, (data.message?.trim().length || 0));
 
-  const onDragOver = (e: React.DragEvent) => { e.preventDefault(); };
+  // Improvement #1 & #6: Character counters and field completion
+  const nameLength = data.name.trim().length;
+  const emailLength = data.email.trim().length;
+  const messageLength = data.message.trim().length;
+  const nameValid = nameLength >= 2 && nameLength <= 80;
+  const emailValid = isEmail(data.email.trim());
+  const messageValid = messageLength >= 30;
+
+  // Improvement #10: Character warnings
+  const nameWarning = getCharacterWarningLevel(nameLength, 80);
+  const emailWarning = getCharacterWarningLevel(emailLength, 254);
+
+  // Improvement #6: Completion summary
+  const completionSummary = getCompletionSummary(data, mode);
+
+  // Improvement #12: Disposable email check
+  const emailDisposable = data.email.trim() && isDisposableEmail(data.email.trim());
+
+  // Improvement #5: Drag & drop visual feedback
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const onDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (e.currentTarget === e.target) {
+      setIsDragging(false);
+    }
+  };
+
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(false);
     const dt = e.dataTransfer;
     if (dt.files && dt.files.length) {
       const next = Array.from(dt.files).slice(0, MAX_FILES);
       const all = [...files, ...next].slice(0, MAX_FILES);
       const err = validateFiles(all);
       setFilesError(err);
-      if (!err) setFiles(all);
+      if (!err) {
+        setFiles(all);
+        showToast("info", `Added ${next.length} file${next.length > 1 ? 's' : ''}`);
+        announce(`Added ${next.length} file${next.length > 1 ? 's' : ''}`);
+      }
       return;
     }
     const uri = dt.getData("text/uri-list") || dt.getData("text/plain");
@@ -422,8 +541,14 @@ export default function BlackberryContactContent() {
         </div>
       )}
 
-      {savedMsg && (
-        <div className="mb-3 text-xs text-white/50" aria-live="polite">{savedMsg}</div>
+      {/* Improvement #9: Enhanced saved indicator with timestamp */}
+      {(savedMsg || lastSavedTime) && (
+        <div className="mb-3 flex items-center gap-2 text-xs text-white/50" aria-live="polite">
+          {savedMsg && <span className="text-green-400">✓ {savedMsg}</span>}
+          {!savedMsg && lastSavedTime && (
+            <span>Last saved: {formatTimeAgo(lastSavedTime)}</span>
+          )}
+        </div>
       )}
 
       {toast && (
@@ -468,7 +593,14 @@ export default function BlackberryContactContent() {
         </a>
         <button
           type="button"
-          onClick={() => navigator.clipboard?.writeText("hello@handtomouse.com")}
+          onClick={() => {
+            navigator.clipboard?.writeText("hello@handtomouse.com");
+            // Improvement #3: Success feedback
+            setCopiedEmail(true);
+            playClickSound();
+            showToast("info", "Email copied to clipboard");
+            setTimeout(() => setCopiedEmail(false), 2000);
+          }}
           className="group relative border border-white/5 bg-[#131313] p-4 text-left hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] overflow-hidden hover:scale-[1.02]"
           style={{ transition: 'all 0.5s ease' }}
           onMouseEnter={(e) => {
@@ -482,12 +614,57 @@ export default function BlackberryContactContent() {
           <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
           <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
           <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="text-xs text-white/65 uppercase tracking-wider">Copy Email</div>
+          <div className="text-xs text-white/65 uppercase tracking-wider">
+            {copiedEmail ? "✓ Copied!" : "Copy Email"}
+          </div>
           <div className="mt-1 text-sm font-medium group-hover:text-[#ff9d23] transition-colors duration-500 truncate">
             hello@htm.com
           </div>
         </button>
       </div>
+
+      {/* Improvement #6: Form completion indicator */}
+      {completionSummary.completed > 0 && (
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex-1 h-1 bg-white/10 overflow-hidden">
+            <div
+              className="h-full bg-[#ff9d23] transition-all duration-500"
+              style={{ width: `${completionSummary.percentage}%` }}
+            />
+          </div>
+          <span className="text-xs text-white/65 font-mono">
+            {completionSummary.completed}/{completionSummary.total} fields
+          </span>
+        </div>
+      )}
+
+      {/* Improvement #13: Keyboard shortcuts panel */}
+      {showShortcuts && (
+        <div className="mb-4 border border-[#ff9d23]/30 bg-[#0a0a0a] p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-mono text-[#ff9d23] uppercase tracking-wider">Keyboard Shortcuts</h3>
+            <button
+              type="button"
+              onClick={() => setShowShortcuts(false)}
+              className="text-white/50 hover:text-white/80 text-xs"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="space-y-2">
+            {KEYBOARD_SHORTCUTS.map((shortcut, idx) => (
+              <div key={idx} className="flex items-center justify-between text-xs">
+                <kbd className="px-2 py-1 bg-white/5 border border-white/10 font-mono">{shortcut.key}</kbd>
+                <span className="text-white/65">{shortcut.action}</span>
+              </div>
+            ))}
+            <div className="flex items-center justify-between text-xs">
+              <kbd className="px-2 py-1 bg-white/5 border border-white/10 font-mono">Shift + ?</kbd>
+              <span className="text-white/65">Toggle this help</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Form Container */}
       <div
@@ -502,7 +679,12 @@ export default function BlackberryContactContent() {
             <button
               key={m}
               type="button"
-              onClick={() => setMode(m)}
+              onClick={() => {
+                setMode(m);
+                // Improvement #8: Sound feedback
+                playClickSound();
+                announce(`Switched to ${m === "quick" ? "Quick message" : "Project brief"} mode`);
+              }}
               className={`px-6 py-3 font-mono text-sm font-medium uppercase tracking-wider transition-all duration-500 ${
                 mode === m
                   ? "bg-[#ff9d23] text-black"
@@ -510,6 +692,7 @@ export default function BlackberryContactContent() {
               }`}
               style={mode === m ? { boxShadow: '0 0 20px #ff9d2360' } : {}}
               role="tab"
+              aria-selected={mode === m}
             >
               {m === "quick" ? "Quick" : "Brief"}
             </button>
@@ -518,12 +701,54 @@ export default function BlackberryContactContent() {
 
         <form
           noValidate
-          className="space-y-5"
+          className={`space-y-5 transition-all duration-300 ${isDragging ? 'ring-2 ring-[#ff9d23] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
           onSubmit={onSubmit}
           onKeyDown={onKeyDown}
           onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
           onDrop={onDrop}
         >
+          {/* Improvement #5: Drag indicator overlay */}
+          {isDragging && (
+            <div className="absolute inset-0 bg-[#ff9d23]/10 border-2 border-dashed border-[#ff9d23] flex items-center justify-center pointer-events-none z-10">
+              <div className="bg-[#0a0a0a] px-6 py-3 border border-[#ff9d23]">
+                <p className="text-[#ff9d23] font-mono text-sm uppercase tracking-wider">📎 Drop files here</p>
+              </div>
+            </div>
+          )}
+
+          {/* Improvement #19: Loading overlay */}
+          {submitting && (
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-20">
+              <div className="bg-[#0a0a0a] border border-[#ff9d23] px-8 py-6 flex items-center gap-4">
+                <div className="animate-spin h-5 w-5 border-2 border-[#ff9d23] border-t-transparent rounded-full"></div>
+                <p className="text-white font-mono text-sm uppercase tracking-wider">Sending...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Improvement #20: Success state overlay */}
+          {submitSuccess && !submitting && (
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-20">
+              <div className="bg-[#0a0a0a] border-2 border-[#ff9d23] px-12 py-10 text-center max-w-md">
+                <div className="text-4xl mb-4">✓</div>
+                <h3 className="text-xl font-bold text-[#ff9d23] mb-3 uppercase tracking-wider">Message Sent!</h3>
+                <p className="text-white/80 mb-4 text-sm leading-relaxed">
+                  Thanks for reaching out. I'll reply within 1 business day.
+                </p>
+                <div className="text-xs text-white/50 mb-4">
+                  Usually reply within 4 hours • Sydney (AEST/AEDT)
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSubmitSuccess(false)}
+                  className="border border-[#ff9d23] bg-[#ff9d23] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[#FFB84D] transition-colors duration-300"
+                >
+                  Send another message
+                </button>
+              </div>
+            </div>
+          )}
           {/* Honeypot */}
           <div className="sr-only" aria-hidden>
             <input
@@ -540,7 +765,21 @@ export default function BlackberryContactContent() {
           {/* Name + Email */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Name*</label>
+              <div className="mb-2 flex items-center justify-between">
+                <label htmlFor="name" className="font-mono text-xs text-white/65 uppercase tracking-wider flex items-center gap-2">
+                  Name*
+                  {/* Improvement #6: Completion indicator */}
+                  {nameValid && <span className="text-green-400 text-xs">✓</span>}
+                </label>
+                {/* Improvement #1: Character counter */}
+                <span className={`text-xs font-mono ${
+                  nameWarning === 'danger' ? 'text-red-400' :
+                  nameWarning === 'warning' ? 'text-orange-400' :
+                  'text-white/40'
+                }`}>
+                  {nameLength}/80
+                </span>
+              </div>
               <input
                 id="name"
                 ref={nameRef}
@@ -548,9 +787,22 @@ export default function BlackberryContactContent() {
                 required
                 maxLength={120}
                 autoComplete="name"
+                inputMode="text"
                 value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
-                onBlur={onBlurTrim("name")}
+                onChange={(e) => {
+                  setData({ ...data, name: e.target.value });
+                  // Improvement #14: ARIA announcement for milestones
+                  const len = e.target.value.trim().length;
+                  if (len === 2) announce("Name minimum length reached");
+                  if (len === 70) announce("10 characters remaining for name");
+                }}
+                onBlur={(e) => {
+                  onBlurTrim("name")(e);
+                  // Improvement #2: Auto-focus next field
+                  if (nameValid && emailRef.current) {
+                    emailRef.current.focus();
+                  }
+                }}
                 className={`w-full border px-4 py-3 text-sm text-white outline-none transition-all duration-500 ${
                   errors.name
                     ? "border-red-400 bg-red-400/20 animate-pulse"
@@ -560,9 +812,29 @@ export default function BlackberryContactContent() {
               {errors.name && (
                 <p className="mt-1 text-xs text-red-400">{errors.name}</p>
               )}
+              {/* Improvement #10: Warning when approaching limit */}
+              {!errors.name && nameLength > 70 && nameLength < 80 && (
+                <p className="mt-1 text-xs text-orange-400">
+                  {80 - nameLength} characters remaining
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="email" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Email*</label>
+              <div className="mb-2 flex items-center justify-between">
+                <label htmlFor="email" className="font-mono text-xs text-white/65 uppercase tracking-wider flex items-center gap-2">
+                  Email*
+                  {/* Improvement #6: Completion indicator */}
+                  {emailValid && <span className="text-green-400 text-xs">✓</span>}
+                </label>
+                {/* Improvement #1: Character counter */}
+                <span className={`text-xs font-mono ${
+                  emailWarning === 'danger' ? 'text-red-400' :
+                  emailWarning === 'warning' ? 'text-orange-400' :
+                  'text-white/40'
+                }`}>
+                  {emailLength}/254
+                </span>
+              </div>
               <input
                 id="email"
                 ref={emailRef}
@@ -570,9 +842,22 @@ export default function BlackberryContactContent() {
                 required
                 maxLength={254}
                 autoComplete="email"
+                inputMode="email"
                 value={data.email}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-                onBlur={onBlurTrim("email")}
+                onChange={(e) => {
+                  setData({ ...data, email: e.target.value });
+                  // Improvement #14: ARIA announcement
+                  if (isEmail(e.target.value.trim())) {
+                    announce("Valid email entered");
+                  }
+                }}
+                onBlur={(e) => {
+                  onBlurTrim("email")(e);
+                  // Improvement #2: Auto-focus next field
+                  if (emailValid && messageRef.current) {
+                    messageRef.current.focus();
+                  }
+                }}
                 className={`w-full border px-4 py-3 text-sm text-white outline-none transition-all duration-500 ${
                   errors.email
                     ? "border-red-400 bg-red-400/20 animate-pulse"
@@ -583,10 +868,19 @@ export default function BlackberryContactContent() {
                 <button
                   type="button"
                   className="mt-1 text-xs underline text-white/65 hover:text-[#ff9d23]"
-                  onClick={() => setData((d) => ({ ...d, email: emailSuggestion }))}
+                  onClick={() => {
+                    setData((d) => ({ ...d, email: emailSuggestion }));
+                    announce("Email corrected");
+                  }}
                 >
                   Did you mean {emailSuggestion}?
                 </button>
+              )}
+              {/* Improvement #12: Disposable email warning */}
+              {emailDisposable && !errors.email && (
+                <p className="mt-1 text-xs text-orange-400 flex items-center gap-1">
+                  ⚠️ Temporary emails may not receive replies
+                </p>
               )}
               {errors.email && (
                 <p className="mt-1 text-xs text-red-400">{errors.email}</p>
@@ -723,14 +1017,26 @@ export default function BlackberryContactContent() {
               {files.length > 0 && (
                 <ul className="mt-3 space-y-2 font-mono text-xs text-white/65">
                   {files.map((f, i) => (
-                    <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2">
-                      <span className="truncate">{f.name}</span>
+                    <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 border border-white/5 bg-[#0b0b0b] p-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {/* Improvement #11: File type icon */}
+                        <span className="text-base flex-shrink-0">{getFileTypeIcon(f.name)}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="truncate">{f.name}</div>
+                          {/* Improvement #11: File size display */}
+                          <div className="text-[10px] text-white/40">{formatFileSize(f.size)}</div>
+                        </div>
+                      </div>
                       <button
                         type="button"
-                        className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[#ff9d23] hover:text-[#ff9d23]"
-                        onClick={() => removeFile(i)}
+                        className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[#ff9d23] hover:text-[#ff9d23] flex-shrink-0"
+                        onClick={() => {
+                          removeFile(i);
+                          announce(`Removed ${f.name}`);
+                        }}
+                        aria-label={`Remove ${f.name}`}
                       >
-                        Remove
+                        ✕
                       </button>
                     </li>
                   ))}
