@@ -762,20 +762,24 @@ export default function ClientsPage() {
                   <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
                 </div>
 
-                {selectedClient.yearStarted && (
-                  <div className="relative pb-6">
-                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
-                      Timeline
-                    </p>
+                <div className="relative pb-6">
+                  <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
+                    Timeline
+                  </p>
+                  {selectedClient.yearStarted ? (
                     <p className="text-[32px] text-white font-light leading-[1.1]">
                       {selectedClient.yearStarted} - {selectedClient.status === 'active' ? 'Present' : new Date().getFullYear()}
                       <span className="block text-[15px] text-white/80 mt-5">
                         {new Date().getFullYear() - selectedClient.yearStarted} {new Date().getFullYear() - selectedClient.yearStarted === 1 ? 'year' : 'years'}
                       </span>
                     </p>
-                    <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
-                  </div>
-                )}
+                  ) : (
+                    <p className="text-[18px] text-white/40 italic">
+                      Timeline not disclosed
+                    </p>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                </div>
 
                 {selectedClient.website && (
                   <div className="relative">
@@ -820,31 +824,33 @@ export default function ClientsPage() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="space-y-12"
               >
-                  {selectedClient.tagline && (
-                    <div>
-                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Tagline</p>
-                      <p className="text-[18px] text-white leading-[1.8] font-light">
-                        {selectedClient.tagline}
-                      </p>
-                    </div>
-                  )}
+                  <div>
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Tagline</p>
+                    <p className="text-[18px] text-white leading-[1.8] font-light">
+                      {selectedClient.tagline || (
+                        <span className="italic text-white/40">Tagline forthcoming</span>
+                      )}
+                    </p>
+                  </div>
 
-                  {selectedClient.results && (
-                    <div className="px-12 py-12 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
-                        Results
-                      </p>
-                      <p className="text-[18px] text-white font-light leading-[1.8]">{selectedClient.results}</p>
-                    </div>
-                  )}
+                  <div className="px-12 py-12 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
+                      Results
+                    </p>
+                    <p className="text-[18px] text-white font-light leading-[1.8]">
+                      {selectedClient.results || (
+                        <span className="italic text-white/40">Results confidential or forthcoming</span>
+                      )}
+                    </p>
+                  </div>
 
-                  {selectedClient.deliverables && selectedClient.deliverables.length > 0 && (
-                    <div>
-                      <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
-                        Deliverables
-                      </p>
-                      <div className="flex flex-wrap gap-4">
-                        {selectedClient.deliverables.map((item, i) => (
+                  <div>
+                    <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
+                      Deliverables
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {(selectedClient.deliverables && selectedClient.deliverables.length > 0) ? (
+                        selectedClient.deliverables.map((item, i) => (
                           <motion.span
                             key={i}
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -865,49 +871,50 @@ export default function ClientsPage() {
                         >
                           {item}
                           </motion.span>
-                        ))}
-                      </div>
+                        ))
+                      ) : (
+                        <span className="px-8 py-4 text-[12px] bg-white/5 border border-white/10 text-white/40 italic rounded-sm">
+                          Details forthcoming
+                        </span>
+                      )}
                     </div>
-                  )}
-
-                  {/* Empty state if no content */}
-                  {!selectedClient.tagline && !selectedClient.results && !selectedClient.deliverables?.length && (
-                    <div className="flex items-center justify-center h-full min-h-[200px]">
-                      <p className="text-[14px] text-white/30 uppercase tracking-[0.2em] text-center">
-                        Core metrics displayed
-                      </p>
-                    </div>
-                  )}
+                  </div>
                 </motion.div>
             </div>
 
-            {/* Testimonial with decorative quotes */}
-            {selectedClient.testimonial && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.35 }}
-                className="pt-16 relative max-w-[700px] mx-auto"
-              >
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-                <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Testimonial</p>
+            {/* Testimonial with decorative quotes - Always render */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="pt-16 relative max-w-[700px] mx-auto"
+            >
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Testimonial</p>
 
-                {/* Large opening quote */}
-                <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
+              {selectedClient.testimonial ? (
+                <>
+                  {/* Large opening quote */}
+                  <div className="absolute left-0 top-16 text-[120px] leading-none text-white/5 font-serif select-none">"</div>
 
-                <blockquote className="relative text-[20px] text-white font-light italic leading-[1.8] pl-16 mb-4">
-                  {selectedClient.testimonial}
-                </blockquote>
+                  <blockquote className="relative text-[20px] text-white font-light italic leading-[1.8] pl-16 mb-4">
+                    {selectedClient.testimonial}
+                  </blockquote>
 
-                {/* Large closing quote */}
-                <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
+                  {/* Large closing quote */}
+                  <div className="text-right text-[120px] leading-none text-white/5 font-serif select-none -mt-12">"</div>
 
-                {/* Client attribution */}
-                <p className="text-right text-[14px] text-white/60 font-light tracking-[0.15em] mt-6">
-                  — {selectedClient.name}
+                  {/* Client attribution */}
+                  <p className="text-right text-[14px] text-white/60 font-light tracking-[0.15em] mt-6">
+                    — {selectedClient.name}
+                  </p>
+                </>
+              ) : (
+                <p className="text-[16px] text-white/40 italic text-center py-8">
+                  Client testimonial forthcoming
                 </p>
-              </motion.div>
-            )}
+              )}
+            </motion.div>
           </motion.div>
         </motion.div>
       )}
