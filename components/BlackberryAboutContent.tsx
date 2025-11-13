@@ -1306,45 +1306,51 @@ function LuxuryStatCard({ label, value, delay }: { label: string; value: string;
 
         {/* Back Side */}
         <div
-          className="absolute inset-0 p-8 md:p-10 text-left flex flex-col justify-center"
+          className="absolute inset-0 p-10 md:p-12 text-center flex flex-col justify-center"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            border: isHovered && isFlipped ? '2px solid rgba(255,157,35,0.6)' : '2px solid rgba(255,157,35,0.5)',
-            background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(255,255,255,0.05) 100%)',
-            backdropFilter: 'blur(20px) saturate(1.2)',
+            border: isHovered && isFlipped
+              ? '2px solid transparent'
+              : '2px solid transparent',
+            borderImage: isHovered && isFlipped
+              ? 'linear-gradient(135deg, rgba(255,157,35,0.8), rgba(255,157,35,0.4), rgba(255,157,35,0.8)) 1'
+              : 'linear-gradient(135deg, rgba(255,157,35,0.6), rgba(255,157,35,0.3), rgba(255,157,35,0.6)) 1',
+            background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.4) 100%)',
+            backdropFilter: 'blur(25px) saturate(1.2)',
             boxShadow: isHovered && isFlipped
               ? '0 0 50px rgba(255,157,35,0.35), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.15)'
               : '0 0 40px rgba(255,157,35,0.25), 0 10px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,157,35,0.1)',
+            borderTop: isFlipped ? '1px solid rgba(255,157,35,0.3)' : 'none',
             transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
           {/* Context Text */}
           <motion.div
-            className="w-full px-2 md:px-3"
+            className="w-full px-4 md:px-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}
             transition={{ delay: 0.1, duration: 0.3 }}
           >
             <p
-              className="text-[14px] md:text-[16px] leading-[1.7] text-white"
+              className="text-[16px] md:text-[18px] leading-[1.8] text-white"
               style={{
-                fontWeight: 450,
-                letterSpacing: '0.02em',
-                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                fontWeight: 400,
+                letterSpacing: '0.01em',
+                textShadow: '0 2px 4px rgba(0,0,0,0.4)'
               }}
             >
-              <span style={{ fontWeight: 500 }}>{firstSentence}</span>
+              <span style={{ fontWeight: 600 }}>{firstSentence}</span>
               {rest && ` ${rest}`}
             </p>
           </motion.div>
 
           {/* Flip Back Hint */}
           <motion.div
-            className="absolute bottom-4 right-4 text-[10px] text-white/60 uppercase tracking-[0.15em]"
+            className="absolute bottom-4 right-4 text-[11px] text-white/70 uppercase tracking-[0.15em]"
             style={{
               fontWeight: 500,
-              textShadow: '0 0 10px rgba(255,157,35,0.3)'
+              textShadow: '0 0 12px rgba(255,157,35,0.4)'
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}
