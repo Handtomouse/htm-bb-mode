@@ -678,7 +678,7 @@ export default function BlackberryAboutContent() {
 
         {/* Stats Grid - Full Width */}
 
-          <section className="relative h-[120vh] flex flex-col items-center justify-center space-y-12 md:space-y-16 px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
+          <section className="relative h-[120vh] flex flex-col items-center justify-center px-6 md:px-8 lg:px-12 pt-8" style={{ scrollMarginTop: '4rem' }}>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
