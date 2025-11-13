@@ -711,22 +711,14 @@ export default function ClientsPage() {
               )}
             </motion.div>
 
-            {/* Client Details Grid - Conditional Layout */}
-            <div className={`mb-24 ${
-              (selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length)
-                ? 'grid md:grid-cols-2 gap-16'
-                : 'flex justify-center'
-            }`}>
+            {/* Client Details Grid - Always 2-Column */}
+            <div className="mb-24 grid md:grid-cols-2 gap-16">
               {/* Left Column - Key Info */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className={`space-y-12 ${
-                  !(selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length)
-                    ? 'max-w-[600px]'
-                    : ''
-                }`}
+                className="space-y-12"
               >
                 <div className="relative pb-6">
                   <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
@@ -787,14 +779,13 @@ export default function ClientsPage() {
                 )}
               </motion.div>
 
-              {/* Right Column - Main Content - Only render if content exists */}
-              {(selectedClient.tagline || selectedClient.results || selectedClient.deliverables?.length) && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="space-y-12"
-                >
+              {/* Right Column - Main Content - Always render */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="space-y-12"
+              >
                   {selectedClient.tagline && (
                     <div>
                       <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">Tagline</p>
@@ -844,8 +835,16 @@ export default function ClientsPage() {
                       </div>
                     </div>
                   )}
+
+                  {/* Empty state if no content */}
+                  {!selectedClient.tagline && !selectedClient.results && !selectedClient.deliverables?.length && (
+                    <div className="flex items-center justify-center h-full min-h-[200px]">
+                      <p className="text-[14px] text-white/30 uppercase tracking-[0.2em] text-center">
+                        Core metrics displayed
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
-              )}
             </div>
 
             {/* Testimonial with decorative quotes */}
