@@ -7,6 +7,7 @@ import { BBSkeletonCard } from "./BBSkeleton";
 import BlackberryAboutContent from "./BlackberryAboutContent";
 import BlackberryWormholeContent from "./BlackberryWormholeContent";
 import BlackberryClientsContent from "./BlackberryClientsContent";
+import BlackberryPortfolioContent from "./BlackberryPortfolioContent";
 
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
@@ -734,7 +735,9 @@ export default function BlackberryOS5Dashboard() {
           {/* Main area */}
           {openApp !== null ? (
             // App is open - render content inside BB screen
-            <AppContent appId={openApp} />
+            <main role="main">
+              <AppContent appId={openApp} />
+            </main>
           ) : mode === "home" ? (
             <HomeDockOverlay
               apps={apps}
@@ -998,11 +1001,11 @@ function AppContent({ appId }: { appId: string }) {
         fadeIn ? "opacity-100" : "opacity-0"
       } ${isFullscreen ? "" : "bg-black/40 backdrop-blur-sm"}`}
     >
-      <div className={appId === "wormhole" || appId === "about" || appId === "clients" ? "" : "p-4"}>
+      <div className={appId === "wormhole" || appId === "about" || appId === "clients" || appId === "portfolio" ? "" : "p-4"}>
         {loading ? (
           <div className="text-white/60 text-sm">Loading...</div>
         ) : appId === "portfolio" ? (
-          <PortfolioContent projects={data} />
+          <BlackberryPortfolioContent />
         ) : appId === "clients" ? (
           <BlackberryClientsContent />
         ) : appId === "notes" ? (
