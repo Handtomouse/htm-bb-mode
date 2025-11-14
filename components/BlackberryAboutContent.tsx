@@ -125,6 +125,8 @@ export default function BlackberryAboutContent() {
   const triggerHaptic = useHapticFeedback();
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const exitIntentShown = useRef(false);
 
   const lastScrollTop = useRef(0);
   const rafId = useRef<number | null>(null);
@@ -170,6 +172,22 @@ export default function BlackberryAboutContent() {
       return () => clearTimeout(timeout);
     }
   }, [typewriterComplete, headlineComplete]);
+
+  // Exit intent detection (desktop only)
+  useEffect(() => {
+    if (isMobile || exitIntentShown.current) return;
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      // Trigger when mouse moves to top 50px of viewport with upward velocity
+      if (e.clientY <= 50 && e.movementY < 0 && !exitIntentShown.current) {
+        exitIntentShown.current = true;
+        setShowExitIntent(true);
+      }
+    };
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, [isMobile]);
 
   // Enable scroll snap & smooth scroll (Fix #3, #10: desktop only)
   useEffect(() => {
@@ -520,6 +538,61 @@ export default function BlackberryAboutContent() {
           </a>
         ))}
       </nav>
+
+      {/* Exit Intent Popup */}
+      {showExitIntent && data && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          onClick={() => setShowExitIntent(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-2xl mx-4 border-2 border-[#ff9d23] bg-black p-8 md:p-12 shadow-[0_0_80px_rgba(255,157,35,0.4)]"
+          >
+            <button
+              onClick={() => setShowExitIntent(false)}
+              className="absolute top-4 right-4 text-white/60 hover:text-[#ff9d23] text-[24px] transition-colors"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+
+            <h3 className="text-[28px] md:text-[36px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] mb-6">
+              Wait — One Last Thing
+            </h3>
+            <p className="text-[18px] md:text-[22px] text-white/90 leading-relaxed mb-8">
+              {data.contact.status} • {data.contact.responseTime}
+            </p>
+            <p className="text-[16px] md:text-[18px] text-white/70 leading-relaxed mb-8">
+              Most projects start with a 30-min discovery call. No pitch, no pressure — just clarity on whether we're a fit.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <motion.a
+                href={`mailto:${data.contact.email}`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => triggerHaptic(15)}
+                className="flex-1 border-2 border-[#ff9d23] bg-[#ff9d23] px-8 py-4 text-center text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300"
+              >
+                Book a Call →
+              </motion.a>
+              <button
+                onClick={() => setShowExitIntent(false)}
+                className="flex-1 border-2 border-[#ff9d23]/40 bg-transparent px-8 py-4 text-[16px] font-bold text-[#ff9d23] uppercase tracking-wide hover:border-[#ff9d23] hover:bg-[#ff9d23]/10 transition-all duration-300"
+              >
+                Keep Browsing
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Back to Top Button */}
       {showBackToTop && (
