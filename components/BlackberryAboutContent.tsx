@@ -383,6 +383,23 @@ export default function BlackberryAboutContent() {
         }}
       />
 
+      {/* Scroll Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-[#ff9d23]/20 z-50"
+        style={{ transformOrigin: '0%' }}
+      >
+        <motion.div
+          className="h-full bg-gradient-to-r from-[#ff9d23] via-[#FFB84D] to-[#ff9d23]"
+          style={{
+            width: `${scrollProgress}%`,
+            boxShadow: '0 0 10px rgba(255,157,35,0.6)'
+          }}
+          initial={{ width: '0%' }}
+          animate={{ width: `${scrollProgress}%` }}
+          transition={{ duration: 0.1, ease: 'linear' }}
+        />
+      </motion.div>
+
       {/* Back to Top Button */}
       {showBackToTop && (
         <motion.button
