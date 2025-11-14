@@ -6,7 +6,7 @@ import BBPageHeader from "./BBPageHeader";
 import BBEmptyState from "./BBEmptyState";
 import BBButton from "./BBButton";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 type Category = "all" | "design" | "dev" | "social" | "tools";
 
@@ -183,7 +183,7 @@ export default function BlackberryWebContent() {
             triggerHaptic(10);
             setSearchQuery(e.target.value);
           }}
-          className="w-full border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder-white/40 focus:border-[#FF9D23] focus:outline-none"
+          className="w-full border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder-white/40 focus:border-[var(--accent)] focus:outline-none"
         />
       </div>
 
@@ -199,7 +199,7 @@ export default function BlackberryWebContent() {
               setCategory(cat);
             }}
             className={`flex-1 px-2 py-1 text-xs font-semibold uppercase ${
-              category === cat ? "bg-[#FF9D23] text-black" : "text-white/60 hover:text-white"
+              category === cat ? "bg-[var(--accent)] text-black" : "text-white/60 hover:text-white"
             }`}
           >
             {cat}
@@ -236,7 +236,7 @@ export default function BlackberryWebContent() {
                 triggerHaptic(10);
                 handleOpenLink(link.url);
               }}
-              className="flex w-full items-center gap-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6 text-left hover:border-[#FF9D23]/50"
+              className="flex w-full items-center gap-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6 text-left hover:border-[var(--accent)]/50"
             >
               <div className="text-2xl">{link.icon}</div>
               <div className="flex-1">
@@ -244,7 +244,7 @@ export default function BlackberryWebContent() {
                 <div className="text-sm text-white/50">{link.description}</div>
               </div>
               <div className="flex flex-col items-end gap-1">
-                <div className="rounded bg-[#FF9D23]/20 px-2 py-0.5 text-xs uppercase text-[#FF9D23]">
+                <div className="rounded bg-[var(--accent)]/20 px-2 py-0.5 text-xs uppercase text-[var(--accent)]">
                   {link.category}
                 </div>
                 <div className="text-xl text-white/30">↗</div>
@@ -263,7 +263,7 @@ export default function BlackberryWebContent() {
             triggerHaptic(10);
             handleOpenLink("https://handtomouse.com");
           }}
-          className="border-2 border-white/20 bg-black/20 px-3 py-2 text-xs font-semibold text-white hover:border-[#FF9D23] hover:text-[#FF9D23]"
+          className="border-2 border-white/20 bg-black/20 px-3 py-2 text-xs font-semibold text-white hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           🏠 Main Site
         </button>
@@ -272,7 +272,7 @@ export default function BlackberryWebContent() {
             triggerHaptic(10);
             handleOpenLink("https://handtomouse.com/portfolio");
           }}
-          className="border-2 border-white/20 bg-black/20 px-3 py-2 text-xs font-semibold text-white hover:border-[#FF9D23] hover:text-[#FF9D23]"
+          className="border-2 border-white/20 bg-black/20 px-3 py-2 text-xs font-semibold text-white hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           💼 Portfolio
         </button>

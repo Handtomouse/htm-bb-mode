@@ -100,7 +100,7 @@ export default function ConfirmationModal({
                   className={`flex-1 px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 ${
                     confirmVariant === "danger"
                       ? "border-[#ef4444] bg-[#ef4444]/10 text-[#ef4444] hover:bg-[#ef4444]/20"
-                      : "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20"
+                      : "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20"
                   }`}
                 >
                   {confirmText}

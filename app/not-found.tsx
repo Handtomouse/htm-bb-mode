@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 export default function NotFound() {
   const router = useRouter();
@@ -79,13 +79,13 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               onClick={() => router.back()}
-              className="flex-1 border-2 border-white/20 bg-black/20 px-6 py-3 text-sm font-semibold text-white hover:border-[#FF9D23] hover:text-[#FF9D23] transition-all uppercase tracking-wider"
+              className="flex-1 border-2 border-white/20 bg-black/20 px-6 py-3 text-sm font-semibold text-white hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all uppercase tracking-wider"
             >
               ← Go Back
             </button>
             <button
               onClick={() => router.push("/")}
-              className="flex-1 border-2 border-[#FF9D23]/50 bg-[#FF9D23]/10 px-6 py-3 text-sm font-semibold text-[#FF9D23] hover:border-[#FF9D23] hover:bg-[#FF9D23]/20 transition-all uppercase tracking-wider"
+              className="flex-1 border-2 border-[var(--accent)]/50 bg-[var(--accent)]/10 px-6 py-3 text-sm font-semibold text-[var(--accent)] hover:border-[var(--accent)] hover:bg-[var(--accent)]/20 transition-all uppercase tracking-wider"
             >
               Go Home →
             </button>

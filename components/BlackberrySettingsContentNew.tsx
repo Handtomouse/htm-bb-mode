@@ -12,10 +12,10 @@ import EnhancedSlider from "./EnhancedSlider";
 import SettingsSkeleton from "./SettingsSkeleton";
 import type { Settings } from "@/lib/hooks";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 const ACCENT_COLORS = [
-  { name: "Orange", value: "#ff9d23" },
+  { name: "Orange", value: "var(--accent)" },
   { name: "Blue", value: "#3a86ff" },
   { name: "Purple", value: "#9b5de5" },
   { name: "Green", value: "#06ffa5" },
@@ -174,7 +174,7 @@ export default function BlackberrySettingsContentNew() {
                   ? "border-[#ef4444]/30 bg-[#ef4444]/10 text-[#ef4444]"
                   : toast.type === "warning"
                   ? "border-[#fbbf24]/30 bg-[#fbbf24]/10 text-[#fbbf24]"
-                  : "border-[#ff9d23]/30 bg-[#ff9d23]/10 text-[#ff9d23]"
+                  : "border-[var(--accent)]/30 bg-[var(--accent)]/10 text-[var(--accent)]"
               }`}
               onClick={() => {
                 triggerHaptic(10);
@@ -240,7 +240,7 @@ export default function BlackberrySettingsContentNew() {
                         triggerHaptic(15);
                         applyPreset(preset);
                       }}
-                      className="w-full text-left p-4 border border-white/10 bg-black/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 transition-all duration-300"
+                      className="w-full text-left p-4 border border-white/10 bg-black/20 hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-300"
                     >
                       <div className="flex items-start gap-3">
                         <span className="text-2xl">{preset.icon}</span>
@@ -399,9 +399,9 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     updateSetting("theme", theme);
                   }}
-                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.theme === theme
-                      ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
                       : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
                   }`}
                 >
@@ -424,7 +424,7 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     updateSetting("accentColor", color.value);
                   }}
-                  className={`relative aspect-square border transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black group ${
+                  className={`relative aspect-square border transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black group ${
                     settings.accentColor === color.value
                       ? "border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.1)]"
                       : "border-white/10 hover:border-white/20"
@@ -486,9 +486,9 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     updateSetting("fontSize", size);
                   }}
-                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.fontSize === size
-                      ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
                       : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
                   }`}
                 >
@@ -527,9 +527,9 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     updateSetting("dockMode", mode);
                   }}
-                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.dockMode === mode
-                      ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
                       : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
                   }`}
                 >
@@ -646,7 +646,7 @@ export default function BlackberrySettingsContentNew() {
             </div>
             <div className="flex justify-between items-center">
               <span>Developer:</span>
-              <span className="text-[#ff9d23]">HandToMouse</span>
+              <span className="text-[var(--accent)]">HandToMouse</span>
             </div>
           </div>
         </SettingCard>
@@ -672,9 +672,9 @@ export default function BlackberrySettingsContentNew() {
                 }}
                 disabled={!undoRedo.canUndo}
                 aria-label="Undo last change (Cmd+Z)"
-                className={`px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                className={`px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
                   undoRedo.canUndo
-                    ? "border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-white/70 hover:text-[#ff9d23]"
+                    ? "border-white/20 hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 text-white/70 hover:text-[var(--accent)]"
                     : "border-white/10 text-white/30 cursor-not-allowed"
                 }`}
               >
@@ -692,9 +692,9 @@ export default function BlackberrySettingsContentNew() {
                 }}
                 disabled={!undoRedo.canRedo}
                 aria-label="Redo last change (Cmd+Shift+Z)"
-                className={`px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                className={`px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
                   undoRedo.canRedo
-                    ? "border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-white/70 hover:text-[#ff9d23]"
+                    ? "border-white/20 hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 text-white/70 hover:text-[var(--accent)]"
                     : "border-white/10 text-white/30 cursor-not-allowed"
                 }`}
               >
@@ -710,7 +710,7 @@ export default function BlackberrySettingsContentNew() {
                 setShowPresetsModal(true);
               }}
               aria-label="Open preset themes menu"
-              className="w-full px-5 py-3.5 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-[0.12em] transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_10px_rgba(255,157,35,0.15)] hover:shadow-[0_0_16px_rgba(255,157,35,0.25)]"
+              className="w-full px-5 py-3.5 border border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 text-xs uppercase tracking-[0.12em] transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_10px_rgba(255,157,35,0.15)] hover:shadow-[0_0_16px_rgba(255,157,35,0.25)]"
             >
               <span className="inline-block mr-2">🎨</span>
               Load Preset Theme
@@ -724,7 +724,7 @@ export default function BlackberrySettingsContentNew() {
                   handleExportSettings();
                 }}
                 aria-label="Export settings to JSON file"
-                className="px-4 py-3 border border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black"
+                className="px-4 py-3 border border-white/20 hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 text-xs text-white/70 hover:text-[var(--accent)] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black"
               >
                 <span className="inline-block mr-1.5">↓</span>
                 Export
@@ -735,7 +735,7 @@ export default function BlackberrySettingsContentNew() {
                   fileInputRef.current?.click();
                 }}
                 aria-label="Import settings from JSON file"
-                className="px-4 py-3 border border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black"
+                className="px-4 py-3 border border-white/20 hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 text-xs text-white/70 hover:text-[var(--accent)] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black"
               >
                 <span className="inline-block mr-1.5">↑</span>
                 Import
@@ -891,9 +891,9 @@ function ToggleSetting({
             onChange(!value);
           }
         }}
-        className={`relative w-12 h-6 border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black ${
+        className={`relative w-12 h-6 border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black ${
           value
-            ? "border-[#ff9d23] bg-[#ff9d23]/20"
+            ? "border-[var(--accent)] bg-[var(--accent)]/20"
             : "border-white/20 bg-white/5"
         }`}
       >
@@ -901,7 +901,7 @@ function ToggleSetting({
           animate={{ x: value ? 24 : 0 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
           className={`absolute top-0.5 left-0.5 w-5 h-5 ${
-            value ? "bg-[#ff9d23]" : "bg-white/40"
+            value ? "bg-[var(--accent)]" : "bg-white/40"
           }`}
         />
       </button>

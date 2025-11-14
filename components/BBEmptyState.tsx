@@ -17,7 +17,7 @@ export default function BBEmptyState({ icon = "📭", title, description, action
       {action && (
         <button
           onClick={action.onClick}
-          className="border-2 border-[#FF9D23]/50 bg-[#FF9D23]/10 px-6 py-2 text-sm font-semibold text-[#FF9D23] transition-all hover:bg-[#FF9D23]/20 hover:border-[#FF9D23]"
+          className="border-2 border-[var(--accent)]/50 bg-[var(--accent)]/10 px-6 py-2 text-sm font-semibold text-[var(--accent)] transition-all hover:bg-[var(--accent)]/20 hover:border-[var(--accent)]"
         >
           {action.label}
         </button>

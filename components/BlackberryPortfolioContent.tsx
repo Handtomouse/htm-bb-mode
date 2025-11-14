@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useHapticFeedback } from "@/lib/hooks";
 
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 
 interface Project {
   slug: string;
@@ -79,7 +79,7 @@ export default function BlackberryPortfolioContent() {
         className="py-8 md:py-12"
       >
         <h1
-          className="text-[56px] md:text-[72px] font-light text-[#ff9d23] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
+          className="text-[56px] md:text-[72px] font-light text-[var(--accent)] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
           style={{
             textShadow: "0 0 40px rgba(255, 157, 35, 0.4)",
           }}
@@ -88,8 +88,8 @@ export default function BlackberryPortfolioContent() {
         </h1>
 
         <p className="text-[16px] md:text-[18px] text-white/75 leading-[2.2] font-light tracking-wide mb-8">
-          <span className="tabular-nums text-[#ff9d23]">{projects.length}</span> projects across multiple
-          disciplines. Filtered: <span className="tabular-nums text-[#ff9d23]">{filtered.length}</span>
+          <span className="tabular-nums text-[var(--accent)]">{projects.length}</span> projects across multiple
+          disciplines. Filtered: <span className="tabular-nums text-[var(--accent)]">{filtered.length}</span>
         </p>
       </motion.div>
 
@@ -98,7 +98,7 @@ export default function BlackberryPortfolioContent() {
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 1.2, ease: [0.43, 0.13, 0.23, 0.96] }}
-        className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent mb-8"
+        className="h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent mb-8"
       />
 
       {/* Filter Tags */}
@@ -113,7 +113,7 @@ export default function BlackberryPortfolioContent() {
             }}
             className={`px-6 py-2.5 text-[12px] font-light tracking-[0.15em] uppercase border transition-all duration-500 ${
               filter === tag
-                ? "border-[#ff9d23] bg-[#ff9d23]/20 text-[#ff9d23]"
+                ? "border-[var(--accent)] bg-[var(--accent)]/20 text-[var(--accent)]"
                 : "border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:bg-white/10"
             }`}
             style={
@@ -187,7 +187,7 @@ export default function BlackberryPortfolioContent() {
                 }}
                 className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-300 group"
                 style={{
-                  borderColor: "#ff9d23",
+                  borderColor: "var(--accent)",
                 }}
               >
                 <div className="relative w-4 h-4">
@@ -293,19 +293,19 @@ function ProjectCard({
       <div
         className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-all duration-500"
         style={{
-          background: `linear-gradient(90deg, transparent 0%, #ff9d23 50%, transparent 100%)`,
+          background: `linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%)`,
         }}
       />
 
       {/* Project content */}
       <div className="relative">
         {/* Project cover placeholder */}
-        <div className="mb-4 aspect-video bg-gradient-to-br from-[#ff9d23]/20 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-[#ff9d23]/30 transition-all duration-500">
+        <div className="mb-4 aspect-video bg-gradient-to-br from-[var(--accent)]/20 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-[var(--accent)]/30 transition-all duration-500">
           <div className="text-5xl opacity-50">📁</div>
         </div>
 
         {/* Project title */}
-        <h2 className="text-[16px] md:text-[18px] font-thin text-white tracking-[0.08em] mb-2 group-hover:text-[#ff9d23] transition-colors duration-500">
+        <h2 className="text-[16px] md:text-[18px] font-thin text-white tracking-[0.08em] mb-2 group-hover:text-[var(--accent)] transition-colors duration-500">
           {project.title}
         </h2>
 
@@ -319,7 +319,7 @@ function ProjectCard({
           {project.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="text-[10px] text-[#ff9d23]/80 uppercase tracking-wider font-mono"
+              className="text-[10px] text-[var(--accent)]/80 uppercase tracking-wider font-mono"
             >
               {tag}
             </span>
@@ -335,7 +335,7 @@ function ProjectCard({
       {/* Subtle glow */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500 pointer-events-none"
-        style={{ backgroundColor: "#ff9d23" }}
+        style={{ backgroundColor: "var(--accent)" }}
       />
     </motion.button>
   );

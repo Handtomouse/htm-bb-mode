@@ -35,7 +35,7 @@ export default function AnimatedStatCounter({ value, suffix = "", label, duratio
       transition={{ duration: 0.5 }}
       className="text-center"
     >
-      <div className="text-[96px] md:text-[120px] font-black text-[#FF9D23] tabular-nums leading-none">
+      <div className="text-[96px] md:text-[120px] font-black text-[var(--accent)] tabular-nums leading-none">
         {rounded.get()}
         <span className="text-white/70">{suffix}</span>
       </div>

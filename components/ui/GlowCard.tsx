@@ -31,7 +31,7 @@ export function GlowCard({
   const variantStyles = {
     elevated: "bg-panel border border-grid hover:border-accent/30 duration-300",
     accent:
-      "border-2 border-[#ff9d23]/50 bg-gradient-to-br from-[#ff9d23]/10 to-[#ff9d23]/5 backdrop-blur-sm hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] duration-700",
+      "border-2 border-[var(--accent)]/50 bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent)]/5 backdrop-blur-sm hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] duration-700",
   };
 
   const hoverStyles = hover ? variantStyles[variant] : "";

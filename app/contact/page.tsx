@@ -79,10 +79,10 @@ export default function ContactPage() {
           <a
             href="tel:+61XXXXXXXXX"
             aria-label="Call HandToMouse"
-            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[var(--accent)] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
             style={{ transition: 'all 0.5s ease' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+              e.currentTarget.style.boxShadow = '0 0 20px var(--accent)30';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = 'none';
@@ -94,7 +94,7 @@ export default function ContactPage() {
             <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Call</div>
-            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[var(--accent)] transition-colors duration-500">
               +61 ••• ••• •••
             </div>
           </a>
@@ -102,10 +102,10 @@ export default function ContactPage() {
             type="button"
             onClick={() => navigator.clipboard?.writeText("hello@handtomouse.com")}
             aria-label="Copy email to clipboard"
-            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 text-left hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 text-left hover:border-[var(--accent)] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
             style={{ transition: 'all 0.5s ease' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+              e.currentTarget.style.boxShadow = '0 0 20px var(--accent)30';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = 'none';
@@ -117,7 +117,7 @@ export default function ContactPage() {
             <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Copy Email</div>
-            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[var(--accent)] transition-colors duration-500">
               hello@handtomouse.com
             </div>
           </button>
@@ -126,10 +126,10 @@ export default function ContactPage() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open Instagram"
-            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[var(--accent)] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
             style={{ transition: 'all 0.5s ease' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+              e.currentTarget.style.boxShadow = '0 0 20px var(--accent)30';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = 'none';
@@ -141,17 +141,17 @@ export default function ContactPage() {
             <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Instagram</div>
-            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[var(--accent)] transition-colors duration-500">
               @handtomouse
             </div>
           </a>
           <a
             href="/HTM_CV_or_Capabilities.pdf"
             aria-label="Download CV or Capabilities"
-            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
+            className="group relative border border-white/5 bg-[var(--panel)] p-6 md:p-8 hover:border-[var(--accent)] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-4 focus:ring-offset-[#0b0b0b] overflow-hidden hover:scale-[1.02]"
             style={{ transition: 'all 0.5s ease' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
+              e.currentTarget.style.boxShadow = '0 0 20px var(--accent)30';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = 'none';
@@ -163,7 +163,7 @@ export default function ContactPage() {
             <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
             <div className="text-[11px] text-white/65 uppercase tracking-[0.15em]">Download</div>
-            <div className="mt-2 text-[15px] font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
+            <div className="mt-2 text-[15px] font-medium group-hover:text-[var(--accent)] transition-colors duration-500">
               CV / Capabilities
             </div>
           </a>
@@ -175,7 +175,7 @@ export default function ContactPage() {
         <div
           className="relative border border-white/5 bg-[#0a0a0a] p-12 sm:p-16 md:p-20 lg:p-28"
           style={{
-            boxShadow: '0 0 20px #ff9d2310, 0 0 30px #ff9d2305'
+            boxShadow: '0 0 20px var(--accent)10, 0 0 30px var(--accent)05'
           }}
         >
           <div className="mb-12">
@@ -196,18 +196,18 @@ export default function ContactPage() {
         <div className="mx-auto grid max-w-3xl grid-cols-3 gap-3 px-2">
           <a
             href="tel:+61XXXXXXXXX"
-            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[#ff9d23] transition-all duration-500"
+            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[var(--accent)] transition-all duration-500"
           >
             Call
           </a>
           <a
             href="mailto:hello@handtomouse.com"
-            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[#ff9d23] transition-all duration-500"
+            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[var(--accent)] transition-all duration-500"
           >
             Email
           </a>
           <button
-            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[#ff9d23] transition-all duration-500"
+            className="border border-white/10 bg-[var(--panel)] py-3 text-center text-[13px] font-medium hover:border-[var(--accent)] transition-all duration-500"
             onClick={() => {
               const anchor = document.querySelector('#contact-form') as HTMLElement | null;
               anchor?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
@@ -491,7 +491,7 @@ function ContactFormInternal({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#F4A259', '#FF9D23', '#FFB84D', '#FFC266'],
+          colors: ['#F4A259', 'var(--accent)', '#FFB84D', '#FFC266'],
         });
         setTimeout(() => {
           confetti({
@@ -499,7 +499,7 @@ function ContactFormInternal({
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ['#F4A259', '#FF9D23'],
+            colors: ['#F4A259', 'var(--accent)'],
           });
         }, 250);
         setTimeout(() => {
@@ -508,7 +508,7 @@ function ContactFormInternal({
             angle: 120,
             spread: 55,
             origin: { x: 1 },
-            colors: ['#F4A259', '#FF9D23'],
+            colors: ['#F4A259', 'var(--accent)'],
           });
         }, 400);
       }
@@ -655,10 +655,10 @@ function ContactFormInternal({
             onClick={() => setMode(m)}
             className={`px-8 py-4 font-mono text-[15px] font-medium uppercase tracking-[0.2em] transition-all duration-500 ${
               mode === m
-                ? "bg-[#ff9d23] text-black"
-                : "bg-[var(--bg)] text-[var(--ink)] hover:text-[#ff9d23]"
+                ? "bg-[var(--accent)] text-black"
+                : "bg-[var(--bg)] text-[var(--ink)] hover:text-[var(--accent)]"
             }`}
-            style={mode === m ? { boxShadow: '0 0 20px #ff9d2360' } : {}}
+            style={mode === m ? { boxShadow: '0 0 20px var(--accent)60' } : {}}
             aria-selected={mode === m}
             role="tab"
           >
@@ -711,7 +711,7 @@ function ContactFormInternal({
               className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 ${
                 errors.name
                   ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
-                  : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                  : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               }`}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey && formValid) {
@@ -742,7 +742,7 @@ function ContactFormInternal({
               className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 ${
                 errors.email
                   ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
-                  : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                  : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               }`}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey && formValid) {
@@ -755,7 +755,7 @@ function ContactFormInternal({
               <button
                 type="button"
                 id="email-suggestion"
-                className="mt-2 text-[13px] underline decoration-dotted underline-offset-4 text-white/65 hover:text-[#ff9d23] transition-colors duration-500"
+                className="mt-2 text-[13px] underline decoration-dotted underline-offset-4 text-white/65 hover:text-[var(--accent)] transition-colors duration-500"
                 onClick={() => setData((d) => ({ ...d, email: emailSuggestion }))}
               >
                 Did you mean <span className="font-mono">{emailSuggestion}</span>?
@@ -780,7 +780,7 @@ function ContactFormInternal({
               value={data.company}
               onChange={(e) => setData({ ...data, company: e.target.value })}
               onBlur={onBlurTrim("company")}
-              className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+              className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
         )}
@@ -805,7 +805,7 @@ function ContactFormInternal({
             className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] leading-relaxed outline-none transition-all duration-500 ${
               errors.message
                 ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
-                : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             }`}
           />
           {!errors.message && (
@@ -831,7 +831,7 @@ function ContactFormInternal({
                 id="budget"
                 value={data.budget}
                 onChange={(e) => setData({ ...data, budget: e.target.value })}
-                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               >
                 <option value="">Select…</option>
                 {BUDGETS.map((b) => (
@@ -846,7 +846,7 @@ function ContactFormInternal({
                 id="timeline"
                 value={data.timeline}
                 onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               >
                 <option value="">Select…</option>
                 {TIMELINES.map((t) => (
@@ -866,7 +866,7 @@ function ContactFormInternal({
                       <label key={s} className="inline-flex cursor-pointer items-center gap-3 font-mono text-[15px] text-[var(--ink)] hover:text-white/90 transition-colors duration-500">
                         <input
                           type="checkbox"
-                          className="h-5 w-5 appearance-none border border-white/10 bg-[var(--bg)] checked:bg-[#ff9d23] transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+                          className="h-5 w-5 appearance-none border border-white/10 bg-[var(--bg)] checked:bg-[var(--accent)] transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
                           checked={checked}
                           onChange={(e) => {
                             const next = new Set(data.services);
@@ -885,10 +885,10 @@ function ContactFormInternal({
                       <button
                         key={s}
                         type="button"
-                        className="border border-white/10 bg-[var(--bg)] px-8 py-4 font-mono text-[13px] hover:border-[#ff9d23] hover:text-[#ff9d23] transition-all duration-500"
+                        className="border border-white/10 bg-[var(--bg)] px-8 py-4 font-mono text-[13px] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all duration-500"
                         style={{ transition: 'all 0.5s ease' }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.boxShadow = '0 0 15px #ff9d2320';
+                          e.currentTarget.style.boxShadow = '0 0 15px var(--accent)20';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.boxShadow = 'none';
@@ -914,7 +914,7 @@ function ContactFormInternal({
                 value={data.referral}
                 onChange={(e) => setData({ ...data, referral: e.target.value })}
                 onBlur={onBlurTrim("referral")}
-                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                className="w-full border border-white/10 bg-[var(--bg)] px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
@@ -931,7 +931,7 @@ function ContactFormInternal({
                 className={`w-full border px-5 py-4 text-[15px] text-[var(--ink)] outline-none transition-all duration-500 ${
                   errors.attachment_url
                     ? "border-[var(--accent-2)] bg-[var(--accent-2)]/30 animate-pulse"
-                    : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    : "border-white/10 bg-[var(--bg)] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 }`}
               />
               {errors.attachment_url && (
@@ -951,7 +951,7 @@ function ContactFormInternal({
               multiple
               onChange={onPickFiles}
               accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.zip,.rar,.7z,.txt,.csv,.doc,.docx,.ppt,.pptx,.key,.pages,.numbers,.ai,.psd,.xd"
-              className="block w-full font-mono text-[13px] text-white/65 file:mr-4 file:border file:border-white/10 file:bg-[var(--panel)] file:px-5 file:py-3 file:text-[13px] file:text-[var(--ink)] hover:file:border-[#ff9d23] file:transition-all file:duration-500"
+              className="block w-full font-mono text-[13px] text-white/65 file:mr-4 file:border file:border-white/10 file:bg-[var(--panel)] file:px-5 file:py-3 file:text-[13px] file:text-[var(--ink)] hover:file:border-[var(--accent)] file:transition-all file:duration-500"
               aria-describedby="hint-attachments"
             />
             <p id="hint-attachments" className="mt-3 text-[13px] text-white/65">Drag & drop files here, or use the picker. You can also paste a link above.</p>
@@ -963,7 +963,7 @@ function ContactFormInternal({
                     <span className="truncate">{f.name} <span className="text-white/50">({Math.ceil(f.size/1024)} KB)</span></span>
                     <button
                       type="button"
-                      className="border border-white/10 bg-[var(--panel)] px-4 py-2 text-[12px] hover:border-[#ff9d23] hover:text-[#ff9d23] transition-all duration-500"
+                      className="border border-white/10 bg-[var(--panel)] px-4 py-2 text-[12px] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all duration-500"
                       onClick={() => removeFile(i)}
                       aria-label={`Remove ${f.name}`}
                     >
@@ -982,7 +982,7 @@ function ContactFormInternal({
             type="checkbox"
             checked={data.consent}
             onChange={(e) => setData({ ...data, consent: e.target.checked })}
-            className="h-5 w-5 appearance-none border border-white/10 bg-[var(--bg)] checked:bg-[#ff9d23] transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+            className="h-5 w-5 appearance-none border border-white/10 bg-[var(--bg)] checked:bg-[var(--accent)] transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
           />
           I agree to be contacted about this enquiry.
         </label>
@@ -995,18 +995,18 @@ function ContactFormInternal({
             disabled={!formValid}
             className={`inline-flex items-center gap-3 px-12 py-5 font-mono text-[15px] font-semibold uppercase tracking-[0.2em] transition-all duration-500 ${
               formValid
-                ? "border border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.02]"
+                ? "border border-[var(--accent)] bg-[var(--accent)] text-black hover:scale-[1.02]"
                 : "border border-white/10 bg-[var(--panel)] text-white/40 cursor-not-allowed"
             }`}
-            style={formValid ? { boxShadow: '0 0 30px #ff9d2360' } : {}}
+            style={formValid ? { boxShadow: '0 0 30px var(--accent)60' } : {}}
             onMouseEnter={(e) => {
               if (formValid) {
-                e.currentTarget.style.boxShadow = '0 0 40px #ff9d2380';
+                e.currentTarget.style.boxShadow = '0 0 40px var(--accent)80';
               }
             }}
             onMouseLeave={(e) => {
               if (formValid) {
-                e.currentTarget.style.boxShadow = '0 0 30px #ff9d2360';
+                e.currentTarget.style.boxShadow = '0 0 30px var(--accent)60';
               }
             }}
           >

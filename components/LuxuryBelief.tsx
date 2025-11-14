@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 
 interface LuxuryBeliefProps {
   icon: string;
@@ -18,7 +18,7 @@ export default function LuxuryBelief({ icon, text, delay }: LuxuryBeliefProps) {
       viewport={{ once: true, amount: 0.3 }}
       transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ x: 10, borderColor: ACCENT, backgroundColor: 'rgba(255,157,35,0.05)' }}
-      className="flex items-start gap-6 border-l-2 border-[#ff9d23]/40 pl-6 py-4 transition-all duration-700"
+      className="flex items-start gap-6 border-l-2 border-[var(--accent)]/40 pl-6 py-4 transition-all duration-700"
     >
       <span className="text-[28px] md:text-[32px] flex-shrink-0">{icon}</span>
       <p

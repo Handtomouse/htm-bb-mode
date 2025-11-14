@@ -25,8 +25,8 @@ export function AccentButton({
   const baseStyles = "font-medium px-8 py-4 text-lg transition-all duration-300";
 
   const variantStyles = {
-    primary: "bg-[#ff9d23] hover:bg-[#FFB84D] text-black hover:shadow-[0_0_40px_rgba(255,157,35,0.8)]",
-    secondary: "border-2 border-[#ff9d23] hover:border-[#FFB84D] text-white hover:bg-[#ff9d23]/10",
+    primary: "bg-[var(--accent)] hover:bg-[#FFB84D] text-black hover:shadow-[0_0_40px_rgba(255,157,35,0.8)]",
+    secondary: "border-2 border-[var(--accent)] hover:border-[#FFB84D] text-white hover:bg-[var(--accent)]/10",
   };
 
   return (

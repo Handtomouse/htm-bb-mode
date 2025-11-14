@@ -20,7 +20,7 @@ export default function NowBlock({ lastUpdated, currentFocus, status }: NowBlock
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="bg-zinc-900/70 backdrop-blur-sm border-4 border-[#FF9D23]/30 rounded-lg p-16 md:p-20 space-y-10"
+      className="bg-zinc-900/70 backdrop-blur-sm border-4 border-[var(--accent)]/30 rounded-lg p-16 md:p-20 space-y-10"
     >
       <div className="flex items-center gap-6 mb-8">
         <motion.span
@@ -30,13 +30,13 @@ export default function NowBlock({ lastUpdated, currentFocus, status }: NowBlock
         >
           📍
         </motion.span>
-        <h3 className="text-[48px] md:text-[64px] font-black text-[#FF9D23] uppercase leading-tight">Now</h3>
+        <h3 className="text-[48px] md:text-[64px] font-black text-[var(--accent)] uppercase leading-tight">Now</h3>
       </div>
 
       <div className="space-y-8 text-[28px] md:text-[36px] font-medium text-white">
         <div className="flex flex-col md:flex-row md:justify-between md:items-baseline gap-3">
           <span className="text-white/70">Status:</span>
-          <span className="font-bold text-[#FF9D23]">{status}</span>
+          <span className="font-bold text-[var(--accent)]">{status}</span>
         </div>
 
         <div className="flex flex-col md:flex-row md:justify-between md:items-baseline gap-3">

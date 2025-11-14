@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 
 interface LuxuryServiceCardProps {
   service: {
@@ -43,7 +43,7 @@ export default function LuxuryServiceCard({ service, delay }: LuxuryServiceCardP
       style={{
         transform: `translate(${offset.x}px, ${offset.y}px)`
       }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 p-8 md:p-12 space-y-6 transition-all duration-700 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] cursor-default"
+      className="border-2 border-[var(--accent)]/30 bg-gradient-to-br from-black/40 to-black/20 p-8 md:p-12 space-y-6 transition-all duration-700 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] cursor-default"
     >
       <div className="flex items-center gap-4">
         <span className="text-[32px] md:text-[40px]">{service.icon}</span>

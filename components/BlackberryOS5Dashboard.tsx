@@ -42,7 +42,7 @@ const BlackberryGamesContent = lazy(() => import("./BlackberryGamesContent"));
 const BlackberryWebContent = lazy(() => import("./BlackberryWebContent"));
 
 // Accent colour (global)
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 export const __ACCENT = ACCENT;
 
 // BlackBerry OS5 Emulator → Portfolio Shell
@@ -122,7 +122,7 @@ export default function BlackberryOS5Dashboard() {
             const duration = 3000;
             const end = Date.now() + duration;
 
-            const colors = ["#FF9D23", "#FFB84D", "#FFC266", "#FFD699"];
+            const colors = ["var(--accent)", "#FFB84D", "#FFC266", "#FFD699"];
 
             (function frame() {
               confetti.default({
@@ -1633,7 +1633,7 @@ function AboutContent() {
       {/* Scroll progress bar */}
       <div className="fixed bottom-0 left-0 right-0 h-px bg-[#1f1f1f] z-50">
         <div
-          className="h-full bg-[#ff9d23] transition-all duration-100 ease-out"
+          className="h-full bg-[var(--accent)] transition-all duration-100 ease-out"
           style={{ width: `${scrollProgress}%` }}
         ></div>
       </div>
@@ -1641,7 +1641,7 @@ function AboutContent() {
       {/* Idle overlay */}
       {showIdleOverlay && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 animate-fade-in">
-          <div className="text-[#ff9d23] text-2xl font-bold animate-pulse" style={{ fontFamily: "var(--font-handjet)" }}>
+          <div className="text-[var(--accent)] text-2xl font-bold animate-pulse" style={{ fontFamily: "var(--font-handjet)" }}>
             Thinking…
           </div>
         </div>
@@ -1661,7 +1661,7 @@ function AboutContent() {
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4))' }}
               />
             </div>
-            <h1 className="text-2xl font-semibold uppercase tracking-wide leading-tight text-[#ff9d23]" style={{ fontFamily: "var(--font-handjet)" }}>
+            <h1 className="text-2xl font-semibold uppercase tracking-wide leading-tight text-[var(--accent)]" style={{ fontFamily: "var(--font-handjet)" }}>
               About
             </h1>
             <h2 className="text-xl font-bold leading-relaxed text-white max-w-prose">
@@ -1723,13 +1723,13 @@ function AboutContent() {
         {/* Contact Cards Grid */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Card 1 — How I Work */}
-          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[#ff9d23] transition-colors relative group">
+          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[var(--accent)] transition-colors relative group">
             {/* Status LED */}
-            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[#ff9d23] transition-colors"></div>
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[var(--accent)] transition-colors"></div>
 
             <header className="flex items-center space-x-2">
-              <span className="text-[#ff9d23] text-lg">💡</span>
-              <h3 className="text-xs uppercase tracking-wide text-[#ff9d23] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
+              <span className="text-[var(--accent)] text-lg">💡</span>
+              <h3 className="text-xs uppercase tracking-wide text-[var(--accent)] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
                 How I Work
               </h3>
             </header>
@@ -1749,13 +1749,13 @@ function AboutContent() {
           </div>
 
           {/* Card 2 — Beliefs */}
-          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[#ff9d23] transition-colors relative group">
+          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[var(--accent)] transition-colors relative group">
             {/* Status LED */}
-            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[#ff9d23] transition-colors"></div>
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[var(--accent)] transition-colors"></div>
 
             <header className="flex items-center space-x-2">
-              <span className="text-[#ff9d23] text-lg">∴</span>
-              <h3 className="text-xs uppercase tracking-wide text-[#ff9d23] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
+              <span className="text-[var(--accent)] text-lg">∴</span>
+              <h3 className="text-xs uppercase tracking-wide text-[var(--accent)] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
                 Beliefs
               </h3>
             </header>
@@ -1763,7 +1763,7 @@ function AboutContent() {
             <div className="text-xs text-gray-300 leading-relaxed space-y-2">
               {beliefs.map((belief, idx) => (
                 <p key={idx} className="flex items-start gap-2">
-                  <span className="text-[#ff9d23] flex-shrink-0">∴</span>
+                  <span className="text-[var(--accent)] flex-shrink-0">∴</span>
                   <span>{belief}</span>
                 </p>
               ))}
@@ -1771,22 +1771,22 @@ function AboutContent() {
           </div>
 
           {/* Card 3 — Who With */}
-          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[#ff9d23] transition-colors relative group">
+          <div className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-sm p-4 flex flex-col space-y-3 shadow-[inset_0_0_12px_#000] hover:border-[var(--accent)] transition-colors relative group">
             {/* Status LED */}
-            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[#ff9d23] transition-colors"></div>
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#333] group-hover:bg-[var(--accent)] transition-colors"></div>
 
             <header className="flex items-center space-x-2">
-              <span className="text-[#ff9d23] text-lg">👥</span>
-              <h3 className="text-xs uppercase tracking-wide text-[#ff9d23] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
+              <span className="text-[var(--accent)] text-lg">👥</span>
+              <h3 className="text-xs uppercase tracking-wide text-[var(--accent)] font-semibold" style={{ fontFamily: "var(--font-handjet)" }}>
                 Who With
               </h3>
             </header>
 
             <div className="text-xs text-gray-300 leading-relaxed space-y-2">
-              <p><strong className="text-[#ff9d23]">S'WICH</strong> — turning Sydney sandwiches into iconography.</p>
-              <p><strong className="text-[#ff9d23]">MapleMoon</strong> — making carob feel like mythology.</p>
-              <p><strong className="text-[#ff9d23]">Jac+Jack</strong> — giving quiet luxury a language.</p>
-              <p><strong className="text-[#ff9d23]">Aura Therapeutics</strong> — where wellness met weird.</p>
+              <p><strong className="text-[var(--accent)]">S'WICH</strong> — turning Sydney sandwiches into iconography.</p>
+              <p><strong className="text-[var(--accent)]">MapleMoon</strong> — making carob feel like mythology.</p>
+              <p><strong className="text-[var(--accent)]">Jac+Jack</strong> — giving quiet luxury a language.</p>
+              <p><strong className="text-[var(--accent)]">Aura Therapeutics</strong> — where wellness met weird.</p>
               <p className="text-white/60 italic pt-2">Independent. Idea-led. Occasionally obsessive.</p>
             </div>
           </div>
@@ -1899,7 +1899,7 @@ function HomeDockOverlay({
               className={[
                 "group relative flex flex-col items-center justify-center rounded-none border-2 p-3 min-h-[100px]",
                 selectedDock === idx
-                  ? "border-[#ff9d23] bg-gradient-to-b from-white/20 to-white/15 backdrop-blur-sm"
+                  ? "border-[var(--accent)] bg-gradient-to-b from-white/20 to-white/15 backdrop-blur-sm"
                   : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7 hover:scale-105",
                 "transition-all duration-300 active:scale-95",
               ].join(" ")}
@@ -1921,7 +1921,7 @@ function HomeDockOverlay({
                 {app.icon}
               </div>
               <div className={`font-heading mt-4 text-[13px] leading-none text-center font-semibold transition-all duration-300 ${
-                selectedDock === idx ? "text-[#ff9d23]" : "text-white/90 group-hover:text-white"
+                selectedDock === idx ? "text-[var(--accent)]" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}
               </div>
@@ -1958,7 +1958,7 @@ function MenuGrid({
             className={[
               "group relative flex flex-col items-center justify-center rounded-none border p-6 backdrop-blur-md",
               selected === idx
-                ? "ring-2 ring-[#ff9d23] border-[#ff9d23]/70 shadow-[0_0_0_2px_rgba(255,157,35,0.5),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/20 to-white/12"
+                ? "ring-2 ring-[var(--accent)] border-[var(--accent)]/70 shadow-[0_0_0_2px_rgba(255,157,35,0.5),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/20 to-white/12"
                 : "border-white/15 bg-gradient-to-b from-white/10 to-white/6 hover:border-white/35 hover:shadow-[0_0_20px_rgba(255,157,35,0.4)] hover:from-white/14 hover:to-white/9",
               "transition-all duration-300 active:scale-93",
             ].join(" ")}
@@ -1991,7 +1991,7 @@ function MenuGrid({
             </div>
             <div
               className={`font-heading mt-3 text-[14px] leading-none text-center font-semibold transition-all duration-300 ${
-                selected === idx ? "text-[#ff9d23] scale-105" : "text-white/90 group-hover:text-white"
+                selected === idx ? "text-[var(--accent)] scale-105" : "text-white/90 group-hover:text-white"
               }`}
               style={{
                 letterSpacing: "0.02em",
@@ -2003,7 +2003,7 @@ function MenuGrid({
               {app.name}
             </div>
             {selected === idx && (
-              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[#ff9d23]/60 shadow-[inset_0_0_30px_rgba(255,157,35,0.35)]" />
+              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[var(--accent)]/60 shadow-[inset_0_0_30px_rgba(255,157,35,0.35)]" />
             )}
           </button>
         ))}

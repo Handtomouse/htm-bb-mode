@@ -322,7 +322,7 @@ export default function BlackberryContactContent() {
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#F4A259', '#FF9D23', '#FFB84D', '#FFC266'],
+          colors: ['#F4A259', 'var(--accent)', '#FFB84D', '#FFC266'],
           shapes: ['square', 'circle'],
           gravity: 1,
           drift: 0,
@@ -334,7 +334,7 @@ export default function BlackberryContactContent() {
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ['#F4A259', '#FF9D23'],
+            colors: ['#F4A259', 'var(--accent)'],
             shapes: ['square'],
           });
         }, 250);
@@ -565,7 +565,7 @@ export default function BlackberryContactContent() {
         <div className="mb-4 flex items-center gap-3">
           <div className="flex-1 h-1 bg-white/10 overflow-hidden">
             <div
-              className="h-full bg-[#ff9d23] transition-all duration-500"
+              className="h-full bg-[var(--accent)] transition-all duration-500"
               style={{ width: `${completionSummary.percentage}%` }}
             />
           </div>
@@ -577,9 +577,9 @@ export default function BlackberryContactContent() {
 
       {/* Improvement #13: Keyboard shortcuts panel */}
       {showShortcuts && (
-        <div className="mb-4 border border-[#ff9d23]/30 bg-[#0a0a0a] p-4">
+        <div className="mb-4 border border-[var(--accent)]/30 bg-[#0a0a0a] p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-mono text-[#ff9d23] uppercase tracking-wider">Keyboard Shortcuts</h3>
+            <h3 className="text-sm font-mono text-[var(--accent)] uppercase tracking-wider">Keyboard Shortcuts</h3>
             <button
               type="button"
               onClick={() => {
@@ -610,7 +610,7 @@ export default function BlackberryContactContent() {
       <div
         className="relative border border-white/5 bg-[#0a0a0a] p-10 sm:p-16 md:p-20 mb-6"
         style={{
-          boxShadow: '0 0 20px #ff9d2310'
+          boxShadow: '0 0 20px var(--accent)10'
         }}
       >
         {/* Mode toggle */}
@@ -628,10 +628,10 @@ export default function BlackberryContactContent() {
               }}
               className={`flex-1 px-10 py-5 md:px-14 md:py-6 font-mono text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wider transition-all duration-500 ${
                 mode === m
-                  ? "bg-[#ff9d23] text-black border-2 border-[#ff9d23] scale-[1.02]"
-                  : "bg-[#0b0b0b] text-white border-2 border-white/20 hover:border-[#ff9d23] hover:text-[#ff9d23] hover:scale-[1.01]"
+                  ? "bg-[var(--accent)] text-black border-2 border-[var(--accent)] scale-[1.02]"
+                  : "bg-[#0b0b0b] text-white border-2 border-white/20 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:scale-[1.01]"
               }`}
-              style={mode === m ? { boxShadow: '0 0 30px #ff9d2380' } : {}}
+              style={mode === m ? { boxShadow: '0 0 30px var(--accent)80' } : {}}
               role="tab"
               aria-selected={mode === m}
             >
@@ -642,7 +642,7 @@ export default function BlackberryContactContent() {
 
         <form
           noValidate
-          className={`space-y-8 md:space-y-10 lg:space-y-12 transition-all duration-300 ${isDragging ? 'ring-2 ring-[#ff9d23] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
+          className={`space-y-8 md:space-y-10 lg:space-y-12 transition-all duration-300 ${isDragging ? 'ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
           onSubmit={onSubmit}
           onKeyDown={onKeyDown}
           onDragOver={onDragOver}
@@ -651,9 +651,9 @@ export default function BlackberryContactContent() {
         >
           {/* Improvement #5: Drag indicator overlay */}
           {isDragging && (
-            <div className="absolute inset-0 bg-[#ff9d23]/10 border-2 border-dashed border-[#ff9d23] flex items-center justify-center pointer-events-none z-10">
-              <div className="bg-[#0a0a0a] px-6 py-3 border border-[#ff9d23]">
-                <p className="text-[#ff9d23] font-mono text-sm uppercase tracking-wider">📎 Drop files here</p>
+            <div className="absolute inset-0 bg-[var(--accent)]/10 border-2 border-dashed border-[var(--accent)] flex items-center justify-center pointer-events-none z-10">
+              <div className="bg-[#0a0a0a] px-6 py-3 border border-[var(--accent)]">
+                <p className="text-[var(--accent)] font-mono text-sm uppercase tracking-wider">📎 Drop files here</p>
               </div>
             </div>
           )}
@@ -661,8 +661,8 @@ export default function BlackberryContactContent() {
           {/* Improvement #19: Loading overlay */}
           {submitting && (
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-20">
-              <div className="bg-[#0a0a0a] border border-[#ff9d23] px-8 py-6 flex items-center gap-4">
-                <div className="animate-spin h-5 w-5 border-2 border-[#ff9d23] border-t-transparent rounded-full"></div>
+              <div className="bg-[#0a0a0a] border border-[var(--accent)] px-8 py-6 flex items-center gap-4">
+                <div className="animate-spin h-5 w-5 border-2 border-[var(--accent)] border-t-transparent rounded-full"></div>
                 <p className="text-white font-mono text-sm uppercase tracking-wider">Sending...</p>
               </div>
             </div>
@@ -671,9 +671,9 @@ export default function BlackberryContactContent() {
           {/* Improvement #20: Success state overlay */}
           {submitSuccess && !submitting && (
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-20">
-              <div className="bg-[#0a0a0a] border-2 border-[#ff9d23] px-12 py-10 text-center max-w-md">
+              <div className="bg-[#0a0a0a] border-2 border-[var(--accent)] px-12 py-10 text-center max-w-md">
                 <div className="text-4xl mb-4">✓</div>
-                <h3 className="text-xl font-bold text-[#ff9d23] mb-3 uppercase tracking-wider">Message Sent!</h3>
+                <h3 className="text-xl font-bold text-[var(--accent)] mb-3 uppercase tracking-wider">Message Sent!</h3>
                 <p className="text-white/80 mb-4 text-sm leading-relaxed">
                   Thanks for reaching out. I'll reply within 1 business day.
                 </p>
@@ -686,7 +686,7 @@ export default function BlackberryContactContent() {
                     triggerHaptic(10);
                     setSubmitSuccess(false);
                   }}
-                  className="border border-[#ff9d23] bg-[#ff9d23] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[#FFB84D] transition-colors duration-300"
+                  className="border border-[var(--accent)] bg-[var(--accent)] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[#FFB84D] transition-colors duration-300"
                 >
                   Send another message
                 </button>
@@ -708,7 +708,7 @@ export default function BlackberryContactContent() {
 
           {/* Contact Details Section Header */}
           <div className="border-b border-white/10 pb-3 mb-4">
-            <h3 className="font-mono text-base md:text-lg text-[#ff9d23] uppercase tracking-wider">Contact Details</h3>
+            <h3 className="font-mono text-base md:text-lg text-[var(--accent)] uppercase tracking-wider">Contact Details</h3>
           </div>
 
           {/* Name + Email */}
@@ -755,7 +755,7 @@ export default function BlackberryContactContent() {
                 className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
                   errors.name
                     ? "border-red-400 bg-red-400/20 animate-pulse"
-                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 }`}
               />
               {errors.name && (
@@ -810,13 +810,13 @@ export default function BlackberryContactContent() {
                 className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
                   errors.email
                     ? "border-red-400 bg-red-400/20 animate-pulse"
-                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 }`}
               />
               {emailSuggestion && !errors.email && (
                 <button
                   type="button"
-                  className="mt-1 text-xs underline text-white/65 hover:text-[#ff9d23]"
+                  className="mt-1 text-xs underline text-white/65 hover:text-[var(--accent)]"
                   onClick={() => {
                     triggerHaptic(10);
                     setData((d) => ({ ...d, email: emailSuggestion }));
@@ -850,7 +850,7 @@ export default function BlackberryContactContent() {
                 value={data.company}
                 onChange={(e) => setData({ ...data, company: e.target.value })}
                 onBlur={onBlurTrim("company")}
-                className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           )}
@@ -873,7 +873,7 @@ export default function BlackberryContactContent() {
               className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
                 errors.message
                   ? "border-red-400 bg-red-400/20 animate-pulse"
-                  : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                  : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               }`}
             />
             {!errors.message && (
@@ -895,7 +895,7 @@ export default function BlackberryContactContent() {
             <>
               {/* Project Info Section Header */}
               <div className="border-b border-white/10 pb-3 mb-4">
-                <h3 className="font-mono text-base md:text-lg text-[#ff9d23] uppercase tracking-wider">Project Info</h3>
+                <h3 className="font-mono text-base md:text-lg text-[var(--accent)] uppercase tracking-wider">Project Info</h3>
               </div>
 
               <div className="space-y-4">
@@ -906,7 +906,7 @@ export default function BlackberryContactContent() {
                     id="budget"
                     value={data.budget}
                     onChange={(e) => setData({ ...data, budget: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                   >
                     <option value="">Select…</option>
                     {BUDGETS.map((b) => (
@@ -920,7 +920,7 @@ export default function BlackberryContactContent() {
                     id="timeline"
                     value={data.timeline}
                     onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                   >
                     <option value="">Select…</option>
                     {TIMELINES.map((t) => (
@@ -939,7 +939,7 @@ export default function BlackberryContactContent() {
                       <label key={s} className="inline-flex cursor-pointer items-center gap-2 font-mono text-xs text-white hover:text-white/90 transition-colors duration-500">
                         <input
                           type="checkbox"
-                          className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[#ff9d23] transition-all duration-500"
+                          className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[var(--accent)] transition-all duration-500"
                           checked={checked}
                           onChange={(e) => {
                             const next = new Set(data.services);
@@ -959,7 +959,7 @@ export default function BlackberryContactContent() {
 
           {/* Attachments Section Header */}
           <div className="border-b border-white/10 pb-3 mb-4">
-            <h3 className="font-mono text-base md:text-lg text-[#ff9d23] uppercase tracking-wider">Attachments</h3>
+            <h3 className="font-mono text-base md:text-lg text-[var(--accent)] uppercase tracking-wider">Attachments</h3>
           </div>
 
           {/* Files */}
@@ -972,7 +972,7 @@ export default function BlackberryContactContent() {
                 multiple
                 onChange={onPickFiles}
                 accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.zip"
-                className="block w-full font-mono text-xs text-white/65 file:mr-3 file:border file:border-white/10 file:bg-[#131313] file:px-3 file:py-2 file:text-xs file:text-white hover:file:border-[#ff9d23]"
+                className="block w-full font-mono text-xs text-white/65 file:mr-3 file:border file:border-white/10 file:bg-[#131313] file:px-3 file:py-2 file:text-xs file:text-white hover:file:border-[var(--accent)]"
               />
               <p className="mt-2 text-xs text-white/65">Drag & drop files here</p>
               {filesError && <p className="mt-1 text-xs text-red-400">{filesError}</p>}
@@ -991,7 +991,7 @@ export default function BlackberryContactContent() {
                       </div>
                       <button
                         type="button"
-                        className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[#ff9d23] hover:text-[#ff9d23] flex-shrink-0"
+                        className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[var(--accent)] hover:text-[var(--accent)] flex-shrink-0"
                         onClick={() => {
                           triggerHaptic(10);
                           removeFile(i);
@@ -1014,7 +1014,7 @@ export default function BlackberryContactContent() {
               type="checkbox"
               checked={data.consent}
               onChange={(e) => setData({ ...data, consent: e.target.checked })}
-              className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[#ff9d23] transition-all duration-500"
+              className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[var(--accent)] transition-all duration-500"
             />
             I agree to be contacted
           </label>
@@ -1027,18 +1027,18 @@ export default function BlackberryContactContent() {
               disabled={!formValid}
               className={`w-full inline-flex items-center justify-center gap-3 px-14 py-6 md:px-20 md:py-8 lg:px-24 lg:py-10 font-mono text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-wider transition-all duration-500 border-4 ${
                 formValid
-                  ? "border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.03] animate-pulse"
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-black hover:scale-[1.03] animate-pulse"
                   : "border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
               }`}
-              style={formValid ? { boxShadow: '0 0 60px #ff9d23a0, inset 0 0 20px rgba(0,0,0,0.2)', animationDuration: '2s' } : {}}
+              style={formValid ? { boxShadow: '0 0 60px var(--accent)a0, inset 0 0 20px rgba(0,0,0,0.2)', animationDuration: '2s' } : {}}
               onMouseEnter={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 80px #ff9d23d0, inset 0 0 20px rgba(0,0,0,0.2)';
+                  e.currentTarget.style.boxShadow = '0 0 80px var(--accent)d0, inset 0 0 20px rgba(0,0,0,0.2)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 60px #ff9d23a0, inset 0 0 20px rgba(0,0,0,0.2)';
+                  e.currentTarget.style.boxShadow = '0 0 60px var(--accent)a0, inset 0 0 20px rgba(0,0,0,0.2)';
                 }
               }}
             >

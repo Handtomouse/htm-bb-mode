@@ -643,7 +643,7 @@ export default function BlackberryWormholeContent() {
           <div className="text-center">
             <div style={{
               fontSize: "3rem",
-              color: "#ff9d23",
+              color: "var(--accent)",
               textShadow: "0 0 40px rgba(255, 157, 35, 0.6)",
               animation: "pulse 2s ease-in-out infinite"
             }}>
@@ -659,9 +659,9 @@ export default function BlackberryWormholeContent() {
               Calibrating wormhole...
             </p>
             <div className="flex items-center justify-center gap-2 mt-4">
-              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#ff9d23", animationDelay: "0s" }}></div>
-              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#ff9d23", animationDelay: "0.2s" }}></div>
-              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#ff9d23", animationDelay: "0.4s" }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0s" }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0.2s" }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0.4s" }}></div>
             </div>
           </div>
         </div>
@@ -866,7 +866,7 @@ export default function BlackberryWormholeContent() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
           <div className="text-center px-4">
             <p className="text-3xl mb-2" style={{
-              background: "linear-gradient(90deg, #ff9d23, #6495ED, #BA55D3, #40E0D0, #ff9d23)",
+              background: "linear-gradient(90deg, var(--accent), #6495ED, #BA55D3, #40E0D0, var(--accent))",
               backgroundSize: "400% 100%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -952,7 +952,7 @@ export default function BlackberryWormholeContent() {
               style={{
                 fontFamily: "system-ui",
                 fontSize: "8rem",
-                color: "#ff9d23",
+                color: "var(--accent)",
                 filter: "drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))",
                 animation: countdown === 0 ? 'countdown-zero 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)' : 'countdown-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
                 transformOrigin: 'center',
@@ -972,11 +972,11 @@ export default function BlackberryWormholeContent() {
               {currentMessage}
             </p>
             <div className="flex items-center justify-center gap-4 mb-8">
-              <div style={{ height: "1px", width: "4rem", background: "linear-gradient(to right, transparent, #ff9d23)" }}></div>
-              <p style={{ fontFamily: "monospace", letterSpacing: "0.06em", fontWeight: "600", color: "#ff9d23" }}>
+              <div style={{ height: "1px", width: "4rem", background: "linear-gradient(to right, transparent, var(--accent))" }}></div>
+              <p style={{ fontFamily: "monospace", letterSpacing: "0.06em", fontWeight: "600", color: "var(--accent)" }}>
                 {currentHint}
               </p>
-              <div style={{ height: "1px", width: "4rem", background: "linear-gradient(to left, transparent, #ff9d23)" }}></div>
+              <div style={{ height: "1px", width: "4rem", background: "linear-gradient(to left, transparent, var(--accent))" }}></div>
             </div>
             {canAbort && (
               <p className="font-mono text-xs text-white/30 animate-pulse" style={{ letterSpacing: "0.08em" }}>
@@ -1006,14 +1006,14 @@ export default function BlackberryWormholeContent() {
               <div style={{
                 fontSize: "2rem",
                 marginBottom: "1rem",
-                color: "#ff9d23",
+                color: "var(--accent)",
                 textShadow: "0 0 20px rgba(255, 157, 35, 0.3)"
               }}>✦</div>
               <h2 style={{
                 fontFamily: "system-ui",
                 fontSize: "1.25rem",
                 marginBottom: "0.5rem",
-                color: "#ff9d23",
+                color: "var(--accent)",
                 letterSpacing: "0.02em",
                 fontWeight: "600"
               }}>
@@ -1060,7 +1060,7 @@ export default function BlackberryWormholeContent() {
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <div className="flex items-start" style={{ gap: "0.5rem" }}>
-                    <span style={{ color: "#ff9d23", fontSize: "0.75rem" }}>→</span>
+                    <span style={{ color: "var(--accent)", fontSize: "0.75rem" }}>→</span>
                     <p style={{
                       fontFamily: "monospace",
                       fontSize: "0.75rem",
@@ -1071,7 +1071,7 @@ export default function BlackberryWormholeContent() {
                     </p>
                   </div>
                   <div className="flex items-start" style={{ gap: "0.5rem" }}>
-                    <span style={{ color: "#ff9d23", fontSize: "0.75rem" }}>→</span>
+                    <span style={{ color: "var(--accent)", fontSize: "0.75rem" }}>→</span>
                     <p style={{
                       fontFamily: "monospace",
                       fontSize: "0.75rem",
@@ -1082,7 +1082,7 @@ export default function BlackberryWormholeContent() {
                     </p>
                   </div>
                   <div className="flex items-start" style={{ gap: "0.5rem" }}>
-                    <span style={{ color: "#ff9d23", fontSize: "0.75rem" }}>→</span>
+                    <span style={{ color: "var(--accent)", fontSize: "0.75rem" }}>→</span>
                     <p style={{
                       fontFamily: "monospace",
                       fontSize: "0.75rem",
@@ -1101,7 +1101,7 @@ export default function BlackberryWormholeContent() {
                   checked={acceptedRisk}
                   onChange={(e) => setAcceptedRisk(e.target.checked)}
                   className="cursor-pointer"
-                  style={{ accentColor: "#ff9d23", width: "18px", height: "18px" }}
+                  style={{ accentColor: "var(--accent)", width: "18px", height: "18px" }}
                 />
                 <span style={{
                   fontFamily: "monospace",
@@ -1143,7 +1143,7 @@ export default function BlackberryWormholeContent() {
                   fontSize: "0.75rem",
                   letterSpacing: "0.05em",
                   background: acceptedRisk
-                    ? "linear-gradient(to right, #ff9d23, #FFB84D)"
+                    ? "linear-gradient(to right, var(--accent), #FFB84D)"
                     : "rgba(255, 255, 255, 0.1)",
                   color: acceptedRisk ? "#0b0b0b" : "rgba(255, 255, 255, 0.3)",
                   cursor: acceptedRisk ? "pointer" : "not-allowed",
@@ -1190,9 +1190,9 @@ export default function BlackberryWormholeContent() {
                     fontSize: "0.75rem",
                     letterSpacing: "0.05em",
                     textTransform: "capitalize",
-                    background: isSelected ? "#ff9d23" : "rgba(255, 255, 255, 0.1)",
+                    background: isSelected ? "var(--accent)" : "rgba(255, 255, 255, 0.1)",
                     color: isSelected ? "#0b0b0b" : "rgba(255, 255, 255, 0.8)",
-                    border: `1px solid ${isSelected ? "#ff9d23" : "rgba(255, 255, 255, 0.2)"}`,
+                    border: `1px solid ${isSelected ? "var(--accent)" : "rgba(255, 255, 255, 0.2)"}`,
                     borderRadius: "8px",
                     padding: "0.5rem 0.75rem",
                     boxShadow: isSelected ? "0 0 20px rgba(255, 157, 35, 0.3)" : "none",
@@ -1227,12 +1227,12 @@ export default function BlackberryWormholeContent() {
                 fontSize: "1.125rem",
                 letterSpacing: "0.1em",
                 fontWeight: "700",
-                background: "linear-gradient(135deg, #ff9d23 0%, #FFB84D 100%)",
+                background: "linear-gradient(135deg, var(--accent) 0%, #FFB84D 100%)",
                 color: "#0b0b0b",
                 boxShadow: "0 0 40px rgba(255, 157, 35, 0.5)",
                 borderRadius: "12px",
                 padding: "0.75rem 1.5rem",
-                border: "2px solid #ff9d23",
+                border: "2px solid var(--accent)",
                 animation: "button-pulse 2s ease-in-out infinite"
               }}
             >

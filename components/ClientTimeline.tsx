@@ -25,7 +25,7 @@ export default function ClientTimeline() {
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
           transition={{ duration: 0.4, delay: idx * 0.1 }}
           whileHover={{ x: 5, backgroundColor: "rgba(255,157,35,0.05)" }}
-          className="flex items-center justify-between border-l-2 border-[#FF9D23]/40 pl-4 py-3 transition-all"
+          className="flex items-center justify-between border-l-2 border-[var(--accent)]/40 pl-4 py-3 transition-all"
         >
           <div className="flex-1">
             <div className="text-[18px] md:text-[22px] font-bold text-[#E0E0E0]">
@@ -35,7 +35,7 @@ export default function ClientTimeline() {
               {client.year}
             </div>
           </div>
-          <div className="border border-[#FF9D23]/30 bg-[#FF9D23]/10 px-3 py-1 text-[12px] md:text-[14px] text-[#FF9D23] font-medium uppercase">
+          <div className="border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-3 py-1 text-[12px] md:text-[14px] text-[var(--accent)] font-medium uppercase">
             {client.tag}
           </div>
         </motion.div>

@@ -18,7 +18,7 @@ export default function AvailabilityCounter({ slots, total = 5 }: AvailabilityCo
             animate={{ scale: 1 }}
             transition={{ delay: i * 0.1, type: "spring" }}
             className={`w-3 h-8 ${
-              i < slots ? "bg-[#FF9D23]" : "bg-[#E0E0E0]/20"
+              i < slots ? "bg-[var(--accent)]" : "bg-[#E0E0E0]/20"
             } transition-colors duration-300`}
           />
         ))}

@@ -32,7 +32,7 @@ export default function LiveSydneyTime() {
       key={time}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="font-mono text-[#FF9D23] tabular-nums"
+      className="font-mono text-[var(--accent)] tabular-nums"
     >
       {time} AET
     </motion.span>

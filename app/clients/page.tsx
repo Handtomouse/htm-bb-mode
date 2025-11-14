@@ -90,7 +90,7 @@ function ClientCell({
           onClick();
         }
       }}
-      className="group relative aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-700 overflow-hidden hover:cursor-pointer hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0b0b0b] focus:z-10"
+      className="group relative aspect-square border-r border-b border-white/5 flex items-center justify-center bg-[#0b0b0b] hover:bg-white/5 transition-all duration-700 overflow-hidden hover:cursor-pointer hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0b0b0b] focus:z-10"
     >
       {/* Light streak reveal effect */}
       <motion.div
@@ -415,7 +415,7 @@ export default function ClientsPage() {
       {/* Skip Navigation */}
       <a
         href="#client-grid"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-white focus:text-black focus:font-medium focus:rounded-sm focus:outline-none focus:ring-2 focus:ring-[#ff9d23]"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-white focus:text-black focus:font-medium focus:rounded-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
       >
         Skip to client grid
       </a>
@@ -451,7 +451,7 @@ export default function ClientsPage() {
             transition={{ duration: 0.8 }}
           >
             <h1
-              className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-20 md:mb-24 leading-[0.9]"
+              className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[var(--accent)] mb-20 md:mb-24 leading-[0.9]"
               style={{
                 textShadow: '0 0 40px rgba(255, 157, 35, 0.4), 0 0 80px rgba(255, 157, 35, 0.2)',
                 WebkitTextStroke: '0.5px rgba(255, 157, 35, 0.3)',
@@ -470,9 +470,9 @@ export default function ClientsPage() {
                 opacity: 1 - (scrollY / 1000)
               }}
             >
-              <span className="tabular-nums bg-gradient-to-r from-[#ff9d23] via-[#ffbe0b] to-[#ff9d23] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">{animatedStats.clients}</span> clients across{" "}
-              <span className="tabular-nums bg-gradient-to-r from-[#ff9d23] via-[#ffbe0b] to-[#ff9d23] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ animationDelay: '0.3s' }}>{animatedStats.sectors}</span> industries.{" "}
-              <span className="tabular-nums bg-gradient-to-r from-[#ff9d23] via-[#ffbe0b] to-[#ff9d23] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ animationDelay: '0.6s' }}>{animatedStats.projects}</span> projects delivered.
+              <span className="tabular-nums bg-gradient-to-r from-[var(--accent)] via-[#ffbe0b] to-[var(--accent)] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">{animatedStats.clients}</span> clients across{" "}
+              <span className="tabular-nums bg-gradient-to-r from-[var(--accent)] via-[#ffbe0b] to-[var(--accent)] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ animationDelay: '0.3s' }}>{animatedStats.sectors}</span> industries.{" "}
+              <span className="tabular-nums bg-gradient-to-r from-[var(--accent)] via-[#ffbe0b] to-[var(--accent)] bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ animationDelay: '0.6s' }}>{animatedStats.projects}</span> projects delivered.
             </p>
 
             {/* Sector Distribution */}
@@ -508,12 +508,12 @@ export default function ClientsPage() {
                       aria-hidden="true"
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all duration-500 group-hover:scale-125"
                       style={{
-                        backgroundColor: SECTOR_COLORS[sector] || "#ff9d23",
-                        boxShadow: `0 0 0 ${SECTOR_COLORS[sector] || "#ff9d23"}00`,
+                        backgroundColor: SECTOR_COLORS[sector] || "var(--accent)",
+                        boxShadow: `0 0 0 ${SECTOR_COLORS[sector] || "var(--accent)"}00`,
                         transition: 'all 0.5s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = `0 0 16px ${SECTOR_COLORS[sector] || "#ff9d23"}80, 0 0 28px ${SECTOR_COLORS[sector] || "#ff9d23"}40`;
+                        e.currentTarget.style.boxShadow = `0 0 16px ${SECTOR_COLORS[sector] || "var(--accent)"}80, 0 0 28px ${SECTOR_COLORS[sector] || "var(--accent)"}40`;
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.boxShadow = `0 0 0 transparent`;
@@ -535,14 +535,14 @@ export default function ClientsPage() {
         viewport={{ once: true }}
         transition={{ duration: 1.4, ease: [0.43, 0.13, 0.23, 0.96] }}
       >
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent" />
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent" />
       </motion.div>
 
       {/* Logo Grid */}
       <div id="client-grid" ref={gridRef} className="max-w-[1600px] mx-auto px-16 md:px-20 lg:px-24 pb-40 md:pb-48">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 border-t border-l border-white/10">
           {clients.map((client, index) => {
-            const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
+            const sectorColor = SECTOR_COLORS[client.sector] || "var(--accent)";
             const isLongTerm = client.yearStarted && new Date().getFullYear() - client.yearStarted >= 3;
 
             // Group by sector for staggered animation
@@ -600,7 +600,7 @@ export default function ClientsPage() {
               ref={ctaRef}
               href="/contact"
               aria-label="Start your project - Contact us to begin working together"
-              className="inline-block px-20 py-6 border border-[#ff9d23]/30 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0b0b0b]"
+              className="inline-block px-20 py-6 border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 text-[14px] text-[var(--accent)]/80 hover:text-[var(--accent)] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0b0b0b]"
               onMouseMove={(e) => {
                 if (!ctaRef.current) return;
                 const rect = ctaRef.current.getBoundingClientRect();
@@ -652,9 +652,9 @@ export default function ClientsPage() {
             className="relative max-w-6xl w-full bg-[#0a0a0a] border border-white/5 p-8 sm:p-12 md:p-16 lg:p-20 max-h-[90vh] overflow-y-auto scroll-smooth"
             onClick={(e) => e.stopPropagation()}
             style={{
-              boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}10, 0 0 30px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}05`,
+              boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}10, 0 0 30px ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}05`,
               scrollbarWidth: 'thin',
-              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}50 transparent`
+              scrollbarColor: `${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}50 transparent`
             }}
           >
             <h2 id="client-modal-title" className="sr-only">
@@ -668,19 +668,19 @@ export default function ClientsPage() {
                 const btn = e.currentTarget;
                 const ripple = document.createElement('div');
                 ripple.className = 'absolute inset-0 rounded-full animate-ripple-click';
-                ripple.style.background = `radial-gradient(circle, ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}60 0%, transparent 70%)`;
+                ripple.style.background = `radial-gradient(circle, ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}60 0%, transparent 70%)`;
                 btn.appendChild(ripple);
                 setTimeout(() => ripple.remove(), 600);
                 setSelectedClient(null);
               }}
-              className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-115 active:scale-95 overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+              className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-500 group z-20 hover:rotate-90 hover:scale-115 active:scale-95 overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
               style={{
-                boxShadow: `0 0 0 0 ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}00`,
+                boxShadow: `0 0 0 0 ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}00`,
                 transition: 'all 0.5s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = SECTOR_COLORS[selectedClient.sector] || '#ff9d23';
-                e.currentTarget.style.boxShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}60`;
+                e.currentTarget.style.borderColor = SECTOR_COLORS[selectedClient.sector] || 'var(--accent)';
+                e.currentTarget.style.boxShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}60`;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
@@ -704,9 +704,9 @@ export default function ClientsPage() {
               <span
                 className="inline-block px-12 py-5 rounded-full text-[11px] font-light tracking-[0.2em] uppercase transition-all duration-500 hover:scale-105"
                 style={{
-                  backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
-                  border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
-                  color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23'
+                  backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}20`,
+                  border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}40`,
+                  color: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'
                 }}
               >
                 {selectedClient.sector}
@@ -759,7 +759,7 @@ export default function ClientsPage() {
                     Projects Delivered
                   </p>
                   <p className="text-[32px] text-white font-light tabular-nums leading-[1.1]">{selectedClient.projects.toLocaleString()}</p>
-                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)' }} />
                 </div>
 
                 <div className="relative pb-6">
@@ -778,7 +778,7 @@ export default function ClientsPage() {
                       Timeline not disclosed
                     </p>
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }} />
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] opacity-[0.03]" style={{ backgroundColor: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)' }} />
                 </div>
 
                 {selectedClient.website && (
@@ -790,15 +790,15 @@ export default function ClientsPage() {
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group text-[16px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-500 flex items-center gap-3 relative px-6 py-2 -mx-6 -my-2 rounded-sm"
+                      className="group text-[16px] text-[var(--accent)]/80 hover:text-[var(--accent)] font-light transition-all duration-500 flex items-center gap-3 relative px-6 py-2 -mx-6 -my-2 rounded-sm"
                       style={{
                         textShadow: '0 0 0 transparent',
                         backgroundColor: 'transparent',
                         transition: 'all 0.5s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.textShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}80`;
-                        e.currentTarget.style.backgroundColor = `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}08`;
+                        e.currentTarget.style.textShadow = `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}80`;
+                        e.currentTarget.style.backgroundColor = `${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}08`;
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.textShadow = '0 0 0 transparent';
@@ -807,7 +807,7 @@ export default function ClientsPage() {
                     >
                       <span className="relative">
                         Visit Site
-                        <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#ff9d23] transition-all duration-500 group-hover:w-full" />
+                        <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[var(--accent)] transition-all duration-500 group-hover:w-full" />
                       </span>
                       <svg className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -833,7 +833,7 @@ export default function ClientsPage() {
                     </p>
                   </div>
 
-                  <div className="px-12 py-12 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
+                  <div className="px-12 py-12 border border-white/8 rounded-sm border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)' }}>
                     <p className="text-[14px] text-white font-medium uppercase tracking-[0.2em] mb-6">
                       Results
                     </p>
@@ -863,7 +863,7 @@ export default function ClientsPage() {
                             fontWeight: 400
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = SECTOR_COLORS[selectedClient.sector] || '#ff9d23';
+                            e.currentTarget.style.borderColor = SECTOR_COLORS[selectedClient.sector] || 'var(--accent)';
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';

@@ -16,7 +16,7 @@ export default function InteractiveBelief({ icon, text, delay = 0 }: Interactive
       viewport={{ once: true }}
       transition={{ delay, duration: 0.5 }}
       whileHover={{
-        backgroundColor: "#FF9D23",
+        backgroundColor: "var(--accent)",
         color: "#000000",
         x: 15,
         transition: { duration: 0 }
@@ -25,7 +25,7 @@ export default function InteractiveBelief({ icon, text, delay = 0 }: Interactive
     >
       <motion.span
         whileHover={{ scale: 1.3, rotate: 10 }}
-        className="text-[48px] md:text-[56px] text-[#FF9D23] group-hover:text-black flex-shrink-0 transition-colors duration-0"
+        className="text-[48px] md:text-[56px] text-[var(--accent)] group-hover:text-black flex-shrink-0 transition-colors duration-0"
       >
         {icon}
       </motion.span>

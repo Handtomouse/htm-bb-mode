@@ -32,7 +32,7 @@ export default function StatusIndicator() {
 
   const statusConfig = {
     online: { color: "#00FF00", text: "Available now" },
-    away: { color: "#FF9D23", text: "After hours" },
+    away: { color: "var(--accent)", text: "After hours" },
     offline: { color: "#FF0000", text: "Offline (9am-6pm AET)" },
   };
 

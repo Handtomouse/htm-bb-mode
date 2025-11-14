@@ -1,6 +1,6 @@
 import React from "react";
 
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 
 // ===== Hardware Button Component =====
 export function HwButton({
@@ -63,7 +63,7 @@ export function HwButton({
         }}
       >
         <div
-          className="h-12 sm:h-16 w-12 sm:w-16 transition-all duration-300 ease-out group-hover:[&_svg_rect]:fill-[#ff9d23] group-hover:[&_svg_rect]:stroke-[#ff9d23] group-hover:[&_svg_g]:fill-[#ff9d23] group-hover:[&_svg_g]:stroke-[#ff9d23]"
+          className="h-12 sm:h-16 w-12 sm:w-16 transition-all duration-300 ease-out group-hover:[&_svg_rect]:fill-[var(--accent)] group-hover:[&_svg_rect]:stroke-[var(--accent)] group-hover:[&_svg_g]:fill-[var(--accent)] group-hover:[&_svg_g]:stroke-[var(--accent)]"
           style={{
             filter: isHovered ? "drop-shadow(0 0 4px rgba(255,157,35,0.6))" : "none"
           }}

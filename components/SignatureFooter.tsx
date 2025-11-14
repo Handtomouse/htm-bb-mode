@@ -56,12 +56,12 @@ export default function SignatureFooter({
           {/* Email (Clickable + Copy) */}
           <button
             onClick={() => copyToClipboard(email)}
-            className="text-[#FF9D23] hover:text-[#FFB84D] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF9D23] px-2 py-1 relative"
+            className="text-[var(--accent)] hover:text-[#FFB84D] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent)] px-2 py-1 relative"
             aria-label="Copy email to clipboard"
           >
             {email}
             {copied && (
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#FF9D23] text-black text-[12px] px-3 py-1 whitespace-nowrap">
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[var(--accent)] text-black text-[12px] px-3 py-1 whitespace-nowrap">
                 COPIED!
               </span>
             )}
@@ -73,7 +73,7 @@ export default function SignatureFooter({
               <span className="text-[#E0E0E0]/40">|</span>
               <button
                 onClick={() => copyToClipboard(phone)}
-                className="text-[#E0E0E0] hover:text-[#FF9D23] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF9D23] px-2 py-1"
+                className="text-[#E0E0E0] hover:text-[var(--accent)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent)] px-2 py-1"
                 aria-label="Copy phone to clipboard"
               >
                 {phone}

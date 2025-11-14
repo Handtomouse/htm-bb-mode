@@ -33,7 +33,7 @@ export default function LuxuryCollapsibleSection({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 hover:border-[#ff9d23]/50 transition-all duration-700"
+      className="border-2 border-[var(--accent)]/30 bg-gradient-to-br from-black/40 to-black/20 hover:border-[var(--accent)]/50 transition-all duration-700"
     >
       <button
         onClick={onToggle}
@@ -47,7 +47,7 @@ export default function LuxuryCollapsibleSection({
             onToggle();
           }
         }}
-        className="w-full flex items-center justify-between p-8 md:p-10 text-left hover:bg-[#ff9d23]/10 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black transition-all duration-700"
+        className="w-full flex items-center justify-between p-8 md:p-10 text-left hover:bg-[var(--accent)]/10 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black transition-all duration-700"
         aria-expanded={isOpen}
         aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${title} section`}
       >
@@ -58,7 +58,7 @@ export default function LuxuryCollapsibleSection({
         <motion.span
           animate={{ rotate: isOpen ? 90 : 0 }}
           transition={{ duration: 0.3 }}
-          className="text-[24px] md:text-[28px] text-[#ff9d23]"
+          className="text-[24px] md:text-[28px] text-[var(--accent)]"
           aria-hidden="true"
         >
           ▶
@@ -70,7 +70,7 @@ export default function LuxuryCollapsibleSection({
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-[#ff9d23]/30 p-8 md:p-10"
+          className="border-t border-[var(--accent)]/30 p-8 md:p-10"
         >
           {children}
         </motion.div>

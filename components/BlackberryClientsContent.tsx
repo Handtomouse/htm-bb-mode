@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useHapticFeedback } from "@/lib/hooks";
 
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 
 const SECTOR_COLORS: Record<string, string> = {
   "Financial Services": "#00d4aa",
@@ -129,7 +129,7 @@ export default function BlackberryClientsContent() {
         className="py-8 md:py-12"
       >
         <h1
-          className="text-[56px] md:text-[72px] font-light text-[#ff9d23] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
+          className="text-[56px] md:text-[72px] font-light text-[var(--accent)] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
           style={{
             textShadow: '0 0 40px rgba(255, 157, 35, 0.4)',
           }}
@@ -141,9 +141,9 @@ export default function BlackberryClientsContent() {
         <p
           className="text-[16px] md:text-[18px] text-white/75 leading-[2.2] font-light tracking-wide mb-8"
         >
-          <span className="tabular-nums text-[#ff9d23]">{animatedStats.clients}</span> clients across{" "}
-          <span className="tabular-nums text-[#ff9d23]">{animatedStats.sectors}</span> industries.{" "}
-          <span className="tabular-nums text-[#ff9d23]">{animatedStats.projects}</span> projects delivered.
+          <span className="tabular-nums text-[var(--accent)]">{animatedStats.clients}</span> clients across{" "}
+          <span className="tabular-nums text-[var(--accent)]">{animatedStats.sectors}</span> industries.{" "}
+          <span className="tabular-nums text-[var(--accent)]">{animatedStats.projects}</span> projects delivered.
         </p>
 
         {/* Sector Distribution */}
@@ -169,7 +169,7 @@ export default function BlackberryClientsContent() {
                 <div
                   className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                   style={{
-                    backgroundColor: SECTOR_COLORS[sector] || "#ff9d23",
+                    backgroundColor: SECTOR_COLORS[sector] || "var(--accent)",
                   }}
                 />
                 <span>{sector}: {count}</span>
@@ -183,14 +183,14 @@ export default function BlackberryClientsContent() {
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 1.2, ease: [0.43, 0.13, 0.23, 0.96] }}
-        className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent mb-8"
+        className="h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent mb-8"
       />
 
       {/* Client Grid */}
       <div className="pb-12">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {clients.map((client, index) => {
-            const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
+            const sectorColor = SECTOR_COLORS[client.sector] || "var(--accent)";
             const isLongTerm = client.yearStarted && new Date().getFullYear() - client.yearStarted >= 3;
             const delay = index * 0.02;
 
@@ -250,7 +250,7 @@ export default function BlackberryClientsContent() {
               className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 p-4 md:p-6 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
             style={{
-              boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
+              boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}20`,
             }}
           >
               {/* Close button */}
@@ -262,7 +262,7 @@ export default function BlackberryClientsContent() {
                 }}
                 className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-300 group"
               style={{
-                borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23',
+                borderColor: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)',
               }}
             >
               <div className="relative w-4 h-4">
@@ -276,9 +276,9 @@ export default function BlackberryClientsContent() {
                 <span
                   className="inline-block px-8 py-2.5 text-[11px] font-light tracking-[0.15em] uppercase"
                 style={{
-                  backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
-                  border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
-                  color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23'
+                  backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}20`,
+                  border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'}40`,
+                  color: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)'
                 }}
                 >
                   {selectedClient.sector}
@@ -341,7 +341,7 @@ export default function BlackberryClientsContent() {
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[15px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-300"
+                      className="text-[15px] text-[var(--accent)]/80 hover:text-[var(--accent)] font-light transition-all duration-300"
                     >
                       Visit Site →
                     </a>
@@ -356,7 +356,7 @@ export default function BlackberryClientsContent() {
                 </div>
 
                 {selectedClient.results && (
-                  <div className="px-4 py-4 border border-white/8 border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
+                  <div className="px-4 py-4 border border-white/8 border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || 'var(--accent)' }}>
                     <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">
                       Results
                     </p>
@@ -394,7 +394,7 @@ export default function BlackberryClientsContent() {
               {selectedClient.testimonial && (
                 <div className="pt-6 border-t border-white/5">
                   <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-4">Testimonial</p>
-                  <blockquote className="text-[16px] text-white font-light italic leading-[1.6] pl-4 border-l-2 border-[#ff9d23]/40">
+                  <blockquote className="text-[16px] text-white font-light italic leading-[1.6] pl-4 border-l-2 border-[var(--accent)]/40">
                     {selectedClient.testimonial}
                   </blockquote>
                   <p className="text-right text-[11px] text-white/60 font-light tracking-[0.12em] mt-3">

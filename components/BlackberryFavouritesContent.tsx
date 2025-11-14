@@ -6,7 +6,7 @@ import BBPageHeader from "./BBPageHeader";
 import BBEmptyState from "./BBEmptyState";
 import BBButton from "./BBButton";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 type Favourite = {
   id: string;
@@ -104,7 +104,7 @@ export default function BlackberryFavouritesContent() {
               setFilter(f);
             }}
             className={`flex-1 px-2 py-1 text-xs font-semibold uppercase ${
-              filter === f ? "bg-[#FF9D23] text-black" : "text-white/60 hover:text-white"
+              filter === f ? "bg-[var(--accent)] text-black" : "text-white/60 hover:text-white"
             }`}
           >
             {f}
@@ -131,7 +131,7 @@ export default function BlackberryFavouritesContent() {
           {filtered.map((fav) => (
             <div
               key={fav.id}
-              className="flex items-center gap-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6 hover:border-[#FF9D23]/50"
+              className="flex items-center gap-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6 hover:border-[var(--accent)]/50"
             >
               <div className="text-2xl">{fav.icon}</div>
               <div className="flex-1">
@@ -144,7 +144,7 @@ export default function BlackberryFavouritesContent() {
                     triggerHaptic(10);
                     handleOpen(fav);
                   }}
-                  className="px-2 py-1 text-xs font-semibold text-[#FF9D23] hover:underline"
+                  className="px-2 py-1 text-xs font-semibold text-[var(--accent)] hover:underline"
                   aria-label="Open"
                 >
                   Open
@@ -174,7 +174,7 @@ export default function BlackberryFavouritesContent() {
             triggerHaptic(10);
             alert("Add new favourite feature coming soon!");
           }}
-          className="w-full border-2 border-dashed border-white/20 bg-black/20 px-4 py-3 text-sm font-semibold text-white/50 hover:border-[#FF9D23]/50 hover:text-[#FF9D23]/70"
+          className="w-full border-2 border-dashed border-white/20 bg-black/20 px-4 py-3 text-sm font-semibold text-white/50 hover:border-[var(--accent)]/50 hover:text-[var(--accent)]/70"
         >
           + Add Favourite
         </button>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useHapticFeedback } from "@/lib/hooks";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 type Game = "menu" | "snake" | "memory" | "tictactoe";
 type Direction = "up" | "down" | "left" | "right";
@@ -31,7 +31,7 @@ export default function BlackberryGamesContent() {
               triggerHaptic(10);
               setCurrentGame("menu");
             }}
-            className="px-2 py-1 text-xs font-semibold text-white/70 hover:text-[#FF9D23]"
+            className="px-2 py-1 text-xs font-semibold text-white/70 hover:text-[var(--accent)]"
           >
             ← Menu
           </button>
@@ -63,7 +63,7 @@ function GameMenu({ onSelectGame }: { onSelectGame: (game: string) => void }) {
             triggerHaptic(10);
             onSelectGame(game.id);
           }}
-          className="flex w-full items-center gap-3 border border-white/10 bg-black/30 p-3 text-left hover:border-[#FF9D23]/50"
+          className="flex w-full items-center gap-3 border border-white/10 bg-black/30 p-3 text-left hover:border-[var(--accent)]/50"
         >
           <div className="text-3xl">{game.icon}</div>
           <div className="flex-1">
@@ -189,14 +189,14 @@ function SnakeGame() {
     <div>
       <div className="mb-3 flex items-center justify-between border border-white/10 bg-black/30 p-2 text-xs text-white">
         <div>
-          Score: <span className="text-[#FF9D23]">{score}</span>
+          Score: <span className="text-[var(--accent)]">{score}</span>
         </div>
         <button
           onClick={() => {
             triggerHaptic(10);
             setIsPaused(!isPaused);
           }}
-          className="px-2 py-1 text-white/70 hover:text-[#FF9D23]"
+          className="px-2 py-1 text-white/70 hover:text-[var(--accent)]"
         >
           {isPaused ? "▶ Resume" : "⏸ Pause"}
         </button>
@@ -227,7 +227,7 @@ function SnakeGame() {
                 width: 16,
                 height: 16,
                 backgroundColor: isHead
-                  ? "#FF9D23"
+                  ? "var(--accent)"
                   : isSnake
                     ? "#FFC266"
                     : isFood
@@ -242,13 +242,13 @@ function SnakeGame() {
           <div className="absolute inset-0 flex items-center justify-center bg-black/80">
             <div className="text-center">
               <div className="mb-2 text-lg font-semibold text-white">Game Over!</div>
-              <div className="mb-3 text-sm text-[#FF9D23]">Score: {score}</div>
+              <div className="mb-3 text-sm text-[var(--accent)]">Score: {score}</div>
               <button
                 onClick={() => {
                   triggerHaptic(15);
                   resetGame();
                 }}
-                className="border-2 border-[#FF9D23] bg-[#FF9D23]/10 px-4 py-2 text-sm font-semibold text-[#FF9D23] hover:bg-[#FF9D23] hover:text-black"
+                className="border-2 border-[var(--accent)] bg-[var(--accent)]/10 px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black"
               >
                 Play Again
               </button>
@@ -266,7 +266,7 @@ function SnakeGame() {
               triggerHaptic(10);
               handleKeyPress("up");
             }}
-            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
+            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[var(--accent)]/50"
           >
             ↑
           </button>
@@ -276,7 +276,7 @@ function SnakeGame() {
               triggerHaptic(10);
               handleKeyPress("left");
             }}
-            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
+            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[var(--accent)]/50"
           >
             ←
           </button>
@@ -285,7 +285,7 @@ function SnakeGame() {
               triggerHaptic(10);
               handleKeyPress("down");
             }}
-            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
+            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[var(--accent)]/50"
           >
             ↓
           </button>
@@ -294,7 +294,7 @@ function SnakeGame() {
               triggerHaptic(10);
               handleKeyPress("right");
             }}
-            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
+            className="border border-white/10 bg-black/30 py-2 text-white hover:border-[var(--accent)]/50"
           >
             →
           </button>
@@ -368,12 +368,12 @@ function MemoryGame() {
     <div>
       <div className="mb-3 flex items-center justify-between border border-white/10 bg-black/30 p-2 text-xs text-white">
         <div>
-          Moves: <span className="text-[#FF9D23]">{moves}</span>
+          Moves: <span className="text-[var(--accent)]">{moves}</span>
         </div>
         <button onClick={() => {
           triggerHaptic(10);
           initGame();
-        }} className="px-2 py-1 text-white/70 hover:text-[#FF9D23]">
+        }} className="px-2 py-1 text-white/70 hover:text-[var(--accent)]">
           ↻ Reset
         </button>
       </div>
@@ -388,7 +388,7 @@ function MemoryGame() {
             }}
             className={`aspect-square border text-2xl transition-colors ${
               card.matched
-                ? "border-[#FF9D23] bg-[#FF9D23]/20"
+                ? "border-[var(--accent)] bg-[var(--accent)]/20"
                 : card.flipped
                   ? "border-white/30 bg-black/50"
                   : "border-white/10 bg-black/30 hover:border-white/30"
@@ -401,15 +401,15 @@ function MemoryGame() {
       </div>
 
       {completed && (
-        <div className="mt-3 border border-[#FF9D23] bg-[#FF9D23]/10 p-3 text-center">
+        <div className="mt-3 border border-[var(--accent)] bg-[var(--accent)]/10 p-3 text-center">
           <div className="mb-2 text-sm font-semibold text-white">🎉 Completed!</div>
-          <div className="mb-2 text-xs text-[#FF9D23]">Moves: {moves}</div>
+          <div className="mb-2 text-xs text-[var(--accent)]">Moves: {moves}</div>
           <button
             onClick={() => {
               triggerHaptic(15);
               initGame();
             }}
-            className="border-2 border-[#FF9D23] bg-black/50 px-3 py-1 text-xs font-semibold text-[#FF9D23] hover:bg-[#FF9D23] hover:text-black"
+            className="border-2 border-[var(--accent)] bg-black/50 px-3 py-1 text-xs font-semibold text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black"
           >
             Play Again
           </button>
@@ -510,7 +510,7 @@ function TicTacToeGame() {
             winner === "draw" ? (
               <span className="text-white/70">Draw!</span>
             ) : winner === "X" ? (
-              <span className="text-[#FF9D23]">You Win!</span>
+              <span className="text-[var(--accent)]">You Win!</span>
             ) : (
               <span className="text-red-400">AI Wins!</span>
             )
@@ -523,7 +523,7 @@ function TicTacToeGame() {
         <button onClick={() => {
           triggerHaptic(10);
           resetGame();
-        }} className="px-2 py-1 text-white/70 hover:text-[#FF9D23]">
+        }} className="px-2 py-1 text-white/70 hover:text-[var(--accent)]">
           ↻ Reset
         </button>
       </div>
@@ -538,9 +538,9 @@ function TicTacToeGame() {
             }}
             className={`flex h-16 w-16 items-center justify-center border text-2xl font-bold ${
               winningLine?.includes(index)
-                ? "border-[#FF9D23] bg-[#FF9D23]/20"
+                ? "border-[var(--accent)] bg-[var(--accent)]/20"
                 : "border-white/10 bg-black/30 hover:border-white/30"
-            } ${cell === "X" ? "text-[#FF9D23]" : "text-white"}`}
+            } ${cell === "X" ? "text-[var(--accent)]" : "text-white"}`}
             disabled={!!cell || !!winner || !isPlayerTurn}
           >
             {cell}
@@ -555,7 +555,7 @@ function TicTacToeGame() {
               triggerHaptic(15);
               resetGame();
             }}
-            className="border-2 border-[#FF9D23] bg-[#FF9D23]/10 px-4 py-2 text-sm font-semibold text-[#FF9D23] hover:bg-[#FF9D23] hover:text-black"
+            className="border-2 border-[var(--accent)] bg-[var(--accent)]/10 px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black"
           >
             Play Again
           </button>

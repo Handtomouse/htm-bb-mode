@@ -2024,7 +2024,7 @@ export default function WormholePage() {
                 </div>
                 <div className="text-2xl font-bold mb-3" style={{
                   fontFamily: 'var(--font-heading)',
-                  color: isHyperhyperspace ? '#fff' : (ludicrousSpeed ? '#ff9d23' : '#6495ed'),
+                  color: isHyperhyperspace ? '#fff' : (ludicrousSpeed ? 'var(--accent)' : '#6495ed'),
                   textShadow: `0 0 10px ${isHyperhyperspace ? 'rgba(255,255,255,0.8)' : (ludicrousSpeed ? 'rgba(255,157,35,0.8)' : 'rgba(100,149,237,0.8)')}`
                 }}>
                   {isHyperhyperspace ? 'HYPER²' : (ludicrousSpeed ? 'LUDICROUS' : 'WARP')}
@@ -2036,9 +2036,9 @@ export default function WormholePage() {
                     style={{
                       width: isHyperhyperspace ? '100%' : (ludicrousSpeed ? '66%' : '33%'),
                       background: isHyperhyperspace
-                        ? 'linear-gradient(90deg, #6495ed, #ff9d23, #fff)'
+                        ? 'linear-gradient(90deg, #6495ed, var(--accent), #fff)'
                         : (ludicrousSpeed
-                          ? 'linear-gradient(90deg, #6495ed, #ff9d23)'
+                          ? 'linear-gradient(90deg, #6495ed, var(--accent))'
                           : '#6495ed'),
                       boxShadow: `0 0 10px ${isHyperhyperspace ? 'rgba(255,255,255,0.6)' : (ludicrousSpeed ? 'rgba(255,157,35,0.6)' : 'rgba(100,149,237,0.6)')}`
                     }}

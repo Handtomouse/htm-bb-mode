@@ -56,14 +56,14 @@ export default function TypewriterManifesto({
       }}
     >
       {beforeAccent}
-      <span className="text-[#ff9d23]/90 font-semibold">
+      <span className="text-[var(--accent)]/90 font-semibold">
         {accentPart}
       </span>
       {showCursor && (
         <motion.span
           animate={{ opacity: [0.9, 0.3, 0.9] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="text-[#ff9d23]/90"
+          className="text-[var(--accent)]/90"
         >
           |
         </motion.span>

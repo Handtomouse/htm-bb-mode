@@ -21,9 +21,9 @@ export default function CalloutQuote({ children, rotate = 0, delay = 0 }: Callou
       animate={isInView ? { opacity: 1, scale: 1, rotate } : { opacity: 0, scale: 0.95, rotate: 0 }}
       transition={{ duration: 0.6, delay, ease: "easeOut" }}
       whileHover={{ scale: 1.02, rotate: rotate + 1 }}
-      className="bg-[#FF9D23]/10 border-4 border-[#FF9D23] p-12 md:p-20 my-16"
+      className="bg-[var(--accent)]/10 border-4 border-[var(--accent)] p-12 md:p-20 my-16"
     >
-      <blockquote className="text-[56px] md:text-[72px] font-black text-[#FF9D23] uppercase leading-tight text-center">
+      <blockquote className="text-[56px] md:text-[72px] font-black text-[var(--accent)] uppercase leading-tight text-center">
         {children}
       </blockquote>
     </motion.div>

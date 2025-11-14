@@ -25,7 +25,7 @@ export default function OperatingDaysCounter() {
 
   return (
     <div className="text-center">
-      <motion.div className="text-[32px] md:text-[40px] font-bold text-[#FF9D23] tabular-nums">
+      <motion.div className="text-[32px] md:text-[40px] font-bold text-[var(--accent)] tabular-nums">
         {rounded.get().toLocaleString()}
       </motion.div>
       <div className="text-[12px] md:text-[14px] text-[#E0E0E0]/60 uppercase tracking-wide">

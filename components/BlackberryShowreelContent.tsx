@@ -5,7 +5,7 @@ import { useHapticFeedback } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBButton from "./BBButton";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 const SHOWREEL_ITEMS = [
   {
@@ -121,7 +121,7 @@ export default function BlackberryShowreelContent() {
               setYearFilter(e.target.value === "all" ? "all" : Number(e.target.value));
               setSelected(0);
             }}
-            className="flex-1 border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-[#FF9D23] focus:outline-none"
+            className="flex-1 border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-[var(--accent)] focus:outline-none"
           >
             <option value="all">All Years</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -133,7 +133,7 @@ export default function BlackberryShowreelContent() {
               setTypeFilter(e.target.value);
               setSelected(0);
             }}
-            className="flex-1 border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-[#FF9D23] focus:outline-none"
+            className="flex-1 border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-[var(--accent)] focus:outline-none"
           >
             <option value="all">All Types</option>
             {types.map(t => <option key={t} value={t}>{t}</option>)}
@@ -181,7 +181,7 @@ export default function BlackberryShowreelContent() {
           <div>
             <h2 className="text-lg font-semibold text-white">{item.title}</h2>
             <div className="mt-1 flex items-center gap-2 text-xs text-white/60">
-              <span className="rounded bg-[#FF9D23]/20 px-2 py-0.5 text-[#FF9D23]">{item.type}</span>
+              <span className="rounded bg-[var(--accent)]/20 px-2 py-0.5 text-[var(--accent)]">{item.type}</span>
               <span>·</span>
               <span>{item.client}</span>
               <span>·</span>
@@ -221,7 +221,7 @@ export default function BlackberryShowreelContent() {
               }}
               className={`flex aspect-square items-center justify-center border text-2xl ${
                 idx === selected
-                  ? "border-[#FF9D23] bg-[#FF9D23]/20"
+                  ? "border-[var(--accent)] bg-[var(--accent)]/20"
                   : "border-white/10 bg-black/30 hover:border-white/30"
               }`}
               aria-label={item.title}

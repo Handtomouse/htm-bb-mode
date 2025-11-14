@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const ACCENT = "#ff9d23";
+const ACCENT = "var(--accent)";
 
 interface LuxuryStatCardProps {
   label: string;
@@ -161,7 +161,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
       {/* Improvement #13: "Tap to explore" hint on mobile (first 3s) */}
       {showTapHint && (
         <motion.div
-          className="absolute -top-8 left-1/2 -translate-x-1/2 md:hidden text-[11px] text-[#ff9d23] uppercase tracking-widest z-10"
+          className="absolute -top-8 left-1/2 -translate-x-1/2 md:hidden text-[11px] text-[var(--accent)] uppercase tracking-widest z-10"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: [0.6, 1, 0.6], y: 0 }}
           transition={{ opacity: { duration: 1.5, repeat: Infinity } }}
@@ -244,7 +244,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
               className="text-[38px] md:text-[73px] lg:text-[92px] font-extrabold relative"
               style={{
                 letterSpacing: '-0.04em',
-                background: 'linear-gradient(160deg, #ffd700 0%, #ff9d23 30%, #ffaa35 70%, #ffd700 100%)',
+                background: 'linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -263,7 +263,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
                   style={{
                     opacity: 0.9,
                     marginLeft: '0.1em',
-                    background: 'linear-gradient(160deg, #ffd700 0%, #ff9d23 30%, #ffaa35 70%, #ffd700 100%)',
+                    background: 'linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text'
@@ -322,7 +322,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
               className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] px-3 py-1.5 rounded uppercase tracking-wider"
               style={{
                 background: 'rgba(255,157,35,0.2)',
-                color: '#ff9d23',
+                color: 'var(--accent)',
                 border: '1px solid rgba(255,157,35,0.4)',
                 fontWeight: 600
               }}

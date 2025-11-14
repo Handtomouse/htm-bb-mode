@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useSettings } from "@/lib/hooks";
 
 const ACCENT_COLORS = [
-  { name: "Orange", value: "#ff9d23" },
+  { name: "Orange", value: "var(--accent)" },
   { name: "Blue", value: "#3a86ff" },
   { name: "Purple", value: "#9b5de5" },
   { name: "Green", value: "#06ffa5" },
@@ -63,7 +63,7 @@ export default function SettingsPage() {
       dockMode: "mono",
       sound: true,
       theme: "dark",
-      accentColor: "#ff9d23",
+      accentColor: "var(--accent)",
       fontSize: "medium",
       reducedMotion: false,
       animationSpeed: 1.0,
@@ -111,7 +111,7 @@ export default function SettingsPage() {
             className={`pointer-events-auto px-6 py-3 border backdrop-blur-sm text-sm ${
               toast.type === "success"
                 ? "border-[#06ffa5]/30 bg-[#06ffa5]/10 text-[#06ffa5]"
-                : "border-[#ff9d23]/30 bg-[#ff9d23]/10 text-[#ff9d23]"
+                : "border-[var(--accent)]/30 bg-[var(--accent)]/10 text-[var(--accent)]"
             }`}
           >
             {toast.message}
@@ -128,7 +128,7 @@ export default function SettingsPage() {
             transition={{ duration: 0.8 }}
           >
             <h1
-              className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[#ff9d23] mb-12 leading-[0.9]"
+              className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[var(--accent)] mb-12 leading-[0.9]"
               style={{
                 textShadow:
                   "0 0 40px rgba(255, 157, 35, 0.4), 0 0 80px rgba(255, 157, 35, 0.2)",
@@ -160,7 +160,7 @@ export default function SettingsPage() {
         viewport={{ once: true }}
         transition={{ duration: 1.4, ease: [0.43, 0.13, 0.23, 0.96] }}
       >
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent" />
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent" />
       </motion.div>
 
       {/* Settings Grid */}
@@ -186,7 +186,7 @@ export default function SettingsPage() {
                       onClick={() => updateSetting("theme", theme)}
                       className={`flex-1 px-4 py-3 border transition-all duration-500 uppercase text-[13px] tracking-wider ${
                         settings.theme === theme
-                          ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23]"
+                          ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
                           : "border-white/10 text-white/60 hover:border-white/30"
                       }`}
                     >
@@ -259,7 +259,7 @@ export default function SettingsPage() {
                       onClick={() => updateSetting("fontSize", size)}
                       className={`flex-1 px-4 py-3 border transition-all duration-500 uppercase text-[13px] tracking-wider ${
                         settings.fontSize === size
-                          ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23]"
+                          ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
                           : "border-white/10 text-white/60 hover:border-white/30"
                       }`}
                     >
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                   <label className="text-[14px] text-white/80 uppercase tracking-[0.15em]">
                     Brightness
                   </label>
-                  <span className="text-[#ff9d23] tabular-nums">{settings.brightness}%</span>
+                  <span className="text-[var(--accent)] tabular-nums">{settings.brightness}%</span>
                 </div>
                 <input
                   type="range"
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     updateSetting("brightness", Number(e.target.value))
                   }
-                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ff9d23] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)]"
+                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)]"
                 />
               </div>
             </div>
@@ -311,7 +311,7 @@ export default function SettingsPage() {
                       onClick={() => updateSetting("dockMode", mode)}
                       className={`flex-1 px-4 py-3 border transition-all duration-500 uppercase text-[13px] tracking-wider ${
                         settings.dockMode === mode
-                          ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23]"
+                          ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
                           : "border-white/10 text-white/60 hover:border-white/30"
                       }`}
                     >
@@ -334,7 +334,7 @@ export default function SettingsPage() {
                   <label className="text-[14px] text-white/80 uppercase tracking-[0.15em]">
                     Volume
                   </label>
-                  <span className="text-[#ff9d23] tabular-nums">{settings.volume}%</span>
+                  <span className="text-[var(--accent)] tabular-nums">{settings.volume}%</span>
                 </div>
                 <input
                   type="range"
@@ -343,7 +343,7 @@ export default function SettingsPage() {
                   value={settings.volume}
                   onChange={(e) => updateSetting("volume", Number(e.target.value))}
                   disabled={!settings.sound}
-                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ff9d23] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -361,7 +361,7 @@ export default function SettingsPage() {
                   <label className="text-[14px] text-white/80 uppercase tracking-[0.15em]">
                     Animation Speed
                   </label>
-                  <span className="text-[#ff9d23] tabular-nums">{settings.animationSpeed.toFixed(1)}×</span>
+                  <span className="text-[var(--accent)] tabular-nums">{settings.animationSpeed.toFixed(1)}×</span>
                 </div>
                 <input
                   type="range"
@@ -373,7 +373,7 @@ export default function SettingsPage() {
                     updateSetting("animationSpeed", Number(e.target.value))
                   }
                   disabled={settings.reducedMotion}
-                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ff9d23] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -438,7 +438,7 @@ export default function SettingsPage() {
               </div>
               <div className="flex justify-between items-center">
                 <span>Developer:</span>
-                <span className="text-[#ff9d23]">HandToMouse</span>
+                <span className="text-[var(--accent)]">HandToMouse</span>
               </div>
             </div>
           </SettingCard>
@@ -456,13 +456,13 @@ export default function SettingsPage() {
             onClick={resetSettings}
             onMouseEnter={(e) => setIsHovering(true)}
             onMouseLeave={(e) => setIsHovering(false)}
-            className="inline-block px-16 py-5 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-[14px] text-white/70 hover:text-[#ff9d23] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95"
+            className="inline-block px-16 py-5 border border-white/20 hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 text-[14px] text-white/70 hover:text-[var(--accent)] font-light uppercase tracking-[0.25em] transition-all duration-700 active:scale-95"
             style={{
               boxShadow: "0 0 0 0 transparent",
               transition: "all 0.7s ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 20px #ff9d2330";
+              e.currentTarget.style.boxShadow = "0 0 20px var(--accent)30";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = "0 0 0 0 transparent";
@@ -527,7 +527,7 @@ function SettingCard({
         transition: "all 0.7s ease",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 0 20px #ff9d2310, 0 0 40px #ff9d2305";
+        e.currentTarget.style.boxShadow = "0 0 20px var(--accent)10, 0 0 40px var(--accent)05";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = "0 0 0 0 transparent";
@@ -546,7 +546,7 @@ function SettingCard({
       <div
         className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-all duration-700"
         style={{
-          background: "linear-gradient(90deg, transparent 0%, #ff9d23 50%, transparent 100%)",
+          background: "linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%)",
         }}
       />
 
@@ -590,7 +590,7 @@ function ToggleSetting({
         onClick={() => onChange(!value)}
         className={`relative w-14 h-7 border transition-all duration-500 ${
           value
-            ? "border-[#ff9d23] bg-[#ff9d23]/20"
+            ? "border-[var(--accent)] bg-[var(--accent)]/20"
             : "border-white/20 bg-white/5"
         }`}
       >
@@ -598,10 +598,10 @@ function ToggleSetting({
           animate={{ x: value ? 28 : 0 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
           className={`absolute top-0.5 left-0.5 w-6 h-6 ${
-            value ? "bg-[#ff9d23]" : "bg-white/40"
+            value ? "bg-[var(--accent)]" : "bg-white/40"
           }`}
           style={{
-            boxShadow: value ? "0 0 12px #ff9d2360" : "none",
+            boxShadow: value ? "0 0 12px var(--accent)60" : "none",
           }}
         />
       </button>

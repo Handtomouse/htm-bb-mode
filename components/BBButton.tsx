@@ -19,12 +19,12 @@ export default function BBButton({
   disabled,
   ...props
 }: BBButtonProps) {
-  const baseClasses = "font-semibold uppercase transition-all focus:outline-none focus:ring-2 focus:ring-[#FF9D23]/50";
+  const baseClasses = "font-semibold uppercase transition-all focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50";
 
   const variantClasses = {
     primary: `border-2 border-[${ACCENT}] bg-[${ACCENT}] text-black hover:bg-[${ACCENT_HOVER}] hover:border-[${ACCENT_HOVER}] disabled:opacity-50 disabled:cursor-not-allowed`,
-    secondary: "border-2 border-white/20 bg-black/50 text-white hover:border-[#FF9D23] hover:text-[#FF9D23] disabled:opacity-50 disabled:cursor-not-allowed",
-    ghost: "border-none bg-transparent text-white/70 hover:text-[#FF9D23] disabled:opacity-50 disabled:cursor-not-allowed",
+    secondary: "border-2 border-white/20 bg-black/50 text-white hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed",
+    ghost: "border-none bg-transparent text-white/70 hover:text-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed",
     danger: "border-2 border-red-400 bg-red-400/20 text-red-400 hover:bg-red-400/30 disabled:opacity-50 disabled:cursor-not-allowed",
   };
 

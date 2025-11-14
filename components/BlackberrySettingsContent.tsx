@@ -5,11 +5,11 @@ import { useHapticFeedback, useSettings } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBButton from "./BBButton";
 
-const ACCENT = "#FF9D23";
+const ACCENT = "var(--accent)";
 
 // Accent color options
 const ACCENT_COLORS = [
-  { name: "Orange", value: "#ff9d23" },
+  { name: "Orange", value: "var(--accent)" },
   { name: "Blue", value: "#3b82f6" },
   { name: "Purple", value: "#a855f7" },
   { name: "Green", value: "#22c55e" },
@@ -75,7 +75,7 @@ export default function BlackberrySettingsContent() {
             <div>
               <div className="mb-1 flex items-center justify-between text-xs">
                 <label className="text-sm md:text-base text-white/70">Brightness</label>
-                <span className="text-[#FF9D23]">{brightness}%</span>
+                <span className="text-[var(--accent)]">{brightness}%</span>
               </div>
               <input
                 type="range"
@@ -86,14 +86,14 @@ export default function BlackberrySettingsContent() {
                   triggerHaptic(10);
                   setBrightness(Number(e.target.value));
                 }}
-                className="w-full accent-[#FF9D23]"
+                className="w-full accent-[var(--accent)]"
               />
             </div>
 
             <div>
               <div className="mb-1 flex items-center justify-between text-xs">
                 <label className="text-sm md:text-base text-white/70">Contrast</label>
-                <span className="text-[#FF9D23]">{contrast}%</span>
+                <span className="text-[var(--accent)]">{contrast}%</span>
               </div>
               <input
                 type="range"
@@ -104,7 +104,7 @@ export default function BlackberrySettingsContent() {
                   triggerHaptic(10);
                   setContrast(Number(e.target.value));
                 }}
-                className="w-full accent-[#FF9D23]"
+                className="w-full accent-[var(--accent)]"
               />
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function BlackberrySettingsContent() {
             <div>
               <div className="mb-1 flex items-center justify-between text-xs">
                 <label className="text-sm md:text-base text-white/70">Sensitivity</label>
-                <span className="text-[#FF9D23]">
+                <span className="text-[var(--accent)]">
                   {trackpadSensitivity < 30 ? "Low" : trackpadSensitivity < 70 ? "Medium" : "High"}
                 </span>
               </div>
@@ -132,7 +132,7 @@ export default function BlackberrySettingsContent() {
                   triggerHaptic(10);
                   setTrackpadSensitivity(Number(e.target.value));
                 }}
-                className="w-full accent-[#FF9D23]"
+                className="w-full accent-[var(--accent)]"
               />
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function BlackberrySettingsContent() {
                   triggerHaptic(10);
                   setSoundEnabled(e.target.checked);
                 }}
-                className="h-4 w-4 accent-[#FF9D23]"
+                className="h-4 w-4 accent-[var(--accent)]"
               />
             </label>
 
@@ -166,7 +166,7 @@ export default function BlackberrySettingsContent() {
                   triggerHaptic(10);
                   setVibrateEnabled(e.target.checked);
                 }}
-                className="h-4 w-4 accent-[#FF9D23]"
+                className="h-4 w-4 accent-[var(--accent)]"
               />
             </label>
           </div>
@@ -187,7 +187,7 @@ export default function BlackberrySettingsContent() {
                   triggerHaptic(10);
                   setNotifications(e.target.checked);
                 }}
-                className="h-4 w-4 accent-[#FF9D23]"
+                className="h-4 w-4 accent-[var(--accent)]"
               />
             </label>
           </div>
@@ -213,7 +213,7 @@ export default function BlackberrySettingsContent() {
             </div>
             <div className="flex justify-between">
               <span>Developer:</span>
-              <span className="text-[#FF9D23]">HandToMouse</span>
+              <span className="text-[var(--accent)]">HandToMouse</span>
             </div>
           </div>
         </section>

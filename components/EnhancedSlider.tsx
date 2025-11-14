@@ -75,7 +75,7 @@ export default function EnhancedSlider({
         </label>
         <span
           id={`${sliderId}-value`}
-          className="text-[#ff9d23] text-xs tabular-nums"
+          className="text-[var(--accent)] text-xs tabular-nums"
           aria-live="polite"
         >
           {displayValue}
@@ -87,7 +87,7 @@ export default function EnhancedSlider({
         {/* Track with gradient fill */}
         <div className="relative h-1 bg-white/10" role="presentation">
           <div
-            className={`absolute top-0 left-0 h-full bg-gradient-to-r from-[#ff9d23]/50 to-[#ff9d23] ${
+            className={`absolute top-0 left-0 h-full bg-gradient-to-r from-[var(--accent)]/50 to-[var(--accent)] ${
               prefersReducedMotion ? "" : "transition-all duration-150"
             }`}
             style={{ width: `${percentage}%` }}
@@ -118,7 +118,7 @@ export default function EnhancedSlider({
             [&::-webkit-slider-thumb]:w-3
             [&::-webkit-slider-thumb]:h-3
             [&::-webkit-slider-thumb]:rounded-full
-            [&::-webkit-slider-thumb]:bg-[#ff9d23]
+            [&::-webkit-slider-thumb]:bg-[var(--accent)]
             [&::-webkit-slider-thumb]:border
             [&::-webkit-slider-thumb]:border-white/20
             [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)]
@@ -129,7 +129,7 @@ export default function EnhancedSlider({
             disabled:cursor-not-allowed
             focus:outline-none
             focus-visible:ring-2
-            focus-visible:ring-[#ff9d23]
+            focus-visible:ring-[var(--accent)]
             focus-visible:ring-offset-2
             focus-visible:ring-offset-black`}
         />
@@ -142,7 +142,7 @@ export default function EnhancedSlider({
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="absolute -top-8 px-2 py-1 bg-[#ff9d23] text-black text-xs font-medium whitespace-nowrap pointer-events-none"
+                className="absolute -top-8 px-2 py-1 bg-[var(--accent)] text-black text-xs font-medium whitespace-nowrap pointer-events-none"
                 style={{
                   left: `${tooltipPosition}%`,
                   transform: "translateX(-50%)",

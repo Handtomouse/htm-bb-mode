@@ -63,7 +63,7 @@ export default function TopBar({ notificationCount = 0 }: { notificationCount?: 
     <div className="fixed top-0 left-0 w-full h-10 bg-[#000000] text-[#E0E0E0] text-[20px] flex justify-between items-center px-8 border-b border-white/10 z-40 leading-none" style={{ fontFamily: 'VT323, monospace' }}>
       {/* CRT shimmer line */}
       <div
-        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FF9D23] to-transparent opacity-20"
+        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-20"
         style={{
           animation: "shimmer 3s ease-in-out infinite",
         }}
@@ -107,8 +107,8 @@ export default function TopBar({ notificationCount = 0 }: { notificationCount?: 
           <>
             <span className="text-[#E0E0E0]/40">•</span>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#FF9D23] animate-pulse" />
-              <span className="text-[#FF9D23] font-medium">{notificationCount}</span>
+              <div className="w-3 h-3 rounded-full bg-[var(--accent)] animate-pulse" />
+              <span className="text-[var(--accent)] font-medium">{notificationCount}</span>
             </div>
           </>
         )}

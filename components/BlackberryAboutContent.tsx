@@ -325,7 +325,7 @@ export default function BlackberryAboutContent() {
 
       {/* Optimized Floating geometric elements */}
       <div
-        className="fixed w-32 h-32 border border-[#ff9d23]/8 pointer-events-none"
+        className="fixed w-32 h-32 border border-[var(--accent)]/8 pointer-events-none"
         style={{
           top: '15%',
           left: '8%',
@@ -334,7 +334,7 @@ export default function BlackberryAboutContent() {
         }}
       />
       <div
-        className="fixed w-20 h-20 border border-[#ff9d23]/6 pointer-events-none"
+        className="fixed w-20 h-20 border border-[var(--accent)]/6 pointer-events-none"
         style={{
           bottom: '25%',
           right: '12%',
@@ -348,19 +348,19 @@ export default function BlackberryAboutContent() {
       <div className="sr-only focus-within:not-sr-only">
         <a
           href="#services"
-          className="fixed top-4 left-4 z-[100] bg-[#ff9d23] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+          className="fixed top-4 left-4 z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black"
         >
           Skip to Services
         </a>
         <a
           href="#details"
-          className="fixed top-4 left-[180px] z-[100] bg-[#ff9d23] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+          className="fixed top-4 left-[180px] z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black"
         >
           Skip to Details
         </a>
         <a
           href="#contact"
-          className="fixed top-4 left-[360px] z-[100] bg-[#ff9d23] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+          className="fixed top-4 left-[360px] z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black"
         >
           Skip to Contact
         </a>
@@ -380,11 +380,11 @@ export default function BlackberryAboutContent() {
 
       {/* Scroll Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-[#ff9d23]/20 z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-[var(--accent)]/20 z-50"
         style={{ transformOrigin: '0%' }}
       >
         <motion.div
-          className="h-full bg-gradient-to-r from-[#ff9d23] via-[#FFB84D] to-[#ff9d23]"
+          className="h-full bg-gradient-to-r from-[var(--accent)] via-[#FFB84D] to-[var(--accent)]"
           style={{
             width: `${scrollProgress}%`,
             boxShadow: '0 0 10px rgba(255,157,35,0.6)'
@@ -405,7 +405,7 @@ export default function BlackberryAboutContent() {
           whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(255,157,35,0.9)' }}
           whileTap={{ scale: 0.95 }}
           onClick={() => triggerHaptic(15)}
-          className="fixed bottom-8 left-8 z-50 border-2 border-[#ff9d23] bg-[#ff9d23] px-6 py-3 text-[14px] md:text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300 touch-manipulation shadow-lg"
+          className="fixed bottom-8 left-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-[14px] md:text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300 touch-manipulation shadow-lg"
           aria-label="Get in touch"
         >
           Get in Touch →
@@ -435,14 +435,14 @@ export default function BlackberryAboutContent() {
             className="group relative flex items-center"
             aria-label={`Go to ${section.label} section`}
           >
-            <span className="absolute right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[11px] text-[#ff9d23] uppercase tracking-wider font-medium whitespace-nowrap bg-black/80 px-2 py-1 border border-[#ff9d23]/30">
+            <span className="absolute right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[11px] text-[var(--accent)] uppercase tracking-wider font-medium whitespace-nowrap bg-black/80 px-2 py-1 border border-[var(--accent)]/30">
               {section.label}
             </span>
             <div
               className={`w-2 h-2 rounded-full border transition-all duration-300 ${
                 activeSection === section.id
-                  ? "bg-[#ff9d23] border-[#ff9d23] w-3 h-3 shadow-[0_0_8px_rgba(255,157,35,0.8)]"
-                  : "bg-transparent border-[#ff9d23]/40 group-hover:border-[#ff9d23] group-hover:bg-[#ff9d23]/50"
+                  ? "bg-[var(--accent)] border-[var(--accent)] w-3 h-3 shadow-[0_0_8px_rgba(255,157,35,0.8)]"
+                  : "bg-transparent border-[var(--accent)]/40 group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)]/50"
               }`}
             />
           </a>
@@ -464,17 +464,17 @@ export default function BlackberryAboutContent() {
             animate={{ scale: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl mx-4 border-2 border-[#ff9d23] bg-black p-8 md:p-12 shadow-[0_0_80px_rgba(255,157,35,0.4)]"
+            className="relative max-w-2xl mx-4 border-2 border-[var(--accent)] bg-black p-8 md:p-12 shadow-[0_0_80px_rgba(255,157,35,0.4)]"
           >
             <button
               onClick={() => setShowExitIntent(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-[#ff9d23] text-[24px] transition-colors"
+              className="absolute top-4 right-4 text-white/60 hover:text-[var(--accent)] text-[24px] transition-colors"
               aria-label="Close"
             >
               ✕
             </button>
 
-            <h3 className="text-[28px] md:text-[36px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] mb-6">
+            <h3 className="text-[28px] md:text-[36px] font-bold text-[var(--accent)] uppercase tracking-[0.08em] mb-6">
               Wait — One Last Thing
             </h3>
             <p className="text-[18px] md:text-[22px] text-white/90 leading-relaxed mb-8">
@@ -489,13 +489,13 @@ export default function BlackberryAboutContent() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => triggerHaptic(15)}
-                className="flex-1 border-2 border-[#ff9d23] bg-[#ff9d23] px-8 py-4 text-center text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300"
+                className="flex-1 border-2 border-[var(--accent)] bg-[var(--accent)] px-8 py-4 text-center text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300"
               >
                 Book a Call →
               </motion.a>
               <button
                 onClick={() => setShowExitIntent(false)}
-                className="flex-1 border-2 border-[#ff9d23]/40 bg-transparent px-8 py-4 text-[16px] font-bold text-[#ff9d23] uppercase tracking-wide hover:border-[#ff9d23] hover:bg-[#ff9d23]/10 transition-all duration-300"
+                className="flex-1 border-2 border-[var(--accent)]/40 bg-transparent px-8 py-4 text-[16px] font-bold text-[var(--accent)] uppercase tracking-wide hover:border-[var(--accent)] hover:bg-[var(--accent)]/10 transition-all duration-300"
               >
                 Keep Browsing
               </button>
@@ -515,7 +515,7 @@ export default function BlackberryAboutContent() {
             triggerHaptic(15);
             scrollToTop();
           }}
-          className="fixed bottom-8 right-8 z-50 border-2 border-[#ff9d23] bg-[#ff9d23] p-4 hover:bg-[#FFB84D] active:bg-[#ff8800] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300 touch-manipulation"
+          className="fixed bottom-8 right-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] p-4 hover:bg-[#FFB84D] active:bg-[#ff8800] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300 touch-manipulation"
           aria-label="Scroll to top"
         >
           <span className="text-black text-[24px]">↑</span>
@@ -533,7 +533,7 @@ export default function BlackberryAboutContent() {
           style={{ scrollSnapAlign: 'center' }}
         >
           <div
-            className="sticky top-0 h-[50vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
+            className="sticky top-[15vh] h-[50vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
             style={{
               marginTop: '-72px',
               opacity: heroOpacity,
@@ -566,44 +566,74 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             <div className="relative">
-              {/* Floating sparkle particles */}
-              {Array.from({ length: 12 }).map((_, i) => (
+              {/* Refined sparkle particles - fewer, subtler */}
+              {Array.from({ length: 6 }).map((_, i) => (
                 <motion.div
                   key={i}
                   animate={{
-                    y: [0, -40, 0],
-                    x: [0, Math.random() * 20 - 10, 0],
-                    opacity: [0.3, 0.7, 0.3]
+                    y: [0, -20, 0],
+                    x: [0, Math.random() * 15 - 7.5, 0],
+                    opacity: [0.2, 0.4, 0.2]
                   }}
                   transition={{
-                    duration: 3 + Math.random() * 2,
+                    duration: 4 + Math.random() * 3,
                     repeat: Infinity,
-                    delay: i * 0.2,
+                    delay: i * 0.3,
                     ease: "easeInOut"
                   }}
                   className="absolute pointer-events-none"
                   style={{
-                    width: '4px',
-                    height: '4px',
-                    background: '#ff9d23',
+                    width: '3px',
+                    height: '3px',
+                    background: 'var(--accent)',
                     borderRadius: '50%',
-                    left: `${10 + i * 7}%`,
-                    top: `${30 + Math.random() * 40}%`,
-                    boxShadow: '0 0 4px rgba(255,157,35,0.8)'
+                    left: `${15 + i * 12}%`,
+                    top: `${35 + Math.random() * 30}%`,
+                    boxShadow: '0 0 3px rgba(255,157,35,0.6)'
                   }}
                 />
               ))}
 
-              {/* Ambient glow beneath title */}
+              {/* Refined dual-gradient glow pool */}
               <div
                 className="absolute pointer-events-none"
                 style={{
-                  bottom: '-20%',
-                  left: '20%',
-                  right: '20%',
-                  height: '40%',
-                  background: 'radial-gradient(ellipse, rgba(255,157,35,0.15) 0%, transparent 70%)',
-                  filter: 'blur(40px)'
+                  bottom: '-25%',
+                  left: '15%',
+                  right: '15%',
+                  height: '50%',
+                  background: 'radial-gradient(ellipse 70% 40% at 50% 50%, rgba(255,157,35,0.12) 0%, rgba(255,200,100,0.06) 30%, transparent 60%)',
+                  filter: 'blur(50px)'
+                }}
+              />
+
+              {/* Top accent line */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 1.5, delay: 2 }}
+                className="absolute pointer-events-none"
+                style={{
+                  top: '-40px',
+                  left: '10%',
+                  right: '10%',
+                  height: '1px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.5) 50%, transparent 100%)'
+                }}
+              />
+
+              {/* Bottom accent line */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 1.5, delay: 2.2 }}
+                className="absolute pointer-events-none"
+                style={{
+                  bottom: '-40px',
+                  left: '10%',
+                  right: '10%',
+                  height: '1px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.5) 50%, transparent 100%)'
                 }}
               />
 
@@ -631,7 +661,7 @@ export default function BlackberryAboutContent() {
                 className="relative font-black uppercase tracking-[0.3em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: '#ff9d23',
+                  color: 'var(--accent)',
                   perspective: '1000px',
                   transformStyle: 'preserve-3d',
                   fontSize: 'clamp(140px, 18vw, 280px)',
@@ -757,8 +787,8 @@ export default function BlackberryAboutContent() {
                     fontWeight: 500
                   }}
                 >
-                  <span className="float-left text-[48px] leading-[0.8] mr-2 text-[#ff9d23] font-bold" style={{ fontFamily: 'var(--font-mono)' }}>I</span>
-                  work where <span className="text-[#ff9d23] font-semibold">ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
+                  <span className="float-left text-[48px] leading-[0.8] mr-2 text-[var(--accent)] font-bold" style={{ fontFamily: 'var(--font-mono)' }}>I</span>
+                  work where <span className="text-[var(--accent)] font-semibold">ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
                 </p>
               </motion.div>
 
@@ -797,7 +827,7 @@ export default function BlackberryAboutContent() {
                     color: 'rgba(255,255,255,0.9)'
                   }}
                 >
-                  The work: making something that still feels right in <span className="text-[#ff9d23] font-semibold">five years</span>, not just five minutes.
+                  The work: making something that still feels right in <span className="text-[var(--accent)] font-semibold">five years</span>, not just five minutes.
                 </p>
               </motion.div>
 
@@ -836,7 +866,7 @@ export default function BlackberryAboutContent() {
                     color: 'rgba(255,255,255,0.9)'
                   }}
                 >
-                  The method: <span className="text-[#ff9d23] font-semibold">research, reference, and restraint</span> — knowing what to leave out.
+                  The method: <span className="text-[var(--accent)] font-semibold">research, reference, and restraint</span> — knowing what to leave out.
                 </p>
               </motion.div>
             </motion.div>
@@ -862,7 +892,7 @@ export default function BlackberryAboutContent() {
             className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12 md:mb-16 lg:mb-20"
             style={{
               fontFamily: 'var(--font-mono)',
-              color: '#ff9d23',
+              color: 'var(--accent)',
               letterSpacing: '0.15em',
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
@@ -896,7 +926,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/90 py-4"
+            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] bg-black/90 py-4"
           >
             What We Do
           </motion.h2>
@@ -917,7 +947,7 @@ export default function BlackberryAboutContent() {
               href={`mailto:${data.contact.email}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-block border-2 border-[#ff9d23] bg-[#ff9d23]/10 px-8 py-4 text-[18px] md:text-[22px] font-bold text-[#ff9d23] uppercase tracking-wide hover:bg-[#ff9d23]/20 transition-all duration-300"
+              className="inline-block border-2 border-[var(--accent)] bg-[var(--accent)]/10 px-8 py-4 text-[18px] md:text-[22px] font-bold text-[var(--accent)] uppercase tracking-wide hover:bg-[var(--accent)]/20 transition-all duration-300"
             >
               {scrollProgress < 40 ? "Ready to start? →" : scrollProgress < 70 ? "Still interested? →" : "Let's talk →"}
             </motion.a>
@@ -932,7 +962,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
+            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
           >
             How I Work
           </motion.h2>
@@ -945,12 +975,12 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-start gap-6 border-l-2 border-[#ff9d23]/40 pl-6 py-3 hover:border-[#ff9d23] hover:pl-8 transition-all duration-700"
+                className="flex items-start gap-6 border-l-2 border-[var(--accent)]/40 pl-6 py-3 hover:border-[var(--accent)] hover:pl-8 transition-all duration-700"
               >
-                <span className="text-[28px] text-[#ff9d23]">{step.num}</span>
+                <span className="text-[28px] text-[var(--accent)]">{step.num}</span>
                 <div>
                   <div className="font-bold text-[18px] md:text-[22px] text-white leading-relaxed tracking-wide">
-                    {step.title} • <span className="text-[#ff9d23]">{step.promise}</span>
+                    {step.title} • <span className="text-[var(--accent)]">{step.promise}</span>
                   </div>
                   <div className="text-[16px] md:text-[18px] text-white/60 mt-2">{step.duration}</div>
                 </div>
@@ -967,7 +997,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
+            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
           >
             Proof
           </motion.h2>
@@ -980,13 +1010,13 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="border-l-4 border-[#ff9d23]/60 pl-6 md:pl-8 py-4"
+                className="border-l-4 border-[var(--accent)]/60 pl-6 md:pl-8 py-4"
               >
                 <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-3">
                   <h3 className="text-[24px] md:text-[28px] font-bold text-white tracking-wide">
                     {highlight.label}
                   </h3>
-                  <span className="text-[14px] md:text-[16px] text-[#ff9d23] uppercase tracking-wider">
+                  <span className="text-[14px] md:text-[16px] text-[var(--accent)] uppercase tracking-wider">
                     {highlight.duration}
                   </span>
                 </div>
@@ -996,7 +1026,7 @@ export default function BlackberryAboutContent() {
                 </p>
 
                 {highlight.quote && (
-                  <p className="text-[16px] md:text-[18px] text-[#ff9d23]/90 italic leading-relaxed">
+                  <p className="text-[16px] md:text-[18px] text-[var(--accent)]/90 italic leading-relaxed">
                     {highlight.quote}
                   </p>
                 )}
@@ -1023,7 +1053,7 @@ export default function BlackberryAboutContent() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + idx * 0.1, duration: 0.4 }}
-                      className="text-[18px] md:text-[22px] font-bold text-white/60 uppercase tracking-wide hover:text-[#ff9d23] transition-colors duration-300"
+                      className="text-[18px] md:text-[22px] font-bold text-white/60 uppercase tracking-wide hover:text-[var(--accent)] transition-colors duration-300"
                     >
                       {client}
                     </motion.span>
@@ -1041,7 +1071,7 @@ export default function BlackberryAboutContent() {
               className="text-center mt-8 pt-8 border-t border-white/20"
             >
               <p className="text-[16px] md:text-[20px] text-white/70 uppercase tracking-wider">
-                <span className="text-[#ff9d23] font-bold text-[24px] md:text-[28px]">{data.stats.industries}</span> Industries
+                <span className="text-[var(--accent)] font-bold text-[24px] md:text-[28px]">{data.stats.industries}</span> Industries
                 <span className="block mt-2 text-[14px] md:text-[16px] text-white/50 normal-case tracking-normal">
                   Hospitality • Fashion • E-commerce • Health • Tech • Finance • Arts • Education
                 </span>
@@ -1064,7 +1094,7 @@ export default function BlackberryAboutContent() {
                 const allOpen = openSection === "all";
                 setOpenSection(allOpen ? null : "all");
               }}
-              className="border border-[#ff9d23]/40 bg-[#ff9d23]/5 px-6 py-3 text-[14px] md:text-[16px] text-[#ff9d23] uppercase tracking-wide hover:bg-[#ff9d23]/10 hover:border-[#ff9d23] transition-all duration-300"
+              className="border border-[var(--accent)]/40 bg-[var(--accent)]/5 px-6 py-3 text-[14px] md:text-[16px] text-[var(--accent)] uppercase tracking-wide hover:bg-[var(--accent)]/10 hover:border-[var(--accent)] transition-all duration-300"
             >
               {openSection === "all" ? "Collapse all ▲" : "Expand all details ▼"}
             </motion.button>
@@ -1087,7 +1117,7 @@ export default function BlackberryAboutContent() {
                       transition={{ delay: idx * 0.12, duration: 0.6 }}
                       className="flex items-start gap-4"
                     >
-                      <span className="text-[20px] text-[#ff9d23] flex-shrink-0">{item.icon}</span>
+                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">{item.icon}</span>
                       <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{item.text}</p>
                     </motion.div>
                   ))}
@@ -1121,9 +1151,9 @@ export default function BlackberryAboutContent() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.6 }}
-                  className="border-l-4 border-[#ff9d23]/60 pl-6 py-4"
+                  className="border-l-4 border-[var(--accent)]/60 pl-6 py-4"
                 >
-                  <p className="text-[16px] md:text-[20px] text-[#ff9d23]/90 leading-relaxed italic">
+                  <p className="text-[16px] md:text-[20px] text-[var(--accent)]/90 leading-relaxed italic">
                     {data.hero.origin}
                   </p>
                 </motion.div>
@@ -1143,7 +1173,7 @@ export default function BlackberryAboutContent() {
                       transition={{ delay: 0.4 + (idx * 0.1), duration: 0.6 }}
                       className="flex items-start gap-4"
                     >
-                      <span className="text-[20px] text-[#ff9d23] flex-shrink-0">{principle.icon}</span>
+                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">{principle.icon}</span>
                       <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{principle.text}</p>
                     </motion.div>
                   ))}
@@ -1163,7 +1193,7 @@ export default function BlackberryAboutContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.6 }}
               >
-                <h4 className="text-[20px] md:text-[24px] font-bold text-[#ff9d23] mb-4 tracking-wide">Projects</h4>
+                <h4 className="text-[20px] md:text-[24px] font-bold text-[var(--accent)] mb-4 tracking-wide">Projects</h4>
                 <p className="text-[28px] md:text-[36px] font-bold text-white mb-3">{data.pricing.projects}</p>
                 <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed">{data.pricing.projectLength}</p>
               </motion.div>
@@ -1173,7 +1203,7 @@ export default function BlackberryAboutContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
               >
-                <h4 className="text-[20px] md:text-[24px] font-bold text-[#ff9d23] mb-4 tracking-wide">Retainers</h4>
+                <h4 className="text-[20px] md:text-[24px] font-bold text-[var(--accent)] mb-4 tracking-wide">Retainers</h4>
                 <p className="text-[28px] md:text-[36px] font-bold text-white mb-3">{data.pricing.retainers}</p>
                 <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed">{data.pricing.retainerDetails}</p>
               </motion.div>
@@ -1189,7 +1219,7 @@ export default function BlackberryAboutContent() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
                 whileHover={{ scale: 1.02 }}
-                className="border-2 border-[#ff9d23]/50 bg-gradient-to-br from-[#ff9d23]/10 to-[#ff9d23]/5 p-8 md:p-10 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] transition-all duration-700"
+                className="border-2 border-[var(--accent)]/50 bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent)]/5 p-8 md:p-10 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] transition-all duration-700"
               >
                 <p className="text-[18px] md:text-[24px] text-white font-bold leading-relaxed">{data.pricing.guarantee}</p>
               </motion.div>
@@ -1214,7 +1244,7 @@ export default function BlackberryAboutContent() {
                       transition={{ delay: idx * 0.12, duration: 0.6 }}
                       className="flex items-start gap-4"
                     >
-                      <span className="text-[20px] text-[#ff9d23] flex-shrink-0">✓</span>
+                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">✓</span>
                       <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{principle.text}</p>
                     </motion.div>
                   ))}
@@ -1248,7 +1278,7 @@ export default function BlackberryAboutContent() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: idx * 0.08, duration: 0.4 }}
                       whileHover={{ scale: 1.05, borderColor: ACCENT }}
-                      className="border border-[#ff9d23]/30 bg-[#ff9d23]/10 px-4 py-2 text-[14px] md:text-[16px] text-[#ff9d23] font-medium uppercase tracking-wide cursor-default transition-all duration-300"
+                      className="border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-4 py-2 text-[14px] md:text-[16px] text-[var(--accent)] font-medium uppercase tracking-wide cursor-default transition-all duration-300"
                     >
                       {highlight.label}
                     </motion.span>
@@ -1268,14 +1298,14 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-6xl mx-auto border-2 border-[#ff9d23] bg-gradient-to-br from-[#ff9d23]/10 to-transparent p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-shadow duration-700"
+            className="max-w-6xl mx-auto border-2 border-[var(--accent)] bg-gradient-to-br from-[var(--accent)]/10 to-transparent p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-shadow duration-700"
           >
             <motion.h2
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[32px] md:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em]"
+              className="text-[32px] md:text-[48px] font-bold text-[var(--accent)] uppercase tracking-[0.08em]"
             >
               Now
             </motion.h2>
@@ -1302,7 +1332,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[20px] md:text-[28px] text-[#ff9d23] font-bold tracking-wide"
+              className="text-[20px] md:text-[28px] text-[var(--accent)] font-bold tracking-wide"
             >
               {data.now.status}
             </motion.p>
@@ -1313,7 +1343,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="border-t border-[#ff9d23]/30 pt-6 mt-6 overflow-hidden"
+              className="border-t border-[var(--accent)]/30 pt-6 mt-6 overflow-hidden"
             >
               <motion.div
                 animate={{ x: [0, -1200] }}
@@ -1349,14 +1379,14 @@ export default function BlackberryAboutContent() {
 
           <section id="contact" aria-label="Contact information" role="region" className="relative min-h-[70vh] py-20 flex items-center justify-center scroll-mt-20">
             {/* Background gradient that builds toward CTA */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/5 to-[#ff9d23]/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent)]/5 to-[var(--accent)]/10 pointer-events-none" />
 
             <motion.div
             initial={{ opacity: 0, y: 60, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative border-4 border-[#ff9d23]/40 bg-gradient-to-b from-black/60 to-black/40 p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[#ff9d23] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
+            className="relative border-4 border-[var(--accent)]/40 bg-gradient-to-b from-black/60 to-black/40 p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[var(--accent)] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
           >
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -1391,7 +1421,7 @@ export default function BlackberryAboutContent() {
                 boxShadow: '0 0 60px rgba(255,157,35,0.9)'
               }}
               whileTap={{ scale: 0.98 }}
-              className="inline-block border-4 border-[#ff9d23] bg-[#ff9d23] px-12 py-6 text-[24px] md:text-[32px] font-black text-black uppercase tracking-[0.08em] transition-all duration-700"
+              className="inline-block border-4 border-[var(--accent)] bg-[var(--accent)] px-12 py-6 text-[24px] md:text-[32px] font-black text-black uppercase tracking-[0.08em] transition-all duration-700"
             >
               GET IN TOUCH →
             </motion.a>
