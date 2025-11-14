@@ -43,7 +43,8 @@
         "line": "W25/SP25 Campaign & E-com refresh",
         "duration": "2024"
       }
-    ]
+    ],
+    "clients": ["S'WICH", "MapleMoon", "Jac+Jack", "Allianz", "Arena Boxing"]
   },
   "ops": {
     "items": [

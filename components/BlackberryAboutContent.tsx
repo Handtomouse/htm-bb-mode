@@ -61,6 +61,7 @@ interface AboutData {
       quote?: string;
       duration: string;
     }>;
+    clients?: string[];
   };
   ops: {
     items: Array<{ icon: string; text: string }>;
@@ -123,6 +124,7 @@ export default function BlackberryAboutContent() {
   // Haptic feedback for touch interactions
   const triggerHaptic = useHapticFeedback();
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
 
   const lastScrollTop = useRef(0);
   const rafId = useRef<number | null>(null);
@@ -221,6 +223,22 @@ export default function BlackberryAboutContent() {
 
         // Floating CTA after Stats section (~2000px)
         setShowFloatingCTA(scrollTop > 2000);
+
+        // Section detection for navigation dots
+        const sections = ["value", "stats", "services", "process", "proof", "details", "now", "contact"];
+        let currentSection = "";
+        for (const sectionId of sections) {
+          const section = document.getElementById(sectionId);
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            // Section is active if its top is above middle of viewport and bottom is below middle
+            if (rect.top <= scrollableElement.clientHeight / 2 && rect.bottom >= scrollableElement.clientHeight / 2) {
+              currentSection = sectionId;
+              break;
+            }
+          }
+        }
+        setActiveSection(currentSection);
 
         // Hero fade: 300px→1000px range (gentler exit)
         const heroFadeStart = 300;
@@ -357,7 +375,7 @@ export default function BlackberryAboutContent() {
   }
 
   return (
-    <div className="relative w-full h-full bg-black overflow-hidden" style={{ fontFamily: "VT323, monospace" }}>
+    <main className="relative w-full h-full bg-black overflow-hidden" role="main" aria-label="About HandToMouse" style={{ fontFamily: "VT323, monospace" }}>
       {/* Scroll Progress Gradient Overlay */}
       <div
         className="fixed inset-0 pointer-events-none transition-opacity duration-1000 ease-out"
@@ -398,6 +416,40 @@ export default function BlackberryAboutContent() {
         }}
       />
 
+      {/* Skip Links for Keyboard Navigation */}
+      <div className="sr-only focus-within:not-sr-only">
+        <a
+          href="#services"
+          className="fixed top-4 left-4 z-[100] bg-[#ff9d23] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+        >
+          Skip to Services
+        </a>
+        <a
+          href="#details"
+          className="fixed top-4 left-[180px] z-[100] bg-[#ff9d23] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+        >
+          Skip to Details
+        </a>
+        <a
+          href="#contact"
+          className="fixed top-4 left-[360px] z-[100] bg-[#ff9d23] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
+        >
+          Skip to Contact
+        </a>
+      </div>
+
+      {/* ARIA Live Region for Screen Readers */}
+      <div
+        className="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {scrollProgress > 90 && "Near end of page"}
+        {scrollProgress > 50 && scrollProgress <= 90 && "Halfway through page"}
+        {activeSection && `Currently viewing ${activeSection} section`}
+      </div>
+
       {/* Scroll Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-[#ff9d23]/20 z-50"
@@ -431,6 +483,43 @@ export default function BlackberryAboutContent() {
           Get in Touch →
         </motion.a>
       )}
+
+      {/* Section Navigation Dots */}
+      <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3" aria-label="Section navigation">
+        {[
+          { id: "value", label: "Value" },
+          { id: "stats", label: "Stats" },
+          { id: "services", label: "Services" },
+          { id: "process", label: "Process" },
+          { id: "proof", label: "Proof" },
+          { id: "details", label: "Details" },
+          { id: "now", label: "Now" },
+          { id: "contact", label: "Contact" }
+        ].map((section) => (
+          <a
+            key={section.id}
+            href={`#${section.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth" });
+              triggerHaptic(10);
+            }}
+            className="group relative flex items-center"
+            aria-label={`Go to ${section.label} section`}
+          >
+            <span className="absolute right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[11px] text-[#ff9d23] uppercase tracking-wider font-medium whitespace-nowrap bg-black/80 px-2 py-1 border border-[#ff9d23]/30">
+              {section.label}
+            </span>
+            <div
+              className={`w-2 h-2 rounded-full border transition-all duration-300 ${
+                activeSection === section.id
+                  ? "bg-[#ff9d23] border-[#ff9d23] w-3 h-3 shadow-[0_0_8px_rgba(255,157,35,0.8)]"
+                  : "bg-transparent border-[#ff9d23]/40 group-hover:border-[#ff9d23] group-hover:bg-[#ff9d23]/50"
+              }`}
+            />
+          </a>
+        ))}
+      </nav>
 
       {/* Back to Top Button */}
       {showBackToTop && (
@@ -593,6 +682,7 @@ export default function BlackberryAboutContent() {
 
           <section
             id="stats"
+            aria-label="Company statistics"
             className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32 scroll-mt-20"
             style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', ...STAT_CARD_VARS }}
           >
@@ -635,7 +725,7 @@ export default function BlackberryAboutContent() {
 
         {/* Services Grid */}
 
-          <section id="services" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16 scroll-mt-20">
+          <section id="services" aria-label="Our services" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16 scroll-mt-20">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -664,7 +754,7 @@ export default function BlackberryAboutContent() {
               whileTap={{ scale: 0.98 }}
               className="inline-block border-2 border-[#ff9d23] bg-[#ff9d23]/10 px-8 py-4 text-[18px] md:text-[22px] font-bold text-[#ff9d23] uppercase tracking-wide hover:bg-[#ff9d23]/20 transition-all duration-300"
             >
-              Ready to start? →
+              {scrollProgress < 40 ? "Ready to start? →" : scrollProgress < 70 ? "Still interested? →" : "Let's talk →"}
             </motion.a>
           </motion.div>
           </section>
@@ -748,6 +838,35 @@ export default function BlackberryAboutContent() {
               </motion.div>
             ))}
 
+            {/* Client Logos */}
+            {data.proof.clients && data.proof.clients.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="text-center mt-12 pt-8 border-t border-white/10"
+              >
+                <p className="text-[13px] md:text-[15px] text-white/40 uppercase tracking-[0.15em] mb-6">
+                  Trusted by
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+                  {data.proof.clients.map((client, idx) => (
+                    <motion.span
+                      key={idx}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + idx * 0.1, duration: 0.4 }}
+                      className="text-[18px] md:text-[22px] font-bold text-white/60 uppercase tracking-wide hover:text-[#ff9d23] transition-colors duration-300"
+                    >
+                      {client}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
             {/* Industries Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -770,10 +889,25 @@ export default function BlackberryAboutContent() {
         {/* Collapsible Sections */}
 
           <section id="details" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-8 md:space-y-12 scroll-mt-20">
+            {/* Expand/Collapse All Toggle */}
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              onClick={() => {
+                const allOpen = openSection === "all";
+                setOpenSection(allOpen ? null : "all");
+              }}
+              className="border border-[#ff9d23]/40 bg-[#ff9d23]/5 px-6 py-3 text-[14px] md:text-[16px] text-[#ff9d23] uppercase tracking-wide hover:bg-[#ff9d23]/10 hover:border-[#ff9d23] transition-all duration-300"
+            >
+              {openSection === "all" ? "Collapse all ▲" : "Expand all details ▼"}
+            </motion.button>
+
             <LuxuryCollapsibleSection
               title="Operations & Setup"
               icon="⚙️"
-              isOpen={openSection === "ops"}
+              isOpen={openSection === "ops" || openSection === "all"}
               onToggle={() => setOpenSection(openSection === "ops" ? null : "ops")}
             >
               <div className="space-y-10">
@@ -804,7 +938,7 @@ export default function BlackberryAboutContent() {
             <LuxuryCollapsibleSection
               title="Philosophy"
               icon="💭"
-              isOpen={openSection === "philosophy"}
+              isOpen={openSection === "philosophy" || openSection === "all"}
               onToggle={() => setOpenSection(openSection === "philosophy" ? null : "philosophy")}
             >
               <div className="space-y-8">
@@ -855,7 +989,7 @@ export default function BlackberryAboutContent() {
             <LuxuryCollapsibleSection
               title="Pricing & Terms"
               icon="💰"
-              isOpen={openSection === "pricing"}
+              isOpen={openSection === "pricing" || openSection === "all"}
               onToggle={() => setOpenSection(openSection === "pricing" ? null : "pricing")}
             >
               <div className="space-y-10">
@@ -900,7 +1034,7 @@ export default function BlackberryAboutContent() {
             <LuxuryCollapsibleSection
               title="Who I Work With"
               icon="🤝"
-              isOpen={openSection === "who"}
+              isOpen={openSection === "who" || openSection === "all"}
               onToggle={() => setOpenSection(openSection === "who" ? null : "who")}
             >
               <div className="space-y-10">
@@ -1007,13 +1141,48 @@ export default function BlackberryAboutContent() {
             >
               {data.now.status}
             </motion.p>
+
+            {/* Social Proof Ticker */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="border-t border-[#ff9d23]/30 pt-6 mt-6 overflow-hidden"
+            >
+              <motion.div
+                animate={{ x: [0, -1200] }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="flex gap-8 whitespace-nowrap text-[14px] md:text-[16px] text-white/50 uppercase tracking-wider"
+              >
+                <span>✓ New client onboarded</span>
+                <span>•</span>
+                <span>✓ Campaign launched for Jac+Jack</span>
+                <span>•</span>
+                <span>✓ S'WICH expansion strategy complete</span>
+                <span>•</span>
+                <span>✓ 3 new projects in pipeline</span>
+                <span>•</span>
+                <span>✓ New client onboarded</span>
+                <span>•</span>
+                <span>✓ Campaign launched for Jac+Jack</span>
+                <span>•</span>
+                <span>✓ S'WICH expansion strategy complete</span>
+                <span>•</span>
+                <span>✓ 3 new projects in pipeline</span>
+              </motion.div>
+            </motion.div>
             </motion.div>
           </section>
         
 
         {/* Contact CTA - Full Height */}
 
-          <section id="contact" className="relative min-h-[70vh] py-20 flex items-center justify-center scroll-mt-20">
+          <section id="contact" aria-label="Contact information" role="region" className="relative min-h-[70vh] py-20 flex items-center justify-center scroll-mt-20">
             {/* Background gradient that builds toward CTA */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/5 to-[#ff9d23]/10 pointer-events-none" />
 
@@ -1063,10 +1232,10 @@ export default function BlackberryAboutContent() {
             </motion.a>
             </motion.div>
           </section>
-        
+
 
       </div>
-    </div>
+    </main>
   );
 }
 
