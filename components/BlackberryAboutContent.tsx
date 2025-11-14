@@ -411,13 +411,16 @@ export default function BlackberryAboutContent() {
               <div className="absolute inset-0 -m-8 bg-gradient-radial from-[#ff9d23]/10 via-transparent to-transparent blur-2xl" />
 
               <motion.h1
-                className="relative text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-[0.3em] leading-tight text-[#ff9d23]"
-                style={{ textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)' }}
+                className="relative text-[64px] md:text-[72px] lg:text-[80px] font-black uppercase tracking-[0.3em] leading-tight text-[#ff9d23]"
+                style={{
+                  textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)',
+                  fontFamily: 'var(--font-mono)'
+                }}
                 whileHover={{
                   scale: 1.05,
                   textShadow: '0 0 60px rgba(255,157,35,0.6), 0 0 100px rgba(255,157,35,0.3)'
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4 }}
               >
                 About
               </motion.h1>
@@ -477,9 +480,12 @@ export default function BlackberryAboutContent() {
             animate={{ opacity: headlineOpacity, y: headlineOpacity > 0 ? 0 : 20 }}
             transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
             onAnimationComplete={() => headlineOpacity >= 0.99 && handleHeadlineComplete()}
-            className="text-[16px] md:text-[20px] lg:text-[24px] text-white/50 leading-[1.8] tracking-wide font-light"
+            className="text-[16px] md:text-[20px] lg:text-[24px] leading-[1.8] font-light"
             style={{
-              transition: 'font-size 0.2s ease-out' // Fix #6: Smooth font size changes
+              fontFamily: 'var(--font-body)',
+              color: 'rgba(255,255,255,0.7)',
+              letterSpacing: '0.05em',
+              transition: 'font-size 0.2s ease-out'
             }}
           >
             {data.hero.headline}
@@ -508,9 +514,16 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.8, delay: 0, ease: [0.16, 1, 0.3, 1] }}
-              style={{marginBottom: '40vh'}}
+              style={{marginBottom: '20rem'}}
             >
-              <h2 className="text-[48px] md:text-[64px] lg:text-[80px] font-light text-[#ff9d23]/70 tracking-[0.15em] uppercase mb-8 text-center">
+              <h2
+                className="text-[48px] md:text-[64px] lg:text-[80px] font-light uppercase mb-8 text-center"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: 'rgba(255,157,35,0.7)',
+                  letterSpacing: '0.15em'
+                }}
+              >
                 Philosophy
               </h2>
               <div className="h-[1px] w-24 bg-[#ff9d23]/30" />
@@ -522,13 +535,13 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '60vh'}}
+              style={{marginBottom: '24rem'}}
             >
               {/* Number Label - Centered with hover glow */}
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-55 text-center"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-50 text-center"
                 style={{marginBottom: '3rem'}}
               >
                 [01]
@@ -551,7 +564,12 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.1] font-light tracking-wide text-left max-w-2xl"
+                className="text-[16px] md:text-[20px] lg:text-[24px] leading-[2.1] font-light text-left max-w-2xl"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.05em'
+                }}
               >
                 I work where ideas meet culture — finding the <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">small, precise angle</motion.span> no one else has noticed yet.
               </motion.p>
@@ -563,13 +581,13 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '60vh'}}
+              style={{marginBottom: '24rem'}}
             >
               {/* Number - Centered with hover glow */}
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-55 text-center"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-50 text-center"
                 style={{marginBottom: '3rem'}}
               >
                 [02]
@@ -592,7 +610,12 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.0] font-normal tracking-wide text-left max-w-2xl"
+                className="text-[16px] md:text-[20px] lg:text-[24px] leading-[2.0] font-normal text-left max-w-2xl"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.05em'
+                }}
               >
                 Anyone can make something that looks current; the work is making something that still feels right in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">five years</motion.span>.
               </motion.p>
@@ -604,13 +627,13 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[120vh] md:mb-[140vh] lg:mb-[160vh]"
+              className="mb-[32rem]"
             >
               {/* Number - Centered with hover glow */}
               <motion.div
                 whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
                 transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-55 text-center"
+                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-50 text-center"
                 style={{marginBottom: '3rem'}}
               >
                 [03]
@@ -633,7 +656,12 @@ export default function BlackberryAboutContent() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-200px" }}
                 transition={{ duration: 1.4, delay: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[1.9] font-medium tracking-wide text-left max-w-2xl"
+                className="text-[16px] md:text-[20px] lg:text-[24px] leading-[1.9] font-medium text-left max-w-2xl"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.05em'
+                }}
               >
                 That comes from <em className="text-white italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
               </motion.p>
@@ -645,7 +673,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, scaleX: 1 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="h-[0.5px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent mt-[40vh] mb-[100px] md:mb-[120px] lg:mb-[140px]"
+              className="h-[0.5px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-20"
             />
 
             {/* Final Statement - Left-aligned ethereal entrance */}
@@ -681,7 +709,14 @@ export default function BlackberryAboutContent() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-center"
           >
-            <div className="text-[24px] md:text-[32px] lg:text-[40px] text-[#ff9d23]/60 tracking-[0.2em] uppercase">
+            <div
+              className="text-[32px] md:text-[40px] lg:text-[48px] uppercase"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'rgba(255,157,35,0.7)',
+                letterSpacing: '0.2em'
+              }}
+            >
               Built to Last
             </div>
             </motion.div>
@@ -702,8 +737,11 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold uppercase text-center tracking-[0.12em] md:tracking-[0.15em] text-[#ff9d23]"
+            className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12 md:mb-16 lg:mb-20"
             style={{
+              fontFamily: 'var(--font-mono)',
+              color: '#ff9d23',
+              letterSpacing: '0.15em',
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
             }}
           >
@@ -737,7 +775,12 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase tracking-[0.08em] text-center mb-12"
+              className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: '#ff9d23',
+                letterSpacing: '0.08em'
+              }}
             >
               Beliefs
             </motion.h2>
@@ -1126,11 +1169,14 @@ function TypewriterManifesto({
         scale: scaleValue
       }}
       transition={{ duration: 0.8, scale: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
-      className="text-[24px] md:text-[36px] lg:text-[48px] font-medium text-white leading-[1.4] tracking-[0.08em]"
+      className="text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.4]"
       style={{
+        fontFamily: 'var(--font-mono)',
+        color: 'rgba(255,255,255,0.9)',
+        letterSpacing: '0.08em',
         textShadow: '0 1px 2px rgba(255,157,35,0.1)',
-        minHeight: '1.4em', // Prevent layout shift
-        transition: 'font-size 0.2s ease-out' // Fix #6: Smooth font size transitions
+        minHeight: '1.4em',
+        transition: 'font-size 0.2s ease-out'
       }}
     >
       {beforeAccent}
@@ -1552,7 +1598,14 @@ function LuxuryBelief({ icon, text, delay }: { icon: string; text: string; delay
       className="flex items-start gap-6 border-l-2 border-[#ff9d23]/40 pl-6 py-4 transition-all duration-700"
     >
       <span className="text-[28px] md:text-[32px] flex-shrink-0">{icon}</span>
-      <p className="text-[18px] md:text-[24px] lg:text-[28px] text-white/90 leading-loose tracking-wide">{text}</p>
+      <p
+        className="text-[16px] md:text-[20px] lg:text-[24px] leading-loose"
+        style={{
+          fontFamily: 'var(--font-body)',
+          color: 'rgba(255,255,255,0.9)',
+          letterSpacing: '0.05em'
+        }}
+      >{text}</p>
     </motion.div>
   );
 }
