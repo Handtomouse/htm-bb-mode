@@ -681,36 +681,15 @@ export default function BlackberryAboutContent() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-4xl mx-auto text-center space-y-12 md:space-y-16 px-8 md:px-16"
           >
-            {/* Primary Headline */}
-            <motion.h2
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-[28px] md:text-[36px] lg:text-[44px] font-medium leading-[1.3]"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                color: 'rgba(255,255,255,0.95)',
-                letterSpacing: '0.02em'
-              }}
-            >
-              Ideas that outlast trends. Strategy that scales. Sydney → World.
-            </motion.h2>
-
-            {/* Supporting Statement */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-[20px] md:text-[26px] lg:text-[32px] font-light leading-[1.5]"
-              style={{
-                fontFamily: 'var(--font-body)',
-                color: 'rgba(255,157,35,0.9)'
-              }}
-            >
-              Everyone's chasing new — we chase <em className="font-medium not-italic">different</em>.
-            </motion.p>
+            {/* Typewriter Headline */}
+            <div ref={typewriterRef}>
+              <TypewriterManifesto
+                text="Everyone's chasing new — we chase different."
+                onComplete={handleTypewriterComplete}
+                scrollProgress={typewriterScrollProgress}
+                opacity={typewriterOpacity}
+              />
+            </div>
 
             {/* 3-Line Approach */}
             <motion.div
