@@ -9,7 +9,7 @@ const ACCENT = "var(--accent)";
 
 // Accent color options
 const ACCENT_COLORS = [
-  { name: "Orange", value: "var(--accent)" },
+  { name: "Orange", value: "#ff9d23" },
   { name: "Blue", value: "#3b82f6" },
   { name: "Purple", value: "#a855f7" },
   { name: "Green", value: "#22c55e" },
