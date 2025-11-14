@@ -88,6 +88,10 @@
   --font-mono: "VT323", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   --font-heading: "Pixelify Sans", ui-sans-serif, system-ui, sans-serif;
   --font-handjet: "Handjet", ui-sans-serif, system-ui, sans-serif;
+
+  /* Settings-controlled Variables */
+  --brightness: 1; /* 0-1 scale, controlled by Settings */
+  --font-size-base: 16px; /* small: 14px, medium: 16px, large: 18px */
 }
 
 @theme inline {
@@ -110,6 +114,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  /* Settings-controlled font size */
+  font-size: var(--font-size-base);
 }
 
 html,
@@ -476,7 +485,17 @@ button {
   }
 }
 
-/* Reduced motion support */
+/* ============================================
+   Settings Support - Controlled by SettingsProvider
+   ============================================ */
+
+/* Brightness control - applied to main content */
+.scrollable-content {
+  filter: brightness(var(--brightness));
+  transition: filter 0.3s ease;
+}
+
+/* Reduced motion support - respects both system preference and user setting */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -486,4 +505,29 @@ button {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* User-controlled reduced motion via Settings */
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* High contrast mode - increases text readability */
+[data-high-contrast="true"] {
+  --ink: #FFFFFF;
+  --muted: #B0B0B0;
+}
+
+/* Theme support - applied by SettingsProvider */
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
 }

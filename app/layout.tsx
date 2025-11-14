@@ -1,6 +1,7 @@
 import { VT323, Pixelify_Sans, Handjet, Roboto_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import SettingsProvider from "@/components/SettingsProvider";
 import "./globals.css";
 
 const vt323 = VT323({
@@ -117,9 +118,11 @@ export default function RootLayout({
         <link rel="prefetch" href="/data/about.json" as="fetch" crossOrigin="anonymous" />
       </head>
       <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${robotoMono.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
-        <LayoutWrapper>
-          {children}
-        </LayoutWrapper>
+        <SettingsProvider>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
+        </SettingsProvider>
         <Analytics />
       </body>
     </html>

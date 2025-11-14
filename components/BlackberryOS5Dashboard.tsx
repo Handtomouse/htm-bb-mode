@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useSettings, useClickSound } from "@/lib/hooks";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
 import BlackberryAboutContent from "./BlackberryAboutContent";
@@ -63,6 +64,10 @@ export const __ACCENT = ACCENT;
 export default function BlackberryOS5Dashboard() {
   const router = useRouter();
   const pathname = usePathname();
+
+  // Settings & sound
+  const [settings] = useSettings();
+  const playClick = useClickSound(settings.sound);
 
   // Screen state
   const [mode, setMode] = useState<"home" | "menu">("home");
@@ -244,6 +249,8 @@ export default function BlackberryOS5Dashboard() {
 
   // Navigation - open apps inside BB device
   const navigateTo = (app: App) => {
+    playClick(); // Win 3: Click sound on app open
+
     if (app.external) {
       window.open(app.path, "_blank");
       return;
@@ -275,6 +282,7 @@ export default function BlackberryOS5Dashboard() {
 
   const openSelected = () => {
     if (!poweredOn) return;
+    playClick(); // Win 3: Click sound on selection
     if (mode === "home") {
       const app = dockApps[selectedDock];
       if (app) navigateTo(app);
@@ -285,6 +293,7 @@ export default function BlackberryOS5Dashboard() {
   };
   const goHome = () => {
     if (!poweredOn) return;
+    playClick(); // Win 3: Click sound
     setShowContext(false);
     setOpenAppIndex(null);
     setOpenApp(null); // Close any open app
@@ -292,6 +301,7 @@ export default function BlackberryOS5Dashboard() {
   };
   const goMenu = () => {
     if (!poweredOn) return;
+    playClick(); // Win 3: Click sound on menu toggle
     setShowContext(false);
     setOpenAppIndex(null);
     setOpenApp(null); // Close any open app
@@ -300,6 +310,7 @@ export default function BlackberryOS5Dashboard() {
   };
   const goBack = () => {
     if (!poweredOn) return;
+    playClick(); // Win 3: Click sound on back
     // Priority: close app > close fallback modal > close context > return to home from menu
     if (openApp !== null) {
       setOpenApp(null); // Close current app
@@ -319,6 +330,7 @@ export default function BlackberryOS5Dashboard() {
     }
   };
   const togglePower = () => {
+    playClick(); // Win 3: Click sound on power toggle
     setPoweredOn((p) => !p);
     setShowContext(false);
     setOpenAppIndex(null);
