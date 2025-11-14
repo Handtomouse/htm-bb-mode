@@ -202,27 +202,27 @@ const NeonCity: React.FC = () => {
       });
     }
 
-    const projectPoint = (p: { x: number; y: number; z: number }) => {
+    const projectPoint = (p: { x: number; y: number; z: number }, totalCamX: number = 0) => {
       const z = Math.max(p.z, 10);
       const scale = FOV / z;
-      // Apply camera offset for turning effect
-      const offsetX = (p.x - cameraOffsetX) * scale;
+      // Apply camera offset for turning effect + mouse parallax
+      const offsetX = (p.x - totalCamX) * scale;
       return {
         x: cx + offsetX,
-        y: cy - p.y * scale
+        y: cy - p.y * scale - smoothMouseY * 0.2 // Subtle Y parallax
       };
     };
 
-    const drawEdge = (a: any, b: any) => {
-      const pa = projectPoint(a);
-      const pb = projectPoint(b);
+    const drawEdge = (a: any, b: any, camX: number = 0) => {
+      const pa = projectPoint(a, camX);
+      const pb = projectPoint(b, camX);
       ctx.beginPath();
       ctx.moveTo(pa.x, pa.y);
       ctx.lineTo(pb.x, pb.y);
       ctx.stroke();
     };
 
-    const drawRoad = (now: number) => {
+    const drawRoad = (now: number, camX: number) => {
       const t = now * 0.002;
       const segments = 14;
       const segLength = CITY_DEPTH / segments;
@@ -242,23 +242,23 @@ const NeonCity: React.FC = () => {
 
         // road borders
         ctx.strokeStyle = LINE_COL;
-        drawEdge(left0, left1);
-        drawEdge(right0, right1);
+        drawEdge(left0, left1, camX);
+        drawEdge(right0, right1, camX);
 
         // centre broken line
         if (i % 2 === 0) {
           const mid0 = { x: 0, y: 0.1, z: z0 };
           const mid1 = { x: 0, y: 0.1, z: z1 };
           ctx.strokeStyle = ROAD_LINE_COL;
-          drawEdge(mid0, mid1);
+          drawEdge(mid0, mid1, camX);
         }
       }
 
       // extra perspective guide rails with pulsing lights
       ctx.strokeStyle = "rgba(255, 157, 35, 0.4)";
       const guideOffset = ROAD_WIDTH * 2.4;
-      drawEdge({ x: -guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH });
-      drawEdge({ x: guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH });
+      drawEdge({ x: -guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
+      drawEdge({ x: guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
 
       // Street lights along road edges
       const lightSpacing = 180;
@@ -273,10 +273,10 @@ const NeonCity: React.FC = () => {
         const leftTop = { x: -ROAD_WIDTH - 10, y: 35, z: lz };
         ctx.strokeStyle = "rgba(255, 157, 35, 0.5)";
         ctx.lineWidth = 2;
-        drawEdge(leftBase, leftTop);
+        drawEdge(leftBase, leftTop, camX);
 
         // Light halo
-        const leftPos = projectPoint(leftTop);
+        const leftPos = projectPoint(leftTop, camX);
         const pulsePhase = (now * 0.001 + i * 0.3) % 2;
         const intensity = 0.6 + Math.sin(pulsePhase * Math.PI) * 0.4;
         ctx.globalAlpha = intensity * 0.7;
@@ -302,9 +302,9 @@ const NeonCity: React.FC = () => {
         const rightTop = { x: ROAD_WIDTH + 10, y: 35, z: lz };
         ctx.strokeStyle = "rgba(255, 157, 35, 0.5)";
         ctx.lineWidth = 2;
-        drawEdge(rightBase, rightTop);
+        drawEdge(rightBase, rightTop, camX);
 
-        const rightPos = projectPoint(rightTop);
+        const rightPos = projectPoint(rightTop, camX);
         ctx.globalAlpha = intensity * 0.7;
         ctx.fillStyle = "rgba(255, 200, 100, 1)";
         ctx.shadowBlur = 12;
@@ -354,6 +354,14 @@ const NeonCity: React.FC = () => {
         targetOffsetX = 0;
       }
 
+      // Mouse parallax (smooth interpolation)
+      const parallaxStrength = 30;
+      smoothMouseX += (mouseX * parallaxStrength - smoothMouseX) * 3 * dt;
+      smoothMouseY += (mouseY * parallaxStrength - smoothMouseY) * 3 * dt;
+
+      // Add mouse parallax to camera offset
+      const totalCameraX = cameraOffsetX + smoothMouseX;
+
       // Horizon
       const horizonY = cy - (FOV / (CITY_DEPTH * 0.45)) * FOV;
       ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
@@ -368,7 +376,7 @@ const NeonCity: React.FC = () => {
           p.y = Math.random() * height * 0.4 - 50;
         }
 
-        const projected = projectPoint(p);
+        const projected = projectPoint(p, totalCameraX);
         if (projected.y < horizonY) {
           const twinkle = 0.5 + Math.sin(now * 0.001 * (p.z % 10)) * 0.5;
           ctx.globalAlpha = twinkle * 0.6;
@@ -389,7 +397,7 @@ const NeonCity: React.FC = () => {
       ctx.stroke();
 
       // Road
-      drawRoad(now);
+      drawRoad(now, totalCameraX);
 
       // Traffic vehicles
       const lanes = [-ROAD_WIDTH * 0.5, -ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.5];
@@ -415,7 +423,7 @@ const NeonCity: React.FC = () => {
           { x: vx + vehicleSize/2, y: 0, z: v.z + vehicleSize * 1.5 },
         ];
 
-        const projected = verts.map(projectPoint);
+        const projected = verts.map(v => projectPoint(v, totalCameraX));
         const distance = v.z;
         const alpha = Math.max(0, Math.min(1, 1 - (distance - 200) / CITY_DEPTH));
 
@@ -466,24 +474,24 @@ const NeonCity: React.FC = () => {
         ctx.globalAlpha = alpha;
         ctx.strokeStyle = `rgba(255, 157, 35, ${alpha})`;
         ctx.lineWidth = 1.2;
-        drawEdge(v[0], v[1]);
-        drawEdge(v[1], v[3]);
-        drawEdge(v[3], v[2]);
-        drawEdge(v[2], v[0]);
+        drawEdge(v[0], v[1], totalCameraX);
+        drawEdge(v[1], v[3], totalCameraX);
+        drawEdge(v[3], v[2], totalCameraX);
+        drawEdge(v[2], v[0], totalCameraX);
 
         // Back rectangle (dimmer)
         ctx.globalAlpha = alpha * 0.6;
-        drawEdge(v[4], v[5]);
-        drawEdge(v[5], v[7]);
-        drawEdge(v[7], v[6]);
-        drawEdge(v[6], v[4]);
+        drawEdge(v[4], v[5], totalCameraX);
+        drawEdge(v[5], v[7], totalCameraX);
+        drawEdge(v[7], v[6], totalCameraX);
+        drawEdge(v[6], v[4], totalCameraX);
 
         // Connect front/back (side edges)
         ctx.globalAlpha = alpha * 0.7;
-        drawEdge(v[0], v[4]);
-        drawEdge(v[1], v[5]);
-        drawEdge(v[2], v[6]);
-        drawEdge(v[3], v[7]);
+        drawEdge(v[0], v[4], totalCameraX);
+        drawEdge(v[1], v[5], totalCameraX);
+        drawEdge(v[2], v[6], totalCameraX);
+        drawEdge(v[3], v[7], totalCameraX);
 
         // Draw windows (only on nearby buildings for performance)
         if (distance < 800) {
@@ -500,7 +508,7 @@ const NeonCity: React.FC = () => {
               const wy = (win.y + 0.5) * windowHeight;
               const wz = b.z + b.depth * 0.3;
 
-              const projected = projectPoint({ x: wx, y: wy, z: wz });
+              const projected = projectPoint({ x: wx, y: wy, z: wz }, totalCameraX);
 
               // Window glow
               ctx.globalAlpha = alpha * 0.8;
@@ -516,7 +524,7 @@ const NeonCity: React.FC = () => {
         // Draw neon sign
         if (b.hasSign && distance < 600) {
           const signY = b.height * 0.7;
-          const signPos = projectPoint({ x: b.x, y: signY, z: b.z });
+          const signPos = projectPoint({ x: b.x, y: signY, z: b.z }, totalCameraX);
 
           ctx.globalAlpha = alpha;
           ctx.fillStyle = "rgba(255, 157, 35, 1)";
@@ -539,10 +547,10 @@ const NeonCity: React.FC = () => {
 
           if (b.rooftopType === 'antenna') {
             // Vertical antenna
-            drawEdge(roofBase, roofTop);
+            drawEdge(roofBase, roofTop, totalCameraX);
             // Blinking light on top
             if (Math.floor(now / 500) % 2 === 0) {
-              const lightPos = projectPoint(roofTop);
+              const lightPos = projectPoint(roofTop, totalCameraX);
               ctx.fillStyle = "rgba(255, 0, 0, 1)";
               ctx.shadowBlur = 5;
               ctx.shadowColor = "rgba(255, 0, 0, 0.8)";
@@ -553,12 +561,12 @@ const NeonCity: React.FC = () => {
             // H shape on roof
             const pad1 = { x: b.x - 10, y: b.height + 2, z: b.z };
             const pad2 = { x: b.x + 10, y: b.height + 2, z: b.z };
-            drawEdge(pad1, pad2);
+            drawEdge(pad1, pad2, totalCameraX);
           } else if (b.rooftopType === 'dish') {
             // Satellite dish
             const dishBase = { x: b.x, y: b.height + 5, z: b.z };
-            drawEdge(roofBase, dishBase);
-            const p = projectPoint(dishBase);
+            drawEdge(roofBase, dishBase, totalCameraX);
+            const p = projectPoint(dishBase, totalCameraX);
             ctx.beginPath();
             ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
             ctx.stroke();
@@ -576,6 +584,7 @@ const NeonCity: React.FC = () => {
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
