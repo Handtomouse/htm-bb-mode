@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { useHapticFeedback } from "@/lib/hooks";
 
 const ACCENT = "#ff9d23";
 const ACCENT_HOVER = "#FFB84D";
@@ -112,6 +113,9 @@ export default function BlackberryAboutContent() {
   // Animation completion tracking
   const [typewriterComplete, setTypewriterComplete] = useState(false);
   const [headlineComplete, setHeadlineComplete] = useState(false);
+
+  // Haptic feedback for touch interactions
+  const triggerHaptic = useHapticFeedback();
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
   const lastScrollTop = useRef(0);
@@ -380,8 +384,13 @@ export default function BlackberryAboutContent() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 border-2 border-[#ff9d23] bg-[#ff9d23] p-4 hover:bg-[#FFB84D] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300"
+          whileTap={{ scale: 0.85 }}
+          onClick={() => {
+            triggerHaptic(15);
+            scrollToTop();
+          }}
+          className="fixed bottom-8 right-8 z-50 border-2 border-[#ff9d23] bg-[#ff9d23] p-4 hover:bg-[#FFB84D] active:bg-[#ff8800] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300 touch-manipulation"
+          aria-label="Scroll to top"
         >
           <span className="text-black text-[24px]">↑</span>
         </motion.button>
