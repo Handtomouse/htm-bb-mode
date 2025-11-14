@@ -1025,26 +1025,24 @@ export default function BlackberryContactContent() {
               data-submit
               type="submit"
               disabled={!formValid}
-              className={`w-full inline-flex items-center justify-center gap-3 px-14 py-6 md:px-20 md:py-8 lg:px-24 lg:py-10 font-mono text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-wider transition-all duration-500 border-4 ${
+              className={`w-full px-10 py-5 md:px-14 md:py-6 font-mono text-xl md:text-2xl font-bold uppercase tracking-wider transition-all duration-500 border-2 ${
                 formValid
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-black hover:scale-[1.03] animate-pulse"
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-black hover:scale-[1.02]"
                   : "border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
               }`}
-              style={formValid ? { boxShadow: '0 0 60px var(--accent)a0, inset 0 0 20px rgba(0,0,0,0.2)', animationDuration: '2s' } : {}}
+              style={formValid ? { boxShadow: '0 0 20px var(--accent)40' } : {}}
               onMouseEnter={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 80px var(--accent)d0, inset 0 0 20px rgba(0,0,0,0.2)';
+                  e.currentTarget.style.boxShadow = '0 0 30px var(--accent)60';
                 }
               }}
               onMouseLeave={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 60px var(--accent)a0, inset 0 0 20px rgba(0,0,0,0.2)';
+                  e.currentTarget.style.boxShadow = '0 0 20px var(--accent)40';
                 }
               }}
             >
-              <span>{mode === "quick" ? "Send" : "Send Brief"}</span>
-              {!submitting && <span className="text-3xl md:text-4xl lg:text-5xl">→</span>}
-              {submitting && <span className="animate-spin text-3xl md:text-4xl lg:text-5xl">↻</span>}
+              {submitting ? "Sending…" : mode === "quick" ? "Send" : "Send Brief"}
             </button>
 
             {(disabledByTimer || cooldown>0) && (
