@@ -582,229 +582,172 @@ export default function BlackberryOS5Dashboard() {
               animation: "staticMove 8s linear infinite"
             }}
           />
-          {/* INFINITE CITY CORRIDOR - Perspective Tunnel */}
+          {/* MAZE CORRIDOR - Forward Motion with Turns */}
           <div
-            className="absolute inset-0 opacity-[0.35] pointer-events-none overflow-hidden"
+            className="absolute inset-0 opacity-[0.4] pointer-events-none overflow-hidden"
             style={{
-              perspective: "600px",
+              perspective: "800px",
               perspectiveOrigin: "50% 50%"
             }}
           >
-            {/* Corridor Floor Grid */}
+            {/* Main Corridor Floor - Moving Forward */}
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage: `repeating-linear-gradient(
-                  0deg,
-                  transparent 0px,
-                  transparent 38px,
-                  rgba(255, 157, 35, 0.4) 38px,
-                  rgba(255, 157, 35, 0.4) 40px
-                ),
-                repeating-linear-gradient(
-                  90deg,
-                  transparent 0px,
-                  transparent 38px,
-                  rgba(255, 157, 35, 0.3) 38px,
-                  rgba(255, 157, 35, 0.3) 40px
-                )`,
-                transform: "rotateX(70deg) translateZ(-300px) translateY(30%)",
-                transformOrigin: "center center",
-                animation: "corridorFlow 5s linear infinite",
+                backgroundImage: `
+                  repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 45px,
+                    rgba(255, 157, 35, 0.5) 45px,
+                    rgba(255, 157, 35, 0.5) 48px
+                  ),
+                  repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 45px,
+                    rgba(255, 157, 35, 0.4) 45px,
+                    rgba(255, 157, 35, 0.4) 48px
+                  )
+                `,
+                transform: "rotateX(75deg) translateZ(-400px)",
+                transformOrigin: "center bottom",
+                animation: "mazeForward 4s linear infinite, mazeTurn 16s ease-in-out infinite",
                 willChange: "transform",
-                filter: "blur(0.5px)"
+                filter: "blur(0.8px)"
               }}
             />
 
-            {/* Vanishing Point Glow */}
+            {/* Center Vanishing Point */}
             <div
               className="absolute"
               style={{
-                width: "40%",
-                height: "40%",
-                top: "30%",
-                left: "30%",
-                background: "radial-gradient(circle, rgba(255, 157, 35, 0.5) 0%, transparent 70%)",
-                filter: "blur(30px)",
-                animation: "vanishingPulse 3s ease-in-out infinite"
+                width: "30%",
+                height: "30%",
+                top: "35%",
+                left: "35%",
+                background: "radial-gradient(circle, rgba(255, 157, 35, 0.7) 0%, transparent 60%)",
+                filter: "blur(40px)",
+                animation: "vanishingPulse 2s ease-in-out infinite"
               }}
             />
           </div>
 
-          {/* BUILDING WALLS - Left Side Parallax */}
+          {/* LEFT CORRIDOR WALL - Responds to Turns */}
+          <div className="absolute inset-0 opacity-[0.35] pointer-events-none overflow-hidden">
+            <div
+              className="absolute left-0 top-0 bottom-0"
+              style={{
+                width: "30%",
+                background: "linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 157, 35, 0.25) 50%, transparent 100%)",
+                borderRight: "3px solid rgba(255, 157, 35, 0.7)",
+                animation: "wallScrollLeft 4s linear infinite, wallTurnLeft 16s ease-in-out infinite",
+                transformOrigin: "right center"
+              }}
+            >
+              {/* Wall Grid Lines - Vertical */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 50px, rgba(255, 157, 35, 0.6) 50px, rgba(255, 157, 35, 0.6) 53px)`,
+                animation: "gridScroll 2s linear infinite"
+              }} />
+              {/* Wall Panels */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 82px)`,
+              }} />
+            </div>
+          </div>
+
+          {/* RIGHT CORRIDOR WALL - Responds to Turns */}
+          <div className="absolute inset-0 opacity-[0.35] pointer-events-none overflow-hidden">
+            <div
+              className="absolute right-0 top-0 bottom-0"
+              style={{
+                width: "30%",
+                background: "linear-gradient(270deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 157, 35, 0.25) 50%, transparent 100%)",
+                borderLeft: "3px solid rgba(255, 157, 35, 0.7)",
+                animation: "wallScrollRight 4s linear infinite, wallTurnRight 16s ease-in-out infinite",
+                transformOrigin: "left center"
+              }}
+            >
+              {/* Wall Grid Lines - Vertical */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 50px, rgba(255, 157, 35, 0.6) 50px, rgba(255, 157, 35, 0.6) 53px)`,
+                animation: "gridScroll 2s linear infinite"
+              }} />
+              {/* Wall Panels */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 82px)`,
+              }} />
+            </div>
+          </div>
+
+          {/* CEILING - Top of Corridor */}
           <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
-            {/* Left Building Layer 1 - Close */}
-            <div
-              className="absolute left-0 top-0 bottom-0"
-              style={{
-                width: "25%",
-                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.3) 0%, transparent 100%)",
-                borderRight: "2px solid rgba(255, 157, 35, 0.6)",
-                animation: "buildingSlideLeft1 3s linear infinite"
-              }}
-            >
-              {/* Windows - Left Close */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 60px, rgba(255, 157, 35, 0.5) 60px, rgba(255, 157, 35, 0.5) 65px, transparent 65px, transparent 100px)`,
-                animation: "windowsScroll 2s linear infinite"
-              }} />
-            </div>
-
-            {/* Left Building Layer 2 - Mid */}
-            <div
-              className="absolute left-0 top-0 bottom-0"
-              style={{
-                width: "20%",
-                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.2) 0%, transparent 100%)",
-                borderRight: "1px solid rgba(255, 157, 35, 0.4)",
-                animation: "buildingSlideLeft2 5s linear infinite"
-              }}
-            >
-              {/* Windows - Left Mid */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 84px, transparent 84px, transparent 120px)`,
-                animation: "windowsScroll 3s linear infinite"
-              }} />
-            </div>
-
-            {/* Left Building Layer 3 - Far */}
-            <div
-              className="absolute left-0 top-0 bottom-0"
-              style={{
-                width: "15%",
-                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.1) 0%, transparent 100%)",
-                borderRight: "1px solid rgba(255, 157, 35, 0.2)",
-                animation: "buildingSlideLeft3 8s linear infinite"
-              }}
-            />
-          </div>
-
-          {/* BUILDING WALLS - Right Side Parallax */}
-          <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
-            {/* Right Building Layer 1 - Close */}
-            <div
-              className="absolute right-0 top-0 bottom-0"
-              style={{
-                width: "25%",
-                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.3) 0%, transparent 100%)",
-                borderLeft: "2px solid rgba(255, 157, 35, 0.6)",
-                animation: "buildingSlideRight1 3s linear infinite"
-              }}
-            >
-              {/* Windows - Right Close */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 60px, rgba(255, 157, 35, 0.5) 60px, rgba(255, 157, 35, 0.5) 65px, transparent 65px, transparent 100px)`,
-                animation: "windowsScroll 2s linear infinite"
-              }} />
-            </div>
-
-            {/* Right Building Layer 2 - Mid */}
-            <div
-              className="absolute right-0 top-0 bottom-0"
-              style={{
-                width: "20%",
-                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.2) 0%, transparent 100%)",
-                borderLeft: "1px solid rgba(255, 157, 35, 0.4)",
-                animation: "buildingSlideRight2 5s linear infinite"
-              }}
-            >
-              {/* Windows - Right Mid */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 84px, transparent 84px, transparent 120px)`,
-                animation: "windowsScroll 3s linear infinite"
-              }} />
-            </div>
-
-            {/* Right Building Layer 3 - Far */}
-            <div
-              className="absolute right-0 top-0 bottom-0"
-              style={{
-                width: "15%",
-                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.1) 0%, transparent 100%)",
-                borderLeft: "1px solid rgba(255, 157, 35, 0.2)",
-                animation: "buildingSlideRight3 8s linear infinite"
-              }}
-            />
-          </div>
-
-          {/* OVERHEAD STRUCTURES - Creating ceiling depth */}
-          <div className="absolute inset-0 opacity-[0.2] pointer-events-none overflow-hidden">
-            {/* Ceiling Beams */}
             <div
               className="absolute top-0 left-0 right-0"
               style={{
-                height: "30%",
-                background: "linear-gradient(180deg, rgba(255, 157, 35, 0.3) 0%, transparent 100%)",
-                borderBottom: "2px solid rgba(255, 157, 35, 0.5)",
-                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 100px, rgba(255, 157, 35, 0.4) 100px, rgba(255, 157, 35, 0.4) 105px)`,
-                animation: "ceilingBeams 4s linear infinite"
+                height: "25%",
+                background: "linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(255, 157, 35, 0.2) 70%, transparent 100%)",
+                borderBottom: "3px solid rgba(255, 157, 35, 0.6)",
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 60px, rgba(255, 157, 35, 0.4) 60px, rgba(255, 157, 35, 0.4) 63px)`,
+                animation: "ceilingScroll 3s linear infinite"
               }}
             />
           </div>
 
-          {/* FLYING DEBRIS - Architectural fragments */}
-          <div className="absolute inset-0 opacity-[0.18] pointer-events-none overflow-hidden">
-            {/* Fragment 1 - Rectangle flying past */}
+          {/* CORNER MARKERS - Junction Indicators */}
+          <div className="absolute inset-0 opacity-[0.3] pointer-events-none overflow-hidden">
+            {/* Left Corner Marker */}
             <div
               className="absolute"
               style={{
-                width: "120px",
-                height: "80px",
-                left: "-120px",
-                top: "15%",
-                background: "rgba(255, 157, 35, 0.4)",
-                border: "2px solid rgba(255, 157, 35, 0.7)",
-                animation: "debrisPass1 6s linear infinite",
-                transform: "perspective(400px) rotateY(20deg)",
-                filter: "drop-shadow(0 0 10px rgba(255, 157, 35, 0.6))"
-              }}
-            >
-              {/* Fragment windows */}
-              <div style={{
-                position: "absolute",
-                inset: 8,
-                border: "1px solid rgba(255, 157, 35, 0.5)",
-                background: "rgba(0, 0, 0, 0.3)"
-              }} />
-            </div>
-
-            {/* Fragment 2 - Tall structure */}
-            <div
-              className="absolute"
-              style={{
-                width: "60px",
-                height: "200px",
-                right: "-60px",
-                top: "30%",
-                background: "linear-gradient(180deg, rgba(255, 157, 35, 0.5) 0%, rgba(255, 157, 35, 0.2) 100%)",
-                border: "2px solid rgba(255, 157, 35, 0.6)",
-                animation: "debrisPass2 8s linear infinite 2s",
-                transform: "perspective(400px) rotateY(-20deg)",
-                filter: "drop-shadow(0 0 12px rgba(255, 157, 35, 0.7))"
+                width: "150px",
+                height: "100%",
+                left: "-150px",
+                top: "0",
+                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.8) 0%, transparent 100%)",
+                borderRight: "4px solid rgba(255, 157, 35, 0.9)",
+                animation: "cornerPassLeft 16s linear infinite",
+                filter: "blur(2px)"
               }}
             />
-
-            {/* Fragment 3 - Square panel */}
+            {/* Right Corner Marker */}
             <div
               className="absolute"
               style={{
-                width: "100px",
-                height: "100px",
-                left: "-100px",
-                bottom: "25%",
-                background: "rgba(255, 157, 35, 0.3)",
-                border: "2px solid rgba(255, 157, 35, 0.8)",
-                animation: "debrisPass3 7s linear infinite 4s",
-                transform: "perspective(400px) rotateZ(45deg)",
-                filter: "drop-shadow(0 0 15px rgba(255, 157, 35, 0.8))"
+                width: "150px",
+                height: "100%",
+                right: "-150px",
+                top: "0",
+                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.8) 0%, transparent 100%)",
+                borderLeft: "4px solid rgba(255, 157, 35, 0.9)",
+                animation: "cornerPassRight 16s linear infinite 8s",
+                filter: "blur(2px)"
+              }}
+            />
+          </div>
+
+          {/* JUNCTION LINES - Turn Indicators */}
+          <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
+            {/* Horizontal Junction Line */}
+            <div
+              className="absolute"
+              style={{
+                width: "100%",
+                height: "4px",
+                top: "50%",
+                left: "0",
+                background: "rgba(255, 157, 35, 0.7)",
+                boxShadow: "0 0 20px rgba(255, 157, 35, 0.8)",
+                animation: "junctionPulse 4s ease-in-out infinite"
               }}
             />
           </div>
@@ -841,85 +784,48 @@ export default function BlackberryOS5Dashboard() {
               100% { transform: translate(0, 0); }
             }
 
-            /* INFINITE CITY CORRIDOR ANIMATIONS */
-            @keyframes corridorFlow {
+            /* MAZE NAVIGATION - Forward Motion */
+            @keyframes mazeForward {
               0% {
-                transform: rotateX(70deg) translateZ(-300px) translateY(30%);
+                background-position: 0% 0%;
               }
               100% {
-                transform: rotateX(70deg) translateZ(-300px) translateY(70%);
+                background-position: 0% 100%;
+              }
+            }
+
+            /* MAZE TURNING - Left and Right */
+            @keyframes mazeTurn {
+              0% {
+                transform: rotateX(75deg) translateZ(-400px) rotateZ(0deg);
+              }
+              25% {
+                transform: rotateX(75deg) translateZ(-400px) rotateZ(-8deg);
+              }
+              50% {
+                transform: rotateX(75deg) translateZ(-400px) rotateZ(0deg);
+              }
+              75% {
+                transform: rotateX(75deg) translateZ(-400px) rotateZ(8deg);
+              }
+              100% {
+                transform: rotateX(75deg) translateZ(-400px) rotateZ(0deg);
               }
             }
 
             @keyframes vanishingPulse {
               0%, 100% {
                 transform: scale(1);
-                opacity: 0.5;
+                opacity: 0.7;
               }
               50% {
-                transform: scale(1.2);
-                opacity: 0.8;
+                transform: scale(1.1);
+                opacity: 0.9;
               }
             }
 
-            /* LEFT BUILDING PARALLAX */
-            @keyframes buildingSlideLeft1 {
-              0% {
-                transform: translateY(0%) scaleY(1);
-              }
-              100% {
-                transform: translateY(100%) scaleY(1.2);
-              }
-            }
-
-            @keyframes buildingSlideLeft2 {
-              0% {
-                transform: translateY(0%) scaleY(1);
-              }
-              100% {
-                transform: translateY(60%) scaleY(1.1);
-              }
-            }
-
-            @keyframes buildingSlideLeft3 {
-              0% {
-                transform: translateY(0%);
-              }
-              100% {
-                transform: translateY(40%);
-              }
-            }
-
-            /* RIGHT BUILDING PARALLAX */
-            @keyframes buildingSlideRight1 {
-              0% {
-                transform: translateY(0%) scaleY(1);
-              }
-              100% {
-                transform: translateY(100%) scaleY(1.2);
-              }
-            }
-
-            @keyframes buildingSlideRight2 {
-              0% {
-                transform: translateY(0%) scaleY(1);
-              }
-              100% {
-                transform: translateY(60%) scaleY(1.1);
-              }
-            }
-
-            @keyframes buildingSlideRight3 {
-              0% {
-                transform: translateY(0%);
-              }
-              100% {
-                transform: translateY(40%);
-              }
-            }
-
-            /* WINDOWS SCROLLING */
-            @keyframes windowsScroll {
+            /* WALL SCROLLING - Forward Motion */
+            @keyframes wallScrollLeft {
               0% {
                 transform: translateY(0%);
               }
@@ -928,8 +834,74 @@ export default function BlackberryOS5Dashboard() {
               }
             }
 
-            /* CEILING BEAMS */
-            @keyframes ceilingBeams {
+            @keyframes wallScrollRight {
+              0% {
+                transform: translateY(0%);
+              }
+              100% {
+                transform: translateY(100%);
+              }
+            }
+
+            /* WALL TURNING - Width Changes During Turns */
+            @keyframes wallTurnLeft {
+              0% {
+                width: 30%;
+                opacity: 0.35;
+              }
+              25% {
+                width: 45%;
+                opacity: 0.5;
+              }
+              50% {
+                width: 30%;
+                opacity: 0.35;
+              }
+              75% {
+                width: 20%;
+                opacity: 0.25;
+              }
+              100% {
+                width: 30%;
+                opacity: 0.35;
+              }
+            }
+
+            @keyframes wallTurnRight {
+              0% {
+                width: 30%;
+                opacity: 0.35;
+              }
+              25% {
+                width: 20%;
+                opacity: 0.25;
+              }
+              50% {
+                width: 30%;
+                opacity: 0.35;
+              }
+              75% {
+                width: 45%;
+                opacity: 0.5;
+              }
+              100% {
+                width: 30%;
+                opacity: 0.35;
+              }
+            }
+
+            /* GRID SCROLLING */
+            @keyframes gridScroll {
+              0% {
+                transform: translateY(0%);
+              }
+              100% {
+                transform: translateY(100%);
+              }
+            }
+
+            /* CEILING SCROLLING */
+            @keyframes ceilingScroll {
               0% {
                 background-position: 0% 0%;
               }
@@ -938,73 +910,66 @@ export default function BlackberryOS5Dashboard() {
               }
             }
 
-            /* FLYING DEBRIS */
-            @keyframes debrisPass1 {
+            /* CORNER MARKERS - Passing Junctions */
+            @keyframes cornerPassLeft {
               0% {
-                left: -120px;
-                transform: perspective(400px) rotateY(20deg) scale(0.5);
-                opacity: 0;
-              }
-              10% {
-                opacity: 0.6;
-              }
-              50% {
-                transform: perspective(400px) rotateY(20deg) scale(1.2);
-                opacity: 0.8;
-              }
-              90% {
-                opacity: 0.6;
-              }
-              100% {
-                left: calc(100% + 120px);
-                transform: perspective(400px) rotateY(20deg) scale(1.8);
-                opacity: 0;
-              }
-            }
-
-            @keyframes debrisPass2 {
-              0% {
-                right: -60px;
-                transform: perspective(400px) rotateY(-20deg) scale(0.5);
-                opacity: 0;
-              }
-              10% {
-                opacity: 0.7;
-              }
-              50% {
-                transform: perspective(400px) rotateY(-20deg) scale(1);
-                opacity: 0.9;
-              }
-              90% {
-                opacity: 0.7;
-              }
-              100% {
-                right: calc(100% + 60px);
-                transform: perspective(400px) rotateY(-20deg) scale(1.5);
-                opacity: 0;
-              }
-            }
-
-            @keyframes debrisPass3 {
-              0% {
-                left: -100px;
-                transform: perspective(400px) rotateZ(45deg) scale(0.6);
+                left: -150px;
                 opacity: 0;
               }
               10% {
                 opacity: 0.5;
               }
-              50% {
-                transform: perspective(400px) rotateZ(90deg) scale(1.1);
-                opacity: 0.7;
+              20% {
+                left: 0%;
+                opacity: 1;
               }
-              90% {
+              30% {
                 opacity: 0.5;
               }
-              100% {
-                left: calc(100% + 100px);
-                transform: perspective(400px) rotateZ(135deg) scale(1.6);
+              40% {
+                left: 100%;
                 opacity: 0;
+              }
+              100% {
+                left: 100%;
+                opacity: 0;
+              }
+            }
+
+            @keyframes cornerPassRight {
+              0% {
+                right: -150px;
+                opacity: 0;
+              }
+              10% {
+                opacity: 0.5;
+              }
+              20% {
+                right: 0%;
+                opacity: 1;
+              }
+              30% {
+                opacity: 0.5;
+              }
+              40% {
+                right: 100%;
+                opacity: 0;
+              }
+              100% {
+                right: 100%;
+                opacity: 0;
+              }
+            }
+
+            /* JUNCTION PULSE */
+            @keyframes junctionPulse {
+              0%, 100% {
+                opacity: 0.25;
+                transform: scaleY(1);
+              }
+              50% {
+                opacity: 0.5;
+                transform: scaleY(1.5);
               }
             }
 
