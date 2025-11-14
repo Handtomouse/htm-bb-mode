@@ -631,16 +631,11 @@ export default function BlackberryAboutContent() {
                 className="relative font-black uppercase tracking-[0.3em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  background: 'linear-gradient(135deg, #ff9d23 0%, #FFB84D 50%, #ff9d23 100%)',
-                  backgroundSize: '200% auto',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                  color: '#ff9d23',
                   perspective: '1000px',
                   transformStyle: 'preserve-3d',
                   fontSize: 'clamp(140px, 18vw, 280px)',
-                  animation: 'shimmer 3s ease-in-out infinite',
-                  filter: 'drop-shadow(0 4px 20px rgba(255,157,35,0.3))'
+                  textShadow: '0 0 30px rgba(255,157,35,0.6), 0 4px 20px rgba(255,157,35,0.4)'
                 }}
               >
                 {['A', 'B', 'O', 'U', 'T'].map((letter, i) => (
