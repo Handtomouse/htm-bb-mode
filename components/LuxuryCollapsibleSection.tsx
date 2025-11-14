@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface LuxuryCollapsibleSectionProps {
@@ -18,6 +18,15 @@ export default function LuxuryCollapsibleSection({
   onToggle,
   children
 }: LuxuryCollapsibleSectionProps) {
+  // Lazy load: Only render content after first open
+  const [hasBeenOpened, setHasBeenOpened] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && !hasBeenOpened) {
+      setHasBeenOpened(true);
+    }
+  }, [isOpen, hasBeenOpened]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -29,20 +38,23 @@ export default function LuxuryCollapsibleSection({
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between p-8 md:p-10 text-left hover:bg-[#ff9d23]/10 transition-all duration-700"
+        aria-expanded={isOpen}
+        aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${title} section`}
       >
         <div className="flex items-center gap-6">
-          <span className="text-[28px] md:text-[32px]">{icon}</span>
+          <span className="text-[28px] md:text-[32px]" aria-hidden="true">{icon}</span>
           <h3 className="text-[22px] md:text-[28px] lg:text-[32px] font-bold text-white uppercase tracking-[0.08em]">{title}</h3>
         </div>
         <motion.span
           animate={{ rotate: isOpen ? 90 : 0 }}
           transition={{ duration: 0.3 }}
           className="text-[24px] md:text-[28px] text-[#ff9d23]"
+          aria-hidden="true"
         >
           ▶
         </motion.span>
       </button>
-      {isOpen && (
+      {isOpen && hasBeenOpened && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}

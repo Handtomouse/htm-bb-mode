@@ -81,7 +81,7 @@ function VolumeIcon() {
 
 function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
   return (
-    <div className="flex items-end gap-1" aria-label={`Signal ${strength}/4`}>
+    <div className="flex items-end gap-1" role="img" aria-label={`Signal ${strength}/4`}>
       {[0, 1, 2, 3].map((i) => (
         <span key={i} className={["w-2 rounded-none", i <= strength - 1 ? "bg-white" : "bg-white/30"].join(" ")} style={{ height: 8 + i * 6 }} />
       ))}
@@ -670,6 +670,8 @@ export default function BlackberryOS5Dashboard() {
                   <img
                     src="/logos/HTM-LOGOS-FULLWORDMARK-small.svg?v=5"
                     alt="HandToMouse"
+                    width="160"
+                    height="32"
                     className="opacity-80"
                     style={{
                       height: '32px',

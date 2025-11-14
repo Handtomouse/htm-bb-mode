@@ -19,6 +19,8 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
   const [showViewed, setShowViewed] = useState(false);
   const [touchStartX, setTouchStartX] = useState(0);
   const [showTapHint, setShowTapHint] = useState(false);
+  const [countedValue, setCountedValue] = useState<number>(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   // Improvement #14: Auto-flip first card as demo
   useEffect(() => {
@@ -60,6 +62,45 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
   };
 
   const { prefix, number, suffix } = parseValue(value);
+
+  // Count-up animation for numbers
+  useEffect(() => {
+    const numericValue = parseFloat(number);
+    if (isNaN(numericValue) || hasAnimated) return;
+
+    const duration = 2000; // 2 seconds
+    const startTime = Date.now() + (delay * 1000); // Delay matches card appearance
+    let animationFrame: number;
+
+    const animate = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+
+      if (elapsed < 0) {
+        animationFrame = requestAnimationFrame(animate);
+        return;
+      }
+
+      const progress = Math.min(elapsed / duration, 1);
+      // Easing function for smooth deceleration
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(eased * numericValue);
+
+      setCountedValue(current);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      } else {
+        setHasAnimated(true);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+    };
+  }, [number, delay, hasAnimated]);
 
   // Improvement #11: Enhanced flip feedback
   const handleFlip = () => {
@@ -215,7 +256,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
                 willChange: 'transform'
               }}
             >
-              {prefix}{number}
+              {prefix}{hasAnimated ? number : (countedValue > 0 ? countedValue : '')}
               {suffix && (
                 <span
                   className="text-[24px] md:text-[49px] lg:text-[59px]"

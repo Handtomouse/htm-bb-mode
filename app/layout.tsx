@@ -100,7 +100,7 @@ export default function RootLayout({
         {/* Preload critical fonts for About page */}
         <link
           rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&display=swap"
           as="style"
         />
         <link
@@ -113,6 +113,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Handjet:wght@300;400;500;600;700&display=swap"
           as="style"
         />
+        {/* Prefetch About page data for instant load */}
+        <link rel="prefetch" href="/data/about.json" as="fetch" crossOrigin="anonymous" />
       </head>
       <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${robotoMono.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
         <LayoutWrapper>
