@@ -566,27 +566,48 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             <div className="relative">
-              {/* Grid background */}
+              {/* Floating sparkle particles */}
+              {Array.from({ length: 12 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    y: [0, -40, 0],
+                    x: [0, Math.random() * 20 - 10, 0],
+                    opacity: [0.3, 0.7, 0.3]
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute pointer-events-none"
+                  style={{
+                    width: '4px',
+                    height: '4px',
+                    background: '#ff9d23',
+                    borderRadius: '50%',
+                    left: `${10 + i * 7}%`,
+                    top: `${30 + Math.random() * 40}%`,
+                    boxShadow: '0 0 4px rgba(255,157,35,0.8)'
+                  }}
+                />
+              ))}
+
+              {/* Ambient glow beneath title */}
               <div
-                className="absolute inset-0 pointer-events-none"
+                className="absolute pointer-events-none"
                 style={{
-                  backgroundImage: 'linear-gradient(0deg, rgba(255,157,35,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,157,35,0.1) 1px, transparent 1px)',
-                  backgroundSize: '20px 20px'
+                  bottom: '-20%',
+                  left: '20%',
+                  right: '20%',
+                  height: '40%',
+                  background: 'radial-gradient(ellipse, rgba(255,157,35,0.15) 0%, transparent 70%)',
+                  filter: 'blur(40px)'
                 }}
               />
 
-              {/* Horizontal scan line */}
-              <motion.div
-                animate={{ y: ['-100%', '200%'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: 'linear-gradient(180deg, transparent 0%, rgba(255,157,35,0.6) 50%, transparent 100%)',
-                  height: '4px'
-                }}
-              />
-
-              {/* Wireframe Hologram Typography */}
+              {/* Playful Luxury Typography */}
               <motion.h1
                 initial={{
                   opacity: 0,
@@ -610,15 +631,35 @@ export default function BlackberryAboutContent() {
                 className="relative font-black uppercase tracking-[0.3em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: 'transparent',
-                  WebkitTextStroke: '4px #ff9d23',
-                  textShadow: '0 0 15px rgba(255,157,35,0.5)',
+                  background: 'linear-gradient(135deg, #ff9d23 0%, #FFB84D 50%, #ff9d23 100%)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
                   perspective: '1000px',
                   transformStyle: 'preserve-3d',
-                  fontSize: 'clamp(200px, 25vw, 450px)'
+                  fontSize: 'clamp(140px, 18vw, 280px)',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                  filter: 'drop-shadow(0 4px 20px rgba(255,157,35,0.3))'
                 }}
               >
-                ABOUT
+                {['A', 'B', 'O', 'U', 'T'].map((letter, i) => (
+                  <motion.span
+                    key={i}
+                    className="inline-block"
+                    animate={{
+                      y: [0, -8, 0]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: i * 0.1,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
               </motion.h1>
             </div>
 
