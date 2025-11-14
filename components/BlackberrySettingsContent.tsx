@@ -1,14 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { useHapticFeedback } from "@/lib/hooks";
+import { useHapticFeedback, useSettings } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBButton from "./BBButton";
 
 const ACCENT = "#FF9D23";
 
+// Accent color options
+const ACCENT_COLORS = [
+  { name: "Orange", value: "#ff9d23" },
+  { name: "Blue", value: "#3b82f6" },
+  { name: "Purple", value: "#a855f7" },
+  { name: "Green", value: "#22c55e" },
+  { name: "Pink", value: "#ec4899" },
+];
+
 export default function BlackberrySettingsContent() {
   const triggerHaptic = useHapticFeedback();
+  const [settings, setSettings] = useSettings();
   const [brightness, setBrightness] = useState(80);
   const [contrast, setContrast] = useState(100);
   const [trackpadSensitivity, setTrackpadSensitivity] = useState(50);
@@ -21,6 +31,42 @@ export default function BlackberrySettingsContent() {
       <BBPageHeader title="SETTINGS" subtitle="Customize your experience" />
 
       <div className="space-y-12 md:space-y-16">
+        {/* Accent Color */}
+        <div className="h-12 md:h-16 lg:h-20" />
+        <section>
+          <h2 className="mb-2 text-base md:text-lg font-bold uppercase text-white/80">Accent Color</h2>
+          <div className="space-y-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6">
+            <p className="text-xs text-white/60 mb-3">Choose your accent color (changes all highlights site-wide)</p>
+            <div className="grid grid-cols-5 gap-2">
+              {ACCENT_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => {
+                    triggerHaptic(15);
+                    setSettings({ ...settings, accentColor: color.value });
+                  }}
+                  className="relative aspect-square border-2 transition-all hover:scale-110"
+                  style={{
+                    backgroundColor: color.value,
+                    borderColor: settings.accentColor === color.value ? "#fff" : "transparent",
+                    boxShadow: settings.accentColor === color.value ? `0 0 20px ${color.value}` : "none",
+                  }}
+                  title={color.name}
+                >
+                  {settings.accentColor === color.value && (
+                    <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg">
+                      ✓
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-white/40 mt-2">
+              Current: {ACCENT_COLORS.find(c => c.value === settings.accentColor)?.name || "Orange"}
+            </p>
+          </div>
+        </section>
+
         {/* Display Settings */}
         <div className="h-12 md:h-16 lg:h-20" />
         <section>

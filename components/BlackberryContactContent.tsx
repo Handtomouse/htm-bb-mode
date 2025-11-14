@@ -664,7 +664,7 @@ export default function BlackberryContactContent() {
 
       {/* Form Container */}
       <div
-        className="relative border border-white/5 bg-[#0a0a0a] p-8 sm:p-12 mb-6"
+        className="relative border border-white/5 bg-[#0a0a0a] p-10 sm:p-16 md:p-20 mb-6"
         style={{
           boxShadow: '0 0 20px #ff9d2310'
         }}
@@ -771,7 +771,7 @@ export default function BlackberryContactContent() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="name" className="font-mono text-sm md:text-base text-white/90 uppercase tracking-wider flex items-center gap-2">
+                <label htmlFor="name" className="font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider flex items-center gap-2">
                   Name*
                   {/* Improvement #6: Completion indicator */}
                   {nameValid && <span className="text-green-400 text-sm">✓</span>}
@@ -826,7 +826,7 @@ export default function BlackberryContactContent() {
             </div>
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="email" className="font-mono text-sm md:text-base text-white/90 uppercase tracking-wider flex items-center gap-2">
+                <label htmlFor="email" className="font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider flex items-center gap-2">
                   Email*
                   {/* Improvement #6: Completion indicator */}
                   {emailValid && <span className="text-green-400 text-sm">✓</span>}
@@ -897,7 +897,7 @@ export default function BlackberryContactContent() {
           {/* Company (brief) */}
           {mode === "brief" && (
             <div>
-              <label htmlFor="company" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Company</label>
+              <label htmlFor="company" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Company</label>
               <input
                 id="company"
                 ref={companyRef}
@@ -913,7 +913,7 @@ export default function BlackberryContactContent() {
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">
+            <label htmlFor="message" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">
               {mode === "quick" ? "Message* (≥ 30 chars)" : "Brief* (≥ 30 chars)"}
             </label>
             <textarea
@@ -926,7 +926,7 @@ export default function BlackberryContactContent() {
               value={data.message}
               onChange={(e) => setData({ ...data, message: e.target.value })}
               onBlur={onBlurTrim("message")}
-              className={`w-full border px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white leading-relaxed outline-none transition-all duration-500 ${
+              className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
                 errors.message
                   ? "border-red-400 bg-red-400/20 animate-pulse"
                   : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
@@ -957,7 +957,7 @@ export default function BlackberryContactContent() {
               <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="budget" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Budget</label>
+                  <label htmlFor="budget" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Budget</label>
                   <select
                     id="budget"
                     value={data.budget}
@@ -971,7 +971,7 @@ export default function BlackberryContactContent() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="timeline" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Timeline</label>
+                  <label htmlFor="timeline" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Timeline</label>
                   <select
                     id="timeline"
                     value={data.timeline}
@@ -987,7 +987,7 @@ export default function BlackberryContactContent() {
               </div>
 
               <fieldset className="border border-white/10 p-4">
-                <legend className="px-2 font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Services</legend>
+                <legend className="px-2 font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Services</legend>
                 <div className="grid grid-cols-2 gap-3">
                   {SERVICES.map((s) => {
                     const checked = data.services?.includes(s) ?? false;
@@ -1020,7 +1020,7 @@ export default function BlackberryContactContent() {
 
           {/* Files */}
           <div>
-            <label className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Files (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB)</label>
+            <label className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Files (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB)</label>
             <div className="border border-dashed border-white/10 bg-[#0b0b0b] p-4">
               <input
                 ref={fileInputRef}
@@ -1081,7 +1081,7 @@ export default function BlackberryContactContent() {
               data-submit
               type="submit"
               disabled={!formValid}
-              className={`inline-flex items-center gap-2 px-10 py-4 md:px-12 md:py-5 font-mono text-base md:text-lg font-bold uppercase tracking-wider transition-all duration-500 ${
+              className={`inline-flex items-center gap-2 px-10 py-4 md:px-12 md:py-5 font-mono text-xl md:text-2xl font-bold uppercase tracking-wider transition-all duration-500 ${
                 formValid
                   ? "border border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.02]"
                   : "border border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"

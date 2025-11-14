@@ -841,69 +841,174 @@ export default function BlackberryOS5Dashboard() {
               100% { transform: translate(0, 0); }
             }
 
-            /* VAPORWAVE ANIMATIONS */
-            @keyframes gridFlowVertical {
+            /* INFINITE CITY CORRIDOR ANIMATIONS */
+            @keyframes corridorFlow {
               0% {
-                transform: rotateX(75deg) translateZ(-200px) translateY(0px);
+                transform: rotateX(70deg) translateZ(-300px) translateY(30%);
               }
               100% {
-                transform: rotateX(75deg) translateZ(-200px) translateY(50px);
+                transform: rotateX(70deg) translateZ(-300px) translateY(70%);
               }
             }
 
-            @keyframes floatUp1 {
-              0% {
-                transform: translateY(0px) scale(1);
-                opacity: 0.6;
-              }
-              50% {
-                transform: translateY(-400px) scale(1.3);
-                opacity: 0.8;
-              }
-              100% {
-                transform: translateY(-800px) scale(1.6);
-                opacity: 0;
-              }
-            }
-
-            @keyframes floatUp2 {
-              0% {
-                transform: translateY(0px) scale(1) rotate(0deg);
+            @keyframes vanishingPulse {
+              0%, 100% {
+                transform: scale(1);
                 opacity: 0.5;
               }
               50% {
-                transform: translateY(-350px) scale(1.2) rotate(180deg);
-                opacity: 0.7;
-              }
-              100% {
-                transform: translateY(-700px) scale(1.5) rotate(360deg);
-                opacity: 0;
-              }
-            }
-
-            @keyframes rotateCube {
-              0% {
-                transform: rotate(0deg) scale(1);
-              }
-              50% {
-                transform: rotate(180deg) scale(1.2);
-              }
-              100% {
-                transform: rotate(360deg) scale(1);
-              }
-            }
-
-            @keyframes pulseDiamond {
-              0%, 100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 0.4;
-              }
-              50% {
-                transform: scale(1.3) rotate(45deg);
+                transform: scale(1.2);
                 opacity: 0.8;
               }
             }
 
+            /* LEFT BUILDING PARALLAX */
+            @keyframes buildingSlideLeft1 {
+              0% {
+                transform: translateY(0%) scaleY(1);
+              }
+              100% {
+                transform: translateY(100%) scaleY(1.2);
+              }
+            }
+
+            @keyframes buildingSlideLeft2 {
+              0% {
+                transform: translateY(0%) scaleY(1);
+              }
+              100% {
+                transform: translateY(60%) scaleY(1.1);
+              }
+            }
+
+            @keyframes buildingSlideLeft3 {
+              0% {
+                transform: translateY(0%);
+              }
+              100% {
+                transform: translateY(40%);
+              }
+            }
+
+            /* RIGHT BUILDING PARALLAX */
+            @keyframes buildingSlideRight1 {
+              0% {
+                transform: translateY(0%) scaleY(1);
+              }
+              100% {
+                transform: translateY(100%) scaleY(1.2);
+              }
+            }
+
+            @keyframes buildingSlideRight2 {
+              0% {
+                transform: translateY(0%) scaleY(1);
+              }
+              100% {
+                transform: translateY(60%) scaleY(1.1);
+              }
+            }
+
+            @keyframes buildingSlideRight3 {
+              0% {
+                transform: translateY(0%);
+              }
+              100% {
+                transform: translateY(40%);
+              }
+            }
+
+            /* WINDOWS SCROLLING */
+            @keyframes windowsScroll {
+              0% {
+                transform: translateY(0%);
+              }
+              100% {
+                transform: translateY(100%);
+              }
+            }
+
+            /* CEILING BEAMS */
+            @keyframes ceilingBeams {
+              0% {
+                background-position: 0% 0%;
+              }
+              100% {
+                background-position: 100% 0%;
+              }
+            }
+
+            /* FLYING DEBRIS */
+            @keyframes debrisPass1 {
+              0% {
+                left: -120px;
+                transform: perspective(400px) rotateY(20deg) scale(0.5);
+                opacity: 0;
+              }
+              10% {
+                opacity: 0.6;
+              }
+              50% {
+                transform: perspective(400px) rotateY(20deg) scale(1.2);
+                opacity: 0.8;
+              }
+              90% {
+                opacity: 0.6;
+              }
+              100% {
+                left: calc(100% + 120px);
+                transform: perspective(400px) rotateY(20deg) scale(1.8);
+                opacity: 0;
+              }
+            }
+
+            @keyframes debrisPass2 {
+              0% {
+                right: -60px;
+                transform: perspective(400px) rotateY(-20deg) scale(0.5);
+                opacity: 0;
+              }
+              10% {
+                opacity: 0.7;
+              }
+              50% {
+                transform: perspective(400px) rotateY(-20deg) scale(1);
+                opacity: 0.9;
+              }
+              90% {
+                opacity: 0.7;
+              }
+              100% {
+                right: calc(100% + 60px);
+                transform: perspective(400px) rotateY(-20deg) scale(1.5);
+                opacity: 0;
+              }
+            }
+
+            @keyframes debrisPass3 {
+              0% {
+                left: -100px;
+                transform: perspective(400px) rotateZ(45deg) scale(0.6);
+                opacity: 0;
+              }
+              10% {
+                opacity: 0.5;
+              }
+              50% {
+                transform: perspective(400px) rotateZ(90deg) scale(1.1);
+                opacity: 0.7;
+              }
+              90% {
+                opacity: 0.5;
+              }
+              100% {
+                left: calc(100% + 100px);
+                transform: perspective(400px) rotateZ(135deg) scale(1.6);
+                opacity: 0;
+              }
+            }
+
+            /* NEON SCAN */
             @keyframes neonScan {
               0% {
                 transform: translateY(-100%);
@@ -913,6 +1018,7 @@ export default function BlackberryOS5Dashboard() {
               }
             }
 
+            /* RADIAL PULSE */
             @keyframes radialPulse {
               0% {
                 transform: scale(0.8);
