@@ -591,6 +591,46 @@ export default function BlackberryOS5Dashboard() {
               animation: "rotatePattern 20s linear infinite"
             }}
           />
+          {/* CRT Scanline Sweep - Animated Wallpaper */}
+          <div
+            className="absolute inset-0 opacity-[0.05] pointer-events-none"
+            style={{
+              backgroundImage: `repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                transparent 3px,
+                rgba(255, 157, 35, 0.08) 3px,
+                rgba(255, 157, 35, 0.08) 4px
+              )`,
+              backgroundSize: "100% 4px",
+              animation: "scanlinesSweep 18s linear infinite",
+              filter: "blur(0.3px)",
+              mixBlendMode: "screen"
+            }}
+          />
+          {/* CRT Scanline Glow - Secondary Layer */}
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{
+              backgroundImage: `linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(255, 157, 35, 0.15) 50%,
+                transparent 100%
+              )`,
+              backgroundSize: "100% 200px",
+              animation: "scanlineGlow 20s ease-in-out infinite",
+              filter: "blur(15px)"
+            }}
+          />
+          {/* Occasional CRT Flicker - Desktop only for performance */}
+          <div
+            className="absolute inset-0 opacity-[0.02] pointer-events-none hidden md:block"
+            style={{
+              backgroundColor: "rgba(255, 157, 35, 0.1)",
+              animation: "crtFlicker 7s ease-in-out infinite"
+            }}
+          />
           <style>{`
             @keyframes staticMove {
               0% { transform: translate(0, 0); }
@@ -602,6 +642,18 @@ export default function BlackberryOS5Dashboard() {
             @keyframes rotatePattern {
               0% { transform: rotate(0deg) scale(1.5); }
               100% { transform: rotate(360deg) scale(1.5); }
+            }
+            @keyframes scanlinesSweep {
+              0% { transform: translateY(-100%); }
+              100% { transform: translateY(100%); }
+            }
+            @keyframes scanlineGlow {
+              0%, 100% { transform: translateY(-50%); opacity: 0.03; }
+              50% { transform: translateY(150%); opacity: 0.06; }
+            }
+            @keyframes crtFlicker {
+              0%, 90%, 92%, 94%, 96%, 98%, 100% { opacity: 0.02; }
+              91%, 93%, 95%, 97%, 99% { opacity: 0.08; }
             }
           `}</style>
 
