@@ -1025,20 +1025,38 @@ export default function BlackberryContactContent() {
               data-submit
               type="submit"
               disabled={!formValid}
-              className={`w-full px-10 py-5 md:px-14 md:py-6 font-mono text-xl md:text-2xl font-bold uppercase tracking-wider transition-all duration-500 border-2 ${
+              className={`w-full px-10 py-5 md:px-14 md:py-6 font-mono text-xl md:text-2xl font-bold uppercase tracking-wider transition-all duration-300 border-4 ${
                 formValid
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-black hover:scale-[1.02]"
-                  : "border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-black hover:brightness-110 active:scale-[0.98]"
+                  : "border-white/20 bg-[#131313] text-white/40 cursor-not-allowed"
               }`}
-              style={formValid ? { boxShadow: '0 0 20px var(--accent)40' } : {}}
+              style={formValid ? {
+                boxShadow: '0 4px 0 rgba(0,0,0,0.3), 0 0 20px var(--accent)50, inset 0 1px 0 rgba(255,255,255,0.2)',
+                transform: 'translateY(0)'
+              } : {
+                boxShadow: '0 2px 0 rgba(0,0,0,0.2)',
+                transform: 'translateY(0)'
+              }}
               onMouseEnter={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 30px var(--accent)60';
+                  e.currentTarget.style.boxShadow = '0 4px 0 rgba(0,0,0,0.3), 0 0 30px var(--accent)80, inset 0 1px 0 rgba(255,255,255,0.3)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 20px var(--accent)40';
+                  e.currentTarget.style.boxShadow = '0 4px 0 rgba(0,0,0,0.3), 0 0 20px var(--accent)50, inset 0 1px 0 rgba(255,255,255,0.2)';
+                }
+              }}
+              onMouseDown={(e) => {
+                if (formValid) {
+                  e.currentTarget.style.transform = 'translateY(2px)';
+                  e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.3), 0 0 15px var(--accent)40, inset 0 1px 0 rgba(255,255,255,0.1)';
+                }
+              }}
+              onMouseUp={(e) => {
+                if (formValid) {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 0 rgba(0,0,0,0.3), 0 0 20px var(--accent)50, inset 0 1px 0 rgba(255,255,255,0.2)';
                 }
               }}
             >
