@@ -407,7 +407,7 @@ export default function BlackberryAboutContent() {
           style={{ scrollSnapAlign: 'center' }}
         >
           <div
-            className="sticky top-0 h-screen flex flex-col items-center justify-center text-center gap-20 md:gap-24 lg:gap-32"
+            className="sticky top-0 h-[50vh] flex flex-col items-center justify-center text-center gap-12 md:gap-16"
             style={{
               marginTop: '-72px',
               opacity: heroOpacity,
@@ -466,276 +466,66 @@ export default function BlackberryAboutContent() {
           </div>
         </motion.div>
 
-        {/* Scroll spacer - responsive height (Fix #4) */}
-        <div className="h-[10vh] md:h-[12vh] lg:h-[15vh]" aria-hidden="true" />
-
-        {/* Hero Text Content - Responsive height (Fix #5) */}
-        <section
-          ref={typewriterRef}
-          className="relative min-h-[70vh] md:min-h-[85vh] lg:min-h-screen flex flex-col items-center justify-center space-y-16 md:space-y-20 text-center px-8 md:px-16 lg:px-32"
-          style={{
-            scrollSnapAlign: isMobile ? 'none' : 'start',
-            scrollSnapStop: isMobile ? 'normal' : 'always',
-            opacity: typewriterOpacity,
-            transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
-          }}
-        >
-          {/* Manifesto with scroll-driven typewriter effect */}
-          <TypewriterManifesto
-            onComplete={handleTypewriterComplete}
-            scrollProgress={typewriterScrollProgress}
-          />
-
-          {/* Headline - scroll-driven fade in (Fix #7) */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: headlineOpacity, y: headlineOpacity > 0 ? 0 : 20 }}
-            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            onAnimationComplete={() => headlineOpacity >= 0.99 && handleHeadlineComplete()}
-            className="text-[16px] md:text-[20px] lg:text-[24px] leading-[1.8] font-light"
-            style={{
-              fontFamily: 'var(--font-body)',
-              color: 'rgba(255,255,255,0.7)',
-              letterSpacing: '0.05em',
-              transition: 'font-size 0.2s ease-out'
-            }}
+        {/* Value Proposition - Direct & Immediate */}
+        <section className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-4xl mx-auto text-center space-y-12 md:space-y-16 px-8 md:px-16"
           >
-            Ideas that outlast trends. Strategy that scales. Sydney → World.
-          </motion.p>
-
-        </section>
-
-        {/* Transition zone - connects typewriter to Philosophy */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-xs mx-auto my-16 md:my-20 lg:my-24 h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent"
-          style={{ transformOrigin: 'center' }}
-        />
-
-        {/* Philosophy Section - Centered with Title */}
-
-          <section className="min-h-screen flex flex-col items-center justify-center py-12 md:py-16 lg:py-20 scroll-smooth">
-          <div className="max-w-3xl w-full px-12 md:px-16 lg:px-24 flex flex-col items-center">
-
-            {/* Section Title - "Philosophy" */}
-            <motion.div
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.8, delay: 0, ease: [0.16, 1, 0.3, 1] }}
-              style={{marginBottom: '10rem'}}
-            >
-              <h2
-                className="text-[48px] md:text-[64px] lg:text-[80px] font-light uppercase mb-8 text-center"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  color: 'rgba(255,157,35,0.7)',
-                  letterSpacing: '0.15em'
-                }}
-              >
-                Philosophy
-              </h2>
-              <div className="h-[1px] w-24 bg-[#ff9d23]/30" />
-            </motion.div>
-
-            {/* Philosophy - Numbered Manifesto */}
-            <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.4, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '12rem'}}
-            >
-              {/* Number Label - Centered with hover glow */}
-              <motion.div
-                whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
-                transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-50 text-center"
-                style={{marginBottom: '3rem'}}
-              >
-                [01]
-              </motion.div>
-              {/* Section Title - Centered with hover tracking expansion */}
-              <motion.h3
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: "-200px" }}
-                transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-                whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] transition-all duration-300 text-center"
-                style={{marginBottom: '4rem'}}
-              >
-                The Intersection
-              </motion.h3>
-              {/* Body Text - Left-aligned with scale entrance */}
-              <motion.p
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-200px" }}
-                transition={{ duration: 1.4, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[16px] md:text-[20px] lg:text-[24px] leading-[2.1] font-light text-left max-w-2xl"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                I work where ideas meet culture — finding the <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">small, precise angle</motion.span> no one else has noticed yet.
-              </motion.p>
-            </motion.div>
-
-            {/* Part 2 - Centered staggered entrance */}
-            <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '12rem'}}
-            >
-              {/* Number - Centered with hover glow */}
-              <motion.div
-                whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
-                transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-50 text-center"
-                style={{marginBottom: '3rem'}}
-              >
-                [02]
-              </motion.div>
-              {/* Section Title - Centered with hover tracking expansion */}
-              <motion.h3
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: "-200px" }}
-                transition={{ duration: 1.4, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] transition-all duration-300 text-center"
-                style={{marginBottom: '4rem'}}
-              >
-                The Timeframe
-              </motion.h3>
-              {/* Body Text - Left-aligned with scale entrance */}
-              <motion.p
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-200px" }}
-                transition={{ duration: 1.4, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[16px] md:text-[20px] lg:text-[24px] leading-[2.0] font-normal text-left max-w-2xl"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                Anyone can make something that looks current; the work is making something that still feels right in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">five years</motion.span>.
-              </motion.p>
-            </motion.div>
-
-            {/* Part 3 - Centered staggered entrance */}
-            <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.4, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[16rem]"
-            >
-              {/* Number - Centered with hover glow */}
-              <motion.div
-                whileHover={{ textShadow: '0 0 15px rgba(255, 157, 35, 0.6)' }}
-                transition={{ duration: 0.3 }}
-                className="text-[14px] md:text-[15px] lg:text-[16px] font-normal text-[#ff9d23] opacity-50 text-center"
-                style={{marginBottom: '3rem'}}
-              >
-                [03]
-              </motion.div>
-              {/* Section Title - Centered with hover tracking expansion */}
-              <motion.h3
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: "-200px" }}
-                transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                whileHover={{ letterSpacing: '0.4em' }}
-                className="text-[12px] md:text-[13px] lg:text-[14px] font-light text-[#ff9d23]/50 uppercase tracking-[0.35em] transition-all duration-300 text-center"
-                style={{marginBottom: '4rem'}}
-              >
-                The Method
-              </motion.h3>
-              {/* Body Text - Left-aligned with scale entrance */}
-              <motion.p
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-200px" }}
-                transition={{ duration: 1.4, delay: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[16px] md:text-[20px] lg:text-[24px] leading-[1.9] font-medium text-left max-w-2xl"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  color: 'rgba(255,255,255,0.9)',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                That comes from <em className="text-white italic">research, reference, and restraint</em> — knowing what to leave out, not just what to put in.
-              </motion.p>
-            </motion.div>
-
-            {/* Divider - Ultra-thin hairline, centered, with top margin */}
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              whileInView={{ opacity: 1, scaleX: 1 }}
-              viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="h-[0.5px] bg-gradient-to-r from-transparent via-[#ff9d23]/20 to-transparent my-20"
-            />
-
-            {/* Final Statement - Left-aligned ethereal entrance */}
-            <motion.p
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-200px" }}
-              transition={{ duration: 1.4, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.3] font-extralight tracking-wide text-left max-w-2xl"
-            >
-              I'm not interested in trends or templates. I'm interested in <motion.span animate={{ opacity: [0.85, 0.95, 0.85] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-[#ff9d23]/90 font-medium">ideas with backbone</motion.span> — things that stick because they mean something.
-            </motion.p>
-          </div>
-          </section>
-
-        {/* Transition divider - Act I → Act II */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 2.0, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md mx-auto my-20 md:my-24 lg:my-28 h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/40 to-transparent"
-          style={{ transformOrigin: 'center' }}
-        />
-
-        {/* "Built to Last" - Chapter marker */}
-
-          <section className="h-[60vh] flex items-center justify-center">
-            <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-center"
-          >
-            <div
-              className="text-[32px] md:text-[40px] lg:text-[48px] uppercase"
+            {/* Primary Headline */}
+            <motion.h2
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="text-[28px] md:text-[36px] lg:text-[44px] font-medium leading-[1.3]"
               style={{
                 fontFamily: 'var(--font-mono)',
-                color: 'rgba(255,157,35,0.7)',
-                letterSpacing: '0.2em'
+                color: 'rgba(255,255,255,0.95)',
+                letterSpacing: '0.02em'
               }}
             >
-              Built to Last
-            </div>
-            </motion.div>
-          </section>
-        
+              Ideas that outlast trends. Strategy that scales. Sydney → World.
+            </motion.h2>
 
-        {/* Stats Grid - Full Width */}
+            {/* Supporting Statement */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-[20px] md:text-[26px] lg:text-[32px] font-light leading-[1.5]"
+              style={{
+                fontFamily: 'var(--font-body)',
+                color: 'rgba(255,157,35,0.9)'
+              }}
+            >
+              Everyone's chasing new — we chase <em className="font-medium not-italic">different</em>.
+            </motion.p>
+
+            {/* 3-Line Approach */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="space-y-6 text-[16px] md:text-[20px] leading-[1.8] max-w-3xl mx-auto"
+              style={{
+                fontFamily: 'var(--font-body)',
+                color: 'rgba(255,255,255,0.8)'
+              }}
+            >
+              <p>I work where ideas meet culture — finding the small, precise angle no one else has noticed yet.</p>
+              <p>The work: making something that still feels right in <span className="text-[#ff9d23]">five years</span>, not just five minutes.</p>
+              <p>The method: research, reference, and restraint — knowing what to leave out.</p>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Stats Grid - Social Proof */}
 
           <section
             className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32"
@@ -795,42 +585,133 @@ export default function BlackberryAboutContent() {
               <LuxuryServiceCard key={idx} service={service} delay={idx * 0.25} />
             ))}
           </div>
+          {/* Mini CTA - Interim Conversion Opportunity */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mt-12 md:mt-16"
+          >
+            <motion.a
+              href={`mailto:${data.contact.email}`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-block border-2 border-[#ff9d23] bg-[#ff9d23]/10 px-8 py-4 text-[18px] md:text-[22px] font-bold text-[#ff9d23] uppercase tracking-wide hover:bg-[#ff9d23]/20 transition-all duration-300"
+            >
+              Ready to start? →
+            </motion.a>
+          </motion.div>
           </section>
-        
+
+
+        {/* Process - Standalone Section */}
+        <section className="py-16 md:py-20 flex flex-col items-center justify-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
+          >
+            How I Work
+          </motion.h2>
+
+          <div className="max-w-4xl mx-auto px-8 md:px-16 space-y-6">
+            {data.process.steps.map((step, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="flex items-start gap-6 border-l-2 border-[#ff9d23]/40 pl-6 py-3 hover:border-[#ff9d23] hover:pl-8 transition-all duration-700"
+              >
+                <span className="text-[28px] text-[#ff9d23]">{step.num}</span>
+                <div>
+                  <div className="font-bold text-[18px] md:text-[22px] text-white leading-relaxed tracking-wide">
+                    {step.title} • <span className="text-[#ff9d23]">{step.promise}</span>
+                  </div>
+                  <div className="text-[16px] md:text-[18px] text-white/60 mt-2">{step.duration}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+
+        {/* Proof - Client Highlights & Industries */}
+        <section className="py-16 md:py-20 flex flex-col items-center justify-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
+          >
+            Proof
+          </motion.h2>
+
+          <div className="max-w-5xl mx-auto px-8 md:px-16 space-y-10 md:space-y-12">
+            {data.proof.highlights.map((highlight, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="border-l-4 border-[#ff9d23]/60 pl-6 md:pl-8 py-4"
+              >
+                <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-3">
+                  <h3 className="text-[24px] md:text-[28px] font-bold text-white tracking-wide">
+                    {highlight.label}
+                  </h3>
+                  <span className="text-[14px] md:text-[16px] text-[#ff9d23] uppercase tracking-wider">
+                    {highlight.duration}
+                  </span>
+                </div>
+
+                <p className="text-[16px] md:text-[20px] text-white/80 leading-relaxed mb-4">
+                  {highlight.line}
+                </p>
+
+                {highlight.quote && (
+                  <p className="text-[16px] md:text-[18px] text-[#ff9d23]/90 italic leading-relaxed">
+                    {highlight.quote}
+                  </p>
+                )}
+              </motion.div>
+            ))}
+
+            {/* Industries Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="text-center mt-8 pt-8 border-t border-white/20"
+            >
+              <p className="text-[16px] md:text-[20px] text-white/70 uppercase tracking-wider">
+                <span className="text-[#ff9d23] font-bold text-[24px] md:text-[28px]">{data.stats.industries}</span> Industries
+                <span className="block mt-2 text-[14px] md:text-[16px] text-white/50 normal-case tracking-normal">
+                  Hospitality • Fashion • E-commerce • Health • Tech • Finance • Arts • Education
+                </span>
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
 
         {/* Collapsible Sections */}
 
           <section className="min-h-screen py-20 flex flex-col items-center justify-center space-y-8 md:space-y-12">
             <LuxuryCollapsibleSection
-              title="How I Work"
+              title="Operations & Setup"
               icon="⚙️"
-              isOpen={openSection === "work"}
-              onToggle={() => setOpenSection(openSection === "work" ? null : "work")}
+              isOpen={openSection === "ops"}
+              onToggle={() => setOpenSection(openSection === "ops" ? null : "ops")}
             >
               <div className="space-y-10">
-              <div>
-                <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Process</h4>
-                <div className="space-y-6">
-                  {data.process.steps.map((step, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.25, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                      className="flex items-start gap-6 border-l-2 border-[#ff9d23]/40 pl-6 py-3 hover:border-[#ff9d23] hover:pl-8 transition-all duration-700"
-                    >
-                      <span className="text-[28px] text-[#ff9d23]">{step.num}</span>
-                      <div>
-                        <div className="font-bold text-[18px] md:text-[22px] text-white leading-relaxed tracking-wide">
-                          {step.title} • <span className="text-[#ff9d23]">{step.promise}</span>
-                        </div>
-                        <div className="text-[16px] md:text-[18px] text-white/60 mt-2">{step.duration}</div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
               <div>
                 <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Operations</h4>
                 <div className="space-y-4">
@@ -852,6 +733,57 @@ export default function BlackberryAboutContent() {
               <div className="border-t border-white/20 pt-8">
                 <p className="text-[16px] md:text-[20px] text-white/80 leading-loose">{data.setup.line}</p>
               </div>
+              </div>
+            </LuxuryCollapsibleSection>
+
+            <LuxuryCollapsibleSection
+              title="Philosophy"
+              icon="💭"
+              isOpen={openSection === "philosophy"}
+              onToggle={() => setOpenSection(openSection === "philosophy" ? null : "philosophy")}
+            >
+              <div className="space-y-8">
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.6 }}
+                  className="text-[18px] md:text-[24px] text-white/90 leading-[1.8]"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                >
+                  {data.hero.subline}
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="border-l-4 border-[#ff9d23]/60 pl-6 py-4"
+                >
+                  <p className="text-[16px] md:text-[20px] text-[#ff9d23]/90 leading-relaxed italic">
+                    {data.hero.origin}
+                  </p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  className="space-y-4 pt-6 border-t border-white/20"
+                >
+                  <h4 className="text-[18px] md:text-[22px] font-bold text-white uppercase tracking-[0.08em]">Principles</h4>
+                  {data.hero.principles.map((principle, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + (idx * 0.1), duration: 0.6 }}
+                      className="flex items-start gap-4"
+                    >
+                      <span className="text-[20px] text-[#ff9d23] flex-shrink-0">{principle.icon}</span>
+                      <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{principle.text}</p>
+                    </motion.div>
+                  ))}
+                </motion.div>
               </div>
             </LuxuryCollapsibleSection>
 
@@ -966,7 +898,7 @@ export default function BlackberryAboutContent() {
 
         {/* Now Block - Full Width Accent */}
 
-          <section className="min-h-[80vh] flex items-center justify-center">
+          <section className="min-h-[50vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -1016,7 +948,7 @@ export default function BlackberryAboutContent() {
 
         {/* Contact CTA - Full Height */}
 
-          <section className="relative min-h-screen py-20 flex items-center justify-center">
+          <section className="relative min-h-[70vh] py-20 flex items-center justify-center">
             {/* Background gradient that builds toward CTA */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/5 to-[#ff9d23]/10 pointer-events-none" />
 
