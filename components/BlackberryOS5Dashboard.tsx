@@ -582,15 +582,14 @@ export default function BlackberryOS5Dashboard() {
               animation: "staticMove 8s linear infinite"
             }}
           />
-          {/* MAZE CORRIDOR - Forward Motion with Turns */}
+          {/* DOOM MAZE - 3D Floor Grid */}
           <div
             className="absolute inset-0 opacity-[0.4] pointer-events-none overflow-hidden"
             style={{
-              perspective: "800px",
+              perspective: "600px",
               perspectiveOrigin: "50% 50%"
             }}
           >
-            {/* Main Corridor Floor - Moving Forward */}
             <div
               className="absolute inset-0"
               style={{
@@ -598,156 +597,192 @@ export default function BlackberryOS5Dashboard() {
                   repeating-linear-gradient(
                     0deg,
                     transparent 0px,
-                    transparent 45px,
-                    rgba(255, 157, 35, 0.5) 45px,
-                    rgba(255, 157, 35, 0.5) 48px
+                    transparent 40px,
+                    rgba(255, 157, 35, 0.6) 40px,
+                    rgba(255, 157, 35, 0.6) 42px
                   ),
                   repeating-linear-gradient(
                     90deg,
                     transparent 0px,
-                    transparent 45px,
-                    rgba(255, 157, 35, 0.4) 45px,
-                    rgba(255, 157, 35, 0.4) 48px
+                    transparent 40px,
+                    rgba(255, 157, 35, 0.5) 40px,
+                    rgba(255, 157, 35, 0.5) 42px
                   )
                 `,
-                transform: "rotateX(75deg) translateZ(-400px)",
+                transform: "rotateX(75deg) translateZ(-350px)",
                 transformOrigin: "center bottom",
-                animation: "mazeForward 4s linear infinite, mazeTurn 16s ease-in-out infinite",
+                animation: "doomFloorScroll 3s linear infinite",
                 willChange: "transform",
-                filter: "blur(0.8px)"
+                filter: "blur(0.5px)"
               }}
             />
-
-            {/* Center Vanishing Point */}
+            {/* Horizon Glow */}
             <div
               className="absolute"
               style={{
-                width: "30%",
-                height: "30%",
-                top: "35%",
-                left: "35%",
-                background: "radial-gradient(circle, rgba(255, 157, 35, 0.7) 0%, transparent 60%)",
-                filter: "blur(40px)",
-                animation: "vanishingPulse 2s ease-in-out infinite"
+                width: "25%",
+                height: "25%",
+                top: "37%",
+                left: "37.5%",
+                background: "radial-gradient(circle, rgba(255, 157, 35, 0.8) 0%, transparent 65%)",
+                filter: "blur(35px)",
+                animation: "horizonPulse 2s ease-in-out infinite"
               }}
             />
           </div>
 
-          {/* LEFT CORRIDOR WALL - Responds to Turns */}
-          <div className="absolute inset-0 opacity-[0.35] pointer-events-none overflow-hidden">
+          {/* LEFT WALL - NEAR SEGMENT (Closest) */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div
-              className="absolute left-0 top-0 bottom-0"
+              className="absolute left-0"
               style={{
-                width: "30%",
-                background: "linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 157, 35, 0.25) 50%, transparent 100%)",
-                borderRight: "3px solid rgba(255, 157, 35, 0.7)",
-                animation: "wallScrollLeft 4s linear infinite, wallTurnLeft 16s ease-in-out infinite",
-                transformOrigin: "right center"
+                width: "28%",
+                top: "10%",
+                height: "80%",
+                background: "linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(255,157,35,0.3) 60%, transparent 100%)",
+                borderRight: "4px solid rgba(255,157,35,0.9)",
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 45px, rgba(255,157,35,0.7) 45px, rgba(255,157,35,0.7) 48px)`,
+                animation: "wallScrollNear 2s linear infinite, wallFadeLeft 12s ease-in-out infinite",
+                opacity: 0.5,
+                boxShadow: "inset -20px 0 40px rgba(0,0,0,0.8)"
               }}
-            >
-              {/* Wall Grid Lines - Vertical */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 50px, rgba(255, 157, 35, 0.6) 50px, rgba(255, 157, 35, 0.6) 53px)`,
-                animation: "gridScroll 2s linear infinite"
-              }} />
-              {/* Wall Panels */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 82px)`,
-              }} />
-            </div>
+            />
           </div>
 
-          {/* RIGHT CORRIDOR WALL - Responds to Turns */}
-          <div className="absolute inset-0 opacity-[0.35] pointer-events-none overflow-hidden">
+          {/* LEFT WALL - MID SEGMENT */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div
-              className="absolute right-0 top-0 bottom-0"
+              className="absolute left-0"
               style={{
-                width: "30%",
-                background: "linear-gradient(270deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 157, 35, 0.25) 50%, transparent 100%)",
-                borderLeft: "3px solid rgba(255, 157, 35, 0.7)",
-                animation: "wallScrollRight 4s linear infinite, wallTurnRight 16s ease-in-out infinite",
-                transformOrigin: "left center"
+                width: "24%",
+                top: "20%",
+                height: "60%",
+                background: "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(255,157,35,0.25) 60%, transparent 100%)",
+                borderRight: "3px solid rgba(255,157,35,0.7)",
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 50px, rgba(255,157,35,0.5) 50px, rgba(255,157,35,0.5) 52px)`,
+                animation: "wallScrollMid 3s linear infinite, wallFadeLeft 12s ease-in-out infinite 1s",
+                opacity: 0.4
               }}
-            >
-              {/* Wall Grid Lines - Vertical */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 50px, rgba(255, 157, 35, 0.6) 50px, rgba(255, 157, 35, 0.6) 53px)`,
-                animation: "gridScroll 2s linear infinite"
-              }} />
-              {/* Wall Panels */}
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 82px)`,
-              }} />
-            </div>
+            />
           </div>
 
-          {/* CEILING - Top of Corridor */}
-          <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
+          {/* LEFT WALL - FAR SEGMENT */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute left-0"
+              style={{
+                width: "18%",
+                top: "30%",
+                height: "40%",
+                background: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(255,157,35,0.15) 60%, transparent 100%)",
+                borderRight: "2px solid rgba(255,157,35,0.5)",
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 60px, rgba(255,157,35,0.3) 60px, rgba(255,157,35,0.3) 61px)`,
+                animation: "wallScrollFar 4s linear infinite, wallFadeLeft 12s ease-in-out infinite 2s",
+                opacity: 0.3
+              }}
+            />
+          </div>
+
+          {/* RIGHT WALL - NEAR SEGMENT (Closest) */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute right-0"
+              style={{
+                width: "28%",
+                top: "10%",
+                height: "80%",
+                background: "linear-gradient(270deg, rgba(0,0,0,0.95) 0%, rgba(255,157,35,0.3) 60%, transparent 100%)",
+                borderLeft: "4px solid rgba(255,157,35,0.9)",
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 45px, rgba(255,157,35,0.7) 45px, rgba(255,157,35,0.7) 48px)`,
+                animation: "wallScrollNear 2s linear infinite, wallFadeRight 12s ease-in-out infinite",
+                opacity: 0.5,
+                boxShadow: "inset 20px 0 40px rgba(0,0,0,0.8)"
+              }}
+            />
+          </div>
+
+          {/* RIGHT WALL - MID SEGMENT */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute right-0"
+              style={{
+                width: "24%",
+                top: "20%",
+                height: "60%",
+                background: "linear-gradient(270deg, rgba(0,0,0,0.85) 0%, rgba(255,157,35,0.25) 60%, transparent 100%)",
+                borderLeft: "3px solid rgba(255,157,35,0.7)",
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 50px, rgba(255,157,35,0.5) 50px, rgba(255,157,35,0.5) 52px)`,
+                animation: "wallScrollMid 3s linear infinite, wallFadeRight 12s ease-in-out infinite 1s",
+                opacity: 0.4
+              }}
+            />
+          </div>
+
+          {/* RIGHT WALL - FAR SEGMENT */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute right-0"
+              style={{
+                width: "18%",
+                top: "30%",
+                height: "40%",
+                background: "linear-gradient(270deg, rgba(0,0,0,0.7) 0%, rgba(255,157,35,0.15) 60%, transparent 100%)",
+                borderLeft: "2px solid rgba(255,157,35,0.5)",
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 60px, rgba(255,157,35,0.3) 60px, rgba(255,157,35,0.3) 61px)`,
+                animation: "wallScrollFar 4s linear infinite, wallFadeRight 12s ease-in-out infinite 2s",
+                opacity: 0.3
+              }}
+            />
+          </div>
+
+          {/* CORNER WALL - LEFT TURN (Perpendicular Wall from Right) */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute"
+              style={{
+                width: "20%",
+                height: "60%",
+                top: "20%",
+                right: "-20%",
+                background: "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(255,157,35,0.4) 50%, rgba(0,0,0,0.9) 100%)",
+                border: "3px solid rgba(255,157,35,0.8)",
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(255,157,35,0.6) 30px, rgba(255,157,35,0.6) 32px)`,
+                animation: "cornerSlideLeftTurn 12s ease-in-out infinite",
+                transformOrigin: "left center",
+                boxShadow: "0 0 30px rgba(255,157,35,0.6)"
+              }}
+            />
+          </div>
+
+          {/* CORNER WALL - RIGHT TURN (Perpendicular Wall from Left) */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute"
+              style={{
+                width: "20%",
+                height: "60%",
+                top: "20%",
+                left: "-20%",
+                background: "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(255,157,35,0.4) 50%, rgba(0,0,0,0.9) 100%)",
+                border: "3px solid rgba(255,157,35,0.8)",
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(255,157,35,0.6) 30px, rgba(255,157,35,0.6) 32px)`,
+                animation: "cornerSlideRightTurn 12s ease-in-out infinite 6s",
+                transformOrigin: "right center",
+                boxShadow: "0 0 30px rgba(255,157,35,0.6)"
+              }}
+            />
+          </div>
+
+          {/* CEILING */}
+          <div className="absolute inset-0 opacity-[0.2] pointer-events-none overflow-hidden">
             <div
               className="absolute top-0 left-0 right-0"
               style={{
-                height: "25%",
-                background: "linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(255, 157, 35, 0.2) 70%, transparent 100%)",
-                borderBottom: "3px solid rgba(255, 157, 35, 0.6)",
-                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 60px, rgba(255, 157, 35, 0.4) 60px, rgba(255, 157, 35, 0.4) 63px)`,
-                animation: "ceilingScroll 3s linear infinite"
-              }}
-            />
-          </div>
-
-          {/* CORNER MARKERS - Junction Indicators */}
-          <div className="absolute inset-0 opacity-[0.3] pointer-events-none overflow-hidden">
-            {/* Left Corner Marker */}
-            <div
-              className="absolute"
-              style={{
-                width: "150px",
-                height: "100%",
-                left: "-150px",
-                top: "0",
-                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.8) 0%, transparent 100%)",
-                borderRight: "4px solid rgba(255, 157, 35, 0.9)",
-                animation: "cornerPassLeft 16s linear infinite",
-                filter: "blur(2px)"
-              }}
-            />
-            {/* Right Corner Marker */}
-            <div
-              className="absolute"
-              style={{
-                width: "150px",
-                height: "100%",
-                right: "-150px",
-                top: "0",
-                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.8) 0%, transparent 100%)",
-                borderLeft: "4px solid rgba(255, 157, 35, 0.9)",
-                animation: "cornerPassRight 16s linear infinite 8s",
-                filter: "blur(2px)"
-              }}
-            />
-          </div>
-
-          {/* JUNCTION LINES - Turn Indicators */}
-          <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
-            {/* Horizontal Junction Line */}
-            <div
-              className="absolute"
-              style={{
-                width: "100%",
-                height: "4px",
-                top: "50%",
-                left: "0",
-                background: "rgba(255, 157, 35, 0.7)",
-                boxShadow: "0 0 20px rgba(255, 157, 35, 0.8)",
-                animation: "junctionPulse 4s ease-in-out infinite"
+                height: "20%",
+                background: "linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(255,157,35,0.15) 80%, transparent 100%)",
+                borderBottom: "2px solid rgba(255,157,35,0.5)",
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 50px, rgba(255,157,35,0.3) 50px, rgba(255,157,35,0.3) 52px)`,
+                animation: "ceilingScroll 2.5s linear infinite"
               }}
             />
           </div>
@@ -784,8 +819,8 @@ export default function BlackberryOS5Dashboard() {
               100% { transform: translate(0, 0); }
             }
 
-            /* MAZE NAVIGATION - Forward Motion */
-            @keyframes mazeForward {
+            /* DOOM FLOOR - Forward Motion */
+            @keyframes doomFloorScroll {
               0% {
                 background-position: 0% 0%;
               }
@@ -794,109 +829,153 @@ export default function BlackberryOS5Dashboard() {
               }
             }
 
-            /* MAZE TURNING - Left and Right */
-            @keyframes mazeTurn {
-              0% {
-                transform: rotateX(75deg) translateZ(-400px) rotateZ(0deg);
-              }
-              25% {
-                transform: rotateX(75deg) translateZ(-400px) rotateZ(-8deg);
-              }
-              50% {
-                transform: rotateX(75deg) translateZ(-400px) rotateZ(0deg);
-              }
-              75% {
-                transform: rotateX(75deg) translateZ(-400px) rotateZ(8deg);
-              }
-              100% {
-                transform: rotateX(75deg) translateZ(-400px) rotateZ(0deg);
-              }
-            }
-
-            @keyframes vanishingPulse {
+            /* HORIZON PULSE */
+            @keyframes horizonPulse {
               0%, 100% {
                 transform: scale(1);
+                opacity: 0.8;
+              }
+              50% {
+                transform: scale(1.15);
+                opacity: 1;
+              }
+            }
+
+            /* WALL SCROLLING - Different Speeds for Depth */
+            @keyframes wallScrollNear {
+              0% {
+                background-position: 0% 0%;
+              }
+              100% {
+                background-position: 0% 100%;
+              }
+            }
+
+            @keyframes wallScrollMid {
+              0% {
+                background-position: 0% 0%;
+              }
+              100% {
+                background-position: 0% 100%;
+              }
+            }
+
+            @keyframes wallScrollFar {
+              0% {
+                background-position: 0% 0%;
+              }
+              100% {
+                background-position: 0% 100%;
+              }
+            }
+
+            /* LEFT WALL FADING - During Turns */
+            @keyframes wallFadeLeft {
+              0% {
+                opacity: 0.5;
+                width: 28%;
+              }
+              20% {
+                opacity: 0.2;
+                width: 35%;
+              }
+              33% {
+                opacity: 0.5;
+                width: 28%;
+              }
+              66% {
+                opacity: 0.5;
+                width: 28%;
+              }
+              80% {
                 opacity: 0.7;
+                width: 22%;
+              }
+              100% {
+                opacity: 0.5;
+                width: 28%;
+              }
+            }
+
+            /* RIGHT WALL FADING - During Turns */
+            @keyframes wallFadeRight {
+              0% {
+                opacity: 0.5;
+                width: 28%;
+              }
+              33% {
+                opacity: 0.5;
+                width: 28%;
               }
               50% {
-                transform: scale(1.1);
-                opacity: 0.9;
+                opacity: 0.7;
+                width: 22%;
               }
-            }
-
-            /* WALL SCROLLING - Forward Motion */
-            @keyframes wallScrollLeft {
-              0% {
-                transform: translateY(0%);
+              66% {
+                opacity: 0.5;
+                width: 28%;
               }
-              100% {
-                transform: translateY(100%);
-              }
-            }
-
-            @keyframes wallScrollRight {
-              0% {
-                transform: translateY(0%);
+              83% {
+                opacity: 0.2;
+                width: 35%;
               }
               100% {
-                transform: translateY(100%);
+                opacity: 0.5;
+                width: 28%;
               }
             }
 
-            /* WALL TURNING - Width Changes During Turns */
-            @keyframes wallTurnLeft {
+            /* CORNER WALL - LEFT TURN (slides in from right) */
+            @keyframes cornerSlideLeftTurn {
               0% {
-                width: 30%;
-                opacity: 0.35;
+                right: -20%;
+                opacity: 0;
+                transform: perspective(400px) rotateY(0deg);
+              }
+              15% {
+                right: -20%;
+                opacity: 0;
               }
               25% {
-                width: 45%;
-                opacity: 0.5;
+                right: 25%;
+                opacity: 0.7;
+                transform: perspective(400px) rotateY(-15deg);
               }
-              50% {
-                width: 30%;
-                opacity: 0.35;
-              }
-              75% {
-                width: 20%;
-                opacity: 0.25;
+              35% {
+                right: 40%;
+                opacity: 0;
+                transform: perspective(400px) rotateY(-25deg);
               }
               100% {
-                width: 30%;
-                opacity: 0.35;
+                right: 40%;
+                opacity: 0;
               }
             }
 
-            @keyframes wallTurnRight {
+            /* CORNER WALL - RIGHT TURN (slides in from left) */
+            @keyframes cornerSlideRightTurn {
               0% {
-                width: 30%;
-                opacity: 0.35;
+                left: -20%;
+                opacity: 0;
+                transform: perspective(400px) rotateY(0deg);
+              }
+              15% {
+                left: -20%;
+                opacity: 0;
               }
               25% {
-                width: 20%;
-                opacity: 0.25;
+                left: 25%;
+                opacity: 0.7;
+                transform: perspective(400px) rotateY(15deg);
               }
-              50% {
-                width: 30%;
-                opacity: 0.35;
-              }
-              75% {
-                width: 45%;
-                opacity: 0.5;
+              35% {
+                left: 40%;
+                opacity: 0;
+                transform: perspective(400px) rotateY(25deg);
               }
               100% {
-                width: 30%;
-                opacity: 0.35;
-              }
-            }
-
-            /* GRID SCROLLING */
-            @keyframes gridScroll {
-              0% {
-                transform: translateY(0%);
-              }
-              100% {
-                transform: translateY(100%);
+                left: 40%;
+                opacity: 0;
               }
             }
 
@@ -907,69 +986,6 @@ export default function BlackberryOS5Dashboard() {
               }
               100% {
                 background-position: 100% 0%;
-              }
-            }
-
-            /* CORNER MARKERS - Passing Junctions */
-            @keyframes cornerPassLeft {
-              0% {
-                left: -150px;
-                opacity: 0;
-              }
-              10% {
-                opacity: 0.5;
-              }
-              20% {
-                left: 0%;
-                opacity: 1;
-              }
-              30% {
-                opacity: 0.5;
-              }
-              40% {
-                left: 100%;
-                opacity: 0;
-              }
-              100% {
-                left: 100%;
-                opacity: 0;
-              }
-            }
-
-            @keyframes cornerPassRight {
-              0% {
-                right: -150px;
-                opacity: 0;
-              }
-              10% {
-                opacity: 0.5;
-              }
-              20% {
-                right: 0%;
-                opacity: 1;
-              }
-              30% {
-                opacity: 0.5;
-              }
-              40% {
-                right: 100%;
-                opacity: 0;
-              }
-              100% {
-                right: 100%;
-                opacity: 0;
-              }
-            }
-
-            /* JUNCTION PULSE */
-            @keyframes junctionPulse {
-              0%, 100% {
-                opacity: 0.25;
-                transform: scaleY(1);
-              }
-              50% {
-                opacity: 0.5;
-                transform: scaleY(1.5);
               }
             }
 

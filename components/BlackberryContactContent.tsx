@@ -83,7 +83,6 @@ export default function BlackberryContactContent() {
   const [files, setFiles] = useState<File[]>([]);
   const [filesError, setFilesError] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false); // Improvement #5
-  const [copiedEmail, setCopiedEmail] = useState(false); // Improvement #3
   const [showShortcuts, setShowShortcuts] = useState(false); // Improvement #13
   const submitAbortRef = useRef<AbortController | null>(null);
   const saveTimerRef = useRef<number | null>(null);
@@ -561,61 +560,6 @@ export default function BlackberryContactContent() {
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <a
-          href="tel:+61XXXXXXXXX"
-          className="group relative border border-white/5 bg-[#131313] p-4 hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] overflow-hidden hover:scale-[1.02]"
-          style={{ transition: 'all 0.5s ease' }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-        >
-          <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="text-xs text-white/65 uppercase tracking-wider">Call</div>
-          <div className="mt-1 text-sm font-medium group-hover:text-[#ff9d23] transition-colors duration-500">
-            +61 ••• •••
-          </div>
-        </a>
-        <button
-          type="button"
-          onClick={() => {
-            navigator.clipboard?.writeText("hello@handtomouse.com");
-            // Improvement #3: Success feedback
-            triggerHaptic(15);
-            setCopiedEmail(true);
-            playClickSound();
-            showToast("info", "Email copied to clipboard");
-            setTimeout(() => setCopiedEmail(false), 2000);
-          }}
-          className="group relative border border-white/5 bg-[#131313] p-4 text-left hover:border-[#ff9d23] transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] overflow-hidden hover:scale-[1.02]"
-          style={{ transition: 'all 0.5s ease' }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 20px #ff9d2330';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-        >
-          <div className="absolute top-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="absolute top-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="absolute bottom-0 left-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="absolute bottom-0 right-0 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500" aria-hidden="true" />
-          <div className="text-xs text-white/65 uppercase tracking-wider">
-            {copiedEmail ? "✓ Copied!" : "Copy Email"}
-          </div>
-          <div className="mt-1 text-sm font-medium group-hover:text-[#ff9d23] transition-colors duration-500 truncate">
-            hello@htm.com
-          </div>
-        </button>
-      </div>
-
       {/* Improvement #6: Form completion indicator */}
       {completionSummary.completed > 0 && (
         <div className="mb-4 flex items-center gap-3">
@@ -670,7 +614,7 @@ export default function BlackberryContactContent() {
         }}
       >
         {/* Mode toggle */}
-        <div className="mb-6 inline-flex overflow-hidden border border-white/10" role="tablist">
+        <div className="mb-8 flex gap-4" role="tablist">
           {(["quick", "brief"] as const).map((m) => (
             <button
               key={m}
@@ -682,12 +626,12 @@ export default function BlackberryContactContent() {
                 playClickSound();
                 announce(`Switched to ${m === "quick" ? "Quick message" : "Project brief"} mode`);
               }}
-              className={`px-8 py-4 font-mono text-base md:text-lg font-medium uppercase tracking-wider transition-all duration-500 ${
+              className={`flex-1 px-10 py-5 md:px-14 md:py-6 font-mono text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wider transition-all duration-500 ${
                 mode === m
-                  ? "bg-[#ff9d23] text-black"
-                  : "bg-[#0b0b0b] text-white hover:text-[#ff9d23]"
+                  ? "bg-[#ff9d23] text-black border-2 border-[#ff9d23] scale-[1.02]"
+                  : "bg-[#0b0b0b] text-white border-2 border-white/20 hover:border-[#ff9d23] hover:text-[#ff9d23] hover:scale-[1.01]"
               }`}
-              style={mode === m ? { boxShadow: '0 0 20px #ff9d2360' } : {}}
+              style={mode === m ? { boxShadow: '0 0 30px #ff9d2380' } : {}}
               role="tab"
               aria-selected={mode === m}
             >
@@ -1076,36 +1020,39 @@ export default function BlackberryContactContent() {
           </label>
 
           {/* Submit */}
-          <div className="flex flex-wrap items-center gap-4 pt-4">
+          <div className="space-y-3 pt-4">
             <button
               data-submit
               type="submit"
               disabled={!formValid}
-              className={`inline-flex items-center gap-2 px-10 py-4 md:px-12 md:py-5 font-mono text-xl md:text-2xl font-bold uppercase tracking-wider transition-all duration-500 ${
+              className={`w-full inline-flex items-center justify-center gap-3 px-14 py-6 md:px-20 md:py-8 lg:px-24 lg:py-10 font-mono text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-wider transition-all duration-500 border-4 ${
                 formValid
-                  ? "border border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.02]"
-                  : "border border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
+                  ? "border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.03] animate-pulse"
+                  : "border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
               }`}
-              style={formValid ? { boxShadow: '0 0 30px #ff9d2360' } : {}}
+              style={formValid ? { boxShadow: '0 0 60px #ff9d23a0, inset 0 0 20px rgba(0,0,0,0.2)', animationDuration: '2s' } : {}}
               onMouseEnter={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 40px #ff9d2380';
+                  e.currentTarget.style.boxShadow = '0 0 80px #ff9d23d0, inset 0 0 20px rgba(0,0,0,0.2)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (formValid) {
-                  e.currentTarget.style.boxShadow = '0 0 30px #ff9d2360';
+                  e.currentTarget.style.boxShadow = '0 0 60px #ff9d23a0, inset 0 0 20px rgba(0,0,0,0.2)';
                 }
               }}
             >
-              {mode === "quick" ? "Send" : "Send Brief"}
-              {submitting && <span className="animate-pulse">…</span>}
+              <span>{mode === "quick" ? "Send" : "Send Brief"}</span>
+              {!submitting && <span className="text-3xl md:text-4xl lg:text-5xl">→</span>}
+              {submitting && <span className="animate-spin text-3xl md:text-4xl lg:text-5xl">↻</span>}
             </button>
 
             {(disabledByTimer || cooldown>0) && (
-              <span className="text-xs text-white/65">
-                {disabledByTimer ? `Ready in ${countdown}s` : `Wait ${cooldown}s`}
-              </span>
+              <div className="text-center">
+                <span className="text-sm md:text-base text-white/65 font-mono">
+                  {disabledByTimer ? `Ready in ${countdown}s` : `Wait ${cooldown}s`}
+                </span>
+              </div>
             )}
           </div>
         </form>
