@@ -4,14 +4,10 @@ import { useEffect } from "react";
 import { useSettings } from "@/lib/hooks";
 
 /**
- * SettingsProvider - Applies user settings to the DOM/CSS
+ * SettingsProvider - Applies accent color globally
  *
- * Makes settings actually work by:
- * 1. Accent Color - Updates CSS custom property --accent
- * 2. Reduced Motion - Adds data attribute for CSS to disable animations
- * 3. Brightness - Updates CSS custom property for filter
- * 4. Font Size - Updates CSS custom property for base font size
- * 5. Settings persist via useSettings hook (localStorage)
+ * Single responsibility: Change site-wide accent color based on user selection
+ * All components using var(--accent) will update automatically
  */
 export default function SettingsProvider({
   children,
@@ -23,111 +19,27 @@ export default function SettingsProvider({
   useEffect(() => {
     if (!isLoaded) return; // Wait for settings to load from localStorage
 
-    applySettings(settings);
-  }, [settings, isLoaded]);
+    applyAccentColor(settings.accentColor);
+  }, [settings.accentColor, isLoaded]);
 
   return <>{children}</>;
 }
 
 /**
- * Apply settings to DOM and CSS custom properties
+ * Apply accent color to CSS custom properties
+ * Updates --accent and --accent-hover globally
  */
-function applySettings(settings: ReturnType<typeof useSettings>[0]) {
+function applyAccentColor(color: string) {
   if (typeof window === "undefined") return;
 
   const root = document.documentElement;
-  const body = document.body;
 
-  // ============================================
-  // Win 1: Accent Color
-  // ============================================
-  // Updates --accent CSS variable globally
-  // All components using var(--accent) will update automatically
-  root.style.setProperty("--accent", settings.accentColor);
+  // Update primary accent color
+  root.style.setProperty("--accent", color);
 
-  // Also update hover variant
-  const hoverColor = lightenColor(settings.accentColor, 15);
+  // Update hover variant (15% lighter)
+  const hoverColor = lightenColor(color, 15);
   root.style.setProperty("--accent-hover", hoverColor);
-
-  // ============================================
-  // Win 2: Reduced Motion
-  // ============================================
-  // Adds data attribute for CSS to target
-  // CSS will disable animations via [data-reduced-motion="true"]
-  body.dataset.reducedMotion = settings.reducedMotion.toString();
-
-  // ============================================
-  // Win 4: Brightness
-  // ============================================
-  // Sets brightness filter on content
-  // Applied to .scrollable-content in CSS
-  root.style.setProperty("--brightness", `${settings.brightness / 100}`);
-
-  // ============================================
-  // Win 5: Font Size
-  // ============================================
-  // Updates base font size for entire site
-  // Uses rem units for proportional scaling
-  const fontSizeMap = {
-    small: "14px",
-    medium: "16px",
-    large: "18px",
-  };
-  root.style.setProperty("--font-size-base", fontSizeMap[settings.fontSize]);
-  body.dataset.fontSize = settings.fontSize;
-
-  // ============================================
-  // Bonus: High Contrast (if enabled)
-  // ============================================
-  // Increases text contrast for accessibility
-  body.dataset.highContrast = settings.highContrast.toString();
-  if (settings.highContrast) {
-    root.style.setProperty("--ink", "#FFFFFF"); // Pure white text
-    root.style.setProperty("--muted", "#B0B0B0"); // Brighter muted
-  } else {
-    root.style.setProperty("--ink", "#EDECEC"); // Default
-    root.style.setProperty("--muted", "#9A9A9A"); // Default
-  }
-
-  // ============================================
-  // Bonus: Theme support (dark/light/auto)
-  // ============================================
-  applyTheme(settings.theme);
-}
-
-/**
- * Apply theme (dark/light/auto)
- */
-function applyTheme(theme: "dark" | "light" | "auto") {
-  if (typeof window === "undefined") return;
-
-  let effectiveTheme = theme;
-
-  // Auto mode: detect system preference
-  if (theme === "auto") {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    effectiveTheme = prefersDark ? "dark" : "light";
-  }
-
-  const root = document.documentElement;
-
-  if (effectiveTheme === "light") {
-    // Light theme
-    root.style.setProperty("--bg", "#FAFAFA");
-    root.style.setProperty("--panel", "#FFFFFF");
-    root.style.setProperty("--ink", "#0b0b0b");
-    root.style.setProperty("--muted", "#6b6b6b");
-    root.style.setProperty("--grid", "#E5E5E5");
-    document.body.dataset.theme = "light";
-  } else {
-    // Dark theme (default)
-    root.style.setProperty("--bg", "#0b0b0b");
-    root.style.setProperty("--panel", "#131313");
-    root.style.setProperty("--ink", "#EDECEC");
-    root.style.setProperty("--muted", "#9A9A9A");
-    root.style.setProperty("--grid", "#2A2A2A");
-    document.body.dataset.theme = "dark";
-  }
 }
 
 /**

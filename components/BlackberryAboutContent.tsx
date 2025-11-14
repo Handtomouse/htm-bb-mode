@@ -533,7 +533,7 @@ export default function BlackberryAboutContent() {
           style={{ scrollSnapAlign: 'center' }}
         >
           <div
-            className="sticky top-0 h-[50vh] flex flex-col items-center justify-center text-center gap-12 md:gap-16"
+            className="sticky top-0 h-[50vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
             style={{
               marginTop: '-72px',
               opacity: heroOpacity,
@@ -544,18 +544,70 @@ export default function BlackberryAboutContent() {
               visibility: heroOpacity < 0.05 ? 'hidden' : 'visible'
             }}
           >
-            <div className="relative space-y-6">
+            {/* Read Time Indicator - Top Right Corner */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 0.35, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+              className="fixed top-24 right-6 md:right-12 z-30"
+            >
+              <div className="px-3 py-1.5 rounded-sm border border-white/10 backdrop-blur-sm bg-black/20"
+                style={{
+                  fontSize: '10px',
+                  letterSpacing: '0.1em',
+                  fontFamily: 'var(--font-mono)'
+                }}
+              >
+                <span className="text-white/40 uppercase">~3 min read</span>
+              </div>
+            </motion.div>
+
+            <div className="relative">
+              {/* Scanline Effect - Horizontal sweep */}
+              <motion.div
+                animate={{
+                  x: ['-100%', '200%']
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  repeatDelay: 4,
+                  ease: "easeInOut"
+                }}
+                className="absolute inset-0 pointer-events-none overflow-hidden"
+                style={{
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.15) 50%, transparent 100%)',
+                  width: '30%',
+                  filter: 'blur(20px)'
+                }}
+              />
+
+              {/* Noise Texture Overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
+                style={{
+                  backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'2.5\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
+                  backgroundSize: '200px 200px'
+                }}
+              />
+
               {/* Fragmented Luxury Typography */}
               <motion.h1
                 initial="hidden"
                 animate="visible"
                 whileHover="hover"
-                className="relative text-[56px] md:text-[72px] lg:text-[88px] font-black uppercase tracking-[0.4em] md:tracking-[0.5em] leading-none select-none"
+                className="relative text-[72px] md:text-[96px] lg:text-[108px] font-black uppercase tracking-[0.4em] md:tracking-[0.5em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
                   textShadow: '0 0 40px rgba(255,157,35,0.2)'
                 }}
               >
+                {/* Decorative Bracket Left */}
+                <span className="absolute -left-8 md:-left-12 top-1/2 -translate-y-1/2 text-[#ff9d23]/30 text-[48px] md:text-[64px]">[</span>
+
+                {/* Decorative Bracket Right */}
+                <span className="absolute -right-8 md:-right-12 top-1/2 -translate-y-1/2 text-[#ff9d23]/30 text-[48px] md:text-[64px]">]</span>
+
                 {/* Outline layer behind */}
                 <span className="absolute inset-0 translate-x-1 translate-y-1 opacity-20" style={{
                   WebkitTextStroke: '2px rgba(255,157,35,0.6)',
@@ -564,7 +616,7 @@ export default function BlackberryAboutContent() {
                   ABOUT
                 </span>
 
-                {/* Main letters with stagger and gradient */}
+                {/* Main letters with stagger, gradient spectrum, and chromatic aberration */}
                 <motion.span
                   variants={{
                     hidden: {},
@@ -589,29 +641,47 @@ export default function BlackberryAboutContent() {
                         hidden: {
                           opacity: 0,
                           y: 60,
-                          rotateX: -90
+                          rotateX: -90,
+                          scale: 0.5
                         },
                         visible: {
                           opacity: 1,
                           y: 0,
                           rotateX: 0,
+                          scale: 1,
                           transition: {
                             duration: 0.8,
-                            ease: [0.16, 1, 0.3, 1]
+                            ease: [0.34, 1.56, 0.64, 1],
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 10
                           }
                         },
                         hover: {
                           y: i % 2 === 0 ? -3 : 3,
-                          transition: { duration: 0.2 }
+                          textShadow: [
+                            '2px 0 0 rgba(255,0,0,0.4), -2px 0 0 rgba(0,255,255,0.4)',
+                            '-2px 0 0 rgba(255,0,0,0.4), 2px 0 0 rgba(0,255,255,0.4)'
+                          ],
+                          transition: {
+                            duration: 0.2,
+                            textShadow: {
+                              duration: 0.15,
+                              repeat: Infinity,
+                              repeatType: "reverse"
+                            }
+                          }
                         }
                       }}
                       className="inline-block"
                       style={{
-                        background: 'linear-gradient(135deg, #ff9d23 0%, #FFB84D 50%, #ff9d23 100%)',
+                        background: 'linear-gradient(135deg, #ff9d23 0%, #FFB84D 30%, #ff6b35 60%, #ff9d23 100%)',
+                        backgroundSize: '200% 200%',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         backgroundClip: 'text',
-                        filter: 'brightness(1.1)'
+                        filter: 'brightness(1.1)',
+                        animation: 'gradientShift 8s ease infinite'
                       }}
                     >
                       {letter}
@@ -632,16 +702,6 @@ export default function BlackberryAboutContent() {
                   className="absolute inset-0 pointer-events-none"
                 />
               </motion.h1>
-
-              {/* Read Time Indicator */}
-              <motion.p
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 0.7, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-                className="text-[14px] md:text-[16px] text-white/60 uppercase tracking-[0.15em] font-medium"
-              >
-                ~3 min read
-              </motion.p>
             </div>
 
             {/* Scroll indicator - HTM icon with subtle pulse */}
@@ -673,7 +733,7 @@ export default function BlackberryAboutContent() {
         </motion.div>
 
         {/* Value Proposition - Direct & Immediate */}
-        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20">
+        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mt-32 md:mt-48 lg:mt-64">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -691,21 +751,85 @@ export default function BlackberryAboutContent() {
               />
             </div>
 
-            {/* 3-Line Approach */}
+            {/* 3-Line Approach - Enhanced Typography */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="space-y-6 text-[16px] md:text-[20px] leading-[1.8] max-w-3xl mx-auto"
-              style={{
-                fontFamily: 'var(--font-body)',
-                color: 'rgba(255,255,255,0.8)'
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.2,
+                    delayChildren: 0.6
+                  }
+                }
               }}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="space-y-8 max-w-3xl mx-auto"
             >
-              <p>I work where ideas meet culture — finding the small, precise angle no one else has noticed yet.</p>
-              <p>The work: making something that still feels right in <span className="text-[#ff9d23]">five years</span>, not just five minutes.</p>
-              <p>The method: research, reference, and restraint — knowing what to leave out.</p>
+              {/* First paragraph - Lead style, larger */}
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, x: -30 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                className="text-[20px] md:text-[24px] leading-[2.0] text-left"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  color: 'rgba(255,255,255,0.95)',
+                  fontWeight: 500
+                }}
+              >
+                I work where <span className="text-[#ff9d23] font-semibold">ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
+              </motion.p>
+
+              {/* Divider line */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, scaleX: 0 },
+                  visible: { opacity: 0.2, scaleX: 1, transition: { duration: 0.6 } }
+                }}
+                className="h-px bg-gradient-to-r from-transparent via-[#ff9d23] to-transparent"
+              />
+
+              {/* Second paragraph - Center aligned */}
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                className="text-[18px] md:text-[22px] leading-[2.0] text-center"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  color: 'rgba(255,255,255,0.9)'
+                }}
+              >
+                The work: making something that still feels right in <span className="text-[#ff9d23] font-semibold">five years</span>, not just five minutes.
+              </motion.p>
+
+              {/* Divider line */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, scaleX: 0 },
+                  visible: { opacity: 0.2, scaleX: 1, transition: { duration: 0.6 } }
+                }}
+                className="h-px bg-gradient-to-r from-transparent via-[#ff9d23] to-transparent"
+              />
+
+              {/* Third paragraph - Right aligned */}
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, x: 30 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                className="text-[18px] md:text-[22px] leading-[2.0] text-right"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  color: 'rgba(255,255,255,0.9)'
+                }}
+              >
+                The method: <span className="text-[#ff9d23] font-semibold">research, reference, and restraint</span> — knowing what to leave out.
+              </motion.p>
             </motion.div>
           </motion.div>
         </section>
