@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useSettings } from "@/lib/hooks";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
 import BlackberryAboutContent from "./BlackberryAboutContent";
@@ -63,6 +64,10 @@ export const __ACCENT = ACCENT;
 export default function BlackberryOS5Dashboard() {
   const router = useRouter();
   const pathname = usePathname();
+  const [settings] = useSettings();
+
+  // Get current accent color (changes trigger re-render)
+  const accentColor = settings.accentColor;
 
   // Screen state
   const [mode, setMode] = useState<"home" | "menu">("home");
@@ -122,7 +127,7 @@ export default function BlackberryOS5Dashboard() {
             const duration = 3000;
             const end = Date.now() + duration;
 
-            const colors = ["var(--accent)", "#FFB84D", "#FFC266", "#FFD699"];
+            const colors = ["var(--accent)", "var(--accent-hover)", "#FFC266", "#FFD699"];
 
             (function frame() {
               confetti.default({

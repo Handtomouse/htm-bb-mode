@@ -1983,7 +1983,7 @@ export default function WormholePage() {
             }}>
               <div className="text-center animate-shake">
                 <p className="font-heading text-8xl mb-4" style={{
-                  background: "linear-gradient(135deg, var(--accent) 0%, #F4A259 50%, #FF0080 100%)",
+                  background: "linear-gradient(135deg, var(--accent) 0%, var(--accent) 50%, #FF0080 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   textShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 120px rgba(255, 157, 35, 1)",
@@ -2135,7 +2135,7 @@ export default function WormholePage() {
                   height: "100%",
                   width: isHyperhyperspace ? "100%" : (ludicrousSpeed ? "85%" : (isWarping ? "60%" : (boost ? "30%" : "5%"))),
                   background: isHyperhyperspace ? "linear-gradient(to right, white, var(--accent))" :
-                             (ludicrousSpeed ? "linear-gradient(to right, var(--accent), #F4A259)" :
+                             (ludicrousSpeed ? "linear-gradient(to right, var(--accent), var(--accent))" :
                              (isWarping ? "var(--accent)" :
                              (boost ? "#6495ED" : "var(--muted)"))),
                   boxShadow: (isHyperhyperspace || ludicrousSpeed || isWarping) ? "0 0 10px currentColor" : "none",
@@ -2522,7 +2522,7 @@ export default function WormholePage() {
           transition: all 0.2s;
         }
         .slider-gold::-webkit-slider-thumb:hover {
-          background: #F4A259;
+          background: var(--accent);
           box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
           transform: scale(1.2);
         }
@@ -2537,7 +2537,7 @@ export default function WormholePage() {
           transition: all 0.2s;
         }
         .slider-gold::-moz-range-thumb:hover {
-          background: #F4A259;
+          background: var(--accent);
           box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
           transform: scale(1.2);
         }

@@ -322,7 +322,7 @@ export default function BlackberryContactContent() {
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#F4A259', 'var(--accent)', '#FFB84D', '#FFC266'],
+          colors: ['var(--accent)', 'var(--accent)', 'var(--accent-hover)', '#FFC266'],
           shapes: ['square', 'circle'],
           gravity: 1,
           drift: 0,
@@ -334,7 +334,7 @@ export default function BlackberryContactContent() {
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ['#F4A259', 'var(--accent)'],
+            colors: ['var(--accent)', 'var(--accent)'],
             shapes: ['square'],
           });
         }, 250);
@@ -344,7 +344,7 @@ export default function BlackberryContactContent() {
             angle: 120,
             spread: 55,
             origin: { x: 1 },
-            colors: ['#FFB84D', '#FFC266'],
+            colors: ['var(--accent-hover)', '#FFC266'],
             shapes: ['square'],
           });
         }, 400);
@@ -686,7 +686,7 @@ export default function BlackberryContactContent() {
                     triggerHaptic(10);
                     setSubmitSuccess(false);
                   }}
-                  className="border border-[var(--accent)] bg-[var(--accent)] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[#FFB84D] transition-colors duration-300"
+                  className="border border-[var(--accent)] bg-[var(--accent)] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[var(--accent-hover)] transition-colors duration-300"
                 >
                   Send another message
                 </button>

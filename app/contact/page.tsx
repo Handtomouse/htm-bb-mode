@@ -491,7 +491,7 @@ function ContactFormInternal({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#F4A259', 'var(--accent)', '#FFB84D', '#FFC266'],
+          colors: ['var(--accent)', 'var(--accent)', 'var(--accent-hover)', '#FFC266'],
         });
         setTimeout(() => {
           confetti({
@@ -499,7 +499,7 @@ function ContactFormInternal({
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ['#F4A259', 'var(--accent)'],
+            colors: ['var(--accent)', 'var(--accent)'],
           });
         }, 250);
         setTimeout(() => {
@@ -508,7 +508,7 @@ function ContactFormInternal({
             angle: 120,
             spread: 55,
             origin: { x: 1 },
-            colors: ['#F4A259', 'var(--accent)'],
+            colors: ['var(--accent)', 'var(--accent)'],
           });
         }, 400);
       }

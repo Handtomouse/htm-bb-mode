@@ -1143,7 +1143,7 @@ export default function BlackberryWormholeContent() {
                   fontSize: "0.75rem",
                   letterSpacing: "0.05em",
                   background: acceptedRisk
-                    ? "linear-gradient(to right, var(--accent), #FFB84D)"
+                    ? "linear-gradient(to right, var(--accent), var(--accent-hover))"
                     : "rgba(255, 255, 255, 0.1)",
                   color: acceptedRisk ? "#0b0b0b" : "rgba(255, 255, 255, 0.3)",
                   cursor: acceptedRisk ? "pointer" : "not-allowed",
@@ -1227,7 +1227,7 @@ export default function BlackberryWormholeContent() {
                 fontSize: "1.125rem",
                 letterSpacing: "0.1em",
                 fontWeight: "700",
-                background: "linear-gradient(135deg, var(--accent) 0%, #FFB84D 100%)",
+                background: "linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%)",
                 color: "#0b0b0b",
                 boxShadow: "0 0 40px rgba(255, 157, 35, 0.5)",
                 borderRadius: "12px",

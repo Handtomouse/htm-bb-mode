@@ -384,7 +384,7 @@ export default function BlackberryAboutContent() {
         style={{ transformOrigin: '0%' }}
       >
         <motion.div
-          className="h-full bg-gradient-to-r from-[var(--accent)] via-[#FFB84D] to-[var(--accent)]"
+          className="h-full bg-gradient-to-r from-[var(--accent)] via-[var(--accent-hover)] to-[var(--accent)]"
           style={{
             width: `${scrollProgress}%`,
             boxShadow: '0 0 10px rgba(255,157,35,0.6)'
@@ -405,7 +405,7 @@ export default function BlackberryAboutContent() {
           whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(255,157,35,0.9)' }}
           whileTap={{ scale: 0.95 }}
           onClick={() => triggerHaptic(15)}
-          className="fixed bottom-8 left-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-[14px] md:text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300 touch-manipulation shadow-lg"
+          className="fixed bottom-8 left-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-[14px] md:text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[var(--accent-hover)] transition-all duration-300 touch-manipulation shadow-lg"
           aria-label="Get in touch"
         >
           Get in Touch →
@@ -489,7 +489,7 @@ export default function BlackberryAboutContent() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => triggerHaptic(15)}
-                className="flex-1 border-2 border-[var(--accent)] bg-[var(--accent)] px-8 py-4 text-center text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300"
+                className="flex-1 border-2 border-[var(--accent)] bg-[var(--accent)] px-8 py-4 text-center text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[var(--accent-hover)] transition-all duration-300"
               >
                 Book a Call →
               </motion.a>
@@ -515,7 +515,7 @@ export default function BlackberryAboutContent() {
             triggerHaptic(15);
             scrollToTop();
           }}
-          className="fixed bottom-8 right-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] p-4 hover:bg-[#FFB84D] active:bg-[#ff8800] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300 touch-manipulation"
+          className="fixed bottom-8 right-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] p-4 hover:bg-[var(--accent-hover)] active:bg-[#ff8800] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300 touch-manipulation"
           aria-label="Scroll to top"
         >
           <span className="text-black text-[24px]">↑</span>
@@ -566,126 +566,87 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             <div className="relative">
-              {/* Refined sparkle particles - fewer, subtler */}
-              {Array.from({ length: 6 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{
-                    y: [0, -20, 0],
-                    x: [0, Math.random() * 15 - 7.5, 0],
-                    opacity: [0.2, 0.4, 0.2]
-                  }}
-                  transition={{
-                    duration: 4 + Math.random() * 3,
-                    repeat: Infinity,
-                    delay: i * 0.3,
-                    ease: "easeInOut"
-                  }}
-                  className="absolute pointer-events-none"
-                  style={{
-                    width: '3px',
-                    height: '3px',
-                    background: 'var(--accent)',
-                    borderRadius: '50%',
-                    left: `${15 + i * 12}%`,
-                    top: `${35 + Math.random() * 30}%`,
-                    boxShadow: '0 0 3px rgba(255,157,35,0.6)'
-                  }}
-                />
-              ))}
-
-              {/* Refined dual-gradient glow pool */}
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  bottom: '-25%',
-                  left: '15%',
-                  right: '15%',
-                  height: '50%',
-                  background: 'radial-gradient(ellipse 70% 40% at 50% 50%, rgba(255,157,35,0.12) 0%, rgba(255,200,100,0.06) 30%, transparent 60%)',
-                  filter: 'blur(50px)'
-                }}
-              />
-
-              {/* Top accent line */}
+              {/* Top accent line - ultra-minimal */}
               <motion.div
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ duration: 1.5, delay: 2 }}
+                transition={{ duration: 1.8, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
                 className="absolute pointer-events-none"
                 style={{
-                  top: '-40px',
+                  top: '-50px',
                   left: '10%',
                   right: '10%',
-                  height: '1px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.5) 50%, transparent 100%)'
+                  height: '0.3px',
+                  background: 'rgba(255,255,255,0.2)'
                 }}
               />
 
-              {/* Bottom accent line */}
+              {/* Bottom accent line - ultra-minimal */}
               <motion.div
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ duration: 1.5, delay: 2.2 }}
+                transition={{ duration: 1.8, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
                 className="absolute pointer-events-none"
                 style={{
-                  bottom: '-40px',
+                  bottom: '-50px',
                   left: '10%',
                   right: '10%',
-                  height: '1px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.5) 50%, transparent 100%)'
+                  height: '0.3px',
+                  background: 'rgba(255,255,255,0.2)'
                 }}
               />
 
-              {/* Playful Luxury Typography */}
+              {/* Apple-style cinematic title */}
               <motion.h1
                 initial={{
                   opacity: 0,
-                  scale: 0.5,
-                  rotateX: -90,
-                  z: -500
+                  scale: 1.2,
+                  y: 40
                 }}
                 animate={{
                   opacity: 1,
-                  scale: 1,
-                  rotateX: 0,
-                  z: 0
+                  scale: 1 - (scrollProgress * 0.04),
+                  y: -(scrollProgress * 20)
                 }}
                 transition={{
-                  duration: 1.8,
+                  duration: 1.4,
                   ease: [0.16, 1, 0.3, 1],
-                  opacity: { duration: 1.2 },
-                  scale: { duration: 1.8, ease: [0.34, 1.56, 0.64, 1] },
-                  rotateX: { duration: 1.8 }
+                  delay: 0.2
                 }}
-                className="relative font-black uppercase tracking-[0.3em] leading-none select-none"
+                className="relative font-bold uppercase tracking-[0.02em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: 'var(--accent)',
-                  perspective: '1000px',
-                  transformStyle: 'preserve-3d',
-                  fontSize: 'clamp(140px, 18vw, 280px)',
-                  textShadow: '0 0 30px rgba(255,157,35,0.6), 0 4px 20px rgba(255,157,35,0.4)'
+                  fontSize: 'clamp(120px, 20vw, 340px)',
+                  color: 'rgba(255,255,255,0.98)',
+                  textShadow: '0 20px 60px rgba(255,157,35,0.15)'
                 }}
               >
-                {['A', 'B', 'O', 'U', 'T'].map((letter, i) => (
-                  <motion.span
-                    key={i}
-                    className="inline-block"
-                    animate={{
-                      y: [0, -8, 0]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: i * 0.1,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
+                ABOUT
               </motion.h1>
+
+              {/* Accent subtitle */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 0.6, y: 0 }}
+                transition={{
+                  duration: 1.0,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: 0.8
+                }}
+                className="absolute"
+                style={{
+                  bottom: '-32px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  fontSize: '14px',
+                  letterSpacing: '0.4em',
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--accent)',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Creative Direction
+              </motion.div>
             </div>
 
             {/* Scroll indicator - HTM icon with subtle pulse */}

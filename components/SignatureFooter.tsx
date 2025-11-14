@@ -56,7 +56,7 @@ export default function SignatureFooter({
           {/* Email (Clickable + Copy) */}
           <button
             onClick={() => copyToClipboard(email)}
-            className="text-[var(--accent)] hover:text-[#FFB84D] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent)] px-2 py-1 relative"
+            className="text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent)] px-2 py-1 relative"
             aria-label="Copy email to clipboard"
           >
             {email}
