@@ -626,12 +626,19 @@ export default function BlackberryContactContent() {
                 playClickSound();
                 announce(`Switched to ${m === "quick" ? "Quick message" : "Project brief"} mode`);
               }}
-              className={`flex-1 px-10 py-5 md:px-14 md:py-6 font-mono text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wider transition-all duration-500 ${
-                mode === m
-                  ? "bg-[var(--accent)] text-black border-2 border-[var(--accent)] scale-[1.02]"
-                  : "bg-[#0b0b0b] text-white border-2 border-white/20 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:scale-[1.01]"
-              }`}
-              style={mode === m ? { boxShadow: '0 0 30px var(--accent)80' } : {}}
+              className="flex-1 transition-all hover:scale-110 active:scale-95"
+              style={{
+                fontFamily: "monospace",
+                fontSize: "0.75rem",
+                letterSpacing: "0.05em",
+                background: mode === m ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                color: mode === m ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.6)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                borderRadius: "6px",
+                padding: "0.5rem 1rem",
+                boxShadow: "none",
+                filter: "none"
+              }}
               role="tab"
               aria-selected={mode === m}
             >
@@ -1025,12 +1032,21 @@ export default function BlackberryContactContent() {
               data-submit
               type="submit"
               disabled={!formValid}
-              className={`w-full px-10 py-5 md:px-14 md:py-6 font-mono text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wider transition-all duration-500 border-2 ${
-                formValid
-                  ? "bg-[var(--accent)] text-black border-[var(--accent)] hover:scale-[1.02]"
-                  : "bg-[#131313] text-white/40 border-white/20 cursor-not-allowed"
-              }`}
-              style={formValid ? { boxShadow: '0 0 30px var(--accent)80' } : {}}
+              className="w-full transition-all hover:scale-110 active:scale-95"
+              style={{
+                fontFamily: "monospace",
+                fontSize: "0.75rem",
+                letterSpacing: "0.05em",
+                textTransform: "capitalize",
+                background: formValid ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                color: formValid ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.4)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                borderRadius: "8px",
+                padding: "0.5rem 0.75rem",
+                boxShadow: "none",
+                filter: "none",
+                cursor: formValid ? "pointer" : "not-allowed"
+              }}
             >
               {submitting ? "Sending…" : mode === "quick" ? "Send" : "Send Brief"}
             </button>

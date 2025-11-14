@@ -1442,15 +1442,19 @@ export default function WormholePage() {
                   localStorage.setItem("wormhole_categories", JSON.stringify(allEnabled));
                   playSound('beep');
                 }}
-                className="flex-1 transition-all"
+                className="flex-1 transition-all hover:scale-110 active:scale-95"
                 style={{
-                  fontFamily: "var(--font-sans)",
+                  fontFamily: "monospace",
                   letterSpacing: "0.05em",
-                  fontSize: "0.875rem",
+                  fontSize: "0.75rem",
+                  textTransform: "capitalize",
                   border: "1px solid rgba(255, 255, 255, 0.2)",
-                  color: "var(--muted)",
-                  borderRadius: "var(--radius-sm)",
-                  padding: "var(--space-3) var(--space-4)"
+                  color: "rgba(255, 255, 255, 0.8)",
+                  borderRadius: "6px",
+                  padding: "0.5rem 1rem",
+                  background: "transparent",
+                  boxShadow: "none",
+                  filter: "none"
                 }}
               >
                 All
@@ -1462,15 +1466,19 @@ export default function WormholePage() {
                   localStorage.setItem("wormhole_categories", JSON.stringify(noneEnabled));
                   playSound('beep');
                 }}
-                className="flex-1 transition-all"
+                className="flex-1 transition-all hover:scale-110 active:scale-95"
                 style={{
-                  fontFamily: "var(--font-sans)",
+                  fontFamily: "monospace",
                   letterSpacing: "0.05em",
-                  fontSize: "0.875rem",
+                  fontSize: "0.75rem",
+                  textTransform: "capitalize",
                   border: "1px solid rgba(255, 255, 255, 0.2)",
-                  color: "var(--muted)",
-                  borderRadius: "var(--radius-sm)",
-                  padding: "var(--space-3) var(--space-4)"
+                  color: "rgba(255, 255, 255, 0.8)",
+                  borderRadius: "6px",
+                  padding: "0.5rem 1rem",
+                  background: "transparent",
+                  boxShadow: "none",
+                  filter: "none"
                 }}
               >
                 None

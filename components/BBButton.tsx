@@ -1,5 +1,3 @@
-import { ACCENT, ACCENT_HOVER } from "@/lib/theme";
-
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
@@ -17,29 +15,57 @@ export default function BBButton({
   children,
   className = "",
   disabled,
+  style,
   ...props
 }: BBButtonProps) {
-  const baseClasses = "font-semibold uppercase transition-all focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50";
-
-  const variantClasses = {
-    primary: `border-2 border-[${ACCENT}] bg-[${ACCENT}] text-black hover:bg-[${ACCENT_HOVER}] hover:border-[${ACCENT_HOVER}] disabled:opacity-50 disabled:cursor-not-allowed`,
-    secondary: "border-2 border-white/20 bg-black/50 text-white hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed",
-    ghost: "border-none bg-transparent text-white/70 hover:text-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed",
-    danger: "border-2 border-red-400 bg-red-400/20 text-red-400 hover:bg-red-400/30 disabled:opacity-50 disabled:cursor-not-allowed",
+  // Size-based padding
+  const sizeStyles = {
+    sm: { padding: "0.375rem 0.75rem", fontSize: "0.7rem" },
+    md: { padding: "0.5rem 1rem", fontSize: "0.75rem" },
+    lg: { padding: "0.625rem 1.25rem", fontSize: "0.8rem" },
   };
 
-  const sizeClasses = {
-    sm: "px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm",
-    md: "px-4 py-2 text-sm md:px-5 md:py-2.5 md:text-base",
-    lg: "px-6 py-3 text-base md:px-8 md:py-4 md:text-lg",
+  // Variant-based colors
+  const getVariantStyles = () => {
+    const isActive = variant === "primary" && !disabled;
+    const isDanger = variant === "danger";
+
+    return {
+      background: disabled
+        ? "transparent"
+        : isActive
+          ? "rgba(255, 255, 255, 0.1)"
+          : isDanger
+            ? "rgba(239, 68, 68, 0.1)"
+            : "transparent",
+      color: disabled
+        ? "rgba(255, 255, 255, 0.4)"
+        : isDanger
+          ? "#ef4444"
+          : "rgba(255, 255, 255, 0.8)",
+      borderColor: isDanger ? "#ef4444" : "rgba(255, 255, 255, 0.2)",
+    };
   };
 
-  const widthClass = fullWidth ? "w-full" : "";
+  const variantStyles = getVariantStyles();
 
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`}
+      className={`transition-all hover:scale-110 active:scale-95 ${fullWidth ? "w-full" : ""} ${className}`}
       disabled={disabled}
+      style={{
+        fontFamily: "monospace",
+        letterSpacing: "0.05em",
+        textTransform: "capitalize",
+        border: "1px solid",
+        borderRadius: "6px",
+        boxShadow: "none",
+        filter: "none",
+        cursor: disabled ? "not-allowed" : "pointer",
+        ...sizeStyles[size],
+        ...variantStyles,
+        ...style,
+      }}
       {...props}
     >
       {children}

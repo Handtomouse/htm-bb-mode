@@ -259,7 +259,20 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     setShowPresetsModal(false);
                   }}
-                  className="mt-4 w-full px-4 py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs uppercase tracking-wider transition-all duration-300"
+                  className="mt-4 w-full transition-all hover:scale-110 active:scale-95"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.05em",
+                    textTransform: "capitalize",
+                    background: "transparent",
+                    color: "rgba(255, 255, 255, 0.7)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "none",
+                    filter: "none"
+                  }}
                 >
                   Close
                 </button>
@@ -399,11 +412,20 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     updateSetting("theme", theme);
                   }}
-                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
-                    settings.theme === theme
-                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
-                      : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
-                  }`}
+                  className="flex-1 transition-all hover:scale-110 active:scale-95"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.05em",
+                    textTransform: "capitalize",
+                    background: settings.theme === theme ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                    color: settings.theme === theme ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.6)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "none",
+                    filter: "none"
+                  }}
                 >
                   {theme}
                 </button>
@@ -486,11 +508,20 @@ export default function BlackberrySettingsContentNew() {
                     triggerHaptic(10);
                     updateSetting("fontSize", size);
                   }}
-                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
-                    settings.fontSize === size
-                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
-                      : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
-                  }`}
+                  className="flex-1 transition-all hover:scale-110 active:scale-95"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.05em",
+                    textTransform: "capitalize",
+                    background: settings.fontSize === size ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                    color: settings.fontSize === size ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.6)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "none",
+                    filter: "none"
+                  }}
                 >
                   {size}
                 </button>

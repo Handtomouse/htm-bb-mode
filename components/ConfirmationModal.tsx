@@ -91,17 +91,39 @@ export default function ConfirmationModal({
               <div className="flex gap-3">
                 <button
                   onClick={onCancel}
-                  className="flex-1 px-4 py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs uppercase tracking-wider transition-all duration-300"
+                  className="flex-1 transition-all hover:scale-110 active:scale-95"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.05em",
+                    textTransform: "capitalize",
+                    background: "transparent",
+                    color: "rgba(255, 255, 255, 0.7)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "none",
+                    filter: "none"
+                  }}
                 >
                   {cancelText}
                 </button>
                 <button
                   onClick={onConfirm}
-                  className={`flex-1 px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 ${
-                    confirmVariant === "danger"
-                      ? "border-[#ef4444] bg-[#ef4444]/10 text-[#ef4444] hover:bg-[#ef4444]/20"
-                      : "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20"
-                  }`}
+                  className="flex-1 transition-all hover:scale-110 active:scale-95"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.05em",
+                    textTransform: "capitalize",
+                    background: confirmVariant === "danger" ? "rgba(239, 68, 68, 0.1)" : "rgba(255, 255, 255, 0.1)",
+                    color: confirmVariant === "danger" ? "#ef4444" : "rgba(255, 255, 255, 0.8)",
+                    border: confirmVariant === "danger" ? "1px solid #ef4444" : "1px solid rgba(255, 255, 255, 0.2)",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "none",
+                    filter: "none"
+                  }}
                 >
                   {confirmText}
                 </button>
