@@ -682,7 +682,7 @@ export default function BlackberryContactContent() {
                 playClickSound();
                 announce(`Switched to ${m === "quick" ? "Quick message" : "Project brief"} mode`);
               }}
-              className={`px-6 py-3 font-mono text-sm font-medium uppercase tracking-wider transition-all duration-500 ${
+              className={`px-8 py-4 font-mono text-base md:text-lg font-medium uppercase tracking-wider transition-all duration-500 ${
                 mode === m
                   ? "bg-[#ff9d23] text-black"
                   : "bg-[#0b0b0b] text-white hover:text-[#ff9d23]"
@@ -698,7 +698,7 @@ export default function BlackberryContactContent() {
 
         <form
           noValidate
-          className={`space-y-5 transition-all duration-300 ${isDragging ? 'ring-2 ring-[#ff9d23] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
+          className={`space-y-6 md:space-y-8 transition-all duration-300 ${isDragging ? 'ring-2 ring-[#ff9d23] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
           onSubmit={onSubmit}
           onKeyDown={onKeyDown}
           onDragOver={onDragOver}
@@ -762,14 +762,19 @@ export default function BlackberryContactContent() {
             />
           </div>
 
+          {/* Contact Details Section Header */}
+          <div className="border-b border-white/10 pb-3 mb-4">
+            <h3 className="font-mono text-base md:text-lg text-[#ff9d23] uppercase tracking-wider">Contact Details</h3>
+          </div>
+
           {/* Name + Email */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="name" className="font-mono text-xs text-white/65 uppercase tracking-wider flex items-center gap-2">
+                <label htmlFor="name" className="font-mono text-sm md:text-base text-white/90 uppercase tracking-wider flex items-center gap-2">
                   Name*
                   {/* Improvement #6: Completion indicator */}
-                  {nameValid && <span className="text-green-400 text-xs">✓</span>}
+                  {nameValid && <span className="text-green-400 text-sm">✓</span>}
                 </label>
                 {/* Improvement #1: Character counter */}
                 <span className={`text-xs font-mono ${
@@ -803,14 +808,14 @@ export default function BlackberryContactContent() {
                     emailRef.current.focus();
                   }
                 }}
-                className={`w-full border px-4 py-3 text-sm text-white outline-none transition-all duration-500 ${
+                className={`w-full border px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 ${
                   errors.name
                     ? "border-red-400 bg-red-400/20 animate-pulse"
                     : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
                 }`}
               />
               {errors.name && (
-                <p className="mt-1 text-xs text-red-400">{errors.name}</p>
+                <p className="mt-1 text-sm md:text-base text-red-400 font-medium">{errors.name}</p>
               )}
               {/* Improvement #10: Warning when approaching limit */}
               {!errors.name && nameLength > 70 && nameLength < 80 && (
@@ -821,10 +826,10 @@ export default function BlackberryContactContent() {
             </div>
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="email" className="font-mono text-xs text-white/65 uppercase tracking-wider flex items-center gap-2">
+                <label htmlFor="email" className="font-mono text-sm md:text-base text-white/90 uppercase tracking-wider flex items-center gap-2">
                   Email*
                   {/* Improvement #6: Completion indicator */}
-                  {emailValid && <span className="text-green-400 text-xs">✓</span>}
+                  {emailValid && <span className="text-green-400 text-sm">✓</span>}
                 </label>
                 {/* Improvement #1: Character counter */}
                 <span className={`text-xs font-mono ${
@@ -858,7 +863,7 @@ export default function BlackberryContactContent() {
                     messageRef.current.focus();
                   }
                 }}
-                className={`w-full border px-4 py-3 text-sm text-white outline-none transition-all duration-500 ${
+                className={`w-full border px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 ${
                   errors.email
                     ? "border-red-400 bg-red-400/20 animate-pulse"
                     : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
@@ -884,7 +889,7 @@ export default function BlackberryContactContent() {
                 </p>
               )}
               {errors.email && (
-                <p className="mt-1 text-xs text-red-400">{errors.email}</p>
+                <p className="mt-1 text-sm md:text-base text-red-400 font-medium">{errors.email}</p>
               )}
             </div>
           </div>
@@ -892,7 +897,7 @@ export default function BlackberryContactContent() {
           {/* Company (brief) */}
           {mode === "brief" && (
             <div>
-              <label htmlFor="company" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Company</label>
+              <label htmlFor="company" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Company</label>
               <input
                 id="company"
                 ref={companyRef}
@@ -901,14 +906,14 @@ export default function BlackberryContactContent() {
                 value={data.company}
                 onChange={(e) => setData({ ...data, company: e.target.value })}
                 onBlur={onBlurTrim("company")}
-                className="w-full border border-white/10 bg-[#0b0b0b] px-4 py-3 text-sm text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                className="w-full border border-white/10 bg-[#0b0b0b] px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               />
             </div>
           )}
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">
+            <label htmlFor="message" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">
               {mode === "quick" ? "Message* (≥ 30 chars)" : "Brief* (≥ 30 chars)"}
             </label>
             <textarea
@@ -921,14 +926,14 @@ export default function BlackberryContactContent() {
               value={data.message}
               onChange={(e) => setData({ ...data, message: e.target.value })}
               onBlur={onBlurTrim("message")}
-              className={`w-full border px-4 py-3 text-sm text-white leading-relaxed outline-none transition-all duration-500 ${
+              className={`w-full border px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white leading-relaxed outline-none transition-all duration-500 ${
                 errors.message
                   ? "border-red-400 bg-red-400/20 animate-pulse"
                   : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               }`}
             />
             {!errors.message && (
-              <p className="mt-1 text-xs text-white/65">Minimum 30 characters.</p>
+              <p className="mt-1 text-sm text-white/80">Minimum 30 characters.</p>
             )}
             <div className="mt-1 flex items-center gap-2 text-xs text-white/65">
               <meter min={0} max={goal} value={progress} className="h-1 w-24"></meter>
@@ -937,21 +942,27 @@ export default function BlackberryContactContent() {
               </span>
             </div>
             {errors.message && (
-              <p className="mt-1 text-xs text-red-400">{errors.message}</p>
+              <p className="mt-1 text-sm md:text-base text-red-400 font-medium">{errors.message}</p>
             )}
           </div>
 
           {/* Brief-only fields */}
           {mode === "brief" && (
-            <div className="space-y-4">
+            <>
+              {/* Project Info Section Header */}
+              <div className="border-b border-white/10 pb-3 mb-4">
+                <h3 className="font-mono text-base md:text-lg text-[#ff9d23] uppercase tracking-wider">Project Info</h3>
+              </div>
+
+              <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="budget" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Budget</label>
+                  <label htmlFor="budget" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Budget</label>
                   <select
                     id="budget"
                     value={data.budget}
                     onChange={(e) => setData({ ...data, budget: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-4 py-3 text-sm text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
                   >
                     <option value="">Select…</option>
                     {BUDGETS.map((b) => (
@@ -960,12 +971,12 @@ export default function BlackberryContactContent() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="timeline" className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Timeline</label>
+                  <label htmlFor="timeline" className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Timeline</label>
                   <select
                     id="timeline"
                     value={data.timeline}
                     onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-4 py-3 text-sm text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
                   >
                     <option value="">Select…</option>
                     {TIMELINES.map((t) => (
@@ -976,7 +987,7 @@ export default function BlackberryContactContent() {
               </div>
 
               <fieldset className="border border-white/10 p-4">
-                <legend className="px-2 font-mono text-xs text-white/65 uppercase tracking-wider">Services</legend>
+                <legend className="px-2 font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Services</legend>
                 <div className="grid grid-cols-2 gap-3">
                   {SERVICES.map((s) => {
                     const checked = data.services?.includes(s) ?? false;
@@ -999,11 +1010,17 @@ export default function BlackberryContactContent() {
                 </div>
               </fieldset>
             </div>
+            </>
           )}
+
+          {/* Attachments Section Header */}
+          <div className="border-b border-white/10 pb-3 mb-4">
+            <h3 className="font-mono text-base md:text-lg text-[#ff9d23] uppercase tracking-wider">Attachments</h3>
+          </div>
 
           {/* Files */}
           <div>
-            <label className="mb-2 block font-mono text-xs text-white/65 uppercase tracking-wider">Files (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB)</label>
+            <label className="mb-2 block font-mono text-sm md:text-base text-white/90 uppercase tracking-wider">Files (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB)</label>
             <div className="border border-dashed border-white/10 bg-[#0b0b0b] p-4">
               <input
                 ref={fileInputRef}
@@ -1064,7 +1081,7 @@ export default function BlackberryContactContent() {
               data-submit
               type="submit"
               disabled={!formValid}
-              className={`inline-flex items-center gap-2 px-8 py-3 font-mono text-sm font-semibold uppercase tracking-wider transition-all duration-500 ${
+              className={`inline-flex items-center gap-2 px-10 py-4 md:px-12 md:py-5 font-mono text-base md:text-lg font-bold uppercase tracking-wider transition-all duration-500 ${
                 formValid
                   ? "border border-[#ff9d23] bg-[#ff9d23] text-black hover:scale-[1.02]"
                   : "border border-white/10 bg-[#131313] text-white/40 cursor-not-allowed"
