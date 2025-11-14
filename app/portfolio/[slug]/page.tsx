@@ -108,15 +108,21 @@ export default function ProjectPage() {
         </div>
       )}
 
-      {/* Gallery */}
+      {/* Gallery - Placeholder until images are added */}
       <div className="mb-8">
         <h2 className="mb-4 font-mono text-xl uppercase text-[var(--muted)]">
           Gallery
         </h2>
         <div className="space-y-4">
           {project.gallery.map((img, i) => (
-            <div key={i} className="aspect-video bg-[var(--grid)]">
-              {/* Image placeholder for {img} */}
+            <div
+              key={i}
+              className="aspect-video bg-gradient-to-br from-[var(--accent)]/20 to-[var(--grid)] flex items-center justify-center border border-[var(--grid)]"
+            >
+              <div className="text-center">
+                <div className="text-4xl mb-2 opacity-50">📷</div>
+                <div className="text-xs text-[var(--muted)]">Image {i + 1}</div>
+              </div>
             </div>
           ))}
         </div>

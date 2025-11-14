@@ -1,4 +1,4 @@
-import { VT323, Pixelify_Sans, Handjet, Roboto } from "next/font/google";
+import { VT323, Pixelify_Sans, Handjet, Roboto_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import "./globals.css";
@@ -24,7 +24,7 @@ const handjet = Handjet({
   display: "swap",
 });
 
-const roboto = Roboto({
+const robotoMono = Roboto_Mono({
   weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   variable: "--font-body",
@@ -32,6 +32,7 @@ const roboto = Roboto({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://htm-bb-mode.vercel.app'),
   title: {
     default: "HandToMouse — BB Mode",
     template: "%s | HandToMouse BB Mode"
@@ -113,7 +114,7 @@ export default function RootLayout({
           as="style"
         />
       </head>
-      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${roboto.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
+      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${robotoMono.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

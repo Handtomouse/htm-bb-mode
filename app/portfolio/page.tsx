@@ -66,8 +66,8 @@ export default function PortfolioPage() {
             href={`/portfolio/${project.slug}`}
             className="group block border border-[var(--grid)] bg-[var(--panel)] p-4 transition-all hover:border-[var(--accent)]"
           >
-            <div className="mb-3 aspect-video bg-[var(--grid)]">
-              {/* Cover image placeholder */}
+            <div className="mb-3 aspect-video bg-gradient-to-br from-[var(--accent)]/20 to-[var(--grid)] flex items-center justify-center border border-[var(--grid)]">
+              <div className="text-5xl opacity-50">📁</div>
             </div>
             <h2 className="mb-1 font-mono text-xl uppercase">{project.title}</h2>
             <div className="mb-2 text-sm text-[var(--muted)]">
