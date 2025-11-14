@@ -582,53 +582,139 @@ export default function BlackberryOS5Dashboard() {
               animation: "staticMove 8s linear infinite"
             }}
           />
-          {/* Rotating square pattern overlay */}
+          {/* VAPORWAVE 3D GRID FLOOR - Perspective Animation */}
           <div
-            className="absolute inset-0 opacity-[0.08] pointer-events-none"
+            className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden"
             style={{
-              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 157, 35, 0.15) 35px, rgba(255, 157, 35, 0.15) 37px),
-                               repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0, 140, 255, 0.1) 35px, rgba(0, 140, 255, 0.1) 37px)`,
-              animation: "rotatePattern 20s linear infinite"
+              perspective: "400px",
+              perspectiveOrigin: "50% 100%"
             }}
-          />
-          {/* CRT Scanline Sweep - Animated Wallpaper */}
+          >
+            {/* Horizontal Grid Lines - Moving toward viewer */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(
+                  0deg,
+                  transparent 0px,
+                  transparent 48px,
+                  rgba(255, 157, 35, 0.5) 48px,
+                  rgba(255, 157, 35, 0.5) 50px
+                )`,
+                transform: "rotateX(75deg) translateZ(-200px)",
+                transformOrigin: "bottom center",
+                animation: "gridFlowVertical 4s linear infinite",
+                willChange: "transform"
+              }}
+            />
+            {/* Vertical Grid Lines - Moving toward viewer */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(
+                  90deg,
+                  transparent 0px,
+                  transparent 48px,
+                  rgba(255, 157, 35, 0.5) 48px,
+                  rgba(255, 157, 35, 0.5) 50px
+                )`,
+                transform: "rotateX(75deg) translateZ(-200px)",
+                transformOrigin: "bottom center",
+                animation: "gridFlowVertical 4s linear infinite",
+                willChange: "transform"
+              }}
+            />
+            {/* Horizon Glow */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-32"
+              style={{
+                background: "linear-gradient(0deg, rgba(255, 157, 35, 0.4) 0%, transparent 100%)",
+                filter: "blur(20px)"
+              }}
+            />
+          </div>
+
+          {/* Floating Geometric Shapes - Vaporwave Style */}
+          <div className="absolute inset-0 opacity-[0.15] pointer-events-none overflow-hidden">
+            {/* Pyramid 1 - Rising */}
+            <div
+              className="absolute"
+              style={{
+                width: "100px",
+                height: "100px",
+                left: "20%",
+                bottom: "-50px",
+                background: "linear-gradient(135deg, rgba(255, 157, 35, 0.6) 0%, rgba(255, 157, 35, 0.2) 100%)",
+                clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+                animation: "floatUp1 8s ease-in-out infinite",
+                filter: "drop-shadow(0 0 20px rgba(255, 157, 35, 0.8))"
+              }}
+            />
+            {/* Pyramid 2 - Rising */}
+            <div
+              className="absolute"
+              style={{
+                width: "80px",
+                height: "80px",
+                right: "30%",
+                bottom: "-40px",
+                background: "linear-gradient(135deg, rgba(255, 200, 100, 0.5) 0%, rgba(255, 157, 35, 0.2) 100%)",
+                clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+                animation: "floatUp2 10s ease-in-out infinite 2s",
+                filter: "drop-shadow(0 0 15px rgba(255, 200, 100, 0.6))"
+              }}
+            />
+            {/* Cube - Rotating */}
+            <div
+              className="absolute"
+              style={{
+                width: "60px",
+                height: "60px",
+                left: "70%",
+                top: "20%",
+                background: "rgba(255, 157, 35, 0.3)",
+                border: "2px solid rgba(255, 157, 35, 0.8)",
+                animation: "rotateCube 6s linear infinite",
+                filter: "drop-shadow(0 0 10px rgba(255, 157, 35, 0.6))"
+              }}
+            />
+            {/* Diamond - Pulsing */}
+            <div
+              className="absolute"
+              style={{
+                width: "70px",
+                height: "70px",
+                left: "10%",
+                top: "30%",
+                background: "rgba(255, 157, 35, 0.4)",
+                clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
+                animation: "pulseDiamond 4s ease-in-out infinite",
+                filter: "drop-shadow(0 0 15px rgba(255, 157, 35, 0.7))"
+              }}
+            />
+          </div>
+
+          {/* Neon Scan Lines - Fast sweep */}
           <div
-            className="absolute inset-0 opacity-[0.05] pointer-events-none"
+            className="absolute inset-0 opacity-[0.12] pointer-events-none"
             style={{
               backgroundImage: `repeating-linear-gradient(
                 0deg,
                 transparent 0px,
-                transparent 3px,
-                rgba(255, 157, 35, 0.08) 3px,
-                rgba(255, 157, 35, 0.08) 4px
+                transparent 2px,
+                rgba(255, 157, 35, 0.3) 2px,
+                rgba(255, 157, 35, 0.3) 3px
               )`,
-              backgroundSize: "100% 4px",
-              animation: "scanlinesSweep 18s linear infinite",
-              filter: "blur(0.3px)",
-              mixBlendMode: "screen"
+              animation: "neonScan 2s linear infinite"
             }}
           />
-          {/* CRT Scanline Glow - Secondary Layer */}
+
+          {/* Radial Pulse - Center outward */}
           <div
-            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            className="absolute inset-0 opacity-[0.08] pointer-events-none"
             style={{
-              backgroundImage: `linear-gradient(
-                180deg,
-                transparent 0%,
-                rgba(255, 157, 35, 0.15) 50%,
-                transparent 100%
-              )`,
-              backgroundSize: "100% 200px",
-              animation: "scanlineGlow 20s ease-in-out infinite",
-              filter: "blur(15px)"
-            }}
-          />
-          {/* Occasional CRT Flicker - Desktop only for performance */}
-          <div
-            className="absolute inset-0 opacity-[0.02] pointer-events-none hidden md:block"
-            style={{
-              backgroundColor: "rgba(255, 157, 35, 0.1)",
-              animation: "crtFlicker 7s ease-in-out infinite"
+              background: "radial-gradient(circle at center, rgba(255, 157, 35, 0.6) 0%, transparent 50%)",
+              animation: "radialPulse 3s ease-out infinite"
             }}
           />
           <style>{`
@@ -639,21 +725,92 @@ export default function BlackberryOS5Dashboard() {
               75% { transform: translate(-5%, 5%); }
               100% { transform: translate(0, 0); }
             }
-            @keyframes rotatePattern {
-              0% { transform: rotate(0deg) scale(1.5); }
-              100% { transform: rotate(360deg) scale(1.5); }
+
+            /* VAPORWAVE ANIMATIONS */
+            @keyframes gridFlowVertical {
+              0% {
+                transform: rotateX(75deg) translateZ(-200px) translateY(0px);
+              }
+              100% {
+                transform: rotateX(75deg) translateZ(-200px) translateY(50px);
+              }
             }
-            @keyframes scanlinesSweep {
-              0% { transform: translateY(-100%); }
-              100% { transform: translateY(100%); }
+
+            @keyframes floatUp1 {
+              0% {
+                transform: translateY(0px) scale(1);
+                opacity: 0.6;
+              }
+              50% {
+                transform: translateY(-400px) scale(1.3);
+                opacity: 0.8;
+              }
+              100% {
+                transform: translateY(-800px) scale(1.6);
+                opacity: 0;
+              }
             }
-            @keyframes scanlineGlow {
-              0%, 100% { transform: translateY(-50%); opacity: 0.03; }
-              50% { transform: translateY(150%); opacity: 0.06; }
+
+            @keyframes floatUp2 {
+              0% {
+                transform: translateY(0px) scale(1) rotate(0deg);
+                opacity: 0.5;
+              }
+              50% {
+                transform: translateY(-350px) scale(1.2) rotate(180deg);
+                opacity: 0.7;
+              }
+              100% {
+                transform: translateY(-700px) scale(1.5) rotate(360deg);
+                opacity: 0;
+              }
             }
-            @keyframes crtFlicker {
-              0%, 90%, 92%, 94%, 96%, 98%, 100% { opacity: 0.02; }
-              91%, 93%, 95%, 97%, 99% { opacity: 0.08; }
+
+            @keyframes rotateCube {
+              0% {
+                transform: rotate(0deg) scale(1);
+              }
+              50% {
+                transform: rotate(180deg) scale(1.2);
+              }
+              100% {
+                transform: rotate(360deg) scale(1);
+              }
+            }
+
+            @keyframes pulseDiamond {
+              0%, 100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.4;
+              }
+              50% {
+                transform: scale(1.3) rotate(45deg);
+                opacity: 0.8;
+              }
+            }
+
+            @keyframes neonScan {
+              0% {
+                transform: translateY(-100%);
+              }
+              100% {
+                transform: translateY(100%);
+              }
+            }
+
+            @keyframes radialPulse {
+              0% {
+                transform: scale(0.8);
+                opacity: 0;
+              }
+              50% {
+                transform: scale(1.5);
+                opacity: 0.08;
+              }
+              100% {
+                transform: scale(2.5);
+                opacity: 0;
+              }
             }
           `}</style>
 

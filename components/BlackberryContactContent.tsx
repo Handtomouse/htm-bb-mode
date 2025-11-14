@@ -808,7 +808,7 @@ export default function BlackberryContactContent() {
                     emailRef.current.focus();
                   }
                 }}
-                className={`w-full border px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 ${
+                className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
                   errors.name
                     ? "border-red-400 bg-red-400/20 animate-pulse"
                     : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
@@ -863,7 +863,7 @@ export default function BlackberryContactContent() {
                     messageRef.current.focus();
                   }
                 }}
-                className={`w-full border px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 ${
+                className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
                   errors.email
                     ? "border-red-400 bg-red-400/20 animate-pulse"
                     : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
@@ -906,7 +906,7 @@ export default function BlackberryContactContent() {
                 value={data.company}
                 onChange={(e) => setData({ ...data, company: e.target.value })}
                 onBlur={onBlurTrim("company")}
-                className="w-full border border-white/10 bg-[#0b0b0b] px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
               />
             </div>
           )}
@@ -962,7 +962,7 @@ export default function BlackberryContactContent() {
                     id="budget"
                     value={data.budget}
                     onChange={(e) => setData({ ...data, budget: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
                   >
                     <option value="">Select…</option>
                     {BUDGETS.map((b) => (
@@ -976,7 +976,7 @@ export default function BlackberryContactContent() {
                     id="timeline"
                     value={data.timeline}
                     onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-5 py-4 md:px-6 md:py-5 text-base md:text-lg text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
+                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[#ff9d23] focus:border-transparent"
                   >
                     <option value="">Select…</option>
                     {TIMELINES.map((t) => (

@@ -565,106 +565,41 @@ export default function BlackberryAboutContent() {
               </div>
             </motion.div>
 
-            <div className="relative px-8">
-              {/* Scanline Effect - CRT sweep (authentic) */}
-              <motion.div
-                animate={{
-                  x: ['-100%', '200%']
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  repeatDelay: 4,
-                  ease: "easeInOut"
-                }}
-                className="absolute inset-0 pointer-events-none overflow-hidden"
-                style={{
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,157,35,0.15) 50%, transparent 100%)',
-                  width: '30%',
-                  filter: 'blur(20px)'
-                }}
-              />
-
-              {/* Noise Texture Overlay - CRT static */}
+            <div className="relative">
+              {/* Grid background */}
               <div
-                className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
+                className="absolute inset-0 pointer-events-none"
                 style={{
-                  backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'2.5\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
-                  backgroundSize: '200px 200px'
+                  backgroundImage: 'linear-gradient(0deg, rgba(255,157,35,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,157,35,0.1) 1px, transparent 1px)',
+                  backgroundSize: '20px 20px'
                 }}
               />
 
-              {/* Terminal Corner Brackets - Top */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-[90%] flex justify-between pointer-events-none">
-                <span className="text-[#ff9d23]/40 text-[120px] leading-none" style={{ fontFamily: 'var(--font-mono)' }}>┌</span>
-                <span className="text-[#ff9d23]/40 text-[120px] leading-none" style={{ fontFamily: 'var(--font-mono)' }}>┐</span>
-              </div>
+              {/* Horizontal scan line */}
+              <motion.div
+                animate={{ y: ['-100%', '200%'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(180deg, transparent 0%, rgba(255,157,35,0.6) 50%, transparent 100%)',
+                  height: '4px'
+                }}
+              />
 
-              {/* Terminal Corner Brackets - Bottom */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[90%] flex justify-between pointer-events-none">
-                <span className="text-[#ff9d23]/40 text-[120px] leading-none" style={{ fontFamily: 'var(--font-mono)' }}>└</span>
-                <span className="text-[#ff9d23]/40 text-[120px] leading-none" style={{ fontFamily: 'var(--font-mono)' }}>┘</span>
-              </div>
-
-              {/* Old-School Luxury Typography - No Clichés */}
+              {/* Wireframe Hologram Typography */}
               <motion.h1
-                initial="hidden"
-                animate="visible"
-                whileHover="hover"
-                className="relative text-[120px] md:text-[140px] lg:text-[160px] font-black uppercase tracking-[0.4em] md:tracking-[0.5em] leading-none select-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.2 }}
+                className="relative text-[140px] md:text-[180px] lg:text-[200px] font-black uppercase tracking-[0.3em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: '#ff9d23',
-                  textShadow: '0 -1px 0 rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.5), 0 0 20px rgba(255,157,35,0.3)'
+                  color: 'transparent',
+                  WebkitTextStroke: '2px #ff9d23',
+                  textShadow: '0 0 20px rgba(255,157,35,0.8)'
                 }}
               >
-                {/* Main letters with simple fade-in + letterpress */}
-                <motion.span
-                  variants={{
-                    hidden: {},
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.1,
-                        delayChildren: 0.2
-                      }
-                    }
-                  }}
-                  className="relative flex justify-center"
-                >
-                  {['A', 'B', 'O', 'U', 'T'].map((letter, i) => (
-                    <motion.span
-                      key={i}
-                      variants={{
-                        hidden: {
-                          opacity: 0,
-                          y: 20
-                        },
-                        visible: {
-                          opacity: 1,
-                          y: 0,
-                          transition: {
-                            duration: 0.6,
-                            ease: [0.16, 1, 0.3, 1]
-                          }
-                        }
-                      }}
-                      whileHover={{
-                        y: -2,
-                        textShadow: '0 -1px 0 rgba(255,255,255,0.15), 0 1px 2px rgba(0,0,0,0.6), 0 0 30px rgba(255,157,35,0.5)',
-                        transition: { duration: 0.2 }
-                      }}
-                      className="inline-block"
-                      style={{
-                        border: '3px inset rgba(255,157,35,0.4)',
-                        padding: '8px 12px',
-                        marginRight: '8px',
-                        background: 'linear-gradient(180deg, rgba(255,157,35,0.05) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)'
-                      }}
-                    >
-                      {letter}
-                    </motion.span>
-                  ))}
-                </motion.span>
+                ABOUT
               </motion.h1>
             </div>
 
