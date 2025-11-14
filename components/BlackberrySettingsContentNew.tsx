@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSettings } from "@/lib/hooks";
 import { DEFAULT_SETTINGS } from "@/lib/settingsValidation";
@@ -9,6 +9,7 @@ import { exportSettings, importSettings } from "@/lib/settingsValidation";
 import BBPageHeader from "./BBPageHeader";
 import ConfirmationModal from "./ConfirmationModal";
 import EnhancedSlider from "./EnhancedSlider";
+import SettingsSkeleton from "./SettingsSkeleton";
 
 const ACCENT = "#FF9D23";
 
@@ -28,7 +29,7 @@ interface ToastMessage {
 }
 
 export default function BlackberrySettingsContentNew() {
-  const [settings, setSettings] = useSettings();
+  const [settings, setSettings, isLoaded] = useSettings();
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showPresetsModal, setShowPresetsModal] = useState(false);
@@ -105,6 +106,11 @@ export default function BlackberrySettingsContentNew() {
     setShowPresetsModal(false);
     showToast(`Applied "${preset.name}" preset`, "success");
   };
+
+  // Show loading skeleton while settings load
+  if (!isLoaded) {
+    return <SettingsSkeleton />;
+  }
 
   return (
     <div className="relative">
@@ -444,11 +450,12 @@ export default function BlackberrySettingsContentNew() {
         </SettingCard>
 
         {/* Actions Section */}
-        <div className="pt-4 space-y-3">
+        <div className="pt-4 space-y-3" role="region" aria-label="Settings actions">
           {/* Presets */}
           <button
             onClick={() => setShowPresetsModal(true)}
-            className="w-full px-4 py-3 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-wider transition-all duration-300"
+            aria-label="Open preset themes menu"
+            className="w-full px-4 py-3 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
           >
             Load Preset Theme
           </button>
@@ -457,13 +464,15 @@ export default function BlackberrySettingsContentNew() {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleExportSettings}
-              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300"
+              aria-label="Export settings to JSON file"
+              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
             >
               Export
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300"
+              aria-label="Import settings from JSON file"
+              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
             >
               Import
             </button>
@@ -472,7 +481,8 @@ export default function BlackberrySettingsContentNew() {
           {/* Reset */}
           <button
             onClick={() => setShowResetModal(true)}
-            className="w-full px-4 py-3 border border-white/20 hover:border-[#ef4444] hover:bg-[#ef4444]/5 text-xs text-white/70 hover:text-[#ef4444] uppercase tracking-wider transition-all duration-300"
+            aria-label="Reset all settings to default values"
+            className="w-full px-4 py-3 border border-white/20 hover:border-[#ef4444] hover:bg-[#ef4444]/5 text-xs text-white/70 hover:text-[#ef4444] uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:ring-offset-2 focus:ring-offset-black"
           >
             Reset All Settings
           </button>
@@ -482,7 +492,7 @@ export default function BlackberrySettingsContentNew() {
   );
 }
 
-// Setting Card Component
+// Setting Card Component with Collapsible Sections
 function SettingCard({
   title,
   delay,
@@ -492,6 +502,8 @@ function SettingCard({
   delay: number;
   children: React.ReactNode;
 }) {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -502,22 +514,63 @@ function SettingCard({
         delay,
         ease: [0.43, 0.13, 0.23, 0.96],
       }}
-      className="border border-white/10 bg-black/20 p-4"
+      className="border border-white/10 bg-black/20 overflow-hidden"
     >
-      {/* Header */}
-      <div className="mb-4">
+      {/* Clickable Header */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors duration-200"
+        aria-expanded={isOpen}
+        aria-label={`${isOpen ? "Collapse" : "Expand"} ${title} section`}
+      >
         <h2 className="text-sm text-white uppercase tracking-wider">
           {title}
         </h2>
-      </div>
+        <motion.svg
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: [0.43, 0.13, 0.23, 0.96] }}
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          className="text-white/70"
+        >
+          <path
+            d="M4 6L8 10L12 6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </motion.svg>
+      </button>
 
-      {/* Content */}
-      <div>{children}</div>
+      {/* Animated Content */}
+      <motion.div
+        initial={false}
+        animate={{
+          height: isOpen ? "auto" : 0,
+          opacity: isOpen ? 1 : 0,
+        }}
+        transition={{
+          height: {
+            duration: 0.4,
+            ease: [0.43, 0.13, 0.23, 0.96],
+          },
+          opacity: {
+            duration: 0.3,
+            ease: "easeInOut",
+          },
+        }}
+        style={{ overflow: "hidden" }}
+      >
+        <div className="px-4 pb-4">{children}</div>
+      </motion.div>
     </motion.div>
   );
 }
 
-// Toggle Setting Component
+// Toggle Setting Component with Accessibility
 function ToggleSetting({
   label,
   value,
@@ -529,19 +582,38 @@ function ToggleSetting({
   onChange: (value: boolean) => void;
   description?: string;
 }) {
+  const toggleId = `toggle-${label.toLowerCase().replace(/\s+/g, "-")}`;
+  const descId = description ? `${toggleId}-desc` : undefined;
+
   return (
     <div className="flex items-center justify-between">
       <div>
-        <div className="text-xs text-white/70 uppercase tracking-wider">
+        <label
+          htmlFor={toggleId}
+          className="text-xs text-white/70 uppercase tracking-wider cursor-pointer"
+        >
           {label}
-        </div>
+        </label>
         {description && (
-          <div className="text-[10px] text-white/40 mt-0.5">{description}</div>
+          <div id={descId} className="text-[10px] text-white/40 mt-0.5">
+            {description}
+          </div>
         )}
       </div>
       <button
+        id={toggleId}
+        role="switch"
+        aria-checked={value}
+        aria-describedby={descId}
+        aria-label={`${label}: ${value ? "enabled" : "disabled"}`}
         onClick={() => onChange(!value)}
-        className={`relative w-12 h-6 border transition-all duration-300 ${
+        onKeyDown={(e) => {
+          if (e.key === " " || e.key === "Enter") {
+            e.preventDefault();
+            onChange(!value);
+          }
+        }}
+        className={`relative w-12 h-6 border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black ${
           value
             ? "border-[#ff9d23] bg-[#ff9d23]/20"
             : "border-white/20 bg-white/5"

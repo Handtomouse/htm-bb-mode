@@ -36,7 +36,7 @@ export function useSettings() {
     saveSettings(settings);
   }, [settings, isLoaded]);
 
-  return [settings, setSettings] as const;
+  return [settings, setSettings, isLoaded] as const;
 }
 
 // Click sound hook with Web Audio API

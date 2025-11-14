@@ -1,4 +1,4 @@
-import { VT323, Pixelify_Sans, Handjet } from "next/font/google";
+import { VT323, Pixelify_Sans, Handjet, Roboto } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import "./globals.css";
@@ -21,6 +21,13 @@ const handjet = Handjet({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-handjet",
+  display: "swap",
+});
+
+const roboto = Roboto({
+  weight: ["300", "400", "500", "700"],
+  subsets: ["latin"],
+  variable: "--font-body",
   display: "swap",
 });
 
@@ -92,6 +99,11 @@ export default function RootLayout({
         {/* Preload critical fonts for About page */}
         <link
           rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+          as="style"
+        />
+        <link
+          rel="preload"
           href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap"
           as="style"
         />
@@ -101,7 +113,7 @@ export default function RootLayout({
           as="style"
         />
       </head>
-      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
+      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${roboto.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

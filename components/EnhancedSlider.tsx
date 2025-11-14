@@ -31,9 +31,21 @@ export default function EnhancedSlider({
   const [isDragging, setIsDragging] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState(0);
   const sliderRef = useRef<HTMLInputElement>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   const displayValue = formatValue ? formatValue(value) : `${value}${unit}`;
   const percentage = ((value - min) / (max - min)) * 100;
+  const sliderId = `slider-${label.toLowerCase().replace(/\s+/g, "-")}`;
+
+  // Detect prefers-reduced-motion
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
 
   // Update tooltip position when dragging
   const handleMouseMove = (e: MouseEvent) => {
@@ -58,22 +70,34 @@ export default function EnhancedSlider({
     <div className={`transition-opacity duration-300 ${disabled ? "opacity-50" : "opacity-100"}`}>
       {/* Label and Value */}
       <div className="flex items-center justify-between mb-2">
-        <label className="text-xs text-white/70 uppercase tracking-wider">{label}</label>
-        <span className="text-[#ff9d23] text-xs tabular-nums">{displayValue}</span>
+        <label htmlFor={sliderId} className="text-xs text-white/70 uppercase tracking-wider">
+          {label}
+        </label>
+        <span
+          id={`${sliderId}-value`}
+          className="text-[#ff9d23] text-xs tabular-nums"
+          aria-live="polite"
+        >
+          {displayValue}
+        </span>
       </div>
 
       {/* Slider Container */}
       <div className="relative">
         {/* Track with gradient fill */}
-        <div className="relative h-1 bg-white/10">
+        <div className="relative h-1 bg-white/10" role="presentation">
           <div
-            className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ff9d23]/50 to-[#ff9d23] transition-all duration-150"
+            className={`absolute top-0 left-0 h-full bg-gradient-to-r from-[#ff9d23]/50 to-[#ff9d23] ${
+              prefersReducedMotion ? "" : "transition-all duration-150"
+            }`}
             style={{ width: `${percentage}%` }}
+            role="presentation"
           />
         </div>
 
         {/* Slider Input */}
         <input
+          id={sliderId}
           ref={sliderRef}
           type="range"
           min={min}
@@ -83,7 +107,13 @@ export default function EnhancedSlider({
           onChange={(e) => onChange(Number(e.target.value))}
           onMouseDown={() => setIsDragging(true)}
           disabled={disabled}
-          className="absolute top-0 left-0 w-full h-1 appearance-none cursor-pointer bg-transparent
+          aria-label={`${label}: ${displayValue}`}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
+          aria-valuetext={displayValue}
+          aria-describedby={`${sliderId}-value`}
+          className={`absolute top-0 left-0 w-full h-1 appearance-none cursor-pointer bg-transparent
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-3
             [&::-webkit-slider-thumb]:h-3
@@ -92,12 +122,16 @@ export default function EnhancedSlider({
             [&::-webkit-slider-thumb]:border
             [&::-webkit-slider-thumb]:border-white/20
             [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)]
-            [&::-webkit-slider-thumb]:transition-all
-            [&::-webkit-slider-thumb]:duration-150
+            ${prefersReducedMotion ? "" : "[&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150"}
             hover:[&::-webkit-slider-thumb]:scale-110
             active:[&::-webkit-slider-thumb]:scale-125
             disabled:opacity-50
-            disabled:cursor-not-allowed"
+            disabled:cursor-not-allowed
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-[#ff9d23]
+            focus-visible:ring-offset-2
+            focus-visible:ring-offset-black`}
         />
 
         {/* Tooltip on drag */}
