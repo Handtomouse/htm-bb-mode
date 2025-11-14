@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSettings } from "@/lib/hooks";
+import { useSettings, useUndoRedo } from "@/lib/hooks";
 import { DEFAULT_SETTINGS } from "@/lib/settingsValidation";
 import { PRESETS, type Preset } from "@/lib/settingsPresets";
 import { exportSettings, importSettings } from "@/lib/settingsValidation";
@@ -10,6 +10,7 @@ import BBPageHeader from "./BBPageHeader";
 import ConfirmationModal from "./ConfirmationModal";
 import EnhancedSlider from "./EnhancedSlider";
 import SettingsSkeleton from "./SettingsSkeleton";
+import type { Settings } from "@/lib/hooks";
 
 const ACCENT = "#FF9D23";
 
@@ -35,6 +36,45 @@ export default function BlackberrySettingsContentNew() {
   const [showPresetsModal, setShowPresetsModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Undo/Redo system
+  const undoRedo = useUndoRedo<Settings>(settings, 50);
+
+  // Sync undo/redo state with settings when settings load
+  useEffect(() => {
+    if (isLoaded) {
+      undoRedo.setState(settings);
+    }
+  }, [isLoaded]);
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      // Cmd+Z / Ctrl+Z for undo
+      if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        if (undoRedo.canUndo) {
+          undoRedo.undo();
+          const prevState = undoRedo.state;
+          setSettings(prevState);
+          showToast("Undo", "info");
+        }
+      }
+      // Cmd+Shift+Z / Ctrl+Shift+Z for redo
+      else if ((e.metaKey || e.ctrlKey) && e.key === "z" && e.shiftKey) {
+        e.preventDefault();
+        if (undoRedo.canRedo) {
+          undoRedo.redo();
+          const nextState = undoRedo.state;
+          setSettings(nextState);
+          showToast("Redo", "info");
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyboard);
+    return () => window.removeEventListener("keydown", handleKeyboard);
+  }, [undoRedo.canUndo, undoRedo.canRedo]);
+
   const showToast = (message: string, type: ToastMessage["type"] = "success") => {
     const id = Date.now();
     // Queue system: max 3 toasts
@@ -51,7 +91,9 @@ export default function BlackberrySettingsContentNew() {
     key: K,
     value: typeof settings[K]
   ) => {
-    setSettings({ ...settings, [key]: value });
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+    undoRedo.setState(newSettings);
     showToast(`${String(key)} updated`, "success");
   };
 
@@ -225,200 +267,317 @@ export default function BlackberrySettingsContentNew() {
 
       <BBPageHeader title="SETTINGS" subtitle="Customize your experience" />
 
-      <div className="space-y-6 mt-6">
+      {/* Live Preview Panel */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-6 border border-white/10 bg-black/20 backdrop-blur-sm overflow-hidden"
+      >
+        <div className="px-6 py-4 border-b border-white/5">
+          <h3 className="text-xs text-white/70 uppercase tracking-[0.12em] font-medium">
+            Live Preview
+          </h3>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-2 gap-4">
+            {/* Theme Preview */}
+            <div className="space-y-2">
+              <div className="text-[10px] text-white/50 uppercase tracking-wider">Theme</div>
+              <div
+                className={`h-16 border border-white/10 flex items-center justify-center text-xs transition-all duration-300 ${
+                  settings.theme === "dark"
+                    ? "bg-black text-white"
+                    : settings.theme === "light"
+                    ? "bg-white text-black"
+                    : "bg-gradient-to-r from-black to-white text-white"
+                }`}
+              >
+                {settings.theme.toUpperCase()}
+              </div>
+            </div>
+
+            {/* Accent Color Preview */}
+            <div className="space-y-2">
+              <div className="text-[10px] text-white/50 uppercase tracking-wider">Accent</div>
+              <div className="h-16 border border-white/10 flex flex-col items-center justify-center gap-1">
+                <div
+                  className="w-8 h-8 rounded-full transition-all duration-300"
+                  style={{
+                    backgroundColor: settings.accentColor,
+                    boxShadow: `0 0 12px ${settings.accentColor}60`,
+                  }}
+                />
+                <div className="text-[9px] text-white/40 tabular-nums">
+                  {settings.accentColor.toUpperCase()}
+                </div>
+              </div>
+            </div>
+
+            {/* Font Size Preview */}
+            <div className="space-y-2">
+              <div className="text-[10px] text-white/50 uppercase tracking-wider">Font Size</div>
+              <div className="h-16 border border-white/10 flex items-center justify-center">
+                <span
+                  className={`text-white/80 transition-all duration-300 ${
+                    settings.fontSize === "small"
+                      ? "text-xs"
+                      : settings.fontSize === "medium"
+                      ? "text-sm"
+                      : "text-base"
+                  }`}
+                >
+                  Aa
+                </span>
+              </div>
+            </div>
+
+            {/* Brightness Preview */}
+            <div className="space-y-2">
+              <div className="text-[10px] text-white/50 uppercase tracking-wider">Brightness</div>
+              <div className="h-16 border border-white/10 flex items-center justify-center bg-black">
+                <div
+                  className="w-full h-full bg-white transition-opacity duration-300"
+                  style={{ opacity: settings.brightness / 100 }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Motion Preview */}
+          {!settings.reducedMotion && (
+            <div className="mt-4 space-y-2">
+              <div className="text-[10px] text-white/50 uppercase tracking-wider">Animation Speed</div>
+              <div className="h-16 border border-white/10 bg-black/40 overflow-hidden relative">
+                <motion.div
+                  animate={{
+                    x: ["0%", "calc(100% - 40px)", "0%"],
+                  }}
+                  transition={{
+                    duration: 2 / settings.animationSpeed,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full"
+                  style={{
+                    backgroundColor: settings.accentColor,
+                    boxShadow: `0 0 12px ${settings.accentColor}80`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      <div className="space-y-6 max-w-3xl pb-8">
         {/* Appearance Section */}
         <SettingCard title="Appearance" delay={0.1}>
-            {/* Theme */}
-            <div>
-              <label className="block text-xs text-white/70 uppercase tracking-wider mb-2">
-                Theme
-              </label>
-              <div className="flex gap-2">
-                {(["dark", "light", "auto"] as const).map((theme) => (
-                  <button
-                    key={theme}
-                    onClick={() => updateSetting("theme", theme)}
-                    className={`flex-1 px-3 py-2 border text-xs uppercase transition-all duration-300 ${
-                      settings.theme === theme
-                        ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23]"
-                        : "border-white/10 text-white/60 hover:border-white/20"
-                    }`}
-                  >
-                    {theme}
-                  </button>
-                ))}
-              </div>
+          {/* Theme */}
+          <div>
+            <label className="block text-xs text-white/70 uppercase tracking-wider mb-2.5">
+              Theme
+            </label>
+            <div className="flex gap-2">
+              {(["dark", "light", "auto"] as const).map((theme) => (
+                <button
+                  key={theme}
+                  onClick={() => updateSetting("theme", theme)}
+                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                    settings.theme === theme
+                      ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
+                  }`}
+                >
+                  {theme}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Accent Color */}
-            <div>
-              <label className="block text-xs text-white/70 uppercase tracking-wider mb-2">
-                Accent Color
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {ACCENT_COLORS.map((color) => (
-                  <button
-                    key={color.value}
-                    onClick={() => updateSetting("accentColor", color.value)}
-                    className={`relative aspect-square border transition-all duration-300 hover:scale-105 ${
-                      settings.accentColor === color.value
-                        ? "border-white/40"
-                        : "border-white/10"
-                    }`}
-                    style={{
-                      backgroundColor: `${color.value}15`,
-                    }}
-                  >
-                    <div
-                      className="absolute inset-2 rounded-full"
-                      style={{ backgroundColor: color.value }}
-                    />
-                    {settings.accentColor === color.value && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <svg
-                          className="w-4 h-4 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
+          {/* Accent Color */}
+          <div>
+            <label className="block text-xs text-white/70 uppercase tracking-wider mb-2.5">
+              Accent Color
+            </label>
+            <div className="grid grid-cols-3 gap-2.5">
+              {ACCENT_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => updateSetting("accentColor", color.value)}
+                  className={`relative aspect-square border transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black group ${
+                    settings.accentColor === color.value
+                      ? "border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.1)]"
+                      : "border-white/10 hover:border-white/20"
+                  }`}
+                  style={{
+                    backgroundColor: `${color.value}15`,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (settings.accentColor !== color.value) {
+                      e.currentTarget.style.boxShadow = `0 0 16px ${color.value}40`;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (settings.accentColor !== color.value) {
+                      e.currentTarget.style.boxShadow = "none";
+                    }
+                  }}
+                >
+                  <div
+                    className="absolute inset-2 rounded-full transition-transform duration-300 group-hover:scale-110"
+                    style={{ backgroundColor: color.value }}
+                  />
+                  {settings.accentColor === color.value && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <svg
+                        className="w-5 h-5 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3.5}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </motion.div>
+                  )}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Font Size */}
-            <div>
-              <label className="block text-xs text-white/70 uppercase tracking-wider mb-2">
-                Font Size
-              </label>
-              <div className="flex gap-2">
-                {(["small", "medium", "large"] as const).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => updateSetting("fontSize", size)}
-                    className={`flex-1 px-3 py-2 border text-xs uppercase transition-all duration-300 ${
-                      settings.fontSize === size
-                        ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23]"
-                        : "border-white/10 text-white/60 hover:border-white/20"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
+          {/* Font Size */}
+          <div>
+            <label className="block text-xs text-white/70 uppercase tracking-wider mb-2.5">
+              Font Size
+            </label>
+            <div className="flex gap-2">
+              {(["small", "medium", "large"] as const).map((size) => (
+                <button
+                  key={size}
+                  onClick={() => updateSetting("fontSize", size)}
+                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                    settings.fontSize === size
+                      ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Brightness Slider */}
-            <EnhancedSlider
-              label="Brightness"
-              value={settings.brightness}
-              min={20}
-              max={100}
-              unit="%"
-              onChange={(value) => updateSetting("brightness", value)}
-            />
+          {/* Brightness Slider */}
+          <EnhancedSlider
+            label="Brightness"
+            value={settings.brightness}
+            min={20}
+            max={100}
+            unit="%"
+            onChange={(value) => updateSetting("brightness", value)}
+          />
         </SettingCard>
 
         {/* Behavior Section */}
         <SettingCard title="Behavior" delay={0.2}>
-            {/* Dock Mode */}
-            <div>
-              <label className="block text-xs text-white/70 uppercase tracking-wider mb-2">
-                Dock Icons
-              </label>
-              <div className="flex gap-2">
-                {(["mono", "bb"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    onClick={() => updateSetting("dockMode", mode)}
-                    className={`flex-1 px-3 py-2 border text-xs uppercase transition-all duration-300 ${
-                      settings.dockMode === mode
-                        ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23]"
-                        : "border-white/10 text-white/60 hover:border-white/20"
-                    }`}
-                  >
-                    {mode === "mono" ? "MONO" : "BB PIXEL"}
-                  </button>
-                ))}
-              </div>
+          {/* Dock Mode */}
+          <div>
+            <label className="block text-xs text-white/70 uppercase tracking-wider mb-2.5">
+              Dock Icons
+            </label>
+            <div className="flex gap-2">
+              {(["mono", "bb"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => updateSetting("dockMode", mode)}
+                  className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                    settings.dockMode === mode
+                      ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
+                  }`}
+                >
+                  {mode === "mono" ? "MONO" : "BB PIXEL"}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Sound Toggle */}
-            <ToggleSetting
-              label="Click Sound"
-              value={settings.sound}
-              onChange={(value) => updateSetting("sound", value)}
-            />
+          {/* Sound Toggle */}
+          <ToggleSetting
+            label="Click Sound"
+            value={settings.sound}
+            onChange={(value) => updateSetting("sound", value)}
+          />
 
-            {/* Volume Slider */}
-            <EnhancedSlider
-              label="Volume"
-              value={settings.volume}
-              min={0}
-              max={100}
-              unit="%"
-              onChange={(value) => updateSetting("volume", value)}
-              disabled={!settings.sound}
-            />
+          {/* Volume Slider */}
+          <EnhancedSlider
+            label="Volume"
+            value={settings.volume}
+            min={0}
+            max={100}
+            unit="%"
+            onChange={(value) => updateSetting("volume", value)}
+            disabled={!settings.sound}
+          />
 
-            {/* Reduced Motion */}
-            <ToggleSetting
-              label="Reduced Motion"
-              value={settings.reducedMotion}
-              onChange={(value) => updateSetting("reducedMotion", value)}
-              description="Minimize animations"
-            />
+          {/* Reduced Motion */}
+          <ToggleSetting
+            label="Reduced Motion"
+            value={settings.reducedMotion}
+            onChange={(value) => updateSetting("reducedMotion", value)}
+            description="Minimize animations"
+          />
 
-            {/* Animation Speed */}
-            <EnhancedSlider
-              label="Animation Speed"
-              value={settings.animationSpeed}
-              min={0.5}
-              max={2.0}
-              step={0.1}
-              unit="×"
-              onChange={(value) => updateSetting("animationSpeed", value)}
-              disabled={settings.reducedMotion}
-              formatValue={(v) => `${v.toFixed(1)}×`}
-            />
+          {/* Animation Speed */}
+          <EnhancedSlider
+            label="Animation Speed"
+            value={settings.animationSpeed}
+            min={0.5}
+            max={2.0}
+            step={0.1}
+            unit="×"
+            onChange={(value) => updateSetting("animationSpeed", value)}
+            disabled={settings.reducedMotion}
+            formatValue={(v) => `${v.toFixed(1)}×`}
+          />
 
-            {/* High Contrast */}
-            <ToggleSetting
-              label="High Contrast"
-              value={settings.highContrast}
-              onChange={(value) => updateSetting("highContrast", value)}
-              description="Increase text contrast"
-            />
+          {/* High Contrast */}
+          <ToggleSetting
+            label="High Contrast"
+            value={settings.highContrast}
+            onChange={(value) => updateSetting("highContrast", value)}
+            description="Increase text contrast"
+          />
         </SettingCard>
 
         {/* Privacy Section */}
         <SettingCard title="Privacy" delay={0.3}>
-            <ToggleSetting
-              label="Analytics"
-              value={settings.analyticsEnabled}
-              onChange={(value) => updateSetting("analyticsEnabled", value)}
-              description="Help improve the site"
-            />
-            <ToggleSetting
-              label="Tracking"
-              value={settings.trackingEnabled}
-              onChange={(value) => updateSetting("trackingEnabled", value)}
-              description="Third-party cookies"
-            />
-            <div className="pt-3 border-t border-white/10">
-              <p className="text-[10px] text-white/50 leading-relaxed">
-                All settings stored locally in your browser. No data sent to external servers.
-              </p>
-            </div>
+          <ToggleSetting
+            label="Analytics"
+            value={settings.analyticsEnabled}
+            onChange={(value) => updateSetting("analyticsEnabled", value)}
+            description="Help improve the site"
+          />
+          <ToggleSetting
+            label="Tracking"
+            value={settings.trackingEnabled}
+            onChange={(value) => updateSetting("trackingEnabled", value)}
+            description="Third-party cookies"
+          />
+          <div className="pt-3 border-t border-white/10">
+            <p className="text-[10px] text-white/50 leading-relaxed">
+              All settings stored locally in your browser. No data sent to external servers.
+            </p>
+          </div>
         </SettingCard>
 
         {/* About Section */}
@@ -444,42 +603,95 @@ export default function BlackberrySettingsContentNew() {
         </SettingCard>
 
         {/* Actions Section */}
-        <div className="pt-4 space-y-3" role="region" aria-label="Settings actions">
-          {/* Presets */}
-          <button
-            onClick={() => setShowPresetsModal(true)}
-            aria-label="Open preset themes menu"
-            className="w-full px-4 py-3 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
-          >
-            Load Preset Theme
-          </button>
-
-          {/* Import/Export */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={handleExportSettings}
-              aria-label="Export settings to JSON file"
-              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
-            >
-              Export
-            </button>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              aria-label="Import settings from JSON file"
-              className="px-4 py-3 border border-white/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black"
-            >
-              Import
-            </button>
+        <div className="pt-8 mt-2" role="region" aria-label="Settings actions">
+          {/* Divider */}
+          <div className="mb-6">
+            <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </div>
 
-          {/* Reset */}
-          <button
-            onClick={() => setShowResetModal(true)}
-            aria-label="Reset all settings to default values"
-            className="w-full px-4 py-3 border border-white/20 hover:border-[#ef4444] hover:bg-[#ef4444]/5 text-xs text-white/70 hover:text-[#ef4444] uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:ring-offset-2 focus:ring-offset-black"
-          >
-            Reset All Settings
-          </button>
+          <div className="space-y-3">
+            {/* Undo/Redo */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => {
+                  if (undoRedo.canUndo) {
+                    undoRedo.undo();
+                    setSettings(undoRedo.state);
+                    showToast("Undo", "info");
+                  }
+                }}
+                disabled={!undoRedo.canUndo}
+                aria-label="Undo last change (Cmd+Z)"
+                className={`px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                  undoRedo.canUndo
+                    ? "border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-white/70 hover:text-[#ff9d23]"
+                    : "border-white/10 text-white/30 cursor-not-allowed"
+                }`}
+              >
+                <span className="inline-block mr-1.5">↶</span>
+                Undo
+              </button>
+              <button
+                onClick={() => {
+                  if (undoRedo.canRedo) {
+                    undoRedo.redo();
+                    setSettings(undoRedo.state);
+                    showToast("Redo", "info");
+                  }
+                }}
+                disabled={!undoRedo.canRedo}
+                aria-label="Redo last change (Cmd+Shift+Z)"
+                className={`px-4 py-3 border text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
+                  undoRedo.canRedo
+                    ? "border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-white/70 hover:text-[#ff9d23]"
+                    : "border-white/10 text-white/30 cursor-not-allowed"
+                }`}
+              >
+                <span className="inline-block mr-1.5">↷</span>
+                Redo
+              </button>
+            </div>
+
+            {/* Presets */}
+            <button
+              onClick={() => setShowPresetsModal(true)}
+              aria-label="Open preset themes menu"
+              className="w-full px-5 py-3.5 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-[0.12em] transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_10px_rgba(255,157,35,0.15)] hover:shadow-[0_0_16px_rgba(255,157,35,0.25)]"
+            >
+              <span className="inline-block mr-2">🎨</span>
+              Load Preset Theme
+            </button>
+
+            {/* Import/Export */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleExportSettings}
+                aria-label="Export settings to JSON file"
+                className="px-4 py-3 border border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black"
+              >
+                <span className="inline-block mr-1.5">↓</span>
+                Export
+              </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Import settings from JSON file"
+                className="px-4 py-3 border border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black"
+              >
+                <span className="inline-block mr-1.5">↑</span>
+                Import
+              </button>
+            </div>
+
+            {/* Reset */}
+            <button
+              onClick={() => setShowResetModal(true)}
+              aria-label="Reset all settings to default values"
+              className="w-full px-5 py-3 border border-white/20 hover:border-[#ef4444]/60 hover:bg-[#ef4444]/5 text-xs text-white/60 hover:text-[#ef4444] uppercase tracking-wider transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50 focus:ring-offset-2 focus:ring-offset-black"
+            >
+              <span className="inline-block mr-2">⟲</span>
+              Reset All Settings
+            </button>
+          </div>
         </div>
       </div>
     </div>

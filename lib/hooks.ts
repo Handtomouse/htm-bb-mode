@@ -39,6 +39,71 @@ export function useSettings() {
   return [settings, setSettings, isLoaded] as const;
 }
 
+// Undo/Redo hook with history stack
+export function useUndoRedo<T>(initialState: T, maxHistory = 50) {
+  const [state, setState] = useState<T>(initialState);
+  const [history, setHistory] = useState<T[]>([initialState]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const canUndo = currentIndex > 0;
+  const canRedo = currentIndex < history.length - 1;
+
+  const setStateWithHistory = (newState: T | ((prev: T) => T)) => {
+    setState((prev) => {
+      const next = typeof newState === "function" ? (newState as (prev: T) => T)(prev) : newState;
+
+      // Remove any future states if we're not at the end
+      const newHistory = history.slice(0, currentIndex + 1);
+
+      // Add new state to history
+      newHistory.push(next);
+
+      // Limit history size
+      if (newHistory.length > maxHistory) {
+        newHistory.shift();
+        setCurrentIndex(maxHistory - 1);
+      } else {
+        setCurrentIndex(newHistory.length - 1);
+      }
+
+      setHistory(newHistory);
+      return next;
+    });
+  };
+
+  const undo = () => {
+    if (canUndo) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      setState(history[newIndex]);
+    }
+  };
+
+  const redo = () => {
+    if (canRedo) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      setState(history[newIndex]);
+    }
+  };
+
+  const reset = () => {
+    setHistory([initialState]);
+    setCurrentIndex(0);
+    setState(initialState);
+  };
+
+  return {
+    state,
+    setState: setStateWithHistory,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    reset,
+  };
+}
+
 // Click sound hook with Web Audio API
 export function useClickSound(enabled: boolean) {
   const enabledRef = useRef(enabled);

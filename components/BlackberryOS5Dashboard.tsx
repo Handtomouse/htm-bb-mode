@@ -6,6 +6,7 @@ import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
 import BlackberryAboutContent from "./BlackberryAboutContent";
 import BlackberryWormholeContent from "./BlackberryWormholeContent";
+import BlackberryClientsContent from "./BlackberryClientsContent";
 
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
@@ -995,13 +996,13 @@ function AppContent({ appId }: { appId: string }) {
         fadeIn ? "opacity-100" : "opacity-0"
       } ${isFullscreen ? "" : "bg-black/40 backdrop-blur-sm"}`}
     >
-      <div className={appId === "wormhole" || appId === "about" ? "" : "p-4"}>
+      <div className={appId === "wormhole" || appId === "about" || appId === "clients" ? "" : "p-4"}>
         {loading ? (
           <div className="text-white/60 text-sm">Loading...</div>
         ) : appId === "portfolio" ? (
           <PortfolioContent projects={data} />
         ) : appId === "clients" ? (
-          <ClientsContent clients={data} />
+          <BlackberryClientsContent />
         ) : appId === "notes" ? (
           <NotesContent posts={data} />
         ) : appId === "about" ? (

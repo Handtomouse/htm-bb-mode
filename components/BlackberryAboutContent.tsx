@@ -7,6 +7,12 @@ import Image from "next/image";
 const ACCENT = "#ff9d23";
 const ACCENT_HOVER = "#FFB84D";
 
+const FONTS = {
+  mono: 'var(--font-mono)',
+  body: 'var(--font-body)',
+  display: 'var(--font-mono)'
+} as const;
+
 const STAT_CARD_VARS = {
   '--card-padding': '32px',
   '--card-gap': '48px',
@@ -109,6 +115,7 @@ export default function BlackberryAboutContent() {
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
   const lastScrollTop = useRef(0);
+  const rafId = useRef<number | null>(null);
   const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 });
   const typewriterRef = useRef<HTMLDivElement>(null);
 
@@ -172,105 +179,136 @@ export default function BlackberryAboutContent() {
     setHeadlineComplete(true);
   }, []);
 
-  // Scroll handler
+  // Scroll handler with RAF optimization
   const handleScroll = useCallback(() => {
-    const scrollableElement = document.querySelector('.scrollable-content');
-    if (scrollableElement) {
-      const scrollTop = scrollableElement.scrollTop;
-      const scrollHeight = scrollableElement.scrollHeight - scrollableElement.clientHeight;
-      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-      setScrollProgress(progress);
-
-      // Back-to-top button after 300px
-      setShowBackToTop(scrollTop > 300);
-
-      // Hero fade: 300px→1000px range (gentler exit)
-      const heroFadeStart = 300;
-      const heroFadeEnd = 1000;
-      const heroFade = Math.max(0, Math.min(1, 1 - (scrollTop - heroFadeStart) / (heroFadeEnd - heroFadeStart)));
-      setHeroOpacity(heroFade);
-
-      // Typewriter scroll progress & fade: PIXEL-BASED (predictable across all screens)
-      if (typewriterRef.current) {
-        const typewriterRect = typewriterRef.current.getBoundingClientRect();
-        const viewportHeight = scrollableElement.clientHeight;
-        const typewriterTop = typewriterRect.top;
-        const typewriterBottom = typewriterRect.bottom;
-
-        // Calculate section center distance from viewport center (pixel-based)
-        const sectionCenter = typewriterTop + (typewriterRect.height / 2);
-        const viewportCenter = viewportHeight / 2;
-        const distanceFromCenter = sectionCenter - viewportCenter;
-
-        // TYPING ANIMATION: Based on distance from center (not viewport %)
-        // Starts when section center is 500px below viewport center
-        // Completes when section center is 50px below viewport center
-        // Total range: 450px of scrolling (smoother, more luxurious)
-        let scrollProgress = 0;
-
-        if (distanceFromCenter > 500) {
-          // Section center more than 500px below viewport center - not started
-          scrollProgress = 0;
-        } else if (distanceFromCenter > 50) {
-          // Section center between 500px below and 50px below center
-          // Progress from 0 to 1 over 450px of scrolling
-          scrollProgress = (500 - distanceFromCenter) / 450;
-        } else {
-          // Section center at 50px below viewport center or higher - complete
-          scrollProgress = 1;
-        }
-
-        const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
-        setTypewriterScrollProgress(clampedProgress);
-
-        // FADE OPACITY: Based on absolute pixels from viewport top (not %)
-        // Fades out only when section is within 40px of top edge
-        let fadeOpacity = 1;
-
-        if (typewriterTop > viewportHeight) {
-          // Section completely below viewport
-          fadeOpacity = 0;
-        } else if (typewriterBottom < 0) {
-          // Section completely above viewport
-          fadeOpacity = 0;
-        } else if (typewriterTop > viewportHeight - 100) {
-          // Section entering from bottom - fade in over 100px
-          fadeOpacity = (viewportHeight - typewriterTop) / 100;
-        } else if (typewriterTop < 40 && typewriterTop > 0) {
-          // Section within 40px of top - fade out
-          fadeOpacity = typewriterTop / 40;
-        } else {
-          // Section fully visible in viewport
-          fadeOpacity = 1;
-        }
-
-        setTypewriterOpacity(Math.max(0, Math.min(1, fadeOpacity)));
-
-        // Headline opacity: Fade in when typewriter ≥ 70% complete (smoother reveal)
-        const headlineFade = clampedProgress >= 0.7 ? Math.min(1, (clampedProgress - 0.7) / 0.25) : 0;
-        setHeadlineOpacity(headlineFade);
-      }
-
-      // Parallax: move UP to create separation
-      const parallaxOffset = Math.max(scrollTop * -0.2, -20);
-      setAboutParallax(parallaxOffset);
-
-      // Floating elements parallax
-      setFloatingElementsOffset(scrollTop * 0.3);
-
-      lastScrollTop.current = scrollTop;
+    // Cancel any pending animation frame to ensure only one runs per scroll
+    if (rafId.current !== null) {
+      cancelAnimationFrame(rafId.current);
     }
+
+    // Schedule calculations for next frame (batches multiple scroll events)
+    rafId.current = requestAnimationFrame(() => {
+      const scrollableElement = document.querySelector('.scrollable-content');
+      if (scrollableElement) {
+        const scrollTop = scrollableElement.scrollTop;
+        const scrollHeight = scrollableElement.scrollHeight - scrollableElement.clientHeight;
+        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        setScrollProgress(progress);
+
+        // Back-to-top button after 300px
+        setShowBackToTop(scrollTop > 300);
+
+        // Hero fade: 300px→1000px range (gentler exit)
+        const heroFadeStart = 300;
+        const heroFadeEnd = 1000;
+        const heroFade = Math.max(0, Math.min(1, 1 - (scrollTop - heroFadeStart) / (heroFadeEnd - heroFadeStart)));
+        setHeroOpacity(heroFade);
+
+        // Typewriter scroll progress & fade: PIXEL-BASED (predictable across all screens)
+        if (typewriterRef.current) {
+          const typewriterRect = typewriterRef.current.getBoundingClientRect();
+          const viewportHeight = scrollableElement.clientHeight;
+          const typewriterTop = typewriterRect.top;
+          const typewriterBottom = typewriterRect.bottom;
+
+          // Calculate section center distance from viewport center (pixel-based)
+          const sectionCenter = typewriterTop + (typewriterRect.height / 2);
+          const viewportCenter = viewportHeight / 2;
+          const distanceFromCenter = sectionCenter - viewportCenter;
+
+          // TYPING ANIMATION: Based on distance from center (not viewport %)
+          // Starts when section center is 500px below viewport center
+          // Completes when section center is 50px below viewport center
+          // Total range: 450px of scrolling (smoother, more luxurious)
+          let scrollProgress = 0;
+
+          if (distanceFromCenter > 500) {
+            // Section center more than 500px below viewport center - not started
+            scrollProgress = 0;
+          } else if (distanceFromCenter > 50) {
+            // Section center between 500px below and 50px below center
+            // Progress from 0 to 1 over 450px of scrolling
+            scrollProgress = (500 - distanceFromCenter) / 450;
+          } else {
+            // Section center at 50px below viewport center or higher - complete
+            scrollProgress = 1;
+          }
+
+          const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
+          setTypewriterScrollProgress(clampedProgress);
+
+          // FADE OPACITY: Based on absolute pixels from viewport top (not %)
+          // Fades out only when section is within 40px of top edge
+          let fadeOpacity = 1;
+
+          if (typewriterTop > viewportHeight) {
+            // Section completely below viewport
+            fadeOpacity = 0;
+          } else if (typewriterBottom < 0) {
+            // Section completely above viewport
+            fadeOpacity = 0;
+          } else if (typewriterTop > viewportHeight - 100) {
+            // Section entering from bottom - fade in over 100px
+            fadeOpacity = (viewportHeight - typewriterTop) / 100;
+          } else if (typewriterTop < 40 && typewriterTop > 0) {
+            // Section within 40px of top - fade out
+            fadeOpacity = typewriterTop / 40;
+          } else {
+            // Section fully visible in viewport
+            fadeOpacity = 1;
+          }
+
+          setTypewriterOpacity(Math.max(0, Math.min(1, fadeOpacity)));
+
+          // Headline opacity: Fade in when typewriter ≥ 70% complete (smoother reveal)
+          const headlineFade = clampedProgress >= 0.7 ? Math.min(1, (clampedProgress - 0.7) / 0.25) : 0;
+          setHeadlineOpacity(headlineFade);
+        }
+
+        // Parallax: move UP to create separation
+        const parallaxOffset = Math.max(scrollTop * -0.2, -20);
+        setAboutParallax(parallaxOffset);
+
+        // Floating elements parallax
+        setFloatingElementsOffset(scrollTop * 0.3);
+
+        lastScrollTop.current = scrollTop;
+      }
+    });
   }, []);
 
-  // Attach scroll listener
+  // Attach scroll listener with RAF cleanup
   useEffect(() => {
     const scrollableElement = document.querySelector('.scrollable-content');
     if (scrollableElement) {
       scrollableElement.addEventListener('scroll', handleScroll);
       handleScroll(); // Initial call
-      return () => scrollableElement.removeEventListener('scroll', handleScroll);
+      return () => {
+        scrollableElement.removeEventListener('scroll', handleScroll);
+        // Cancel any pending RAF on unmount
+        if (rafId.current !== null) {
+          cancelAnimationFrame(rafId.current);
+        }
+      };
     }
   }, [handleScroll]);
+
+  // Fix mobile viewport height (100vh issue with address bar)
+  useEffect(() => {
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
+
+    return () => {
+      window.removeEventListener('resize', setVH);
+      window.removeEventListener('orientationchange', setVH);
+    };
+  }, []);
 
   const scrollToTop = () => {
     const scrollableElement = document.querySelector('.scrollable-content');
@@ -305,68 +343,33 @@ export default function BlackberryAboutContent() {
         }}
       />
 
-      {/* Parallax Background Gradient Layers */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-30"
-        style={{
-          background: 'radial-gradient(circle at 20% 30%, rgba(255,157,35,0.08) 0%, transparent 50%)',
-          transform: `translateY(${floatingElementsOffset * 0.2}px)`,
-          transition: 'transform 0.1s linear'
-        }}
-      />
+      {/* Optimized Parallax Background Layer */}
       <div
         className="fixed inset-0 pointer-events-none opacity-20"
         style={{
-          background: 'radial-gradient(circle at 80% 60%, rgba(255,157,35,0.06) 0%, transparent 60%)',
-          transform: `translateY(${floatingElementsOffset * 0.4}px)`,
-          transition: 'transform 0.1s linear'
-        }}
-      />
-      <div
-        className="fixed inset-0 pointer-events-none opacity-10"
-        style={{
-          background: 'linear-gradient(135deg, transparent 0%, rgba(255,157,35,0.03) 50%, transparent 100%)',
-          transform: `translateY(${floatingElementsOffset * 0.6}px)`,
-          transition: 'transform 0.1s linear'
+          background: 'radial-gradient(circle at 30% 40%, rgba(255,157,35,0.06) 0%, transparent 60%)',
+          transform: `translateY(${floatingElementsOffset * 0.3}px)`,
+          willChange: 'transform'
         }}
       />
 
-      {/* Floating geometric elements - BB-style */}
-      <motion.div
-        className="fixed w-32 h-32 border-2 border-[#ff9d23]/10 pointer-events-none"
+      {/* Optimized Floating geometric elements */}
+      <div
+        className="fixed w-32 h-32 border border-[#ff9d23]/8 pointer-events-none"
         style={{
-          top: '10%',
-          left: '5%',
-          transform: `translateY(${floatingElementsOffset}px) rotate(45deg)`,
-          transition: 'transform 0.1s linear'
+          top: '15%',
+          left: '8%',
+          transform: `translateY(${floatingElementsOffset * 0.8}px) rotate(45deg)`,
+          willChange: 'transform'
         }}
       />
-      <motion.div
-        className="fixed w-20 h-20 bg-[#ff9d23]/5 pointer-events-none"
+      <div
+        className="fixed w-20 h-20 border border-[#ff9d23]/6 pointer-events-none"
         style={{
-          top: '30%',
-          right: '8%',
-          transform: `translateY(${floatingElementsOffset * 0.7}px)`,
-          transition: 'transform 0.1s linear',
-          clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)'
-        }}
-      />
-      <motion.div
-        className="fixed w-16 h-16 rounded-full border border-[#ff9d23]/8 pointer-events-none"
-        style={{
-          top: '60%',
-          left: '10%',
-          transform: `translateY(${floatingElementsOffset * 1.2}px)`,
-          transition: 'transform 0.1s linear'
-        }}
-      />
-      <motion.div
-        className="fixed w-24 h-24 border-2 border-[#ff9d23]/10 pointer-events-none"
-        style={{
-          bottom: '20%',
-          right: '15%',
-          transform: `translateY(${floatingElementsOffset * 0.5}px) rotate(30deg)`,
-          transition: 'transform 0.1s linear',
+          bottom: '25%',
+          right: '12%',
+          transform: `translateY(${floatingElementsOffset * 0.6}px) rotate(30deg)`,
+          willChange: 'transform',
           clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
         }}
       />
@@ -488,7 +491,7 @@ export default function BlackberryAboutContent() {
               transition: 'font-size 0.2s ease-out'
             }}
           >
-            {data.hero.headline}
+            Ideas that outlast trends. Strategy that scales. Sydney → World.
           </motion.p>
 
         </section>
@@ -514,7 +517,7 @@ export default function BlackberryAboutContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.8, delay: 0, ease: [0.16, 1, 0.3, 1] }}
-              style={{marginBottom: '20rem'}}
+              style={{marginBottom: '10rem'}}
             >
               <h2
                 className="text-[48px] md:text-[64px] lg:text-[80px] font-light uppercase mb-8 text-center"
@@ -531,11 +534,11 @@ export default function BlackberryAboutContent() {
 
             {/* Philosophy - Numbered Manifesto */}
             <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
-              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '24rem'}}
+              style={{marginBottom: '12rem'}}
             >
               {/* Number Label - Centered with hover glow */}
               <motion.div
@@ -577,11 +580,11 @@ export default function BlackberryAboutContent() {
 
             {/* Part 2 - Centered staggered entrance */}
             <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
-              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{marginBottom: '24rem'}}
+              style={{marginBottom: '12rem'}}
             >
               {/* Number - Centered with hover glow */}
               <motion.div
@@ -623,11 +626,11 @@ export default function BlackberryAboutContent() {
 
             {/* Part 3 - Centered staggered entrance */}
             <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
-              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-[32rem]"
+              className="mb-[16rem]"
             >
               {/* Number - Centered with hover glow */}
               <motion.div
@@ -678,8 +681,8 @@ export default function BlackberryAboutContent() {
 
             {/* Final Statement - Left-aligned ethereal entrance */}
             <motion.p
-              initial={{ opacity: 0, y: 60, scale: 0.95, filter: 'blur(8px)' }}
-              whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-200px" }}
               transition={{ duration: 1.4, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
               className="text-[17px] md:text-[19px] lg:text-[21px] text-white leading-[2.3] font-extralight tracking-wide text-left max-w-2xl"
@@ -701,7 +704,7 @@ export default function BlackberryAboutContent() {
 
         {/* "Built to Last" - Chapter marker */}
 
-          <section className="h-[100vh] flex items-center justify-center">
+          <section className="h-[60vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -726,8 +729,8 @@ export default function BlackberryAboutContent() {
         {/* Stats Grid - Full Width */}
 
           <section
-            className="relative min-h-[100vh] flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32"
-            style={{ scrollMarginTop: '4rem', ...STAT_CARD_VARS }}
+            className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32"
+            style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', scrollMarginTop: '4rem', ...STAT_CARD_VARS }}
           >
           {/* Improvement #6: Subtle radial gradient backdrop */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)', opacity: 0.4 }} />
@@ -764,53 +767,17 @@ export default function BlackberryAboutContent() {
             <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} index={5} />
           </div>
           </section>
-        
 
-        {/* Beliefs - Full Width Background */}
-
-          <section className="h-[110vh] flex flex-col items-center justify-center">
-          <div className="w-full max-w-6xl mx-auto space-y-8 md:space-y-12">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                color: '#ff9d23',
-                letterSpacing: '0.08em'
-              }}
-            >
-              Beliefs
-            </motion.h2>
-            <div className="space-y-4 md:space-y-6">
-              {data.hero.principles.map((principle, idx) => (
-                <LuxuryBelief key={idx} icon={principle.icon} text={principle.text} delay={idx * 0.25} />
-              ))}
-            </div>
-          </div>
-          </section>
-
-        {/* Transition divider - Beliefs → Services */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-sm mx-auto my-16 md:my-20 h-[1px] bg-gradient-to-r from-transparent via-[#ff9d23]/30 to-transparent"
-          style={{ transformOrigin: 'center' }}
-        />
 
         {/* Services Grid */}
 
-          <section className="h-[130vh] flex flex-col items-center justify-center space-y-12 md:space-y-16">
+          <section className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/60 backdrop-blur-md py-4"
+            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[#ff9d23] uppercase text-center tracking-[0.08em] bg-black/90 py-4"
           >
             What We Do
           </motion.h2>
@@ -824,7 +791,7 @@ export default function BlackberryAboutContent() {
 
         {/* Collapsible Sections */}
 
-          <section className="h-[180vh] flex flex-col items-center justify-center space-y-8 md:space-y-12">
+          <section className="min-h-screen py-20 flex flex-col items-center justify-center space-y-8 md:space-y-12">
             <LuxuryCollapsibleSection
               title="How I Work"
               icon="⚙️"
@@ -917,7 +884,7 @@ export default function BlackberryAboutContent() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
                 whileHover={{ scale: 1.02 }}
-                className="border-2 border-[#ff9d23]/50 bg-gradient-to-br from-[#ff9d23]/10 to-[#ff9d23]/5 p-8 md:p-10 backdrop-blur-sm hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] transition-all duration-700"
+                className="border-2 border-[#ff9d23]/50 bg-gradient-to-br from-[#ff9d23]/10 to-[#ff9d23]/5 p-8 md:p-10 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] transition-all duration-700"
               >
                 <p className="text-[18px] md:text-[24px] text-white font-bold leading-relaxed">{data.pricing.guarantee}</p>
               </motion.div>
@@ -990,13 +957,13 @@ export default function BlackberryAboutContent() {
 
         {/* Now Block - Full Width Accent */}
 
-          <section className="h-[120vh] flex items-center justify-center">
+          <section className="min-h-[80vh] flex items-center justify-center">
             <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-6xl mx-auto border-2 border-[#ff9d23] bg-gradient-to-br from-[#ff9d23]/10 to-transparent backdrop-blur-sm p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-shadow duration-700"
+            className="max-w-6xl mx-auto border-2 border-[#ff9d23] bg-gradient-to-br from-[#ff9d23]/10 to-transparent p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-shadow duration-700"
           >
             <motion.h2
               initial={{ opacity: 0, x: -20 }}
@@ -1038,41 +1005,9 @@ export default function BlackberryAboutContent() {
           </section>
         
 
-        {/* Empty Space Reveal Window 2 */}
-
-          <section className="h-[90vh] flex items-center justify-center">
-            <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-center space-y-8"
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-[20px] md:text-[28px] lg:text-[36px] text-white/90 tracking-[0.15em] uppercase"
-            >
-              Strategy First
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-[16px] md:text-[20px] text-[#ff9d23]/70 tracking-[0.1em]"
-            >
-              Execution Second
-            </motion.div>
-            </motion.div>
-          </section>
-        
-
         {/* Contact CTA - Full Height */}
 
-          <section className="relative h-[130vh] flex items-center justify-center">
+          <section className="relative min-h-screen py-20 flex items-center justify-center">
             {/* Background gradient that builds toward CTA */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/5 to-[#ff9d23]/10 pointer-events-none" />
 
@@ -1081,7 +1016,7 @@ export default function BlackberryAboutContent() {
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative border-4 border-[#ff9d23]/40 bg-gradient-to-b from-black/60 to-black/40 backdrop-blur-sm p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[#ff9d23] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
+            className="relative border-4 border-[#ff9d23]/40 bg-gradient-to-b from-black/60 to-black/40 p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[#ff9d23] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
           >
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -1364,8 +1299,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
             boxShadow: isHovered
               ? '0 0 14px rgba(255,157,35,0.25), var(--card-shadow)'
               : 'var(--card-shadow)',
-            background: isHovered ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(6px)',
+            background: isHovered ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.75)',
             transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
@@ -1492,8 +1426,7 @@ function LuxuryStatCard({ label, value, delay, index }: { label: string; value: 
             border: 'var(--card-border)',
             borderRadius: 'var(--card-radius)',
             boxShadow: 'var(--card-shadow)',
-            background: 'radial-gradient(circle at center, rgba(255,157,35,0.08) 0%, rgba(0,0,0,0.6) 100%)',
-            backdropFilter: 'blur(8px) saturate(1.2)'
+            background: 'radial-gradient(circle at center, rgba(255,157,35,0.10) 0%, rgba(0,0,0,0.85) 100%)'
           }}
         >
           {/* Context Text with Improvements #2/#3: Better line-height & 2-layer shadows */}
@@ -1629,8 +1562,8 @@ function LuxuryServiceCard({ service, delay }: { service: any; delay: number }) 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, scale: 0.85, filter: 'blur(10px)' }}
-      whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+      initial={{ opacity: 0, scale: 0.85 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.3, margin: "-100px" }}
       transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
@@ -1639,7 +1572,7 @@ function LuxuryServiceCard({ service, delay }: { service: any; delay: number }) 
       style={{
         transform: `translate(${offset.x}px, ${offset.y}px)`
       }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm p-8 md:p-12 space-y-6 transition-all duration-700 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] cursor-default"
+      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 p-8 md:p-12 space-y-6 transition-all duration-700 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] cursor-default"
     >
       <div className="flex items-center gap-4">
         <span className="text-[32px] md:text-[40px]">{service.icon}</span>
@@ -1671,7 +1604,7 @@ function LuxuryCollapsibleSection({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm hover:border-[#ff9d23]/50 transition-all duration-700"
+      className="border-2 border-[#ff9d23]/30 bg-gradient-to-br from-black/40 to-black/20 hover:border-[#ff9d23]/50 transition-all duration-700"
     >
       <button
         onClick={onToggle}
