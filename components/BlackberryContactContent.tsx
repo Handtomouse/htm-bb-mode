@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import BBPageHeader from "./BBPageHeader";
-import { useSettings, useClickSound } from "@/lib/hooks";
+import { useSettings, useClickSound, useHapticFeedback } from "@/lib/hooks";
 import {
   isDisposableEmail,
   getTemplateByKeyword,
@@ -69,6 +69,7 @@ export default function BlackberryContactContent() {
   // Improvement #8: Settings integration
   const [settings] = useSettings();
   const playClickSound = useClickSound(settings.sound);
+  const triggerHaptic = useHapticFeedback();
 
   const [mode, setMode] = useState<ContactMode>("quick");
   const [data, setData] = useState<Payload>({
@@ -329,7 +330,8 @@ export default function BlackberryContactContent() {
       // Improvement #18: Enhanced confetti with settings respect
       const prefersReducedMotion = settings.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
-        // Success sound
+        // Success sound and haptic
+        triggerHaptic([10, 50, 10]);
         if (settings.sound) playClickSound();
 
         // BB-themed confetti with custom shapes
@@ -409,17 +411,20 @@ export default function BlackberryContactContent() {
   // Improvement #13: Enhanced keyboard shortcuts
   const onKeyDown = (e: React.KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      triggerHaptic(15);
       const form = e.currentTarget as HTMLElement;
       (form.querySelector('[data-submit]') as HTMLButtonElement | null)?.click();
       return;
     }
     if (e.key === "Escape") {
+      triggerHaptic(10);
       if (toast) setToast(null);
       if (showShortcuts) setShowShortcuts(false);
       return;
     }
     if (e.altKey && (e.key === "r" || e.key === "R")) {
       e.preventDefault();
+      triggerHaptic(15);
       setData((d) => ({ ...d, name: "", email: "", message: "", company: "", budget: "", timeline: "", services: [], referral: "", attachment_url: "" }));
       setFiles([]);
       showToast("info", "Form cleared");
@@ -429,6 +434,7 @@ export default function BlackberryContactContent() {
     // Improvement #13: Mode switching shortcuts
     if (e.altKey && (e.key === "q" || e.key === "Q")) {
       e.preventDefault();
+      triggerHaptic(10);
       setMode("quick");
       playClickSound();
       showToast("info", "Switched to Quick mode");
@@ -437,6 +443,7 @@ export default function BlackberryContactContent() {
     }
     if (e.altKey && (e.key === "b" || e.key === "B")) {
       e.preventDefault();
+      triggerHaptic(10);
       setMode("brief");
       playClickSound();
       showToast("info", "Switched to Brief mode");
@@ -446,6 +453,7 @@ export default function BlackberryContactContent() {
     // Toggle shortcuts help
     if (e.key === "?" && e.shiftKey) {
       e.preventDefault();
+      triggerHaptic(10);
       setShowShortcuts((prev) => !prev);
       announce(showShortcuts ? "Keyboard shortcuts hidden" : "Keyboard shortcuts displayed");
       return;
@@ -596,6 +604,7 @@ export default function BlackberryContactContent() {
           onClick={() => {
             navigator.clipboard?.writeText("hello@handtomouse.com");
             // Improvement #3: Success feedback
+            triggerHaptic(15);
             setCopiedEmail(true);
             playClickSound();
             showToast("info", "Email copied to clipboard");
@@ -645,7 +654,10 @@ export default function BlackberryContactContent() {
             <h3 className="text-sm font-mono text-[#ff9d23] uppercase tracking-wider">Keyboard Shortcuts</h3>
             <button
               type="button"
-              onClick={() => setShowShortcuts(false)}
+              onClick={() => {
+                triggerHaptic(10);
+                setShowShortcuts(false);
+              }}
               className="text-white/50 hover:text-white/80 text-xs"
             >
               ✕
@@ -682,6 +694,7 @@ export default function BlackberryContactContent() {
               onClick={() => {
                 setMode(m);
                 // Improvement #8: Sound feedback
+                triggerHaptic(10);
                 playClickSound();
                 announce(`Switched to ${m === "quick" ? "Quick message" : "Project brief"} mode`);
               }}
@@ -741,7 +754,10 @@ export default function BlackberryContactContent() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setSubmitSuccess(false)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    setSubmitSuccess(false);
+                  }}
                   className="border border-[#ff9d23] bg-[#ff9d23] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[#FFB84D] transition-colors duration-300"
                 >
                   Send another message
@@ -869,6 +885,7 @@ export default function BlackberryContactContent() {
                   type="button"
                   className="mt-1 text-xs underline text-white/65 hover:text-[#ff9d23]"
                   onClick={() => {
+                    triggerHaptic(10);
                     setData((d) => ({ ...d, email: emailSuggestion }));
                     announce("Email corrected");
                   }}
@@ -1031,6 +1048,7 @@ export default function BlackberryContactContent() {
                         type="button"
                         className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[#ff9d23] hover:text-[#ff9d23] flex-shrink-0"
                         onClick={() => {
+                          triggerHaptic(10);
                           removeFile(i);
                           announce(`Removed ${f.name}`);
                         }}
