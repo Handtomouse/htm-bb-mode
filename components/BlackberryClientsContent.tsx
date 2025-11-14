@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { useHapticFeedback } from "@/lib/hooks";
 
 const ACCENT = "#ff9d23";
 
@@ -41,6 +42,7 @@ export default function BlackberryClientsContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [animatedStats, setAnimatedStats] = useState({ clients: 0, projects: 0, sectors: 0 });
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const triggerHaptic = useHapticFeedback();
 
   // Load clients
   useEffect(() => {
@@ -83,6 +85,7 @@ export default function BlackberryClientsContent() {
       if (!selectedClient) return;
 
       if (e.key === 'Escape') {
+        triggerHaptic(10);
         setSelectedClient(null);
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         const currentIndex = clients.findIndex(c => c.name === selectedClient.name);
@@ -126,7 +129,7 @@ export default function BlackberryClientsContent() {
         className="py-8 md:py-12"
       >
         <h1
-          className="text-[48px] md:text-[64px] font-light text-[#ff9d23] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
+          className="text-[56px] md:text-[72px] font-light text-[#ff9d23] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
           style={{
             textShadow: '0 0 40px rgba(255, 157, 35, 0.4)',
           }}
@@ -136,7 +139,7 @@ export default function BlackberryClientsContent() {
 
         {/* Stats */}
         <p
-          className="text-[14px] md:text-[16px] text-white/75 leading-[2.2] font-light tracking-wide mb-8"
+          className="text-[16px] md:text-[18px] text-white/75 leading-[2.2] font-light tracking-wide mb-8"
         >
           <span className="tabular-nums text-[#ff9d23]">{animatedStats.clients}</span> clients across{" "}
           <span className="tabular-nums text-[#ff9d23]">{animatedStats.sectors}</span> industries.{" "}
@@ -148,7 +151,7 @@ export default function BlackberryClientsContent() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="flex flex-wrap gap-3 text-[9px] text-white/65 font-light uppercase tracking-[0.15em]"
+          className="flex flex-wrap gap-3 text-[11px] text-white/65 font-light uppercase tracking-[0.15em]"
         >
           {Object.entries(
             clients.reduce((acc, client) => {
@@ -185,7 +188,7 @@ export default function BlackberryClientsContent() {
 
       {/* Client Grid */}
       <div className="pb-12">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {clients.map((client, index) => {
             const sectorColor = SECTOR_COLORS[client.sector] || "#ff9d23";
             const isLongTerm = client.yearStarted && new Date().getFullYear() - client.yearStarted >= 3;
@@ -198,7 +201,10 @@ export default function BlackberryClientsContent() {
                 sectorColor={sectorColor}
                 isLongTerm={isLongTerm}
                 delay={delay}
-                onClick={() => setSelectedClient(client)}
+                onClick={() => {
+                  triggerHaptic(15);
+                  setSelectedClient(client);
+                }}
               />
             );
           })}
@@ -227,26 +233,34 @@ export default function BlackberryClientsContent() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-          onClick={() => setSelectedClient(null)}
-          style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+          className="absolute inset-0 z-50 overflow-y-auto"
+          onClick={() => {
+            triggerHaptic(10);
+            setSelectedClient(null);
+          }}
+          style={{ backgroundColor: 'rgba(0,0,0,0.85)', top: 0, bottom: 0 }}
         >
-          {/* Modal Content */}
-          <motion.div
-            initial={{ scale: 0.95, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.95, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/10 p-6 md:p-8 max-h-[85vh] overflow-y-auto"
+          <div className="min-h-full flex items-center justify-center p-3">
+            {/* Modal Content */}
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 p-4 md:p-6 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
             style={{
               boxShadow: `0 0 20px ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
             }}
           >
-            {/* Close button */}
-            <button
-              onClick={() => setSelectedClient(null)}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-300 group"
+              {/* Close button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  triggerHaptic(10);
+                  setSelectedClient(null);
+                }}
+                className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center border border-white/20 hover:bg-white/5 transition-all duration-300 group"
               style={{
                 borderColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23',
               }}
@@ -257,55 +271,53 @@ export default function BlackberryClientsContent() {
               </div>
             </button>
 
-            {/* Badges */}
-            <div className="flex items-center justify-center gap-4 flex-wrap mb-6">
-              <span
-                className="inline-block px-6 py-2 text-[9px] font-light tracking-[0.15em] uppercase"
+              {/* Badges */}
+              <div className="flex items-center justify-center gap-4 flex-wrap mb-6">
+                <span
+                  className="inline-block px-8 py-2.5 text-[11px] font-light tracking-[0.15em] uppercase"
                 style={{
                   backgroundColor: `${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}20`,
                   border: `1px solid ${SECTOR_COLORS[selectedClient.sector] || '#ff9d23'}40`,
                   color: SECTOR_COLORS[selectedClient.sector] || '#ff9d23'
                 }}
-              >
-                {selectedClient.sector}
-              </span>
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/8">
-                <div
-                  className={`w-1.5 h-1.5 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/50'}`}
-                  style={{ boxShadow: selectedClient.status === 'active' ? '0 0 8px #06ffa5' : 'none' }}
-                />
-                <span className="text-[9px] text-white uppercase tracking-[0.15em] font-light">{selectedClient.status}</span>
+                >
+                  {selectedClient.sector}
+                </span>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/8">
+                  <div
+                    className={`w-1.5 h-1.5 rounded-full ${selectedClient.status === 'active' ? 'bg-[#06ffa5]' : 'bg-white/50'}`}
+                    style={{ boxShadow: selectedClient.status === 'active' ? '0 0 8px #06ffa5' : 'none' }}
+                  />
+                  <span className="text-[11px] text-white uppercase tracking-[0.15em] font-light">{selectedClient.status}</span>
+                </div>
               </div>
-            </div>
 
-            {/* Client Logo/Name */}
-            <div className="mb-8 pb-8 border-b border-white/5 text-center">
-              {selectedClient.logo ? (
-                <img
-                  src={selectedClient.logo}
-                  alt={selectedClient.name}
-                  className="max-w-[180px] h-auto mx-auto opacity-100 filter brightness-0 invert"
+              {/* Client Logo/Name */}
+              <div className="mb-8 pb-8 border-b border-white/5 text-center">
+                {selectedClient.logo ? (
+                  <img
+                    src={selectedClient.logo}
+                    alt={selectedClient.name}
+                    className="max-w-[200px] h-auto mx-auto opacity-100 filter brightness-0 invert"
                 />
-              ) : (
-                <h2 className="text-[32px] font-thin text-white tracking-[0.08em]">
-                  {selectedClient.name}
-                </h2>
-              )}
-            </div>
+                ) : (
+                  <h2 className="text-[32px] font-thin text-white tracking-[0.08em]">
+                    {selectedClient.name}
+                  </h2>
+                )}
+              </div>
 
-            {/* Client Details Grid */}
-            <div className="mb-8 grid md:grid-cols-2 gap-6">
-              {/* Left Column */}
-              <div className="space-y-6">
+              {/* Client Details - Single Column */}
+              <div className="mb-8 space-y-6">
                 <div>
-                  <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">
                     Projects Delivered
                   </p>
                   <p className="text-[24px] text-white font-light tabular-nums">{selectedClient.projects}</p>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">
                     Timeline
                   </p>
                   {selectedClient.yearStarted ? (
@@ -322,43 +334,40 @@ export default function BlackberryClientsContent() {
 
                 {selectedClient.website && (
                   <div>
-                    <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-2">
+                    <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">
                       Website
                     </p>
                     <a
                       href={selectedClient.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[13px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-300"
+                      className="text-[15px] text-[#ff9d23]/80 hover:text-[#ff9d23] font-light transition-all duration-300"
                     >
                       Visit Site →
                     </a>
                   </div>
                 )}
-              </div>
 
-              {/* Right Column */}
-              <div className="space-y-6">
                 <div>
-                  <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-2">Tagline</p>
-                  <p className="text-[14px] text-white leading-[1.6] font-light">
+                  <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">Tagline</p>
+                  <p className="text-[16px] text-white leading-[1.6] font-light">
                     {selectedClient.tagline || <span className="italic text-white/40">Tagline forthcoming</span>}
                   </p>
                 </div>
 
                 {selectedClient.results && (
                   <div className="px-4 py-4 border border-white/8 border-l-2" style={{ borderLeftColor: SECTOR_COLORS[selectedClient.sector] || '#ff9d23' }}>
-                    <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-2">
+                    <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">
                       Results
                     </p>
-                    <p className="text-[13px] text-white font-light leading-[1.6]">
+                    <p className="text-[15px] text-white font-light leading-[1.6]">
                       {selectedClient.results}
                     </p>
                   </div>
                 )}
 
                 <div>
-                  <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-2">
+                  <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-2">
                     Deliverables
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -366,35 +375,35 @@ export default function BlackberryClientsContent() {
                       selectedClient.deliverables.map((item, i) => (
                         <span
                           key={i}
-                          className="px-3 py-1.5 text-[10px] bg-white/5 border border-white/10 text-white"
+                          className="px-3 py-1.5 text-[12px] bg-white/5 border border-white/10 text-white"
                           style={{ fontFamily: 'ui-monospace, monospace' }}
                         >
                           {item}
                         </span>
                       ))
                     ) : (
-                      <span className="px-3 py-1.5 text-[10px] bg-white/5 border border-white/10 text-white/40 italic">
+                      <span className="px-3 py-1.5 text-[12px] bg-white/5 border border-white/10 text-white/40 italic">
                         Details forthcoming
                       </span>
                     )}
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Testimonial */}
-            {selectedClient.testimonial && (
-              <div className="pt-6 border-t border-white/5">
-                <p className="text-[11px] text-white font-medium uppercase tracking-[0.15em] mb-4">Testimonial</p>
-                <blockquote className="text-[14px] text-white font-light italic leading-[1.6] pl-4 border-l-2 border-[#ff9d23]/40">
-                  {selectedClient.testimonial}
-                </blockquote>
-                <p className="text-right text-[11px] text-white/60 font-light tracking-[0.12em] mt-3">
-                  — {selectedClient.name}
-                </p>
-              </div>
-            )}
-          </motion.div>
+              {/* Testimonial */}
+              {selectedClient.testimonial && (
+                <div className="pt-6 border-t border-white/5">
+                  <p className="text-[12px] text-white font-medium uppercase tracking-[0.15em] mb-4">Testimonial</p>
+                  <blockquote className="text-[16px] text-white font-light italic leading-[1.6] pl-4 border-l-2 border-[#ff9d23]/40">
+                    {selectedClient.testimonial}
+                  </blockquote>
+                  <p className="text-right text-[11px] text-white/60 font-light tracking-[0.12em] mt-3">
+                    — {selectedClient.name}
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </div>
         </motion.div>
       )}
     </div>
@@ -473,12 +482,12 @@ function ClientCell({
           <img
             src={client.logo}
             alt={client.name}
-            className="max-w-[80px] md:max-w-[100px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-all duration-500 filter brightness-0 invert"
+            className="max-w-[110px] md:max-w-[130px] h-auto mx-auto opacity-70 group-hover:opacity-100 transition-all duration-500 filter brightness-0 invert"
           />
         ) : (
           <div className="relative px-4 py-2">
             <div
-              className="relative text-[11px] md:text-[12px] font-thin transition-all duration-500 bg-gradient-to-b from-white/90 via-white/80 to-white/60 bg-clip-text text-transparent group-hover:from-white group-hover:via-white/95 group-hover:to-white/85"
+              className="relative text-[13px] md:text-[14px] font-thin transition-all duration-500 bg-gradient-to-b from-white/90 via-white/80 to-white/60 bg-clip-text text-transparent group-hover:from-white group-hover:via-white/95 group-hover:to-white/85"
               style={{
                 letterSpacing: '0.2em',
                 lineHeight: 1.4,
@@ -492,7 +501,7 @@ function ClientCell({
         {/* Tagline */}
         {client.tagline && (
           <div className="absolute top-full left-0 right-0 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <p className="text-[8px] text-white/70 font-light tracking-wider uppercase">
+            <p className="text-[10px] text-white/70 font-light tracking-wider uppercase">
               {client.tagline}
             </p>
           </div>
