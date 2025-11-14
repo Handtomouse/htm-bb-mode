@@ -545,20 +545,99 @@ export default function BlackberryAboutContent() {
             }}
           >
             <div className="relative space-y-6">
+              {/* Fragmented Luxury Typography */}
               <motion.h1
-                className="text-[48px] md:text-[56px] lg:text-[64px] font-bold uppercase tracking-[0.1em] leading-tight text-[#ff9d23]"
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+                className="relative text-[56px] md:text-[72px] lg:text-[88px] font-black uppercase tracking-[0.4em] md:tracking-[0.5em] leading-none select-none"
                 style={{
-                  fontFamily: 'var(--font-mono)'
+                  fontFamily: 'var(--font-mono)',
+                  textShadow: '0 0 40px rgba(255,157,35,0.2)'
                 }}
               >
-                About
+                {/* Outline layer behind */}
+                <span className="absolute inset-0 translate-x-1 translate-y-1 opacity-20" style={{
+                  WebkitTextStroke: '2px rgba(255,157,35,0.6)',
+                  color: 'transparent'
+                }}>
+                  ABOUT
+                </span>
+
+                {/* Main letters with stagger and gradient */}
+                <motion.span
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.1,
+                        delayChildren: 0.2
+                      }
+                    },
+                    hover: {
+                      transition: {
+                        staggerChildren: 0.05
+                      }
+                    }
+                  }}
+                  className="relative flex justify-center"
+                >
+                  {['A', 'B', 'O', 'U', 'T'].map((letter, i) => (
+                    <motion.span
+                      key={i}
+                      variants={{
+                        hidden: {
+                          opacity: 0,
+                          y: 60,
+                          rotateX: -90
+                        },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          rotateX: 0,
+                          transition: {
+                            duration: 0.8,
+                            ease: [0.16, 1, 0.3, 1]
+                          }
+                        },
+                        hover: {
+                          y: i % 2 === 0 ? -3 : 3,
+                          transition: { duration: 0.2 }
+                        }
+                      }}
+                      className="inline-block"
+                      style={{
+                        background: 'linear-gradient(135deg, #ff9d23 0%, #FFB84D 50%, #ff9d23 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        filter: 'brightness(1.1)'
+                      }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </motion.span>
+
+                {/* Breathing scale animation */}
+                <motion.span
+                  animate={{
+                    scaleX: [1, 1.02, 1]
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute inset-0 pointer-events-none"
+                />
               </motion.h1>
 
               {/* Read Time Indicator */}
               <motion.p
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 0.7, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
                 className="text-[14px] md:text-[16px] text-white/60 uppercase tracking-[0.15em] font-medium"
               >
                 ~3 min read
@@ -586,7 +665,7 @@ export default function BlackberryAboutContent() {
                 alt="Scroll down"
                 width={80}
                 height={80}
-                className="h-20 w-20 md:h-24 md:w-24 opacity-70"
+                className="h-20 w-20 md:h-24 md:w-24 opacity-70 rotate-90"
                 priority
               />
             </motion.div>
