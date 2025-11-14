@@ -544,58 +544,49 @@ export default function BlackberryAboutContent() {
               visibility: heroOpacity < 0.05 ? 'hidden' : 'visible'
             }}
           >
-            <div className="relative">
-              {/* Gradient backdrop */}
-              <div className="absolute inset-0 -m-8 bg-gradient-radial from-[#ff9d23]/10 via-transparent to-transparent blur-2xl" />
-
+            <div className="relative space-y-6">
               <motion.h1
-                className="relative text-[64px] md:text-[72px] lg:text-[80px] font-black uppercase tracking-[0.3em] leading-tight text-[#ff9d23]"
+                className="text-[48px] md:text-[56px] lg:text-[64px] font-bold uppercase tracking-[0.1em] leading-tight text-[#ff9d23]"
                 style={{
-                  textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)',
                   fontFamily: 'var(--font-mono)'
                 }}
-                whileHover={{
-                  scale: 1.05,
-                  textShadow: '0 0 60px rgba(255,157,35,0.6), 0 0 100px rgba(255,157,35,0.3)'
-                }}
-                transition={{ duration: 0.4 }}
               >
                 About
               </motion.h1>
 
               {/* Read Time Indicator */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 0.6, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-[11px] md:text-[13px] text-white/50 uppercase tracking-[0.15em] font-medium"
+              <motion.p
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 0.7, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="text-[14px] md:text-[16px] text-white/60 uppercase tracking-[0.15em] font-medium"
               >
                 ~3 min read
-              </motion.div>
+              </motion.p>
             </div>
 
-            {/* Scroll indicator - HTM icon with pulse */}
+            {/* Scroll indicator - HTM icon with subtle pulse */}
             <motion.div
-              className="mt-20 md:mt-24 lg:mt-32"
+              className="mt-16 md:mt-20"
               animate={{
-                y: [0, 15, 0],
-                opacity: [0.7, 1, 0.7]
+                y: [0, 12, 0],
+                opacity: [0.6, 0.8, 0.6]
               }}
               transition={{
-                duration: 2,
+                duration: 3,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
               style={{
-                filter: 'drop-shadow(0 0 20px rgba(255,157,35,0.6))'
+                filter: 'drop-shadow(0 0 8px rgba(255,157,35,0.3))'
               }}
             >
               <Image
                 src="/logos/HTM-LOGO-ICON-01.svg"
                 alt="Scroll down"
-                width={56}
-                height={56}
-                className="h-14 w-14 md:h-16 md:w-16 rotate-90 opacity-80"
+                width={80}
+                height={80}
+                className="h-20 w-20 md:h-24 md:w-24 opacity-70"
                 priority
               />
             </motion.div>
