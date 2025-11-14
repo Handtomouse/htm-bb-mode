@@ -51,7 +51,8 @@ export default function TypewriterManifesto({
         letterSpacing: '0.08em',
         textShadow: '0 1px 2px rgba(255,157,35,0.1)',
         minHeight: '1.4em',
-        transition: 'font-size 0.2s ease-out'
+        transition: 'font-size 0.2s ease-out',
+        whiteSpace: 'nowrap'
       }}
     >
       {beforeAccent}
