@@ -607,12 +607,12 @@ export default function BlackberryAboutContent() {
                   scale: { duration: 1.8, ease: [0.34, 1.56, 0.64, 1] },
                   rotateX: { duration: 1.8 }
                 }}
-                className="relative text-[180px] md:text-[240px] lg:text-[280px] font-black uppercase tracking-[0.3em] leading-none select-none"
+                className="relative text-[240px] md:text-[320px] lg:text-[380px] font-black uppercase tracking-[0.3em] leading-none select-none"
                 style={{
                   fontFamily: 'var(--font-mono)',
                   color: 'transparent',
-                  WebkitTextStroke: '3px #ff9d23',
-                  textShadow: '0 0 30px rgba(255,157,35,0.9), 0 0 60px rgba(255,157,35,0.5)',
+                  WebkitTextStroke: '4px #ff9d23',
+                  textShadow: '0 0 40px rgba(255,157,35,0.9), 0 0 80px rgba(255,157,35,0.5)',
                   perspective: '1000px',
                   transformStyle: 'preserve-3d'
                 }}

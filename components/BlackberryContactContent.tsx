@@ -698,7 +698,7 @@ export default function BlackberryContactContent() {
 
         <form
           noValidate
-          className={`space-y-6 md:space-y-8 transition-all duration-300 ${isDragging ? 'ring-2 ring-[#ff9d23] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
+          className={`space-y-8 md:space-y-10 lg:space-y-12 transition-all duration-300 ${isDragging ? 'ring-2 ring-[#ff9d23] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
           onSubmit={onSubmit}
           onKeyDown={onKeyDown}
           onDragOver={onDragOver}
