@@ -228,7 +228,6 @@ export default function BlackberrySettingsContentNew() {
       <div className="space-y-6 mt-6">
         {/* Appearance Section */}
         <SettingCard title="Appearance" delay={0.1}>
-          <div className="space-y-4">
             {/* Theme */}
             <div>
               <label className="block text-xs text-white/70 uppercase tracking-wider mb-2">
@@ -327,12 +326,10 @@ export default function BlackberrySettingsContentNew() {
               unit="%"
               onChange={(value) => updateSetting("brightness", value)}
             />
-          </div>
         </SettingCard>
 
         {/* Behavior Section */}
         <SettingCard title="Behavior" delay={0.2}>
-          <div className="space-y-4">
             {/* Dock Mode */}
             <div>
               <label className="block text-xs text-white/70 uppercase tracking-wider mb-2">
@@ -401,12 +398,10 @@ export default function BlackberrySettingsContentNew() {
               onChange={(value) => updateSetting("highContrast", value)}
               description="Increase text contrast"
             />
-          </div>
         </SettingCard>
 
         {/* Privacy Section */}
         <SettingCard title="Privacy" delay={0.3}>
-          <div className="space-y-4">
             <ToggleSetting
               label="Analytics"
               value={settings.analyticsEnabled}
@@ -424,21 +419,20 @@ export default function BlackberrySettingsContentNew() {
                 All settings stored locally in your browser. No data sent to external servers.
               </p>
             </div>
-          </div>
         </SettingCard>
 
         {/* About Section */}
         <SettingCard title="About" delay={0.4}>
-          <div className="space-y-3 text-xs text-white/60">
-            <div className="flex justify-between items-center pb-2 border-b border-white/5">
+          <div className="text-xs text-white/60 space-y-3">
+            <div className="flex justify-between items-center pb-3 border-b border-white/5">
               <span>Model:</span>
               <span className="text-white/90">BB OS5 Portfolio</span>
             </div>
-            <div className="flex justify-between items-center pb-2 border-b border-white/5">
+            <div className="flex justify-between items-center pb-3 border-b border-white/5">
               <span>Version:</span>
               <span className="text-white/90 tabular-nums">v1.0.0</span>
             </div>
-            <div className="flex justify-between items-center pb-2 border-b border-white/5">
+            <div className="flex justify-between items-center pb-3 border-b border-white/5">
               <span>Build:</span>
               <span className="text-white/90 tabular-nums">2025.11.13</span>
             </div>
@@ -514,16 +508,16 @@ function SettingCard({
         delay,
         ease: [0.43, 0.13, 0.23, 0.96],
       }}
-      className="border border-white/10 bg-black/20 overflow-hidden"
+      className="border border-white/10 bg-black/20 backdrop-blur-sm overflow-hidden"
     >
       {/* Clickable Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors duration-200"
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] active:bg-white/[0.03] transition-all duration-200 group"
         aria-expanded={isOpen}
         aria-label={`${isOpen ? "Collapse" : "Expand"} ${title} section`}
       >
-        <h2 className="text-sm text-white uppercase tracking-wider">
+        <h2 className="text-sm text-white/90 uppercase tracking-[0.12em] font-medium">
           {title}
         </h2>
         <motion.svg
@@ -533,7 +527,7 @@ function SettingCard({
           height="16"
           viewBox="0 0 16 16"
           fill="none"
-          className="text-white/70"
+          className="text-white/50 group-hover:text-white/70 transition-colors duration-200"
         >
           <path
             d="M4 6L8 10L12 6"
@@ -564,7 +558,9 @@ function SettingCard({
         }}
         style={{ overflow: "hidden" }}
       >
-        <div className="px-4 pb-4">{children}</div>
+        <div className="px-6 pb-6 pt-2">
+          <div className="space-y-5">{children}</div>
+        </div>
       </motion.div>
     </motion.div>
   );
