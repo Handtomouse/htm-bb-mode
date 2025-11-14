@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useHapticFeedback } from "@/lib/hooks";
 
 const ACCENT = "#FF9D23";
 
@@ -15,6 +16,7 @@ const GAMES_LIST = [
 ];
 
 export default function BlackberryGamesContent() {
+  const triggerHaptic = useHapticFeedback();
   const [currentGame, setCurrentGame] = useState<Game>("menu");
 
   return (
@@ -25,7 +27,10 @@ export default function BlackberryGamesContent() {
         </h1>
         {currentGame !== "menu" && (
           <button
-            onClick={() => setCurrentGame("menu")}
+            onClick={() => {
+              triggerHaptic(10);
+              setCurrentGame("menu");
+            }}
             className="px-2 py-1 text-xs font-semibold text-white/70 hover:text-[#FF9D23]"
           >
             ← Menu
@@ -47,12 +52,17 @@ export default function BlackberryGamesContent() {
 }
 
 function GameMenu({ onSelectGame }: { onSelectGame: (game: string) => void }) {
+  const triggerHaptic = useHapticFeedback();
+
   return (
     <div className="space-y-2">
       {GAMES_LIST.map((game) => (
         <button
           key={game.id}
-          onClick={() => onSelectGame(game.id)}
+          onClick={() => {
+            triggerHaptic(10);
+            onSelectGame(game.id);
+          }}
           className="flex w-full items-center gap-3 border border-white/10 bg-black/30 p-3 text-left hover:border-[#FF9D23]/50"
         >
           <div className="text-3xl">{game.icon}</div>
@@ -72,6 +82,7 @@ function GameMenu({ onSelectGame }: { onSelectGame: (game: string) => void }) {
 
 // Snake Game
 function SnakeGame() {
+  const triggerHaptic = useHapticFeedback();
   const GRID_SIZE = 15;
   const INITIAL_SPEED = 150;
 
@@ -181,7 +192,10 @@ function SnakeGame() {
           Score: <span className="text-[#FF9D23]">{score}</span>
         </div>
         <button
-          onClick={() => setIsPaused(!isPaused)}
+          onClick={() => {
+            triggerHaptic(10);
+            setIsPaused(!isPaused);
+          }}
           className="px-2 py-1 text-white/70 hover:text-[#FF9D23]"
         >
           {isPaused ? "▶ Resume" : "⏸ Pause"}
@@ -230,7 +244,10 @@ function SnakeGame() {
               <div className="mb-2 text-lg font-semibold text-white">Game Over!</div>
               <div className="mb-3 text-sm text-[#FF9D23]">Score: {score}</div>
               <button
-                onClick={resetGame}
+                onClick={() => {
+                  triggerHaptic(15);
+                  resetGame();
+                }}
                 className="border-2 border-[#FF9D23] bg-[#FF9D23]/10 px-4 py-2 text-sm font-semibold text-[#FF9D23] hover:bg-[#FF9D23] hover:text-black"
               >
                 Play Again
@@ -245,26 +262,38 @@ function SnakeGame() {
         <div className="grid grid-cols-3 gap-1">
           <div />
           <button
-            onClick={() => handleKeyPress("up")}
+            onClick={() => {
+              triggerHaptic(10);
+              handleKeyPress("up");
+            }}
             className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
           >
             ↑
           </button>
           <div />
           <button
-            onClick={() => handleKeyPress("left")}
+            onClick={() => {
+              triggerHaptic(10);
+              handleKeyPress("left");
+            }}
             className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
           >
             ←
           </button>
           <button
-            onClick={() => handleKeyPress("down")}
+            onClick={() => {
+              triggerHaptic(10);
+              handleKeyPress("down");
+            }}
             className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
           >
             ↓
           </button>
           <button
-            onClick={() => handleKeyPress("right")}
+            onClick={() => {
+              triggerHaptic(10);
+              handleKeyPress("right");
+            }}
             className="border border-white/10 bg-black/30 py-2 text-white hover:border-[#FF9D23]/50"
           >
             →
@@ -281,6 +310,7 @@ function SnakeGame() {
 
 // Memory Match Game
 function MemoryGame() {
+  const triggerHaptic = useHapticFeedback();
   const SYMBOLS = ["🎨", "🎭", "🎪", "🎸", "🎺", "🎹", "🎬", "🎮"];
   const [cards, setCards] = useState<{ id: number; symbol: string; flipped: boolean; matched: boolean }[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
@@ -340,7 +370,10 @@ function MemoryGame() {
         <div>
           Moves: <span className="text-[#FF9D23]">{moves}</span>
         </div>
-        <button onClick={initGame} className="px-2 py-1 text-white/70 hover:text-[#FF9D23]">
+        <button onClick={() => {
+          triggerHaptic(10);
+          initGame();
+        }} className="px-2 py-1 text-white/70 hover:text-[#FF9D23]">
           ↻ Reset
         </button>
       </div>
@@ -349,7 +382,10 @@ function MemoryGame() {
         {cards.map((card, index) => (
           <button
             key={card.id}
-            onClick={() => handleCardClick(index)}
+            onClick={() => {
+              triggerHaptic(10);
+              handleCardClick(index);
+            }}
             className={`aspect-square border text-2xl transition-colors ${
               card.matched
                 ? "border-[#FF9D23] bg-[#FF9D23]/20"
@@ -369,7 +405,10 @@ function MemoryGame() {
           <div className="mb-2 text-sm font-semibold text-white">🎉 Completed!</div>
           <div className="mb-2 text-xs text-[#FF9D23]">Moves: {moves}</div>
           <button
-            onClick={initGame}
+            onClick={() => {
+              triggerHaptic(15);
+              initGame();
+            }}
             className="border-2 border-[#FF9D23] bg-black/50 px-3 py-1 text-xs font-semibold text-[#FF9D23] hover:bg-[#FF9D23] hover:text-black"
           >
             Play Again
@@ -384,6 +423,7 @@ function MemoryGame() {
 
 // Tic-Tac-Toe Game
 function TicTacToeGame() {
+  const triggerHaptic = useHapticFeedback();
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   const [winner, setWinner] = useState<string | null>(null);
@@ -480,7 +520,10 @@ function TicTacToeGame() {
             <span className="text-white/50">AI Thinking...</span>
           )}
         </div>
-        <button onClick={resetGame} className="px-2 py-1 text-white/70 hover:text-[#FF9D23]">
+        <button onClick={() => {
+          triggerHaptic(10);
+          resetGame();
+        }} className="px-2 py-1 text-white/70 hover:text-[#FF9D23]">
           ↻ Reset
         </button>
       </div>
@@ -489,7 +532,10 @@ function TicTacToeGame() {
         {board.map((cell, index) => (
           <button
             key={index}
-            onClick={() => handleClick(index)}
+            onClick={() => {
+              triggerHaptic(10);
+              handleClick(index);
+            }}
             className={`flex h-16 w-16 items-center justify-center border text-2xl font-bold ${
               winningLine?.includes(index)
                 ? "border-[#FF9D23] bg-[#FF9D23]/20"
@@ -505,7 +551,10 @@ function TicTacToeGame() {
       {winner && (
         <div className="mt-3 text-center">
           <button
-            onClick={resetGame}
+            onClick={() => {
+              triggerHaptic(15);
+              resetGame();
+            }}
             className="border-2 border-[#FF9D23] bg-[#FF9D23]/10 px-4 py-2 text-sm font-semibold text-[#FF9D23] hover:bg-[#FF9D23] hover:text-black"
           >
             Play Again

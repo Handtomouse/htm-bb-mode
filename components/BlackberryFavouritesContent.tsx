@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useHapticFeedback } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBEmptyState from "./BBEmptyState";
 import BBButton from "./BBButton";
@@ -65,6 +66,7 @@ const INITIAL_FAVOURITES: Favourite[] = [
 ];
 
 export default function BlackberryFavouritesContent() {
+  const triggerHaptic = useHapticFeedback();
   const [favourites, setFavourites] = useState<Favourite[]>(INITIAL_FAVOURITES);
   const [filter, setFilter] = useState<"all" | "project" | "link" | "note">("all");
 
@@ -97,7 +99,10 @@ export default function BlackberryFavouritesContent() {
         {(["all", "project", "link", "note"] as const).map((f) => (
           <button
             key={f}
-            onClick={() => setFilter(f)}
+            onClick={() => {
+              triggerHaptic(10);
+              setFilter(f);
+            }}
             className={`flex-1 px-2 py-1 text-xs font-semibold uppercase ${
               filter === f ? "bg-[#FF9D23] text-black" : "text-white/60 hover:text-white"
             }`}
@@ -135,14 +140,20 @@ export default function BlackberryFavouritesContent() {
               </div>
               <div className="flex gap-1">
                 <button
-                  onClick={() => handleOpen(fav)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    handleOpen(fav);
+                  }}
                   className="px-2 py-1 text-xs font-semibold text-[#FF9D23] hover:underline"
                   aria-label="Open"
                 >
                   Open
                 </button>
                 <button
-                  onClick={() => handleRemove(fav.id)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    handleRemove(fav.id);
+                  }}
                   className="px-2 py-1 text-xs font-semibold text-red-400 hover:underline"
                   aria-label="Remove"
                 >
@@ -159,7 +170,10 @@ export default function BlackberryFavouritesContent() {
       {/* Add New (Placeholder) */}
       <div className="mt-4">
         <button
-          onClick={() => alert("Add new favourite feature coming soon!")}
+          onClick={() => {
+            triggerHaptic(10);
+            alert("Add new favourite feature coming soon!");
+          }}
           className="w-full border-2 border-dashed border-white/20 bg-black/20 px-4 py-3 text-sm font-semibold text-white/50 hover:border-[#FF9D23]/50 hover:text-[#FF9D23]/70"
         >
           + Add Favourite

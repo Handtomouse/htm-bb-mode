@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useHapticFeedback } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBEmptyState from "./BBEmptyState";
 import BBButton from "./BBButton";
@@ -149,6 +150,7 @@ const WEB_LINKS: Link[] = [
 ];
 
 export default function BlackberryWebContent() {
+  const triggerHaptic = useHapticFeedback();
   const [category, setCategory] = useState<Category>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -177,7 +179,10 @@ export default function BlackberryWebContent() {
           type="text"
           placeholder="Search links..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            triggerHaptic(10);
+            setSearchQuery(e.target.value);
+          }}
           className="w-full border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder-white/40 focus:border-[#FF9D23] focus:outline-none"
         />
       </div>
@@ -189,7 +194,10 @@ export default function BlackberryWebContent() {
         {(["all", "design", "dev", "social", "tools"] as const).map((cat) => (
           <button
             key={cat}
-            onClick={() => setCategory(cat)}
+            onClick={() => {
+              triggerHaptic(10);
+              setCategory(cat);
+            }}
             className={`flex-1 px-2 py-1 text-xs font-semibold uppercase ${
               category === cat ? "bg-[#FF9D23] text-black" : "text-white/60 hover:text-white"
             }`}
@@ -213,14 +221,21 @@ export default function BlackberryWebContent() {
           icon="🔍"
           title="No links found"
           description={`Try adjusting your search or filters`}
-          action={{ label: "Clear Filters", onClick: () => { setSearchQuery(""); setCategory("all"); } }}
+          action={{ label: "Clear Filters", onClick: () => {
+            triggerHaptic(10);
+            setSearchQuery("");
+            setCategory("all");
+          } }}
         />
       ) : (
         <div className="space-y-6 md:space-y-8">
           {filteredLinks.map((link) => (
             <button
               key={link.id}
-              onClick={() => handleOpenLink(link.url)}
+              onClick={() => {
+                triggerHaptic(10);
+                handleOpenLink(link.url);
+              }}
               className="flex w-full items-center gap-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6 text-left hover:border-[#FF9D23]/50"
             >
               <div className="text-2xl">{link.icon}</div>
@@ -244,13 +259,19 @@ export default function BlackberryWebContent() {
       {/* Quick Actions */}
       <div className="mt-4 grid grid-cols-2 gap-2">
         <button
-          onClick={() => handleOpenLink("https://handtomouse.com")}
+          onClick={() => {
+            triggerHaptic(10);
+            handleOpenLink("https://handtomouse.com");
+          }}
           className="border-2 border-white/20 bg-black/20 px-3 py-2 text-xs font-semibold text-white hover:border-[#FF9D23] hover:text-[#FF9D23]"
         >
           🏠 Main Site
         </button>
         <button
-          onClick={() => handleOpenLink("https://handtomouse.com/portfolio")}
+          onClick={() => {
+            triggerHaptic(10);
+            handleOpenLink("https://handtomouse.com/portfolio");
+          }}
           className="border-2 border-white/20 bg-black/20 px-3 py-2 text-xs font-semibold text-white hover:border-[#FF9D23] hover:text-[#FF9D23]"
         >
           💼 Portfolio

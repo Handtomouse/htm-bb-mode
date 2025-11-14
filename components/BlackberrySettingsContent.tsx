@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useHapticFeedback } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBButton from "./BBButton";
 
 const ACCENT = "#FF9D23";
 
 export default function BlackberrySettingsContent() {
+  const triggerHaptic = useHapticFeedback();
   const [brightness, setBrightness] = useState(80);
   const [contrast, setContrast] = useState(100);
   const [trackpadSensitivity, setTrackpadSensitivity] = useState(50);
@@ -34,7 +36,10 @@ export default function BlackberrySettingsContent() {
                 min="0"
                 max="100"
                 value={brightness}
-                onChange={(e) => setBrightness(Number(e.target.value))}
+                onChange={(e) => {
+                  triggerHaptic(10);
+                  setBrightness(Number(e.target.value));
+                }}
                 className="w-full accent-[#FF9D23]"
               />
             </div>
@@ -49,7 +54,10 @@ export default function BlackberrySettingsContent() {
                 min="50"
                 max="150"
                 value={contrast}
-                onChange={(e) => setContrast(Number(e.target.value))}
+                onChange={(e) => {
+                  triggerHaptic(10);
+                  setContrast(Number(e.target.value));
+                }}
                 className="w-full accent-[#FF9D23]"
               />
             </div>
@@ -74,7 +82,10 @@ export default function BlackberrySettingsContent() {
                 min="0"
                 max="100"
                 value={trackpadSensitivity}
-                onChange={(e) => setTrackpadSensitivity(Number(e.target.value))}
+                onChange={(e) => {
+                  triggerHaptic(10);
+                  setTrackpadSensitivity(Number(e.target.value));
+                }}
                 className="w-full accent-[#FF9D23]"
               />
             </div>
@@ -92,7 +103,10 @@ export default function BlackberrySettingsContent() {
               <input
                 type="checkbox"
                 checked={soundEnabled}
-                onChange={(e) => setSoundEnabled(e.target.checked)}
+                onChange={(e) => {
+                  triggerHaptic(10);
+                  setSoundEnabled(e.target.checked);
+                }}
                 className="h-4 w-4 accent-[#FF9D23]"
               />
             </label>
@@ -102,7 +116,10 @@ export default function BlackberrySettingsContent() {
               <input
                 type="checkbox"
                 checked={vibrateEnabled}
-                onChange={(e) => setVibrateEnabled(e.target.checked)}
+                onChange={(e) => {
+                  triggerHaptic(10);
+                  setVibrateEnabled(e.target.checked);
+                }}
                 className="h-4 w-4 accent-[#FF9D23]"
               />
             </label>
@@ -120,7 +137,10 @@ export default function BlackberrySettingsContent() {
               <input
                 type="checkbox"
                 checked={notifications}
-                onChange={(e) => setNotifications(e.target.checked)}
+                onChange={(e) => {
+                  triggerHaptic(10);
+                  setNotifications(e.target.checked);
+                }}
                 className="h-4 w-4 accent-[#FF9D23]"
               />
             </label>
@@ -160,6 +180,7 @@ export default function BlackberrySettingsContent() {
             variant="secondary"
             fullWidth
             onClick={() => {
+              triggerHaptic(15);
               setBrightness(80);
               setContrast(100);
               setTrackpadSensitivity(50);

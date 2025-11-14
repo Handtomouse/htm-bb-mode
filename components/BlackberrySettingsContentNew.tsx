@@ -176,7 +176,10 @@ export default function BlackberrySettingsContentNew() {
                   ? "border-[#fbbf24]/30 bg-[#fbbf24]/10 text-[#fbbf24]"
                   : "border-[#ff9d23]/30 bg-[#ff9d23]/10 text-[#ff9d23]"
               }`}
-              onClick={() => setToasts((prev) => prev.filter((t) => t.id !== toast.id))}
+              onClick={() => {
+                triggerHaptic(10);
+                setToasts((prev) => prev.filter((t) => t.id !== toast.id));
+              }}
             >
               {/* Icon */}
               <span className="text-sm">
@@ -210,7 +213,10 @@ export default function BlackberrySettingsContentNew() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowPresetsModal(false)}
+              onClick={() => {
+                triggerHaptic(10);
+                setShowPresetsModal(false);
+              }}
               className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
             />
 
@@ -230,7 +236,10 @@ export default function BlackberrySettingsContentNew() {
                   {PRESETS.map((preset) => (
                     <button
                       key={preset.id}
-                      onClick={() => applyPreset(preset)}
+                      onClick={() => {
+                        triggerHaptic(15);
+                        applyPreset(preset);
+                      }}
                       className="w-full text-left p-4 border border-white/10 bg-black/20 hover:border-[#ff9d23] hover:bg-[#ff9d23]/5 transition-all duration-300"
                     >
                       <div className="flex items-start gap-3">
@@ -246,7 +255,10 @@ export default function BlackberrySettingsContentNew() {
                   ))}
                 </div>
                 <button
-                  onClick={() => setShowPresetsModal(false)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    setShowPresetsModal(false);
+                  }}
                   className="mt-4 w-full px-4 py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs uppercase tracking-wider transition-all duration-300"
                 >
                   Close
@@ -383,7 +395,10 @@ export default function BlackberrySettingsContentNew() {
               {(["dark", "light", "auto"] as const).map((theme) => (
                 <button
                   key={theme}
-                  onClick={() => updateSetting("theme", theme)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    updateSetting("theme", theme);
+                  }}
                   className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.theme === theme
                       ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
@@ -405,7 +420,10 @@ export default function BlackberrySettingsContentNew() {
               {ACCENT_COLORS.map((color) => (
                 <button
                   key={color.value}
-                  onClick={() => updateSetting("accentColor", color.value)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    updateSetting("accentColor", color.value);
+                  }}
                   className={`relative aspect-square border transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black group ${
                     settings.accentColor === color.value
                       ? "border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.1)]"
@@ -464,7 +482,10 @@ export default function BlackberrySettingsContentNew() {
               {(["small", "medium", "large"] as const).map((size) => (
                 <button
                   key={size}
-                  onClick={() => updateSetting("fontSize", size)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    updateSetting("fontSize", size);
+                  }}
                   className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.fontSize === size
                       ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
@@ -484,7 +505,10 @@ export default function BlackberrySettingsContentNew() {
             min={20}
             max={100}
             unit="%"
-            onChange={(value) => updateSetting("brightness", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("brightness", value);
+            }}
           />
         </SettingCard>
 
@@ -499,7 +523,10 @@ export default function BlackberrySettingsContentNew() {
               {(["mono", "bb"] as const).map((mode) => (
                 <button
                   key={mode}
-                  onClick={() => updateSetting("dockMode", mode)}
+                  onClick={() => {
+                    triggerHaptic(10);
+                    updateSetting("dockMode", mode);
+                  }}
                   className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.dockMode === mode
                       ? "border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
@@ -516,7 +543,10 @@ export default function BlackberrySettingsContentNew() {
           <ToggleSetting
             label="Click Sound"
             value={settings.sound}
-            onChange={(value) => updateSetting("sound", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("sound", value);
+            }}
           />
 
           {/* Volume Slider */}
@@ -526,7 +556,10 @@ export default function BlackberrySettingsContentNew() {
             min={0}
             max={100}
             unit="%"
-            onChange={(value) => updateSetting("volume", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("volume", value);
+            }}
             disabled={!settings.sound}
           />
 
@@ -534,7 +567,10 @@ export default function BlackberrySettingsContentNew() {
           <ToggleSetting
             label="Reduced Motion"
             value={settings.reducedMotion}
-            onChange={(value) => updateSetting("reducedMotion", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("reducedMotion", value);
+            }}
             description="Minimize animations"
           />
 
@@ -546,7 +582,10 @@ export default function BlackberrySettingsContentNew() {
             max={2.0}
             step={0.1}
             unit="×"
-            onChange={(value) => updateSetting("animationSpeed", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("animationSpeed", value);
+            }}
             disabled={settings.reducedMotion}
             formatValue={(v) => `${v.toFixed(1)}×`}
           />
@@ -555,7 +594,10 @@ export default function BlackberrySettingsContentNew() {
           <ToggleSetting
             label="High Contrast"
             value={settings.highContrast}
-            onChange={(value) => updateSetting("highContrast", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("highContrast", value);
+            }}
             description="Increase text contrast"
           />
         </SettingCard>
@@ -565,13 +607,19 @@ export default function BlackberrySettingsContentNew() {
           <ToggleSetting
             label="Analytics"
             value={settings.analyticsEnabled}
-            onChange={(value) => updateSetting("analyticsEnabled", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("analyticsEnabled", value);
+            }}
             description="Help improve the site"
           />
           <ToggleSetting
             label="Tracking"
             value={settings.trackingEnabled}
-            onChange={(value) => updateSetting("trackingEnabled", value)}
+            onChange={(value) => {
+              triggerHaptic(10);
+              updateSetting("trackingEnabled", value);
+            }}
             description="Third-party cookies"
           />
           <div className="pt-3 border-t border-white/10">
@@ -616,6 +664,7 @@ export default function BlackberrySettingsContentNew() {
               <button
                 onClick={() => {
                   if (undoRedo.canUndo) {
+                    triggerHaptic(10);
                     undoRedo.undo();
                     setSettings(undoRedo.state);
                     showToast("Undo", "info");
@@ -635,6 +684,7 @@ export default function BlackberrySettingsContentNew() {
               <button
                 onClick={() => {
                   if (undoRedo.canRedo) {
+                    triggerHaptic(10);
                     undoRedo.redo();
                     setSettings(undoRedo.state);
                     showToast("Redo", "info");
@@ -655,7 +705,10 @@ export default function BlackberrySettingsContentNew() {
 
             {/* Presets */}
             <button
-              onClick={() => setShowPresetsModal(true)}
+              onClick={() => {
+                triggerHaptic(10);
+                setShowPresetsModal(true);
+              }}
               aria-label="Open preset themes menu"
               className="w-full px-5 py-3.5 border border-[#ff9d23] bg-[#ff9d23]/10 text-[#ff9d23] hover:bg-[#ff9d23]/20 text-xs uppercase tracking-[0.12em] transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_10px_rgba(255,157,35,0.15)] hover:shadow-[0_0_16px_rgba(255,157,35,0.25)]"
             >
@@ -666,7 +719,10 @@ export default function BlackberrySettingsContentNew() {
             {/* Import/Export */}
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={handleExportSettings}
+                onClick={() => {
+                  triggerHaptic(10);
+                  handleExportSettings();
+                }}
                 aria-label="Export settings to JSON file"
                 className="px-4 py-3 border border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black"
               >
@@ -674,7 +730,10 @@ export default function BlackberrySettingsContentNew() {
                 Export
               </button>
               <button
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => {
+                  triggerHaptic(10);
+                  fileInputRef.current?.click();
+                }}
                 aria-label="Import settings from JSON file"
                 className="px-4 py-3 border border-white/20 hover:border-[#ff9d23]/60 hover:bg-[#ff9d23]/5 text-xs text-white/70 hover:text-[#ff9d23] uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#ff9d23]/50 focus:ring-offset-2 focus:ring-offset-black"
               >
@@ -685,7 +744,10 @@ export default function BlackberrySettingsContentNew() {
 
             {/* Reset */}
             <button
-              onClick={() => setShowResetModal(true)}
+              onClick={() => {
+                triggerHaptic(10);
+                setShowResetModal(true);
+              }}
               aria-label="Reset all settings to default values"
               className="w-full px-5 py-3 border border-white/20 hover:border-[#ef4444]/60 hover:bg-[#ef4444]/5 text-xs text-white/60 hover:text-[#ef4444] uppercase tracking-wider transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50 focus:ring-offset-2 focus:ring-offset-black"
             >
@@ -725,7 +787,10 @@ function SettingCard({
     >
       {/* Clickable Header */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          triggerHaptic(10);
+          setIsOpen(!isOpen);
+        }}
         className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] active:bg-white/[0.03] transition-all duration-200 group"
         aria-expanded={isOpen}
         aria-label={`${isOpen ? "Collapse" : "Expand"} ${title} section`}
@@ -815,10 +880,14 @@ function ToggleSetting({
         aria-checked={value}
         aria-describedby={descId}
         aria-label={`${label}: ${value ? "enabled" : "disabled"}`}
-        onClick={() => onChange(!value)}
+        onClick={() => {
+          triggerHaptic(10);
+          onChange(!value);
+        }}
         onKeyDown={(e) => {
           if (e.key === " " || e.key === "Enter") {
             e.preventDefault();
+            triggerHaptic(10);
             onChange(!value);
           }
         }}

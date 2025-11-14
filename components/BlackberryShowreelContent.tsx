@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useHapticFeedback } from "@/lib/hooks";
 import BBPageHeader from "./BBPageHeader";
 import BBButton from "./BBButton";
 
@@ -50,6 +51,7 @@ const SHOWREEL_ITEMS = [
 ];
 
 export default function BlackberryShowreelContent() {
+  const triggerHaptic = useHapticFeedback();
   const [selected, setSelected] = useState(0);
   const [yearFilter, setYearFilter] = useState<number | "all">("all");
   const [typeFilter, setTypeFilter] = useState<string | "all">("all");
@@ -114,7 +116,11 @@ export default function BlackberryShowreelContent() {
         <div className="flex gap-2">
           <select
             value={yearFilter}
-            onChange={(e) => { setYearFilter(e.target.value === "all" ? "all" : Number(e.target.value)); setSelected(0); }}
+            onChange={(e) => {
+              triggerHaptic(10);
+              setYearFilter(e.target.value === "all" ? "all" : Number(e.target.value));
+              setSelected(0);
+            }}
             className="flex-1 border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-[#FF9D23] focus:outline-none"
           >
             <option value="all">All Years</option>
@@ -122,7 +128,11 @@ export default function BlackberryShowreelContent() {
           </select>
           <select
             value={typeFilter}
-            onChange={(e) => { setTypeFilter(e.target.value); setSelected(0); }}
+            onChange={(e) => {
+              triggerHaptic(10);
+              setTypeFilter(e.target.value);
+              setSelected(0);
+            }}
             className="flex-1 border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:border-[#FF9D23] focus:outline-none"
           >
             <option value="all">All Types</option>
@@ -135,13 +145,19 @@ export default function BlackberryShowreelContent() {
 
       {/* Navigation */}
       <div className="mb-4 flex items-center justify-between border border-white/10 bg-black/30 p-2">
-        <BBButton variant="ghost" size="sm" onClick={prevItem} aria-label="Previous">
+        <BBButton variant="ghost" size="sm" onClick={() => {
+          triggerHaptic(10);
+          prevItem();
+        }} aria-label="Previous">
           ← Prev
         </BBButton>
         <span className="text-xs text-white/60">
           {selected + 1} / {filteredItems.length}
         </span>
-        <BBButton variant="ghost" size="sm" onClick={nextItem} aria-label="Next">
+        <BBButton variant="ghost" size="sm" onClick={() => {
+          triggerHaptic(10);
+          nextItem();
+        }} aria-label="Next">
           Next →
         </BBButton>
       </div>
@@ -179,7 +195,10 @@ export default function BlackberryShowreelContent() {
             <BBButton
               variant="secondary"
               fullWidth
-              onClick={() => alert("View full project details (link to /portfolio)")}
+              onClick={() => {
+                triggerHaptic(10);
+                alert("View full project details (link to /portfolio)");
+              }}
             >
               View Full Project →
             </BBButton>
@@ -196,7 +215,10 @@ export default function BlackberryShowreelContent() {
           {SHOWREEL_ITEMS.map((item, idx) => (
             <button
               key={idx}
-              onClick={() => setSelected(idx)}
+              onClick={() => {
+                triggerHaptic(10);
+                setSelected(idx);
+              }}
               className={`flex aspect-square items-center justify-center border text-2xl ${
                 idx === selected
                   ? "border-[#FF9D23] bg-[#FF9D23]/20"

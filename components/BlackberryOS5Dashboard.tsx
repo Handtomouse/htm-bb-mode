@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
@@ -8,6 +8,29 @@ import BlackberryAboutContent from "./BlackberryAboutContent";
 import BlackberryWormholeContent from "./BlackberryWormholeContent";
 import BlackberryClientsContent from "./BlackberryClientsContent";
 import BlackberryPortfolioContent from "./BlackberryPortfolioContent";
+import { ResponsiveStage, HwButton, NotiDot } from "./BlackberryUIComponents";
+import {
+  VolumeIcon,
+  SignalBars,
+  Battery,
+  PixelCallIcon,
+  PixelMenuIcon,
+  PixelBackIcon,
+  PixelPowerIcon,
+  AboutIcon,
+  WorkIcon,
+  ClientsIcon,
+  FavouritesIcon,
+  ShowreelIcon,
+  SettingsIcon,
+  DonateIcon,
+  WormholeIcon,
+  ContactIcon,
+  MessageIcon,
+  GamesIcon,
+  InstagramIcon,
+  AppGlyph
+} from "./BlackberryIcons";
 
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
@@ -31,76 +54,8 @@ export const __ACCENT = ACCENT;
 // - Entire device (screen + hardware) scales responsively to the window
 
 // =====================
-// ResponsiveStage: scales the entire phone UI (screen + hardware) to the viewport
+// ResponsiveStage, Helper Components now imported from BlackberryUIComponents and BlackberryIcons
 // =====================
-function ResponsiveStage({ children, margin = 16 }: { children: React.ReactNode; margin?: number }) {
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const [scale, setScale] = useState(1);
-
-  const recompute = useCallback(() => {
-    if (typeof window === "undefined") return;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const cw = contentRef.current?.offsetWidth || 1;
-    const ch = contentRef.current?.offsetHeight || 1;
-    const s = Math.min((vw - margin * 2) / cw, (vh - margin * 2) / ch);
-    setScale(Number.isFinite(s) && s > 0 ? s : 1);
-  }, [margin]);
-
-  useLayoutEffect(() => {
-    recompute();
-    if (typeof window === "undefined") return;
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => recompute()) : null;
-    if (contentRef.current && ro) ro.observe(contentRef.current);
-    window.addEventListener("resize", recompute);
-    return () => {
-      window.removeEventListener("resize", recompute);
-      ro?.disconnect();
-    };
-  }, [recompute]);
-
-  return (
-    <div className="w-screen h-screen bg-black grid place-items-center overflow-hidden">
-      <div ref={contentRef} style={{ transform: `scale(${scale})`, transformOrigin: "center center", willChange: "transform" }}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// =====================
-// Helper Components
-// =====================
-function VolumeIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 16 16" fill="none" className="opacity-90">
-      <path d="M8 3L5 6H2v4h3l3 3V3z" fill="currentColor" />
-      <path d="M11 5c.5.5.8 1.2.8 2s-.3 1.5-.8 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
-  return (
-    <div className="flex items-end gap-1" role="img" aria-label={`Signal ${strength}/4`}>
-      {[0, 1, 2, 3].map((i) => (
-        <span key={i} className={["w-2 rounded-none", i <= strength - 1 ? "bg-white" : "bg-white/30"].join(" ")} style={{ height: 8 + i * 6 }} />
-      ))}
-    </div>
-  );
-}
-
-function Battery({ level = 50, charging = false }: { level?: number; charging?: boolean }) {
-  const pct = Math.max(0, Math.min(100, level));
-  const color = pct < 20 ? "#ef4444" : charging ? "#fbbf24" : "#22c55e";
-
-  return (
-    <div className={`relative h-6 w-12 rounded-none border-2 border-white/70 ${charging ? "animate-pulse" : ""}`}>
-      <div className="absolute inset-1 rounded-none" style={{ width: `${pct}%`, backgroundColor: color }} />
-      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-1 h-3 bg-white/70" />
-    </div>
-  );
-}
 
 // =====================
 // Root Component
