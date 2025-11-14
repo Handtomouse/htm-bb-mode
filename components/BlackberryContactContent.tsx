@@ -14,31 +14,19 @@ import {
   KEYBOARD_SHORTCUTS,
   getCompletionSummary,
 } from "@/lib/formUtils";
-
-const ACCENT = "#FF9D23";
+import {
+  ACCENT,
+  isEmail,
+  EMAIL_DOMAIN_SUGGESTIONS,
+  MAX_FILES,
+  MAX_FILE_SIZE_MB,
+  MAX_FILE_SIZE,
+  BUDGETS,
+  TIMELINES,
+  SERVICES,
+} from "@/lib/contactFormData";
 
 type ContactMode = "quick" | "brief";
-
-const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-
-// Typo suggestions
-const EMAIL_DOMAIN_SUGGESTIONS: Record<string, string> = {
-  "gamil.com": "gmail.com",
-  "gnail.com": "gmail.com",
-  "hotnail.com": "hotmail.com",
-  "hotmil.com": "hotmail.com",
-  "outlok.com": "outlook.com",
-  "outllok.com": "outlook.com",
-  "yahho.com": "yahoo.com",
-  "yaho.com": "yahoo.com",
-  "icloud.co": "icloud.com",
-  "protn.me": "proton.me",
-};
-
-// Upload limits
-const MAX_FILES = 3;
-const MAX_FILE_SIZE_MB = 10;
-const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 type FormErrors = Partial<Record<keyof Payload, string>> & { summary?: string };
 
@@ -60,10 +48,6 @@ type Payload = {
   utm_medium?: string;
   utm_campaign?: string;
 };
-
-const BUDGETS = ["<$5k", "$5–15k", "$15–50k", "$50k+", "Not sure"] as const;
-const TIMELINES = ["ASAP (this month)", "1–3 months", "3+ months", "Exploring"] as const;
-const SERVICES = ["Branding", "Packaging", "Web/Next.js", "Campaign", "Strategy", "Other"] as const;
 
 export default function BlackberryContactContent() {
   // Improvement #8: Settings integration
