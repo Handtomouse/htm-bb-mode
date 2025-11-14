@@ -23,10 +23,33 @@ const NeonCity: React.FC = () => {
     const NUM_BUILDINGS = 26;
     const SPEED_BASE = 260;   // world units per second
 
-    // AMBER THEME COLORS
-    const LINE_COL = "rgba(255, 157, 35, 0.7)";        // #ff9d23 amber
-    const ROAD_LINE_COL = "rgba(255, 200, 100, 0.9)"; // lighter amber
-    const HORIZON_COL = "rgba(255, 157, 35, 0.2)";
+    // Get accent color from CSS variables
+    const getAccentColor = () => {
+      const root = document.documentElement;
+      const accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
+      return accentHex;
+    };
+
+    // Convert hex to rgba
+    const hexToRgba = (hex: string, alpha: number) => {
+      hex = hex.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    // Dynamic color functions
+    const getLineColor = () => hexToRgba(getAccentColor(), 0.7);
+    const getRoadLineColor = () => {
+      // Lighter version for road lines
+      const hex = getAccentColor();
+      const r = Math.min(255, parseInt(hex.substring(1, 3), 16) + 40);
+      const g = Math.min(255, parseInt(hex.substring(3, 5), 16) + 40);
+      const b = Math.min(255, parseInt(hex.substring(5, 7), 16) + 40);
+      return `rgba(${r}, ${g}, ${b}, 0.9)`;
+    };
+    const getHorizonColor = () => hexToRgba(getAccentColor(), 0.2);
 
     let speed = SPEED_BASE;
     let cameraOffsetX = 0; // Camera horizontal position for turning
@@ -43,6 +66,14 @@ const NeonCity: React.FC = () => {
     let mouseY = 0;
     let smoothMouseX = 0;
     let smoothMouseY = 0;
+
+    // Boost mode
+    let isBoostActive = false;
+    let boostEndTime = 0;
+    let boostCooldownEnd = 0;
+    const BOOST_DURATION = 3000; // 3 seconds
+    const BOOST_COOLDOWN = 8000; // 8 seconds
+    const BOOST_SPEED_MULTIPLIER = 1.8;
 
     const resize = () => {
       width = window.innerWidth;
@@ -65,6 +96,30 @@ const NeonCity: React.FC = () => {
       mouseY = (e.clientY / height - 0.5) * 2; // -1 to 1
     };
     window.addEventListener("mousemove", handleMouseMove);
+
+    // Boost trigger handlers
+    const triggerBoost = () => {
+      const now = performance.now();
+      if (now > boostCooldownEnd && !isBoostActive) {
+        isBoostActive = true;
+        boostEndTime = now + BOOST_DURATION;
+        boostCooldownEnd = now + BOOST_DURATION + BOOST_COOLDOWN;
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        triggerBoost();
+      }
+    };
+
+    const handleClick = () => {
+      triggerBoost();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    canvas.addEventListener("click", handleClick);
 
     class Building {
       side: number;
@@ -241,7 +296,7 @@ const NeonCity: React.FC = () => {
         const right1 = { x: ROAD_WIDTH, y: 0, z: z1 };
 
         // road borders
-        ctx.strokeStyle = LINE_COL;
+        ctx.strokeStyle = getLineColor();
         drawEdge(left0, left1, camX);
         drawEdge(right0, right1, camX);
 
@@ -249,13 +304,13 @@ const NeonCity: React.FC = () => {
         if (i % 2 === 0) {
           const mid0 = { x: 0, y: 0.1, z: z0 };
           const mid1 = { x: 0, y: 0.1, z: z1 };
-          ctx.strokeStyle = ROAD_LINE_COL;
+          ctx.strokeStyle = getRoadLineColor();
           drawEdge(mid0, mid1, camX);
         }
       }
 
       // extra perspective guide rails with pulsing lights
-      ctx.strokeStyle = "rgba(255, 157, 35, 0.4)";
+      ctx.strokeStyle = hexToRgba(getAccentColor(), 0.4);
       const guideOffset = ROAD_WIDTH * 2.4;
       drawEdge({ x: -guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
       drawEdge({ x: guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
@@ -271,7 +326,7 @@ const NeonCity: React.FC = () => {
         // Left side lights
         const leftBase = { x: -ROAD_WIDTH - 10, y: 0, z: lz };
         const leftTop = { x: -ROAD_WIDTH - 10, y: 35, z: lz };
-        ctx.strokeStyle = "rgba(255, 157, 35, 0.5)";
+        ctx.strokeStyle = hexToRgba(getAccentColor(), 0.5);
         ctx.lineWidth = 2;
         drawEdge(leftBase, leftTop, camX);
 
@@ -280,15 +335,15 @@ const NeonCity: React.FC = () => {
         const pulsePhase = (now * 0.001 + i * 0.3) % 2;
         const intensity = 0.6 + Math.sin(pulsePhase * Math.PI) * 0.4;
         ctx.globalAlpha = intensity * 0.7;
-        ctx.fillStyle = "rgba(255, 200, 100, 1)";
+        ctx.fillStyle = getRoadLineColor();
         ctx.shadowBlur = 12;
-        ctx.shadowColor = "rgba(255, 200, 100, 0.8)";
+        ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
         ctx.fillRect(leftPos.x - 2, leftPos.y - 2, 4, 4);
 
         // Light cone effect
         ctx.shadowBlur = 0;
         ctx.globalAlpha = intensity * 0.15;
-        ctx.fillStyle = "rgba(255, 200, 100, 0.2)";
+        ctx.fillStyle = hexToRgba(getAccentColor(), 0.2);
         ctx.beginPath();
         ctx.moveTo(leftPos.x, leftPos.y);
         ctx.lineTo(leftPos.x - 15, leftPos.y + 40);
@@ -300,20 +355,20 @@ const NeonCity: React.FC = () => {
         // Right side lights
         const rightBase = { x: ROAD_WIDTH + 10, y: 0, z: lz };
         const rightTop = { x: ROAD_WIDTH + 10, y: 35, z: lz };
-        ctx.strokeStyle = "rgba(255, 157, 35, 0.5)";
+        ctx.strokeStyle = hexToRgba(getAccentColor(), 0.5);
         ctx.lineWidth = 2;
         drawEdge(rightBase, rightTop, camX);
 
         const rightPos = projectPoint(rightTop, camX);
         ctx.globalAlpha = intensity * 0.7;
-        ctx.fillStyle = "rgba(255, 200, 100, 1)";
+        ctx.fillStyle = getRoadLineColor();
         ctx.shadowBlur = 12;
-        ctx.shadowColor = "rgba(255, 200, 100, 0.8)";
+        ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
         ctx.fillRect(rightPos.x - 2, rightPos.y - 2, 4, 4);
 
         ctx.shadowBlur = 0;
         ctx.globalAlpha = intensity * 0.15;
-        ctx.fillStyle = "rgba(255, 200, 100, 0.2)";
+        ctx.fillStyle = hexToRgba(getAccentColor(), 0.2);
         ctx.beginPath();
         ctx.moveTo(rightPos.x, rightPos.y);
         ctx.lineTo(rightPos.x - 15, rightPos.y + 40);
@@ -331,10 +386,16 @@ const NeonCity: React.FC = () => {
       const dt = (now - lastTime) / 1000;
       lastTime = now;
 
+      // Check boost state
+      if (isBoostActive && now > boostEndTime) {
+        isBoostActive = false;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       const pulse = 1 + Math.sin(now * 0.0007) * 0.08;
-      speed = SPEED_BASE * pulse;
+      const baseSpeed = SPEED_BASE * pulse;
+      speed = isBoostActive ? baseSpeed * BOOST_SPEED_MULTIPLIER : baseSpeed;
 
       // Turning logic - schedule random turns
       const timeSeconds = now * 0.001;
@@ -389,7 +450,7 @@ const NeonCity: React.FC = () => {
         }
       });
 
-      ctx.strokeStyle = HORIZON_COL;
+      ctx.strokeStyle = getHorizonColor();
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, horizonY);
@@ -458,7 +519,7 @@ const NeonCity: React.FC = () => {
         (a, b) => (b.z + b.depth) - (a.z + a.depth)
       );
 
-      ctx.strokeStyle = LINE_COL;
+      ctx.strokeStyle = getLineColor();
       ctx.lineWidth = 1.2;
 
       for (const b of buildings) {
@@ -472,7 +533,7 @@ const NeonCity: React.FC = () => {
 
         // Front rectangle with fog
         ctx.globalAlpha = alpha;
-        ctx.strokeStyle = `rgba(255, 157, 35, ${alpha})`;
+        ctx.strokeStyle = hexToRgba(getAccentColor(), alpha);
         ctx.lineWidth = 1.2;
         drawEdge(v[0], v[1], totalCameraX);
         drawEdge(v[1], v[3], totalCameraX);
@@ -527,9 +588,9 @@ const NeonCity: React.FC = () => {
           const signPos = projectPoint({ x: b.x, y: signY, z: b.z }, totalCameraX);
 
           ctx.globalAlpha = alpha;
-          ctx.fillStyle = "rgba(255, 157, 35, 1)";
+          ctx.fillStyle = hexToRgba(getAccentColor(), 1);
           ctx.shadowBlur = 8;
-          ctx.shadowColor = "rgba(255, 157, 35, 0.9)";
+          ctx.shadowColor = hexToRgba(getAccentColor(), 0.9);
           ctx.font = "bold 12px monospace";
           ctx.textAlign = "center";
           ctx.fillText(b.signText, signPos.x, signPos.y);
@@ -542,7 +603,7 @@ const NeonCity: React.FC = () => {
           const roofTop = { x: b.x, y: b.height + 20, z: b.z };
 
           ctx.globalAlpha = alpha * 0.8;
-          ctx.strokeStyle = `rgba(255, 157, 35, ${alpha * 0.8})`;
+          ctx.strokeStyle = hexToRgba(getAccentColor(), alpha * 0.8);
           ctx.lineWidth = 1;
 
           if (b.rooftopType === 'antenna') {
@@ -585,6 +646,8 @@ const NeonCity: React.FC = () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("keydown", handleKeyDown);
+      canvas.removeEventListener("click", handleClick);
     };
   }, []);
 
