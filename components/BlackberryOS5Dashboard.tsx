@@ -582,114 +582,229 @@ export default function BlackberryOS5Dashboard() {
               animation: "staticMove 8s linear infinite"
             }}
           />
-          {/* VAPORWAVE 3D GRID FLOOR - Perspective Animation */}
+          {/* INFINITE CITY CORRIDOR - Perspective Tunnel */}
           <div
-            className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden"
+            className="absolute inset-0 opacity-[0.35] pointer-events-none overflow-hidden"
             style={{
-              perspective: "400px",
-              perspectiveOrigin: "50% 100%"
+              perspective: "600px",
+              perspectiveOrigin: "50% 50%"
             }}
           >
-            {/* Horizontal Grid Lines - Moving toward viewer */}
+            {/* Corridor Floor Grid */}
             <div
               className="absolute inset-0"
               style={{
                 backgroundImage: `repeating-linear-gradient(
                   0deg,
                   transparent 0px,
-                  transparent 48px,
-                  rgba(255, 157, 35, 0.5) 48px,
-                  rgba(255, 157, 35, 0.5) 50px
-                )`,
-                transform: "rotateX(75deg) translateZ(-200px)",
-                transformOrigin: "bottom center",
-                animation: "gridFlowVertical 4s linear infinite",
-                willChange: "transform"
-              }}
-            />
-            {/* Vertical Grid Lines - Moving toward viewer */}
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `repeating-linear-gradient(
+                  transparent 38px,
+                  rgba(255, 157, 35, 0.4) 38px,
+                  rgba(255, 157, 35, 0.4) 40px
+                ),
+                repeating-linear-gradient(
                   90deg,
                   transparent 0px,
-                  transparent 48px,
-                  rgba(255, 157, 35, 0.5) 48px,
-                  rgba(255, 157, 35, 0.5) 50px
+                  transparent 38px,
+                  rgba(255, 157, 35, 0.3) 38px,
+                  rgba(255, 157, 35, 0.3) 40px
                 )`,
-                transform: "rotateX(75deg) translateZ(-200px)",
-                transformOrigin: "bottom center",
-                animation: "gridFlowVertical 4s linear infinite",
-                willChange: "transform"
+                transform: "rotateX(70deg) translateZ(-300px) translateY(30%)",
+                transformOrigin: "center center",
+                animation: "corridorFlow 5s linear infinite",
+                willChange: "transform",
+                filter: "blur(0.5px)"
               }}
             />
-            {/* Horizon Glow */}
+
+            {/* Vanishing Point Glow */}
             <div
-              className="absolute bottom-0 left-0 right-0 h-32"
+              className="absolute"
               style={{
-                background: "linear-gradient(0deg, rgba(255, 157, 35, 0.4) 0%, transparent 100%)",
-                filter: "blur(20px)"
+                width: "40%",
+                height: "40%",
+                top: "30%",
+                left: "30%",
+                background: "radial-gradient(circle, rgba(255, 157, 35, 0.5) 0%, transparent 70%)",
+                filter: "blur(30px)",
+                animation: "vanishingPulse 3s ease-in-out infinite"
               }}
             />
           </div>
 
-          {/* Floating Geometric Shapes - Vaporwave Style */}
-          <div className="absolute inset-0 opacity-[0.15] pointer-events-none overflow-hidden">
-            {/* Pyramid 1 - Rising */}
+          {/* BUILDING WALLS - Left Side Parallax */}
+          <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
+            {/* Left Building Layer 1 - Close */}
+            <div
+              className="absolute left-0 top-0 bottom-0"
+              style={{
+                width: "25%",
+                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.3) 0%, transparent 100%)",
+                borderRight: "2px solid rgba(255, 157, 35, 0.6)",
+                animation: "buildingSlideLeft1 3s linear infinite"
+              }}
+            >
+              {/* Windows - Left Close */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 60px, rgba(255, 157, 35, 0.5) 60px, rgba(255, 157, 35, 0.5) 65px, transparent 65px, transparent 100px)`,
+                animation: "windowsScroll 2s linear infinite"
+              }} />
+            </div>
+
+            {/* Left Building Layer 2 - Mid */}
+            <div
+              className="absolute left-0 top-0 bottom-0"
+              style={{
+                width: "20%",
+                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.2) 0%, transparent 100%)",
+                borderRight: "1px solid rgba(255, 157, 35, 0.4)",
+                animation: "buildingSlideLeft2 5s linear infinite"
+              }}
+            >
+              {/* Windows - Left Mid */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 84px, transparent 84px, transparent 120px)`,
+                animation: "windowsScroll 3s linear infinite"
+              }} />
+            </div>
+
+            {/* Left Building Layer 3 - Far */}
+            <div
+              className="absolute left-0 top-0 bottom-0"
+              style={{
+                width: "15%",
+                background: "linear-gradient(90deg, rgba(255, 157, 35, 0.1) 0%, transparent 100%)",
+                borderRight: "1px solid rgba(255, 157, 35, 0.2)",
+                animation: "buildingSlideLeft3 8s linear infinite"
+              }}
+            />
+          </div>
+
+          {/* BUILDING WALLS - Right Side Parallax */}
+          <div className="absolute inset-0 opacity-[0.25] pointer-events-none overflow-hidden">
+            {/* Right Building Layer 1 - Close */}
+            <div
+              className="absolute right-0 top-0 bottom-0"
+              style={{
+                width: "25%",
+                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.3) 0%, transparent 100%)",
+                borderLeft: "2px solid rgba(255, 157, 35, 0.6)",
+                animation: "buildingSlideRight1 3s linear infinite"
+              }}
+            >
+              {/* Windows - Right Close */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 60px, rgba(255, 157, 35, 0.5) 60px, rgba(255, 157, 35, 0.5) 65px, transparent 65px, transparent 100px)`,
+                animation: "windowsScroll 2s linear infinite"
+              }} />
+            </div>
+
+            {/* Right Building Layer 2 - Mid */}
+            <div
+              className="absolute right-0 top-0 bottom-0"
+              style={{
+                width: "20%",
+                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.2) 0%, transparent 100%)",
+                borderLeft: "1px solid rgba(255, 157, 35, 0.4)",
+                animation: "buildingSlideRight2 5s linear infinite"
+              }}
+            >
+              {/* Windows - Right Mid */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `repeating-linear-gradient(0deg, transparent 0px, transparent 80px, rgba(255, 157, 35, 0.3) 80px, rgba(255, 157, 35, 0.3) 84px, transparent 84px, transparent 120px)`,
+                animation: "windowsScroll 3s linear infinite"
+              }} />
+            </div>
+
+            {/* Right Building Layer 3 - Far */}
+            <div
+              className="absolute right-0 top-0 bottom-0"
+              style={{
+                width: "15%",
+                background: "linear-gradient(270deg, rgba(255, 157, 35, 0.1) 0%, transparent 100%)",
+                borderLeft: "1px solid rgba(255, 157, 35, 0.2)",
+                animation: "buildingSlideRight3 8s linear infinite"
+              }}
+            />
+          </div>
+
+          {/* OVERHEAD STRUCTURES - Creating ceiling depth */}
+          <div className="absolute inset-0 opacity-[0.2] pointer-events-none overflow-hidden">
+            {/* Ceiling Beams */}
+            <div
+              className="absolute top-0 left-0 right-0"
+              style={{
+                height: "30%",
+                background: "linear-gradient(180deg, rgba(255, 157, 35, 0.3) 0%, transparent 100%)",
+                borderBottom: "2px solid rgba(255, 157, 35, 0.5)",
+                backgroundImage: `repeating-linear-gradient(90deg, transparent 0px, transparent 100px, rgba(255, 157, 35, 0.4) 100px, rgba(255, 157, 35, 0.4) 105px)`,
+                animation: "ceilingBeams 4s linear infinite"
+              }}
+            />
+          </div>
+
+          {/* FLYING DEBRIS - Architectural fragments */}
+          <div className="absolute inset-0 opacity-[0.18] pointer-events-none overflow-hidden">
+            {/* Fragment 1 - Rectangle flying past */}
+            <div
+              className="absolute"
+              style={{
+                width: "120px",
+                height: "80px",
+                left: "-120px",
+                top: "15%",
+                background: "rgba(255, 157, 35, 0.4)",
+                border: "2px solid rgba(255, 157, 35, 0.7)",
+                animation: "debrisPass1 6s linear infinite",
+                transform: "perspective(400px) rotateY(20deg)",
+                filter: "drop-shadow(0 0 10px rgba(255, 157, 35, 0.6))"
+              }}
+            >
+              {/* Fragment windows */}
+              <div style={{
+                position: "absolute",
+                inset: 8,
+                border: "1px solid rgba(255, 157, 35, 0.5)",
+                background: "rgba(0, 0, 0, 0.3)"
+              }} />
+            </div>
+
+            {/* Fragment 2 - Tall structure */}
+            <div
+              className="absolute"
+              style={{
+                width: "60px",
+                height: "200px",
+                right: "-60px",
+                top: "30%",
+                background: "linear-gradient(180deg, rgba(255, 157, 35, 0.5) 0%, rgba(255, 157, 35, 0.2) 100%)",
+                border: "2px solid rgba(255, 157, 35, 0.6)",
+                animation: "debrisPass2 8s linear infinite 2s",
+                transform: "perspective(400px) rotateY(-20deg)",
+                filter: "drop-shadow(0 0 12px rgba(255, 157, 35, 0.7))"
+              }}
+            />
+
+            {/* Fragment 3 - Square panel */}
             <div
               className="absolute"
               style={{
                 width: "100px",
                 height: "100px",
-                left: "20%",
-                bottom: "-50px",
-                background: "linear-gradient(135deg, rgba(255, 157, 35, 0.6) 0%, rgba(255, 157, 35, 0.2) 100%)",
-                clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-                animation: "floatUp1 8s ease-in-out infinite",
-                filter: "drop-shadow(0 0 20px rgba(255, 157, 35, 0.8))"
-              }}
-            />
-            {/* Pyramid 2 - Rising */}
-            <div
-              className="absolute"
-              style={{
-                width: "80px",
-                height: "80px",
-                right: "30%",
-                bottom: "-40px",
-                background: "linear-gradient(135deg, rgba(255, 200, 100, 0.5) 0%, rgba(255, 157, 35, 0.2) 100%)",
-                clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-                animation: "floatUp2 10s ease-in-out infinite 2s",
-                filter: "drop-shadow(0 0 15px rgba(255, 200, 100, 0.6))"
-              }}
-            />
-            {/* Cube - Rotating */}
-            <div
-              className="absolute"
-              style={{
-                width: "60px",
-                height: "60px",
-                left: "70%",
-                top: "20%",
+                left: "-100px",
+                bottom: "25%",
                 background: "rgba(255, 157, 35, 0.3)",
                 border: "2px solid rgba(255, 157, 35, 0.8)",
-                animation: "rotateCube 6s linear infinite",
-                filter: "drop-shadow(0 0 10px rgba(255, 157, 35, 0.6))"
-              }}
-            />
-            {/* Diamond - Pulsing */}
-            <div
-              className="absolute"
-              style={{
-                width: "70px",
-                height: "70px",
-                left: "10%",
-                top: "30%",
-                background: "rgba(255, 157, 35, 0.4)",
-                clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
-                animation: "pulseDiamond 4s ease-in-out infinite",
-                filter: "drop-shadow(0 0 15px rgba(255, 157, 35, 0.7))"
+                animation: "debrisPass3 7s linear infinite 4s",
+                transform: "perspective(400px) rotateZ(45deg)",
+                filter: "drop-shadow(0 0 15px rgba(255, 157, 35, 0.8))"
               }}
             />
           </div>
