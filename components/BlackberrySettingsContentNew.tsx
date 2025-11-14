@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSettings, useUndoRedo } from "@/lib/hooks";
+import { useSettings, useUndoRedo, useHapticFeedback } from "@/lib/hooks";
 import { DEFAULT_SETTINGS } from "@/lib/settingsValidation";
 import { PRESETS, type Preset } from "@/lib/settingsPresets";
 import { exportSettings, importSettings } from "@/lib/settingsValidation";
@@ -31,6 +31,7 @@ interface ToastMessage {
 
 export default function BlackberrySettingsContentNew() {
   const [settings, setSettings, isLoaded] = useSettings();
+  const triggerHaptic = useHapticFeedback();
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showPresetsModal, setShowPresetsModal] = useState(false);

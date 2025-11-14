@@ -37,7 +37,17 @@ export default function LuxuryCollapsibleSection({
     >
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-8 md:p-10 text-left hover:bg-[#ff9d23]/10 transition-all duration-700"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggle();
+          }
+          if (e.key === 'Escape' && isOpen) {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
+        className="w-full flex items-center justify-between p-8 md:p-10 text-left hover:bg-[#ff9d23]/10 focus:outline-none focus:ring-2 focus:ring-[#ff9d23] focus:ring-offset-2 focus:ring-offset-black transition-all duration-700"
         aria-expanded={isOpen}
         aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${title} section`}
       >

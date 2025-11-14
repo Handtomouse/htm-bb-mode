@@ -110,6 +110,7 @@ export default function BlackberryAboutContent() {
   const [aboutParallax, setAboutParallax] = useState(0);
   const [floatingElementsOffset, setFloatingElementsOffset] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
   const [typewriterOpacity, setTypewriterOpacity] = useState(1);
   const [headlineOpacity, setHeadlineOpacity] = useState(1);
   const [typewriterScrollProgress, setTypewriterScrollProgress] = useState(0);
@@ -134,7 +135,7 @@ export default function BlackberryAboutContent() {
       .then((json) => setData(json));
   }, []);
 
-  // Detect mobile/touch devices (Fix #1, #3)
+  // Detect mobile/touch devices with debounced resize (Fix #1, #3)
   useEffect(() => {
     const checkMobile = () => {
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -143,8 +144,19 @@ export default function BlackberryAboutContent() {
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+
+    // Debounce resize handler to 200ms
+    let resizeTimer: NodeJS.Timeout;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(checkMobile, 200);
+    };
+
+    window.addEventListener('resize', debouncedResize);
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', debouncedResize);
+    };
   }, []);
 
   // Show scroll indicator after typewriter completes
@@ -206,6 +218,9 @@ export default function BlackberryAboutContent() {
 
         // Back-to-top button after 300px
         setShowBackToTop(scrollTop > 300);
+
+        // Floating CTA after Stats section (~2000px)
+        setShowFloatingCTA(scrollTop > 2000);
 
         // Hero fade: 300px→1000px range (gentler exit)
         const heroFadeStart = 300;
@@ -400,6 +415,23 @@ export default function BlackberryAboutContent() {
         />
       </motion.div>
 
+      {/* Floating CTA Button */}
+      {showFloatingCTA && data && (
+        <motion.a
+          href={`mailto:${data.contact.email}`}
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(255,157,35,0.9)' }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => triggerHaptic(15)}
+          className="fixed bottom-8 left-8 z-50 border-2 border-[#ff9d23] bg-[#ff9d23] px-6 py-3 text-[14px] md:text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[#FFB84D] transition-all duration-300 touch-manipulation shadow-lg"
+          aria-label="Get in touch"
+        >
+          Get in Touch →
+        </motion.a>
+      )}
+
       {/* Back to Top Button */}
       {showBackToTop && (
         <motion.button
@@ -458,6 +490,16 @@ export default function BlackberryAboutContent() {
               >
                 About
               </motion.h1>
+
+              {/* Read Time Indicator */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 0.6, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-[11px] md:text-[13px] text-white/50 uppercase tracking-[0.15em] font-medium"
+              >
+                ~3 min read
+              </motion.div>
             </div>
 
             {/* Scroll indicator - HTM icon with pulse */}
@@ -489,7 +531,7 @@ export default function BlackberryAboutContent() {
         </motion.div>
 
         {/* Value Proposition - Direct & Immediate */}
-        <section className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20">
+        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -550,8 +592,9 @@ export default function BlackberryAboutContent() {
         {/* Stats Grid - Social Proof */}
 
           <section
-            className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32"
-            style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', scrollMarginTop: '4rem', ...STAT_CARD_VARS }}
+            id="stats"
+            className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32 scroll-mt-20"
+            style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', ...STAT_CARD_VARS }}
           >
           {/* Improvement #6: Subtle radial gradient backdrop */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)', opacity: 0.4 }} />
@@ -592,7 +635,7 @@ export default function BlackberryAboutContent() {
 
         {/* Services Grid */}
 
-          <section className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16">
+          <section id="services" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16 scroll-mt-20">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -628,7 +671,7 @@ export default function BlackberryAboutContent() {
 
 
         {/* Process - Standalone Section */}
-        <section className="py-16 md:py-20 flex flex-col items-center justify-center">
+        <section id="process" className="py-16 md:py-20 flex flex-col items-center justify-center scroll-mt-20">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -663,7 +706,7 @@ export default function BlackberryAboutContent() {
 
 
         {/* Proof - Client Highlights & Industries */}
-        <section className="py-16 md:py-20 flex flex-col items-center justify-center">
+        <section id="proof" className="py-16 md:py-20 flex flex-col items-center justify-center scroll-mt-20">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -726,7 +769,7 @@ export default function BlackberryAboutContent() {
 
         {/* Collapsible Sections */}
 
-          <section className="min-h-screen py-20 flex flex-col items-center justify-center space-y-8 md:space-y-12">
+          <section id="details" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-8 md:space-y-12 scroll-mt-20">
             <LuxuryCollapsibleSection
               title="Operations & Setup"
               icon="⚙️"
@@ -920,7 +963,7 @@ export default function BlackberryAboutContent() {
 
         {/* Now Block - Full Width Accent */}
 
-          <section className="min-h-[50vh] flex items-center justify-center">
+          <section id="now" className="min-h-[50vh] flex items-center justify-center scroll-mt-20">
             <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -970,7 +1013,7 @@ export default function BlackberryAboutContent() {
 
         {/* Contact CTA - Full Height */}
 
-          <section className="relative min-h-[70vh] py-20 flex items-center justify-center">
+          <section id="contact" className="relative min-h-[70vh] py-20 flex items-center justify-center scroll-mt-20">
             {/* Background gradient that builds toward CTA */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff9d23]/5 to-[#ff9d23]/10 pointer-events-none" />
 

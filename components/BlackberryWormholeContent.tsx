@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useHapticFeedback } from "@/lib/hooks";
 
 // Destination categories - all verified and fast-loading
 const DESTINATIONS = {
@@ -128,6 +129,7 @@ interface Star {
 }
 
 export default function BlackberryWormholeContent() {
+  const triggerHaptic = useHapticFeedback();
   const [stars, setStars] = useState<Star[]>([]);
   const [isWarping, setIsWarping] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(true);
@@ -238,6 +240,7 @@ export default function BlackberryWormholeContent() {
 
   // Toggle sound and save preference
   const toggleSound = () => {
+    triggerHaptic(10);
     const newValue = !soundEnabled;
     setSoundEnabled(newValue);
     localStorage.setItem("wormhole_sound", newValue.toString());
@@ -397,6 +400,7 @@ export default function BlackberryWormholeContent() {
         const timeSinceLastClick = now - lastClickTime;
 
         if (timeSinceLastClick < 300 && timeSinceLastClick > 0) {
+          triggerHaptic([10, 30, 10, 30, 10]);
           setHecticSpeed(true);
           setShowHecticMessage(true);
           playSound('warp');
@@ -405,6 +409,7 @@ export default function BlackberryWormholeContent() {
             setShowHecticMessage(false);
           }, 3000);
         } else {
+          triggerHaptic(10);
           setBoost(true);
           playSound('whoosh');
           setTimeout(() => setBoost(false), 2000);
@@ -619,6 +624,7 @@ export default function BlackberryWormholeContent() {
 
   // Abort warp with feedback
   const abortWarp = () => {
+    triggerHaptic([15, 50, 15]);
     setIsWarping(false);
     setCanAbort(false);
     setCountdown(3);
@@ -631,6 +637,7 @@ export default function BlackberryWormholeContent() {
   const handleWarningAccept = () => {
     if (!acceptedRisk) return;
 
+    triggerHaptic(15);
     setShowExitWarning(false);
     setAcceptedRisk(false);
     setHasSeenWarning(true);
@@ -638,6 +645,7 @@ export default function BlackberryWormholeContent() {
 
   // Start warp sequence
   const handleWarpButtonClick = () => {
+    triggerHaptic(20);
     setIsWarping(true);
     setCountdown(3);
     setCanAbort(true);
@@ -1203,6 +1211,7 @@ export default function BlackberryWormholeContent() {
             <div className="flex gap-2">
               <button
                 onClick={() => {
+                  triggerHaptic(10);
                   setShowExitWarning(false);
                   setAcceptedRisk(false);
                 }}
@@ -1266,6 +1275,7 @@ export default function BlackberryWormholeContent() {
                 <button
                   key={cat}
                   onClick={() => {
+                    triggerHaptic(10);
                     setSelectedCategory(cat);
                     playSound('beep');
                   }}
