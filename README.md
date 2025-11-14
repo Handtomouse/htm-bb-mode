@@ -63,10 +63,40 @@ RESEND_API_KEY=your_resend_api_key_here
 # Contact Email Configuration
 CONTACT_EMAIL_TO=your-email@example.com
 
-# Optional: Rate Limiting (UPSTASH Redis)
+# Rate Limiting (UPSTASH Redis - Recommended for Production)
 UPSTASH_REDIS_REST_URL=your_upstash_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_token
+
+# Rate Limit Configuration (Optional)
+RATE_LIMIT_MAX_REQUESTS=5           # Max requests per window
+RATE_LIMIT_WINDOW_MS=3600000        # Window in ms (default: 1 hour)
 ```
+
+**Note**: Without UPSTASH keys, the contact form uses in-memory rate limiting (resets on server restart). For production, UPSTASH Redis is strongly recommended.
+
+#### Setting Up Rate Limiting (Production)
+
+1. **Create UPSTASH Redis account** (free tier available):
+   - Go to [upstash.com](https://upstash.com)
+   - Sign up and create a new Redis database
+   - Choose "Regional" type (free tier)
+
+2. **Get credentials** from your database dashboard:
+   - Copy `UPSTASH_REDIS_REST_URL`
+   - Copy `UPSTASH_REDIS_REST_TOKEN`
+
+3. **Add to `.env.local`** for local development
+
+4. **Add to Vercel** for production:
+   - Go to Project Settings → Environment Variables
+   - Add both `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
+   - Select "Production" environment
+   - Redeploy your site
+
+**Rate Limiting Behavior**:
+- Allows 5 requests per hour per IP address
+- Returns HTTP 429 with `Retry-After` header when limit exceeded
+- Uses sliding window algorithm for fair rate limiting
 
 ---
 
@@ -140,8 +170,9 @@ Three fully playable games built from scratch:
 
 ### 📧 Professional Contact Form
 - **20 Improvements**: Field validation, file upload, Google Drive integration
-- **Rate Limiting**: UPSTASH Redis protection (when configured)
-- **Email Service**: Resend API integration
+- **Rate Limiting**: UPSTASH Redis protection (5 requests/hour per IP)
+- **Email Service**: Resend API integration with auto-reply
+- **Security**: Honeypot, timing checks, magic byte file validation
 - **Success Animation**: Canvas confetti celebration
 - **Mobile UX**: Touch-optimized, responsive design
 
