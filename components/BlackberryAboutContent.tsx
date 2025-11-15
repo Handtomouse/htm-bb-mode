@@ -378,23 +378,6 @@ export default function BlackberryAboutContent() {
         {activeSection && `Currently viewing ${activeSection} section`}
       </div>
 
-      {/* Scroll Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-[var(--accent)]/20 z-50"
-        style={{ transformOrigin: '0%' }}
-      >
-        <motion.div
-          className="h-full bg-gradient-to-r from-[var(--accent)] via-[var(--accent-hover)] to-[var(--accent)]"
-          style={{
-            width: `${scrollProgress}%`,
-            boxShadow: '0 0 10px rgba(255,157,35,0.6)'
-          }}
-          initial={{ width: '0%' }}
-          animate={{ width: `${scrollProgress}%` }}
-          transition={{ duration: 0.1, ease: 'linear' }}
-        />
-      </motion.div>
-
       {/* Floating CTA Button */}
       {showFloatingCTA && data && (
         <motion.a
@@ -565,38 +548,6 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             <div className="relative">
-              {/* Corner brackets - framing only */}
-              {[
-                { top: '0', left: '0', rotate: 0 },
-                { top: '0', right: '0', rotate: 90 },
-                { bottom: '0', right: '0', rotate: 180 },
-                { bottom: '0', left: '0', rotate: 270 }
-              ].map((pos, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 0.4, scale: 1 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 1.2 + i * 0.08,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                  className="absolute pointer-events-none"
-                  style={{
-                    top: pos.top,
-                    left: pos.left,
-                    right: pos.right,
-                    bottom: pos.bottom,
-                    width: '24px',
-                    height: '24px',
-                    borderTop: `1.5px solid var(--accent)`,
-                    borderLeft: `1.5px solid var(--accent)`,
-                    transform: `rotate(${pos.rotate}deg)`
-                  }}
-                  aria-hidden="true"
-                />
-              ))}
-
               {/* Luxury solid title with Apple-esque shadows */}
               <motion.div
                 initial={{

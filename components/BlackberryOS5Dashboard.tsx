@@ -591,21 +591,6 @@ export default function BlackberryOS5Dashboard() {
           {/* NEON CITY CANVAS - 3D Wireframe Maze */}
           <NeonCity />
 
-          {/* Neon Scan Lines - Fast sweep */}
-          <div
-            className="absolute inset-0 opacity-[0.12] pointer-events-none"
-            style={{
-              backgroundImage: `repeating-linear-gradient(
-                0deg,
-                transparent 0px,
-                transparent 2px,
-                rgba(255, 157, 35, 0.3) 2px,
-                rgba(255, 157, 35, 0.3) 3px
-              )`,
-              animation: "neonScan 2s linear infinite"
-            }}
-          />
-
           {/* Radial Pulse - Center outward */}
           <div
             className="absolute inset-0 opacity-[0.08] pointer-events-none"
