@@ -20,17 +20,13 @@ const NeonCity: React.FC = () => {
     const FOV = 550;          // focal length
     const ROAD_WIDTH = 80;    // world units
     const CITY_DEPTH = 2200;  // how far buildings extend
-    const NUM_BUILDINGS = 26;
+    const NUM_BUILDINGS = 16; // Reduced from 26 for performance
     const SPEED_BASE = 260;   // world units per second
 
-    // Get accent color from CSS variables
-    const getAccentColor = () => {
-      const root = document.documentElement;
-      const accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
-      return accentHex;
-    };
+    // Cached color calculations (computed once, huge performance gain)
+    const root = document.documentElement;
+    const accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
 
-    // Convert hex to rgba
     const hexToRgba = (hex: string, alpha: number) => {
       hex = hex.replace('#', '');
       const r = parseInt(hex.substring(0, 2), 16);
@@ -39,17 +35,16 @@ const NeonCity: React.FC = () => {
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
 
-    // Dynamic color functions
-    const getLineColor = () => hexToRgba(getAccentColor(), 0.7);
-    const getRoadLineColor = () => {
-      // Lighter version for road lines
-      const hex = getAccentColor();
-      const r = Math.min(255, parseInt(hex.substring(1, 3), 16) + 40);
-      const g = Math.min(255, parseInt(hex.substring(3, 5), 16) + 40);
-      const b = Math.min(255, parseInt(hex.substring(5, 7), 16) + 40);
+    // Pre-computed colors (no function calls in render loop)
+    const COLOR_LINE = hexToRgba(accentHex, 0.7);
+    const COLOR_ROAD_LINE = (() => {
+      const r = Math.min(255, parseInt(accentHex.substring(1, 3), 16) + 40);
+      const g = Math.min(255, parseInt(accentHex.substring(3, 5), 16) + 40);
+      const b = Math.min(255, parseInt(accentHex.substring(5, 7), 16) + 40);
       return `rgba(${r}, ${g}, ${b}, 0.9)`;
-    };
-    const getHorizonColor = () => hexToRgba(getAccentColor(), 0.2);
+    })();
+    const COLOR_HORIZON = hexToRgba(accentHex, 0.2);
+    const COLOR_ACCENT = accentHex;
 
     let speed = SPEED_BASE;
 
@@ -138,15 +133,11 @@ const NeonCity: React.FC = () => {
       type: 'residential' | 'commercial' | 'tower' = 'residential';
       hasSign = false;
       signText = '';
-      rooftopType: 'antenna' | 'helipad' | 'dish' | 'none' = 'none';
       hasBillboard = false;
       billboardPattern: 'grid' | 'bars' | 'pulse' | 'wave' = 'grid';
       billboardPhase = 0;
-      lightWavePattern: 'none' | 'vertical' | 'horizontal' | 'spiral' = 'none';
+      hasLightWave = false;
       lightWaveSpeed = 1;
-      hasSearchlight = false;
-      searchlightAngle = 0;
-      searchlightSpeed = 1;
 
       constructor(side: number) {
         this.side = side;
@@ -201,14 +192,6 @@ const NeonCity: React.FC = () => {
           this.signText = signs[Math.floor(Math.random() * signs.length)];
         }
 
-        // Rooftop details (40% chance)
-        if (Math.random() > 0.6) {
-          const rooftops: Array<'antenna' | 'helipad' | 'dish'> = ['antenna', 'helipad', 'dish'];
-          this.rooftopType = rooftops[Math.floor(Math.random() * rooftops.length)];
-        } else {
-          this.rooftopType = 'none';
-        }
-
         // Holographic billboards (15% chance, mainly on commercial/tower buildings)
         this.hasBillboard = (this.type === 'commercial' || this.type === 'tower') && Math.random() > 0.85;
         if (this.hasBillboard) {
@@ -217,31 +200,15 @@ const NeonCity: React.FC = () => {
           this.billboardPhase = Math.random() * Math.PI * 2;
         }
 
-        // Light wave patterns (25% chance, mainly on tower buildings)
-        if (this.type === 'tower' && Math.random() > 0.75) {
-          const wavePatterns: Array<'vertical' | 'horizontal' | 'spiral'> = ['vertical', 'horizontal', 'spiral'];
-          this.lightWavePattern = wavePatterns[Math.floor(Math.random() * wavePatterns.length)];
-          this.lightWaveSpeed = 0.5 + Math.random() * 1.5;
-        } else {
-          this.lightWavePattern = 'none';
-        }
-
-        // Rotating searchlights (20% chance, mainly on tall commercial/tower buildings)
-        this.hasSearchlight = (this.type === 'tower' || this.type === 'commercial') && this.height > 200 && Math.random() > 0.8;
-        if (this.hasSearchlight) {
-          this.searchlightAngle = Math.random() * Math.PI * 2;
-          this.searchlightSpeed = 0.3 + Math.random() * 0.7; // radians per second
-        }
+        // Light wave (25% chance, mainly on tower buildings)
+        this.hasLightWave = this.type === 'tower' && Math.random() > 0.75;
+        this.lightWaveSpeed = 0.5 + Math.random() * 1.5;
       }
 
       update(dt: number) {
         this.z -= speed * dt;
         if (this.z + this.depth < 40) {
           this.reset(false);
-        }
-        // Update searchlight rotation
-        if (this.hasSearchlight) {
-          this.searchlightAngle += this.searchlightSpeed * dt;
         }
       }
 
@@ -273,9 +240,9 @@ const NeonCity: React.FC = () => {
       buildings.push(new Building(side));
     }
 
-    // Background particles (stars)
+    // Background particles (stars) - Reduced from 80 to 40 for performance
     const particles: Array<{ x: number; y: number; z: number; size: number; speed: number }> = [];
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 40; i++) {
       particles.push({
         x: (Math.random() - 0.5) * width * 2,
         y: Math.random() * height * 0.4 - 50, // Above horizon
@@ -299,9 +266,9 @@ const NeonCity: React.FC = () => {
       });
     }
 
-    // Flying vehicles/drones
+    // Flying vehicles/drones - Reduced from 6 to 3 for performance
     const flyingVehicles: Array<{ x: number; y: number; z: number; speed: number; bobPhase: number }> = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 3; i++) {
       flyingVehicles.push({
         x: (Math.random() - 0.5) * ROAD_WIDTH * 4,
         y: 80 + Math.random() * 120, // Flying height
@@ -311,14 +278,11 @@ const NeonCity: React.FC = () => {
       });
     }
 
-    // Steam vents & smoke particles
+    // Steam vents & smoke particles - Reduced from 5 to 2 vents for performance
     const steamParticles: Array<{ x: number; y: number; z: number; age: number; maxAge: number; size: number }> = [];
     const steamVents = [
-      { x: -ROAD_WIDTH * 1.5, z: 300 },
-      { x: ROAD_WIDTH * 1.8, z: 600 },
-      { x: -ROAD_WIDTH * 2, z: 900 },
-      { x: ROAD_WIDTH * 1.3, z: 1200 },
-      { x: -ROAD_WIDTH * 1.7, z: 1500 },
+      { x: -ROAD_WIDTH * 1.5, z: 600 },
+      { x: ROAD_WIDTH * 1.8, z: 1200 },
     ];
 
     const projectPoint = (p: { x: number; y: number; z: number }, totalCamX: number = 0) => {
@@ -360,7 +324,7 @@ const NeonCity: React.FC = () => {
         const right1 = { x: ROAD_WIDTH, y: 0, z: z1 };
 
         // road borders
-        ctx.strokeStyle = getLineColor();
+        ctx.strokeStyle = COLOR_LINE;
         drawEdge(left0, left1, camX);
         drawEdge(right0, right1, camX);
 
@@ -368,13 +332,13 @@ const NeonCity: React.FC = () => {
         if (i % 2 === 0) {
           const mid0 = { x: 0, y: 0.1, z: z0 };
           const mid1 = { x: 0, y: 0.1, z: z1 };
-          ctx.strokeStyle = getRoadLineColor();
+          ctx.strokeStyle = COLOR_ROAD_LINE;
           drawEdge(mid0, mid1, camX);
         }
       }
 
       // extra perspective guide rails with pulsing lights
-      ctx.strokeStyle = hexToRgba(getAccentColor(), 0.4);
+      ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.4);
       const guideOffset = ROAD_WIDTH * 2.4;
       drawEdge({ x: -guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
       drawEdge({ x: guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
@@ -390,7 +354,7 @@ const NeonCity: React.FC = () => {
         // Left side lights
         const leftBase = { x: -ROAD_WIDTH - 10, y: 0, z: lz };
         const leftTop = { x: -ROAD_WIDTH - 10, y: 35, z: lz };
-        ctx.strokeStyle = hexToRgba(getAccentColor(), 0.5);
+        ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.5);
         ctx.lineWidth = 2;
         drawEdge(leftBase, leftTop, camX);
 
@@ -399,15 +363,15 @@ const NeonCity: React.FC = () => {
         const pulsePhase = (now * 0.001 + i * 0.3) % 2;
         const intensity = 0.6 + Math.sin(pulsePhase * Math.PI) * 0.4;
         ctx.globalAlpha = intensity * 0.7;
-        ctx.fillStyle = getRoadLineColor();
+        ctx.fillStyle = COLOR_ROAD_LINE;
         ctx.shadowBlur = 12;
-        ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
+        ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
         ctx.fillRect(leftPos.x - 2, leftPos.y - 2, 4, 4);
 
         // Light cone effect
         ctx.shadowBlur = 0;
         ctx.globalAlpha = intensity * 0.15;
-        ctx.fillStyle = hexToRgba(getAccentColor(), 0.2);
+        ctx.fillStyle = hexToRgba(COLOR_ACCENT, 0.2);
         ctx.beginPath();
         ctx.moveTo(leftPos.x, leftPos.y);
         ctx.lineTo(leftPos.x - 15, leftPos.y + 40);
@@ -419,20 +383,20 @@ const NeonCity: React.FC = () => {
         // Right side lights
         const rightBase = { x: ROAD_WIDTH + 10, y: 0, z: lz };
         const rightTop = { x: ROAD_WIDTH + 10, y: 35, z: lz };
-        ctx.strokeStyle = hexToRgba(getAccentColor(), 0.5);
+        ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.5);
         ctx.lineWidth = 2;
         drawEdge(rightBase, rightTop, camX);
 
         const rightPos = projectPoint(rightTop, camX);
         ctx.globalAlpha = intensity * 0.7;
-        ctx.fillStyle = getRoadLineColor();
+        ctx.fillStyle = COLOR_ROAD_LINE;
         ctx.shadowBlur = 12;
-        ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
+        ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
         ctx.fillRect(rightPos.x - 2, rightPos.y - 2, 4, 4);
 
         ctx.shadowBlur = 0;
         ctx.globalAlpha = intensity * 0.15;
-        ctx.fillStyle = hexToRgba(getAccentColor(), 0.2);
+        ctx.fillStyle = hexToRgba(COLOR_ACCENT, 0.2);
         ctx.beginPath();
         ctx.moveTo(rightPos.x, rightPos.y);
         ctx.lineTo(rightPos.x - 15, rightPos.y + 40);
@@ -496,7 +460,7 @@ const NeonCity: React.FC = () => {
         }
       });
 
-      ctx.strokeStyle = getHorizonColor();
+      ctx.strokeStyle = COLOR_HORIZON;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, horizonY);
@@ -686,7 +650,7 @@ const NeonCity: React.FC = () => {
 
         // Draw drone body
         ctx.globalAlpha = alpha * 0.7;
-        ctx.strokeStyle = hexToRgba(getAccentColor(), 0.8);
+        ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.8);
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(projected[0].x, projected[0].y);
@@ -700,9 +664,9 @@ const NeonCity: React.FC = () => {
         if (distance < 600 && Math.floor(now / 300) % 2 === 0) {
           const center = projectPoint({ x: fv.x, y: currentY, z: fv.z }, totalCameraX);
           ctx.globalAlpha = alpha;
-          ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+          ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
           ctx.shadowBlur = 5;
-          ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
+          ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
           ctx.fillRect(center.x - 1, center.y - 1, 2, 2);
           ctx.shadowBlur = 0;
         }
@@ -715,7 +679,7 @@ const NeonCity: React.FC = () => {
         (a, b) => (b.z + b.depth) - (a.z + a.depth)
       );
 
-      ctx.strokeStyle = getLineColor();
+      ctx.strokeStyle = COLOR_LINE;
       ctx.lineWidth = 1.2;
 
       for (const b of buildings) {
@@ -729,7 +693,7 @@ const NeonCity: React.FC = () => {
 
         // Front rectangle with fog
         ctx.globalAlpha = alpha;
-        ctx.strokeStyle = hexToRgba(getAccentColor(), alpha);
+        ctx.strokeStyle = hexToRgba(COLOR_ACCENT, alpha);
         ctx.lineWidth = 1.2;
         drawEdge(v[0], v[1], totalCameraX);
         drawEdge(v[1], v[3], totalCameraX);
@@ -749,32 +713,6 @@ const NeonCity: React.FC = () => {
         drawEdge(v[1], v[5], totalCameraX);
         drawEdge(v[2], v[6], totalCameraX);
         drawEdge(v[3], v[7], totalCameraX);
-
-        // Neon ground glow at building base
-        if (distance < 800) {
-          const baseLeft = projectPoint(v[0], totalCameraX);
-          const baseRight = projectPoint(v[1], totalCameraX);
-          const glowHeight = 25;
-
-          // Create vertical gradient from building base
-          const glowGradient = ctx.createLinearGradient(
-            baseLeft.x, baseLeft.y,
-            baseLeft.x, baseLeft.y + glowHeight
-          );
-          glowGradient.addColorStop(0, hexToRgba(getAccentColor(), 0.15 * alpha));
-          glowGradient.addColorStop(0.6, hexToRgba(getAccentColor(), 0.05 * alpha));
-          glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-          ctx.globalAlpha = alpha * 0.6;
-          ctx.fillStyle = glowGradient;
-          ctx.beginPath();
-          ctx.moveTo(baseLeft.x, baseLeft.y);
-          ctx.lineTo(baseRight.x, baseRight.y);
-          ctx.lineTo(baseRight.x, baseRight.y + glowHeight);
-          ctx.lineTo(baseLeft.x, baseLeft.y + glowHeight);
-          ctx.closePath();
-          ctx.fill();
-        }
 
         // Draw windows (only on nearby buildings for performance)
         if (distance < 800) {
@@ -838,50 +776,13 @@ const NeonCity: React.FC = () => {
           const signPos = projectPoint({ x: b.x, y: signY, z: b.z }, totalCameraX);
 
           ctx.globalAlpha = alpha;
-          ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+          ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
           ctx.shadowBlur = 8;
-          ctx.shadowColor = hexToRgba(getAccentColor(), 0.9);
+          ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.9);
           ctx.font = "bold 12px monospace";
           ctx.textAlign = "center";
           ctx.fillText(b.signText, signPos.x, signPos.y);
           ctx.shadowBlur = 0;
-        }
-
-        // Draw rooftop details
-        if (b.rooftopType !== 'none' && distance < 1000) {
-          const roofBase = v[2];
-          const roofTop = { x: b.x, y: b.height + 20, z: b.z };
-
-          ctx.globalAlpha = alpha * 0.8;
-          ctx.strokeStyle = hexToRgba(getAccentColor(), alpha * 0.8);
-          ctx.lineWidth = 1;
-
-          if (b.rooftopType === 'antenna') {
-            // Vertical antenna
-            drawEdge(roofBase, roofTop, totalCameraX);
-            // Blinking light on top
-            if (Math.floor(now / 500) % 2 === 0) {
-              const lightPos = projectPoint(roofTop, totalCameraX);
-              ctx.fillStyle = "rgba(255, 0, 0, 1)";
-              ctx.shadowBlur = 5;
-              ctx.shadowColor = "rgba(255, 0, 0, 0.8)";
-              ctx.fillRect(lightPos.x - 1.5, lightPos.y - 1.5, 3, 3);
-              ctx.shadowBlur = 0;
-            }
-          } else if (b.rooftopType === 'helipad') {
-            // H shape on roof
-            const pad1 = { x: b.x - 10, y: b.height + 2, z: b.z };
-            const pad2 = { x: b.x + 10, y: b.height + 2, z: b.z };
-            drawEdge(pad1, pad2, totalCameraX);
-          } else if (b.rooftopType === 'dish') {
-            // Satellite dish
-            const dishBase = { x: b.x, y: b.height + 5, z: b.z };
-            drawEdge(roofBase, dishBase, totalCameraX);
-            const p = projectPoint(dishBase, totalCameraX);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-            ctx.stroke();
-          }
         }
 
         // Draw holographic billboard
@@ -904,7 +805,7 @@ const NeonCity: React.FC = () => {
 
           // Draw billboard background glow
           ctx.globalAlpha = holoAlpha * 0.3;
-          ctx.fillStyle = hexToRgba(getAccentColor(), 0.4);
+          ctx.fillStyle = hexToRgba(COLOR_ACCENT, 0.4);
           ctx.beginPath();
           ctx.moveTo(projBB[0].x, projBB[0].y);
           ctx.lineTo(projBB[1].x, projBB[1].y);
@@ -915,7 +816,7 @@ const NeonCity: React.FC = () => {
 
           // Draw pattern based on type
           ctx.globalAlpha = holoAlpha * 0.7;
-          ctx.strokeStyle = hexToRgba(getAccentColor(), 1);
+          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 1);
           ctx.lineWidth = 1;
 
           if (b.billboardPattern === 'grid') {
@@ -967,9 +868,9 @@ const NeonCity: React.FC = () => {
             const centerX = (projBB[0].x + projBB[2].x) / 2;
             const centerY = (projBB[0].y + projBB[2].y) / 2;
             ctx.globalAlpha = holoAlpha * pulse;
-            ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+            ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
             ctx.shadowBlur = 8;
-            ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
+            ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
             ctx.beginPath();
             const radius = 3 + pulse * 5;
             ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
@@ -1011,7 +912,7 @@ const NeonCity: React.FC = () => {
 
           // Billboard border
           ctx.globalAlpha = holoAlpha;
-          ctx.strokeStyle = hexToRgba(getAccentColor(), 0.9);
+          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.9);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.moveTo(projBB[0].x, projBB[0].y);
@@ -1020,60 +921,6 @@ const NeonCity: React.FC = () => {
           ctx.lineTo(projBB[3].x, projBB[3].y);
           ctx.closePath();
           ctx.stroke();
-          ctx.shadowBlur = 0;
-        }
-
-        // Draw rotating searchlight
-        if (b.hasSearchlight && distance < 1000) {
-          const roofTop = { x: b.x, y: b.height, z: b.z };
-          const roofPos = projectPoint(roofTop, totalCameraX);
-
-          // Calculate beam endpoint (rotating around building)
-          const beamLength = 300;
-          const beamEndX = b.x + Math.cos(b.searchlightAngle) * beamLength;
-          const beamEndY = b.height + 150; // Beam extends upward
-          const beamEndZ = b.z + Math.sin(b.searchlightAngle) * beamLength;
-          const beamEnd = projectPoint({ x: beamEndX, y: beamEndY, z: beamEndZ }, totalCameraX);
-
-          // Draw beam (gradient from bright to transparent)
-          ctx.globalAlpha = alpha * 0.15;
-          const beamGradient = ctx.createLinearGradient(roofPos.x, roofPos.y, beamEnd.x, beamEnd.y);
-          beamGradient.addColorStop(0, hexToRgba(getAccentColor(), 0.4));
-          beamGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-          // Draw beam cone
-          ctx.fillStyle = beamGradient;
-          ctx.beginPath();
-          const coneWidth = 30;
-          const perpX = -(beamEnd.y - roofPos.y);
-          const perpY = beamEnd.x - roofPos.x;
-          const perpLen = Math.sqrt(perpX * perpX + perpY * perpY);
-          const normPerpX = (perpX / perpLen) * coneWidth;
-          const normPerpY = (perpY / perpLen) * coneWidth;
-
-          ctx.moveTo(roofPos.x, roofPos.y);
-          ctx.lineTo(beamEnd.x + normPerpX, beamEnd.y + normPerpY);
-          ctx.lineTo(beamEnd.x - normPerpX, beamEnd.y - normPerpY);
-          ctx.closePath();
-          ctx.fill();
-
-          // Draw bright center line
-          ctx.globalAlpha = alpha * 0.4;
-          ctx.strokeStyle = hexToRgba(getAccentColor(), 0.8);
-          ctx.lineWidth = 1.5;
-          ctx.shadowBlur = 6;
-          ctx.shadowColor = hexToRgba(getAccentColor(), 0.6);
-          ctx.beginPath();
-          ctx.moveTo(roofPos.x, roofPos.y);
-          ctx.lineTo(beamEnd.x, beamEnd.y);
-          ctx.stroke();
-
-          // Draw searchlight source
-          ctx.globalAlpha = alpha * 0.9;
-          ctx.fillStyle = hexToRgba(getAccentColor(), 1);
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = hexToRgba(getAccentColor(), 0.9);
-          ctx.fillRect(roofPos.x - 2, roofPos.y - 2, 4, 4);
           ctx.shadowBlur = 0;
         }
 
