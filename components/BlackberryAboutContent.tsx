@@ -572,7 +572,7 @@ export default function BlackberryAboutContent() {
                   className="relative font-normal uppercase tracking-[0.15em] leading-none select-none"
                   style={{
                     fontFamily: '"argent-pixel-cf", sans-serif',
-                    fontSize: 'clamp(100px, 18vw, 280px)',
+                    fontSize: 'clamp(80px, 18vw, 280px)',
                     background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.4) 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -598,7 +598,7 @@ export default function BlackberryAboutContent() {
                   aria-hidden="true"
                   style={{
                     fontFamily: '"argent-pixel-cf", sans-serif',
-                    fontSize: 'clamp(100px, 18vw, 280px)',
+                    fontSize: 'clamp(80px, 18vw, 280px)',
                     background: `linear-gradient(180deg, var(--accent) 0%, transparent 60%)`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -651,7 +651,8 @@ export default function BlackberryAboutContent() {
                   letterSpacing: '0.3em',
                   fontFamily: 'var(--font-mono)',
                   color: 'var(--accent)',
-                  textTransform: 'uppercase'
+                  textTransform: 'uppercase',
+                  textShadow: '0 0 20px rgba(255,157,35,0.4), 0 2px 6px rgba(0,0,0,0.5)'
                 }}
               >
                 Creative Direction
@@ -743,22 +744,23 @@ export default function BlackberryAboutContent() {
                 style={{
                   border: '1px inset rgba(255,157,35,0.15)',
                   padding: '24px',
-                  background: 'rgba(255,255,255,0.01)'
+                  background: 'rgba(255,255,255,0.01)',
+                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.05)'
                 }}
               >
-                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8">
+                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8 hidden md:block" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
                   01
                 </div>
                 <p
-                  className="text-[20px] md:text-[24px] leading-[2.0]"
+                  className="text-[20px] md:text-[24px] leading-[1.6] md:leading-[2.0]"
                   style={{
                     fontFamily: 'var(--font-body)',
                     color: 'rgba(255,255,255,0.95)',
                     fontWeight: 500
                   }}
                 >
-                  <span className="float-left text-[48px] leading-[0.8] mr-2 text-[var(--accent)] font-bold" style={{ fontFamily: 'var(--font-mono)' }}>I</span>
-                  work where <span className="text-[var(--accent)] font-semibold">ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
+                  <span className="float-left text-[48px] leading-[0.8] mr-2 text-[var(--accent)] font-bold" style={{ fontFamily: 'var(--font-mono)', textShadow: '0 4px 8px rgba(255,157,35,0.5), 0 2px 4px rgba(0,0,0,0.6)', filter: 'drop-shadow(0 0 8px rgba(255,157,35,0.3))' }}>I</span>
+                  work where <span className="text-[var(--accent)] font-semibold" style={{ textShadow: '0 0 12px rgba(255,157,35,0.3), 0 1px 2px rgba(0,0,0,0.4)' }}>ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
                 </p>
               </motion.div>
 
@@ -784,20 +786,21 @@ export default function BlackberryAboutContent() {
                 style={{
                   border: '1px inset rgba(255,157,35,0.15)',
                   padding: '24px',
-                  background: 'rgba(255,255,255,0.02)'
+                  background: 'rgba(255,255,255,0.02)',
+                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.05)'
                 }}
               >
-                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8">
+                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8 hidden md:block" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
                   02
                 </div>
                 <p
-                  className="text-[18px] md:text-[22px] leading-[2.0]"
+                  className="text-[18px] md:text-[22px] leading-[1.6] md:leading-[2.0]"
                   style={{
                     fontFamily: 'var(--font-body)',
                     color: 'rgba(255,255,255,0.9)'
                   }}
                 >
-                  The work: making something that still feels right in <span className="text-[var(--accent)] font-semibold">five years</span>, not just five minutes.
+                  The work: making something that still feels right in <span className="text-[var(--accent)] font-semibold" style={{ textShadow: '0 0 12px rgba(255,157,35,0.3), 0 1px 2px rgba(0,0,0,0.4)' }}>five years</span>, not just five minutes.
                 </p>
               </motion.div>
 
@@ -823,20 +826,21 @@ export default function BlackberryAboutContent() {
                 style={{
                   border: '1px inset rgba(255,157,35,0.15)',
                   padding: '24px',
-                  background: 'rgba(255,255,255,0.01)'
+                  background: 'rgba(255,255,255,0.01)',
+                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.05)'
                 }}
               >
-                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8">
+                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8 hidden md:block" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
                   03
                 </div>
                 <p
-                  className="text-[18px] md:text-[22px] leading-[2.0]"
+                  className="text-[18px] md:text-[22px] leading-[1.6] md:leading-[2.0]"
                   style={{
                     fontFamily: 'var(--font-body)',
                     color: 'rgba(255,255,255,0.9)'
                   }}
                 >
-                  The method: <span className="text-[var(--accent)] font-semibold">research, reference, and restraint</span> — knowing what to leave out.
+                  The method: <span className="text-[var(--accent)] font-semibold" style={{ textShadow: '0 0 12px rgba(255,157,35,0.3), 0 1px 2px rgba(0,0,0,0.4)' }}>research, reference, and restraint</span> — knowing what to leave out.
                 </p>
               </motion.div>
             </motion.div>

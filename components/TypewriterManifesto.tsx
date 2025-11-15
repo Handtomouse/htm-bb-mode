@@ -49,14 +49,16 @@ export default function TypewriterManifesto({
         fontFamily: '"argent-pixel-cf", sans-serif',
         color: 'rgba(255,255,255,0.9)',
         letterSpacing: '0.08em',
-        textShadow: '0 1px 2px rgba(255,157,35,0.1)',
+        textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2), 0 0 24px rgba(255,157,35,0.15)',
         minHeight: '1.4em',
-        transition: 'font-size 0.2s ease-out',
-        whiteSpace: 'nowrap'
+        transition: 'font-size 0.2s ease-out'
       }}
     >
       {beforeAccent}
-      <span className="text-[var(--accent)]/90 font-semibold">
+      <span
+        className="text-[var(--accent)]/90 font-semibold"
+        style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.4)' }}
+      >
         {accentPart}
       </span>
       {showCursor && (
