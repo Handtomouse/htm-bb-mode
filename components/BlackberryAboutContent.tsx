@@ -569,9 +569,9 @@ export default function BlackberryAboutContent() {
               >
                 {/* Main solid text with gradient fade */}
                 <h1
-                  className="relative font-normal uppercase tracking-[0.12em] leading-none select-none"
+                  className="relative font-normal uppercase tracking-[0.15em] leading-none select-none"
                   style={{
-                    fontFamily: 'var(--font-heading)',
+                    fontFamily: 'var(--font-pixel)',
                     fontSize: 'clamp(100px, 18vw, 280px)',
                     background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.4) 100%)',
                     WebkitBackgroundClip: 'text',
@@ -594,10 +594,10 @@ export default function BlackberryAboutContent() {
 
                 {/* Accent glow layer */}
                 <h1
-                  className="absolute inset-0 font-normal uppercase tracking-[0.12em] leading-none select-none pointer-events-none"
+                  className="absolute inset-0 font-normal uppercase tracking-[0.15em] leading-none select-none pointer-events-none"
                   aria-hidden="true"
                   style={{
-                    fontFamily: 'var(--font-heading)',
+                    fontFamily: 'var(--font-pixel)',
                     fontSize: 'clamp(100px, 18vw, 280px)',
                     background: `linear-gradient(180deg, var(--accent) 0%, transparent 60%)`,
                     WebkitBackgroundClip: 'text',

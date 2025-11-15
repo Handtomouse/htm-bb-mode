@@ -81,7 +81,7 @@ const NeonCity: React.FC = () => {
       canvas.height = height * dpi;
       ctx.setTransform(dpi, 0, 0, dpi, 0, 0);
       cx = width / 2;
-      cy = height * 0.75;
+      cy = height * 0.5;
     };
 
     // Watch canvas element for size changes (handles ResponsiveStage scaling)
@@ -328,7 +328,7 @@ const NeonCity: React.FC = () => {
       const offsetX = (p.x - totalCamX) * scale;
       return {
         x: cx + offsetX,
-        y: cy - p.y * scale - smoothMouseY * 0.2 // Subtle Y parallax
+        y: cy - (p.y - 80) * scale - smoothMouseY * 0.2 // Elevated camera 80 units above ground
       };
     };
 
@@ -469,8 +469,8 @@ const NeonCity: React.FC = () => {
       // Camera stays centered on road, only slight mouse parallax
       const totalCameraX = smoothMouseX;
 
-      // Horizon
-      const horizonY = cy - (FOV / (CITY_DEPTH * 0.45)) * FOV;
+      // Horizon - aligned with status bar top
+      const horizonY = 65;
       ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
       ctx.fillRect(0, 0, width, horizonY);
 

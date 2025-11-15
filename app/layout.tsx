@@ -1,4 +1,4 @@
-import { VT323, Pixelify_Sans, Handjet, Roboto_Mono } from "next/font/google";
+import { VT323, Pixelify_Sans, Handjet, Roboto_Mono, Silkscreen } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import SettingsProvider from "@/components/SettingsProvider";
@@ -29,6 +29,13 @@ const robotoMono = Roboto_Mono({
   weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const silkscreen = Silkscreen({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-pixel",
   display: "swap",
 });
 
@@ -117,7 +124,7 @@ export default function RootLayout({
         {/* Prefetch About page data for instant load */}
         <link rel="prefetch" href="/data/about.json" as="fetch" crossOrigin="anonymous" />
       </head>
-      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${robotoMono.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
+      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${robotoMono.variable} ${silkscreen.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
         <SettingsProvider>
           <LayoutWrapper>
             {children}
