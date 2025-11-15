@@ -916,10 +916,10 @@ const NeonCity: React.FC = () => {
               // Color shift based on wave (cooler when dim, warmer when bright)
               const r = Math.floor(255 * finalBrightness);
               const g = Math.floor(200 * finalBrightness);
-              const b = Math.floor(100 * (0.7 + finalBrightness * 0.3));
-              ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
+              const blue = Math.floor(100 * (0.7 + finalBrightness * 0.3));
+              ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.9)`;
               ctx.shadowBlur = 3 * finalBrightness;
-              ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${0.8 * finalBrightness})`;
+              ctx.shadowColor = `rgba(${r}, ${g}, ${blue}, ${0.8 * finalBrightness})`;
               ctx.fillRect(projected.x - 1, projected.y - 1, 2, 2);
               ctx.shadowBlur = 0;
             }
