@@ -708,139 +708,117 @@ export default function BlackberryAboutContent() {
           </motion.div>
         </section>
 
-        {/* Body Text Section - Fully Separated */}
-        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mt-48 md:mt-64">
+        {/* Body Text Section - Luxury Redesign */}
+        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-20 md:py-32 scroll-mt-20 mt-48 md:mt-64">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-4xl mx-auto px-8 md:px-16"
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-5xl mx-auto px-8 md:px-16"
           >
-            {/* 3-Line Approach - Enhanced Typography */}
+            {/* Clean, centered luxury layout */}
             <motion.div
               variants={{
                 hidden: {},
                 visible: {
                   transition: {
-                    staggerChildren: 0.2,
-                    delayChildren: 0.6
+                    staggerChildren: 0.3,
+                    delayChildren: 0.4
                   }
                 }
               }}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="max-w-3xl mx-auto"
-              style={{ gap: '32px', display: 'flex', flexDirection: 'column' }}
+              className="space-y-16 md:space-y-24"
             >
-              {/* First paragraph - Lead style with drop cap + inset panel */}
+              {/* First statement - Bold opening */}
               <motion.div
                 variants={{
-                  hidden: { opacity: 0, x: -30 },
-                  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="relative text-left"
-                style={{
-                  border: '1px inset rgba(255,157,35,0.15)',
-                  padding: '24px',
-                  background: 'rgba(255,255,255,0.01)',
-                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.05)'
-                }}
+                className="text-center"
               >
-                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8 hidden md:block" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                  01
-                </div>
                 <p
-                  className="text-[20px] md:text-[24px] leading-[1.6] md:leading-[2.0]"
+                  className="text-[22px] md:text-[28px] lg:text-[32px] leading-[1.5] max-w-3xl mx-auto"
                   style={{
                     fontFamily: 'var(--font-body)',
                     color: 'rgba(255,255,255,0.95)',
-                    fontWeight: 500
+                    fontWeight: 400,
+                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
                   }}
                 >
-                  <span className="float-left text-[48px] leading-[0.8] mr-2 text-[var(--accent)] font-bold" style={{ fontFamily: 'var(--font-mono)', textShadow: '0 4px 8px rgba(255,157,35,0.5), 0 2px 4px rgba(0,0,0,0.6)', filter: 'drop-shadow(0 0 8px rgba(255,157,35,0.3))' }}>I</span>
-                  work where <span className="text-[var(--accent)] font-semibold" style={{ textShadow: '0 0 12px rgba(255,157,35,0.3), 0 1px 2px rgba(0,0,0,0.4)' }}>ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
+                  I work where <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
                 </p>
               </motion.div>
 
-              {/* Divider line - Double line DOS style */}
+              {/* Minimal divider */}
               <motion.div
                 variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1, transition: { duration: 0.6 } }
+                  hidden: { scaleX: 0, opacity: 0 },
+                  visible: { scaleX: 1, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
                 }}
+                className="w-24 h-[1px] mx-auto"
                 style={{
-                  borderTop: '2px double rgba(255,157,35,0.3)',
-                  height: '4px'
+                  background: 'linear-gradient(90deg, transparent, rgba(255,157,35,0.4), transparent)',
+                  boxShadow: '0 0 8px rgba(255,157,35,0.2)'
                 }}
               />
 
-              {/* Second paragraph - Center aligned + inset panel */}
+              {/* Second statement - Philosophy */}
               <motion.div
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="relative text-center"
-                style={{
-                  border: '1px inset rgba(255,157,35,0.15)',
-                  padding: '24px',
-                  background: 'rgba(255,255,255,0.02)',
-                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.05)'
-                }}
+                className="text-center"
               >
-                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8 hidden md:block" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                  02
-                </div>
                 <p
-                  className="text-[18px] md:text-[22px] leading-[1.6] md:leading-[2.0]"
+                  className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6] max-w-2xl mx-auto"
                   style={{
                     fontFamily: 'var(--font-body)',
-                    color: 'rgba(255,255,255,0.9)'
+                    color: 'rgba(255,255,255,0.9)',
+                    fontWeight: 300,
+                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
                   }}
                 >
-                  The work: making something that still feels right in <span className="text-[var(--accent)] font-semibold" style={{ textShadow: '0 0 12px rgba(255,157,35,0.3), 0 1px 2px rgba(0,0,0,0.4)' }}>five years</span>, not just five minutes.
+                  The work: making something that still feels right in <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>five years</span>, not just five minutes.
                 </p>
               </motion.div>
 
-              {/* Divider line - Double line DOS style */}
+              {/* Minimal divider */}
               <motion.div
                 variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1, transition: { duration: 0.6 } }
+                  hidden: { scaleX: 0, opacity: 0 },
+                  visible: { scaleX: 1, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
                 }}
+                className="w-24 h-[1px] mx-auto"
                 style={{
-                  borderTop: '2px double rgba(255,157,35,0.3)',
-                  height: '4px'
+                  background: 'linear-gradient(90deg, transparent, rgba(255,157,35,0.4), transparent)',
+                  boxShadow: '0 0 8px rgba(255,157,35,0.2)'
                 }}
               />
 
-              {/* Third paragraph - Right aligned + inset panel */}
+              {/* Third statement - Method */}
               <motion.div
                 variants={{
-                  hidden: { opacity: 0, x: 30 },
-                  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="relative text-right"
-                style={{
-                  border: '1px inset rgba(255,157,35,0.15)',
-                  padding: '24px',
-                  background: 'rgba(255,255,255,0.01)',
-                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(255,157,35,0.05)'
-                }}
+                className="text-center"
               >
-                <div className="absolute -left-12 top-6 text-[10px] text-white/20 font-mono text-right w-8 hidden md:block" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                  03
-                </div>
                 <p
-                  className="text-[18px] md:text-[22px] leading-[1.6] md:leading-[2.0]"
+                  className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6] max-w-2xl mx-auto"
                   style={{
                     fontFamily: 'var(--font-body)',
-                    color: 'rgba(255,255,255,0.9)'
+                    color: 'rgba(255,255,255,0.9)',
+                    fontWeight: 300,
+                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
                   }}
                 >
-                  The method: <span className="text-[var(--accent)] font-semibold" style={{ textShadow: '0 0 12px rgba(255,157,35,0.3), 0 1px 2px rgba(0,0,0,0.4)' }}>research, reference, and restraint</span> — knowing what to leave out.
+                  The method: <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>research, reference, and restraint</span> — knowing what to leave out.
                 </p>
               </motion.div>
             </motion.div>
