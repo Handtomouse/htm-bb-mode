@@ -105,6 +105,8 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        {/* Adobe Fonts - Argent Pixel CF */}
+        <link rel="stylesheet" href="https://use.typekit.net/swi6eoo.css" />
         {/* Preload critical fonts for About page */}
         <link
           rel="preload"
