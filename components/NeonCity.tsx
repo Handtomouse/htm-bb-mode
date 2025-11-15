@@ -52,14 +52,6 @@ const NeonCity: React.FC = () => {
     const getHorizonColor = () => hexToRgba(getAccentColor(), 0.2);
 
     let speed = SPEED_BASE;
-    let cameraOffsetX = 0; // Camera horizontal position for turning
-    let targetOffsetX = 0; // Target position for smooth interpolation
-    let turnDirection = 0; // -1 = left, 0 = straight, 1 = right
-
-    // Turn schedule (in seconds)
-    let nextTurnTime = 5;
-    const TURN_DURATION = 2.5;
-    const TURN_AMOUNT = 150;
 
     // Mouse parallax
     let mouseX = 0;
@@ -75,10 +67,6 @@ const NeonCity: React.FC = () => {
     const BOOST_COOLDOWN = 8000; // 8 seconds
     const BOOST_SPEED_MULTIPLIER = 1.8;
 
-    // Camera roll (banking effect during turns)
-    let cameraRoll = 0; // in radians
-    const MAX_ROLL = 0.06; // ~3.4 degrees max tilt
-
     // Lightning storm system
     let lightningActive = false;
     let lightningEndTime = 0;
@@ -86,11 +74,6 @@ const NeonCity: React.FC = () => {
     let lightningBranches: Array<{ x1: number; y1: number; x2: number; y2: number; alpha: number }> = [];
     const LIGHTNING_DURATION = 150; // milliseconds
     const LIGHTNING_BRANCH_COUNT = 8;
-
-    // Performance HUD
-    let fps = 60;
-    let frameCount = 0;
-    let lastFpsUpdate = performance.now();
 
     const resize = () => {
       width = window.innerWidth;
@@ -511,49 +494,13 @@ const NeonCity: React.FC = () => {
       const baseSpeed = SPEED_BASE * pulse;
       speed = isBoostActive ? baseSpeed * BOOST_SPEED_MULTIPLIER : baseSpeed;
 
-      // Update FPS counter
-      frameCount++;
-      if (now - lastFpsUpdate > 1000) {
-        fps = Math.round(frameCount * 1000 / (now - lastFpsUpdate));
-        frameCount = 0;
-        lastFpsUpdate = now;
-      }
-
-      // Turning logic - schedule random turns
-      const timeSeconds = now * 0.001;
-      if (timeSeconds > nextTurnTime) {
-        // Start a new turn
-        turnDirection = Math.random() > 0.5 ? 1 : -1;
-        targetOffsetX = turnDirection * TURN_AMOUNT;
-        nextTurnTime = timeSeconds + TURN_DURATION + Math.random() * 3 + 2; // Next turn in 2-5 seconds after this one ends
-      }
-
-      // Smooth camera interpolation
-      const lerpSpeed = 1.2;
-      cameraOffsetX += (targetOffsetX - cameraOffsetX) * lerpSpeed * dt;
-
-      // Return to center after turn
-      if (timeSeconds > nextTurnTime - 1) {
-        targetOffsetX = 0;
-      }
-
       // Mouse parallax (smooth interpolation)
       const parallaxStrength = 30;
       smoothMouseX += (mouseX * parallaxStrength - smoothMouseX) * 3 * dt;
       smoothMouseY += (mouseY * parallaxStrength - smoothMouseY) * 3 * dt;
 
-      // Add mouse parallax to camera offset
-      const totalCameraX = cameraOffsetX + smoothMouseX;
-
-      // Camera roll (banking) - proportional to turn intensity
-      const targetRoll = -(cameraOffsetX / TURN_AMOUNT) * MAX_ROLL; // Negative for natural banking direction
-      cameraRoll += (targetRoll - cameraRoll) * 2.5 * dt;
-
-      // Apply camera roll transformation
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(cameraRoll);
-      ctx.translate(-cx, -cy);
+      // Camera stays centered on road, only slight mouse parallax
+      const totalCameraX = smoothMouseX;
 
       // Horizon
       const horizonY = cy - (FOV / (CITY_DEPTH * 0.45)) * FOV;
@@ -1174,9 +1121,6 @@ const NeonCity: React.FC = () => {
         ctx.globalAlpha = 1;
       }
 
-      // Restore transformation (boost effects drawn without rotation)
-      ctx.restore();
-
       // Boost visual effects
       if (isBoostActive) {
         // Motion blur vignette (edges glow)
@@ -1244,49 +1188,6 @@ const NeonCity: React.FC = () => {
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
       }
-
-      // Performance HUD (top-right corner)
-      const hudX = width - 180;
-      const hudY = 20;
-      const lineHeight = 18;
-
-      ctx.globalAlpha = 0.8;
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.fillRect(hudX - 10, hudY - 5, 170, lineHeight * 6 + 10);
-
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = hexToRgba(getAccentColor(), 1);
-      ctx.font = 'bold 12px monospace';
-      ctx.textAlign = 'left';
-      ctx.shadowBlur = 3;
-      ctx.shadowColor = hexToRgba(getAccentColor(), 0.6);
-
-      let yOffset = 0;
-      ctx.fillText(`FPS: ${fps}`, hudX, hudY + yOffset);
-      yOffset += lineHeight;
-      ctx.fillText(`Speed: ${Math.round(speed)}`, hudX, hudY + yOffset);
-      yOffset += lineHeight;
-      ctx.fillText(`Buildings: ${buildings.length}`, hudX, hudY + yOffset);
-      yOffset += lineHeight;
-      ctx.fillText(`Vehicles: ${vehicles.length}`, hudX, hudY + yOffset);
-      yOffset += lineHeight;
-      ctx.fillText(`Drones: ${flyingVehicles.length}`, hudX, hudY + yOffset);
-      yOffset += lineHeight;
-      ctx.fillText(`Steam: ${steamParticles.length}`, hudX, hudY + yOffset);
-
-      // Boost indicator
-      if (isBoostActive) {
-        ctx.fillStyle = 'rgba(255, 200, 100, 1)';
-        ctx.fillText('⚡ BOOST', hudX, hudY + yOffset + lineHeight);
-      } else if (now < boostCooldownEnd) {
-        const cooldownProgress = (boostCooldownEnd - now) / BOOST_COOLDOWN;
-        ctx.fillStyle = `rgba(150, 150, 150, ${0.5 + cooldownProgress * 0.5})`;
-        ctx.fillText(`⏳ ${Math.ceil((boostCooldownEnd - now) / 1000)}s`, hudX, hudY + yOffset + lineHeight);
-      }
-
-      ctx.shadowBlur = 0;
-      ctx.textAlign = 'start';
-      ctx.globalAlpha = 1;
 
       frameId = requestAnimationFrame(render);
     };

@@ -533,9 +533,8 @@ export default function BlackberryAboutContent() {
           style={{ scrollSnapAlign: 'center' }}
         >
           <div
-            className="sticky top-[15vh] h-[50vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
+            className="sticky top-[20vh] h-[60vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
             style={{
-              marginTop: '-72px',
               opacity: heroOpacity,
               transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
               transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease',
@@ -566,135 +565,66 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             <div className="relative">
-              {/* Blueprint dot grid background with circular guides */}
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  inset: '-10%',
-                  backgroundImage: `
-                    radial-gradient(circle, rgba(255,157,35,0.08) 2px, transparent 2px),
-                    radial-gradient(circle at 50% 50%, transparent 150px, rgba(255,157,35,0.08) 150px, rgba(255,157,35,0.08) 151px, transparent 152px),
-                    radial-gradient(circle at 50% 50%, transparent 250px, rgba(255,157,35,0.08) 250px, rgba(255,157,35,0.08) 251px, transparent 252px),
-                    radial-gradient(circle at 50% 50%, transparent 350px, rgba(255,157,35,0.08) 350px, rgba(255,157,35,0.08) 351px, transparent 352px)
-                  `,
-                  backgroundSize: '30px 30px, 100% 100%, 100% 100%, 100% 100%',
-                  opacity: 0.4,
-                  zIndex: -1
-                }}
-              />
-
-              {/* Corner brackets with data point labels */}
+              {/* Corner brackets - framing only */}
               {[
-                { top: '-35px', left: '5%', rotate: 0, label: '01' },
-                { top: '-35px', right: '5%', rotate: 90, label: '02' },
-                { bottom: '-35px', right: '5%', rotate: 180, label: '03' },
-                { bottom: '-35px', left: '5%', rotate: 270, label: '04' }
+                { top: '0', left: '0', rotate: 0 },
+                { top: '0', right: '0', rotate: 90 },
+                { bottom: '0', right: '0', rotate: 180 },
+                { bottom: '0', left: '0', rotate: 270 }
               ].map((pos, i) => (
-                <div key={i}>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{
-                      opacity: 0.7,
-                      scale: [1, 1.05, 1]
-                    }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 1.4 + i * 0.1,
-                      ease: [0.16, 1, 0.3, 1],
-                      scale: {
-                        duration: 4,
-                        repeat: Infinity,
-                        delay: 2 + i * 0.3,
-                        ease: "easeInOut"
-                      }
-                    }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      top: pos.top,
-                      left: pos.left,
-                      right: pos.right,
-                      bottom: pos.bottom,
-                      width: '20px',
-                      height: '20px',
-                      borderTop: `2px solid var(--accent)`,
-                      borderLeft: `2px solid var(--accent)`,
-                      transform: `rotate(${pos.rotate}deg)`
-                    }}
-                  />
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.3 }}
-                    transition={{ duration: 0.6, delay: 1.6 + i * 0.1 }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      top: pos.top,
-                      left: pos.left,
-                      right: pos.right,
-                      bottom: pos.bottom,
-                      fontSize: '8px',
-                      fontFamily: 'var(--font-mono)',
-                      color: 'var(--accent)',
-                      transform: pos.top ? 'translate(-8px, -16px)' : 'translate(-8px, 28px)'
-                    }}
-                  >
-                    {pos.label}
-                  </motion.div>
-                </div>
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 0.4, scale: 1 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 1.2 + i * 0.08,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                  className="absolute pointer-events-none"
+                  style={{
+                    top: pos.top,
+                    left: pos.left,
+                    right: pos.right,
+                    bottom: pos.bottom,
+                    width: '24px',
+                    height: '24px',
+                    borderTop: `1.5px solid var(--accent)`,
+                    borderLeft: `1.5px solid var(--accent)`,
+                    transform: `rotate(${pos.rotate}deg)`
+                  }}
+                  aria-hidden="true"
+                />
               ))}
 
-              {/* Wireframe title with 3D grid overlay */}
+              {/* Refined wireframe title */}
               <motion.div
                 initial={{
                   opacity: 0,
-                  scale: 1.2,
-                  y: 40,
-                  rotateY: -15,
+                  y: 20,
                   filter: 'blur(8px)'
                 }}
                 animate={{
                   opacity: 1,
-                  scale: 1 - (scrollProgress * 0.02),
-                  y: -(scrollProgress * 10),
-                  rotateY: 0,
+                  y: 0,
                   filter: 'blur(0px)'
                 }}
                 transition={{
-                  duration: 1.4,
+                  duration: 1.2,
                   ease: [0.16, 1, 0.3, 1],
-                  delay: 0.2
+                  delay: 0.3
                 }}
                 className="relative"
-                style={{
-                  perspective: '1000px',
-                  transformStyle: 'preserve-3d',
-                  willChange: 'transform, opacity'
-                }}
               >
-                {/* Wireframe shadow layer */}
+                {/* Wireframe text */}
                 <h1
-                  className="absolute font-bold uppercase tracking-[-0.01em] leading-none select-none pointer-events-none"
-                  aria-hidden="true"
+                  className="relative font-bold uppercase tracking-[0.02em] leading-none select-none"
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 'clamp(80px, 22vw, 320px)',
+                    fontSize: 'clamp(140px, 28vw, 450px)',
                     color: 'transparent',
-                    WebkitTextStroke: '0.5px rgba(255,157,35,0.15)',
-                    transform: 'translate(2px, 2px)',
-                    zIndex: -1
-                  }}
-                >
-                  ABOUT
-                </h1>
-
-                {/* Main wireframe text */}
-                <h1
-                  className="relative font-bold uppercase tracking-[-0.01em] leading-none select-none"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 'clamp(80px, 22vw, 320px)',
-                    color: 'transparent',
-                    WebkitTextStroke: '1px rgba(255,255,255,0.9)',
-                    textShadow: '0 0 20px rgba(255,157,35,0.3)'
+                    WebkitTextStroke: '1.5px rgba(255,255,255,0.95)',
+                    textShadow: '0 0 30px rgba(255,157,35,0.2)'
                   }}
                 >
                   ABOUT
@@ -702,26 +632,30 @@ export default function BlackberryAboutContent() {
 
                 {/* Inner accent stroke */}
                 <h1
-                  className="absolute inset-0 font-bold uppercase tracking-[-0.01em] leading-none select-none pointer-events-none"
+                  className="absolute inset-0 font-bold uppercase tracking-[0.02em] leading-none select-none pointer-events-none"
                   aria-hidden="true"
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 'clamp(80px, 22vw, 320px)',
+                    fontSize: 'clamp(140px, 28vw, 450px)',
                     color: 'transparent',
                     WebkitTextStroke: '0.5px var(--accent)',
-                    opacity: 0.5
+                    opacity: 0.6
                   }}
                 >
                   ABOUT
                 </h1>
 
-                {/* Horizontal grid lines with depth gradient */}
-                {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => (
+                {/* Minimal depth lines - 3 horizontal only */}
+                {[0.3, 0.5, 0.7].map((ratio, i) => (
                   <motion.div
-                    key={`h-${i}`}
+                    key={i}
                     initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: i === 2 ? 0.45 : i === 1 || i === 3 ? 0.3 : 0.15 }}
-                    transition={{ duration: 0.8, delay: 1.0 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                    animate={{ scaleX: 1, opacity: i === 1 ? 0.25 : 0.15 }}
+                    transition={{
+                      duration: 1.0,
+                      delay: 0.8 + i * 0.1,
+                      ease: [0.16, 1, 0.3, 1]
+                    }}
                     className="absolute pointer-events-none"
                     style={{
                       left: '0',
@@ -729,220 +663,28 @@ export default function BlackberryAboutContent() {
                       top: `${ratio * 100}%`,
                       height: '1px',
                       background: 'var(--accent)',
-                      transformOrigin: '50%',
-                      willChange: 'transform, opacity'
+                      transformOrigin: '50%'
                     }}
+                    aria-hidden="true"
                   />
                 ))}
-
-                {/* Vertical grid lines */}
-                {[0.15, 0.35, 0.5, 0.65, 0.85].map((ratio, i) => (
-                  <motion.div
-                    key={`v-${i}`}
-                    initial={{ scaleY: 0, opacity: 0 }}
-                    animate={{ scaleY: 1, opacity: i === 2 ? 0.35 : 0.2 }}
-                    transition={{ duration: 0.8, delay: 1.2 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      top: '0',
-                      bottom: '0',
-                      left: `${ratio * 100}%`,
-                      width: '1px',
-                      background: 'var(--accent)',
-                      transformOrigin: '50%',
-                      willChange: 'transform, opacity'
-                    }}
-                  />
-                ))}
-
-                {/* Grid intersection vertices */}
-                {[0, 0.25, 0.5, 0.75, 1].flatMap(y =>
-                  [0.15, 0.35, 0.5, 0.65, 0.85].map((x, i) => (
-                    <motion.div
-                      key={`vertex-${y}-${x}`}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{
-                        opacity: 0.4,
-                        scale: 1,
-                        x: [0, Math.random() * 4 - 2, 0],
-                        y: [0, Math.random() * 4 - 2, 0]
-                      }}
-                      transition={{
-                        opacity: { duration: 0.4, delay: 1.5 + i * 0.05 },
-                        scale: { duration: 0.4, delay: 1.5 + i * 0.05 },
-                        x: { duration: 6 + Math.random() * 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 },
-                        y: { duration: 5 + Math.random() * 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }
-                      }}
-                      className="absolute pointer-events-none"
-                      style={{
-                        left: `${x * 100}%`,
-                        top: `${y * 100}%`,
-                        width: '4px',
-                        height: '4px',
-                        background: 'var(--accent)',
-                        borderRadius: '50%',
-                        transform: 'translate(-50%, -50%)'
-                      }}
-                    />
-                  ))
-                )}
-
-                {/* Crosshair center point */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{
-                    opacity: [0.6, 0.8, 0.6],
-                    scale: 1
-                  }}
-                  transition={{
-                    opacity: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-                    scale: { duration: 0.6, delay: 1.6, ease: [0.16, 1, 0.3, 1] }
-                  }}
-                  className="absolute pointer-events-none"
-                  style={{
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)'
-                  }}
-                  aria-hidden="true"
-                >
-                  <div style={{ position: 'relative', width: '20px', height: '20px' }}>
-                    <div style={{ position: 'absolute', left: '9px', top: '0', width: '2px', height: '8px', background: 'var(--accent)' }} />
-                    <div style={{ position: 'absolute', left: '9px', bottom: '0', width: '2px', height: '8px', background: 'var(--accent)' }} />
-                    <div style={{ position: 'absolute', top: '9px', left: '0', height: '2px', width: '8px', background: 'var(--accent)' }} />
-                    <div style={{ position: 'absolute', top: '9px', right: '0', height: '2px', width: '8px', background: 'var(--accent)' }} />
-                  </div>
-                </motion.div>
               </motion.div>
 
-              {/* Dual scanning line effects */}
-              <motion.div
-                animate={{
-                  top: ['-10%', '110%']
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  delay: 1.5
-                }}
-                className="absolute left-0 right-0 pointer-events-none"
-                style={{
-                  height: '2px',
-                  background: 'var(--accent)',
-                  boxShadow: '0 0 20px rgba(255,157,35,0.8), 0 0 40px rgba(255,157,35,0.4)',
-                  opacity: 0.6,
-                  willChange: 'transform'
-                }}
-                aria-hidden="true"
-              />
-              <motion.div
-                animate={{
-                  top: ['110%', '-10%']
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  delay: 2
-                }}
-                className="absolute left-0 right-0 pointer-events-none"
-                style={{
-                  height: '1px',
-                  background: 'var(--accent)',
-                  boxShadow: '0 0 15px rgba(255,157,35,0.6)',
-                  opacity: 0.4,
-                  willChange: 'transform'
-                }}
-                aria-hidden="true"
-              />
-
-              {/* Dimension indicator with counter animation and arrows */}
-              <motion.div
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 0.5, scaleX: 1 }}
-                transition={{ duration: 1.0, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute pointer-events-none flex items-center gap-2"
-                style={{
-                  top: '-60px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  fontSize: '10px',
-                  letterSpacing: '0.2em',
-                  fontFamily: 'var(--font-mono)',
-                  color: 'rgba(255,255,255,0.4)',
-                  textTransform: 'uppercase'
-                }}
-                aria-hidden="true"
-              >
-                <svg width="8" height="8" viewBox="0 0 8 8" style={{ transform: 'rotate(180deg)' }}>
-                  <path d="M 0 4 L 8 0 L 8 8 Z" fill="var(--accent)" opacity="0.5" />
-                </svg>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 1.2,
-                    delay: 2
-                  }}
-                >
-                  {typeof window !== 'undefined' && (
-                    <motion.span
-                      initial={{ innerText: "000" }}
-                      animate={{ innerText: "320" }}
-                      transition={{ duration: 1.2, delay: 2 }}
-                    >
-                      320
-                    </motion.span>
-                  )}
-                  {typeof window === 'undefined' && "320"} PT
-                </motion.span>
-                <svg width="8" height="8" viewBox="0 0 8 8">
-                  <path d="M 0 4 L 8 0 L 8 8 Z" fill="var(--accent)" opacity="0.5" />
-                </svg>
-              </motion.div>
-
-              {/* Coordinate grid labels */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.25 }}
-                transition={{ duration: 0.8, delay: 2.2 }}
-                className="absolute pointer-events-none"
-                style={{
-                  bottom: '-70px',
-                  left: '0',
-                  fontSize: '8px',
-                  fontFamily: 'var(--font-mono)',
-                  color: 'rgba(255,255,255,0.4)',
-                  letterSpacing: '0.1em'
-                }}
-                aria-hidden="true"
-              >
-                X: {scrollProgress.toFixed(2)} / Y: 0.0
-              </motion.div>
-
-              {/* Wireframe subtitle */}
+              {/* Solid subtitle */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
-                animate={{
-                  opacity: Math.max(0, 0.7 - (scrollProgress * 0.005)),
-                  y: 0
-                }}
+                animate={{ opacity: 0.8, y: 0 }}
                 transition={{
-                  duration: 1.0,
+                  duration: 0.8,
                   ease: [0.16, 1, 0.3, 1],
-                  delay: 0.8
+                  delay: 1.0
                 }}
-                className="absolute"
                 style={{
-                  bottom: '-45px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
+                  marginTop: '32px',
                   fontSize: '14px',
-                  letterSpacing: '0.4em',
+                  letterSpacing: '0.3em',
                   fontFamily: 'var(--font-mono)',
-                  color: 'transparent',
-                  WebkitTextStroke: '0.5px var(--accent)',
+                  color: 'var(--accent)',
                   textTransform: 'uppercase'
                 }}
               >
