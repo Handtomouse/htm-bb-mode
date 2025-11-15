@@ -621,11 +621,12 @@ export default function BlackberryAboutContent() {
                   className="relative font-light uppercase tracking-[0.08em] leading-none select-none"
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 'clamp(140px, 28vw, 450px)',
+                    fontSize: 'clamp(100px, 18vw, 280px)',
                     background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.4) 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
+                    WebkitTextStroke: '0px',
                     filter: `
                       drop-shadow(0 1px 2px rgba(0,0,0,0.08))
                       drop-shadow(0 2px 4px rgba(0,0,0,0.06))
@@ -646,11 +647,12 @@ export default function BlackberryAboutContent() {
                   aria-hidden="true"
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 'clamp(140px, 28vw, 450px)',
+                    fontSize: 'clamp(100px, 18vw, 280px)',
                     background: `linear-gradient(180deg, var(--accent) 0%, transparent 60%)`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
+                    WebkitTextStroke: '0px',
                     opacity: 0.12,
                     filter: 'blur(1px)'
                   }}
