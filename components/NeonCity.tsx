@@ -67,26 +67,30 @@ const NeonCity: React.FC = () => {
     const BOOST_COOLDOWN = 8000; // 8 seconds
     const BOOST_SPEED_MULTIPLIER = 1.8;
 
-    // Lightning storm system
-    let lightningActive = false;
-    let lightningEndTime = 0;
-    let nextLightningTime = 8000 + Math.random() * 12000; // Next strike in 8-20 seconds
-    let lightningBranches: Array<{ x1: number; y1: number; x2: number; y2: number; alpha: number }> = [];
-    const LIGHTNING_DURATION = 150; // milliseconds
-    const LIGHTNING_BRANCH_COUNT = 8;
-
     const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
+      if (!canvas) return;
+      // Use getBoundingClientRect for accurate rendered dimensions
+      const rect = canvas.getBoundingClientRect();
+      width = Math.floor(rect.width);
+      height = Math.floor(rect.height);
+
+      // Don't render if canvas hasn't been laid out yet
+      if (width === 0 || height === 0) return;
+
       canvas.width = width * dpi;
       canvas.height = height * dpi;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
       ctx.setTransform(dpi, 0, 0, dpi, 0, 0);
       cx = width / 2;
       cy = height * 0.6;
     };
 
+    // Watch canvas element for size changes (handles ResponsiveStage scaling)
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+    resizeObserver.observe(canvas);
+
+    // Also listen to window resize for additional safety
     window.addEventListener("resize", resize);
     resize();
 
@@ -449,43 +453,6 @@ const NeonCity: React.FC = () => {
       // Check boost state
       if (isBoostActive && now > boostEndTime) {
         isBoostActive = false;
-      }
-
-      // Lightning storm system
-      if (lightningActive && now > lightningEndTime) {
-        lightningActive = false;
-      }
-      if (!lightningActive && now > nextLightningTime) {
-        // Trigger new lightning strike
-        lightningActive = true;
-        lightningEndTime = now + LIGHTNING_DURATION;
-        nextLightningTime = now + 8000 + Math.random() * 12000;
-
-        // Generate branching lightning bolts
-        lightningBranches = [];
-        const startX = width * (0.3 + Math.random() * 0.4);
-        const startY = 0;
-        const endX = startX + (Math.random() - 0.5) * 200;
-        const endY = height * 0.6;
-
-        // Main bolt
-        lightningBranches.push({ x1: startX, y1: startY, x2: endX, y2: endY, alpha: 1 });
-
-        // Branch bolts (zigzag segments)
-        for (let i = 0; i < LIGHTNING_BRANCH_COUNT; i++) {
-          const t = Math.random();
-          const branchStartX = startX + (endX - startX) * t;
-          const branchStartY = startY + (endY - startY) * t;
-          const branchEndX = branchStartX + (Math.random() - 0.5) * 150;
-          const branchEndY = branchStartY + Math.random() * 100 + 50;
-          lightningBranches.push({
-            x1: branchStartX,
-            y1: branchStartY,
-            x2: branchEndX,
-            y2: branchEndY,
-            alpha: 0.5 + Math.random() * 0.5
-          });
-        }
       }
 
       ctx.clearRect(0, 0, width, height);
@@ -1146,49 +1113,6 @@ const NeonCity: React.FC = () => {
         }
       }
 
-      // Lightning rendering
-      if (lightningActive) {
-        const lightningProgress = (lightningEndTime - now) / LIGHTNING_DURATION; // 1 to 0
-        const flashIntensity = lightningProgress * 0.2;
-
-        // Screen flash (ambient light from lightning)
-        ctx.globalAlpha = flashIntensity;
-        ctx.fillStyle = 'rgba(200, 220, 255, 1)';
-        ctx.fillRect(0, 0, width, height);
-
-        // Draw lightning bolts
-        ctx.globalAlpha = lightningProgress * 0.8 + 0.2;
-        ctx.strokeStyle = 'rgba(220, 230, 255, 1)';
-        ctx.shadowColor = 'rgba(180, 200, 255, 0.8)';
-        ctx.shadowBlur = 15;
-        ctx.lineWidth = 2.5;
-        ctx.lineCap = 'round';
-
-        lightningBranches.forEach(branch => {
-          ctx.globalAlpha = branch.alpha * (lightningProgress * 0.7 + 0.3);
-          ctx.beginPath();
-          ctx.moveTo(branch.x1, branch.y1);
-          ctx.lineTo(branch.x2, branch.y2);
-          ctx.stroke();
-        });
-
-        // Inner bright core of main bolt
-        if (lightningBranches.length > 0) {
-          ctx.globalAlpha = lightningProgress;
-          ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-          ctx.shadowBlur = 8;
-          ctx.lineWidth = 1.5;
-          const mainBolt = lightningBranches[0];
-          ctx.beginPath();
-          ctx.moveTo(mainBolt.x1, mainBolt.y1);
-          ctx.lineTo(mainBolt.x2, mainBolt.y2);
-          ctx.stroke();
-        }
-
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 1;
-      }
-
       frameId = requestAnimationFrame(render);
     };
 
@@ -1196,6 +1120,7 @@ const NeonCity: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(frameId);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("keydown", handleKeyDown);

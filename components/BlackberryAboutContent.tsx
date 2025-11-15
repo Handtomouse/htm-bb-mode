@@ -597,7 +597,7 @@ export default function BlackberryAboutContent() {
                 />
               ))}
 
-              {/* Refined wireframe title */}
+              {/* Luxury solid title with Apple-esque shadows */}
               <motion.div
                 initial={{
                   opacity: 0,
@@ -616,30 +616,36 @@ export default function BlackberryAboutContent() {
                 }}
                 className="relative"
               >
-                {/* Wireframe text */}
+                {/* Main solid text with gradient fade */}
                 <h1
                   className="relative font-bold uppercase tracking-[0.02em] leading-none select-none"
                   style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 'clamp(140px, 28vw, 450px)',
-                    color: 'transparent',
-                    WebkitTextStroke: '1.5px rgba(255,255,255,0.95)',
-                    textShadow: '0 0 30px rgba(255,157,35,0.2)'
+                    background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.4) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    textShadow: '0 4px 12px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.08)',
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 12px 32px rgba(255,157,35,0.08))'
                   }}
                 >
                   ABOUT
                 </h1>
 
-                {/* Inner accent stroke */}
+                {/* Accent glow layer */}
                 <h1
                   className="absolute inset-0 font-bold uppercase tracking-[0.02em] leading-none select-none pointer-events-none"
                   aria-hidden="true"
                   style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 'clamp(140px, 28vw, 450px)',
-                    color: 'transparent',
-                    WebkitTextStroke: '0.5px var(--accent)',
-                    opacity: 0.6
+                    background: `linear-gradient(180deg, var(--accent) 0%, transparent 60%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    opacity: 0.12,
+                    filter: 'blur(1px)'
                   }}
                 >
                   ABOUT
@@ -650,7 +656,7 @@ export default function BlackberryAboutContent() {
                   <motion.div
                     key={i}
                     initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: i === 1 ? 0.25 : 0.15 }}
+                    animate={{ scaleX: 1, opacity: i === 1 ? 0.15 : 0.08 }}
                     transition={{
                       duration: 1.0,
                       delay: 0.8 + i * 0.1,
@@ -662,7 +668,7 @@ export default function BlackberryAboutContent() {
                       right: '0',
                       top: `${ratio * 100}%`,
                       height: '1px',
-                      background: 'var(--accent)',
+                      background: 'rgba(255,255,255,0.15)',
                       transformOrigin: '50%'
                     }}
                     aria-hidden="true"
