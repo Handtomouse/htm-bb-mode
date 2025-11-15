@@ -294,7 +294,7 @@ export default function BlackberryAboutContent() {
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 1.5, repeat: Infinity }}
           className="text-[20px] text-white/70"
-          style={{ fontFamily: "VT323, monospace" }}
+          style={{ fontFamily: "var(--font-body)" }}
         >
           LOADING...
         </motion.div>
@@ -303,7 +303,7 @@ export default function BlackberryAboutContent() {
   }
 
   return (
-    <main className="relative w-full h-full bg-black overflow-hidden" role="main" aria-label="About HandToMouse" style={{ fontFamily: "VT323, monospace" }}>
+    <main className="relative w-full h-full bg-black overflow-hidden" role="main" aria-label="About HandToMouse" style={{ fontFamily: "var(--font-body)" }}>
       {/* Scroll Progress Gradient Overlay */}
       <div
         className="fixed inset-0 pointer-events-none transition-opacity duration-1000 ease-out"
@@ -529,21 +529,21 @@ export default function BlackberryAboutContent() {
             {/* Read Time Indicator - Top Right Corner - More Visible */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 0.7, y: 0 }}
+              animate={{ opacity: 0.8, y: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
               className="fixed top-24 right-6 md:right-12 z-30"
             >
               <div
-                className="px-4 py-2 rounded-sm backdrop-blur-sm bg-black/30"
+                className="px-4 py-2 backdrop-blur-md bg-black/40"
                 style={{
-                  fontSize: '12px',
-                  letterSpacing: '0.1em',
-                  fontFamily: 'var(--font-mono)',
-                  border: '1.5px solid rgba(255,255,255,0.2)',
-                  boxShadow: '0 0 12px rgba(255,157,35,0.2)'
+                  fontSize: '11px',
+                  letterSpacing: '0.12em',
+                  fontFamily: '"argent-pixel-cf", sans-serif',
+                  border: '1px solid rgba(255,157,35,0.3)',
+                  boxShadow: '0 0 16px rgba(255,157,35,0.25), 0 2px 8px rgba(0,0,0,0.6)'
                 }}
               >
-                <span className="text-white/70 uppercase">~3 min read</span>
+                <span className="text-[var(--accent)]/90 uppercase font-medium">~3 min read</span>
               </div>
             </motion.div>
 
@@ -662,16 +662,16 @@ export default function BlackberryAboutContent() {
             <motion.div
               className="mt-16 md:mt-20"
               animate={{
-                y: [0, 12, 0],
-                opacity: [0.6, 0.8, 0.6]
+                y: [0, 10, 0],
+                opacity: [0.5, 0.75, 0.5]
               }}
               transition={{
-                duration: 3,
+                duration: 2.5,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
               style={{
-                filter: 'drop-shadow(0 0 8px rgba(255,157,35,0.3))'
+                filter: 'drop-shadow(0 0 12px rgba(255,157,35,0.4)) drop-shadow(0 0 24px rgba(255,157,35,0.2))'
               }}
             >
               <Image
@@ -679,7 +679,7 @@ export default function BlackberryAboutContent() {
                 alt="Scroll down"
                 width={80}
                 height={80}
-                className="h-20 w-20 md:h-24 md:w-24 opacity-70 rotate-90"
+                className="h-20 w-20 md:h-24 md:w-24 opacity-60 rotate-90"
                 priority
               />
             </motion.div>
@@ -687,7 +687,7 @@ export default function BlackberryAboutContent() {
         </motion.div>
 
         {/* Typewriter Section - Standalone */}
-        <section id="typewriter" className="min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mb-64 md:mb-96">
+        <section id="typewriter" className="min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mb-32 md:mb-48">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -708,7 +708,7 @@ export default function BlackberryAboutContent() {
         </section>
 
         {/* Body Text Section - Fully Separated */}
-        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mt-80 md:mt-[120vh]">
+        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mt-48 md:mt-64">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -861,7 +861,7 @@ export default function BlackberryAboutContent() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12 md:mb-16 lg:mb-20"
             style={{
-              fontFamily: 'var(--font-mono)',
+              fontFamily: '"argent-pixel-cf", sans-serif',
               color: 'var(--accent)',
               letterSpacing: '0.15em',
               textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
@@ -897,6 +897,7 @@ export default function BlackberryAboutContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] bg-black/90 py-4"
+            style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
           >
             What We Do
           </motion.h2>
@@ -933,6 +934,7 @@ export default function BlackberryAboutContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
+            style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
           >
             How I Work
           </motion.h2>
@@ -968,6 +970,7 @@ export default function BlackberryAboutContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
+            style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
           >
             Proof
           </motion.h2>
@@ -1276,6 +1279,7 @@ export default function BlackberryAboutContent() {
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="text-[32px] md:text-[48px] font-bold text-[var(--accent)] uppercase tracking-[0.08em]"
+              style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 20px rgba(255,157,35,0.5)' }}
             >
               Now
             </motion.h2>
@@ -1364,7 +1368,7 @@ export default function BlackberryAboutContent() {
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="text-[36px] md:text-[52px] lg:text-[68px] font-black text-white uppercase tracking-[0.08em] leading-tight"
-              style={{ textShadow: '0 0 30px rgba(255,157,35,0.3)' }}
+              style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 30px rgba(255,157,35,0.3)' }}
             >
               Let's Work Together
             </motion.h2>

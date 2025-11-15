@@ -8,7 +8,8 @@ export const ACCENT_HOVER = "#FFB84D";
 export const FONTS = {
   mono: 'var(--font-mono)',
   body: 'var(--font-body)',
-  display: 'var(--font-mono)'
+  display: '"argent-pixel-cf", sans-serif',
+  argent: '"argent-pixel-cf", sans-serif'
 } as const;
 
 // Stat card CSS variables

@@ -47,7 +47,7 @@ export default function LuxuryServiceCard({ service, delay }: LuxuryServiceCardP
     >
       <div className="flex items-center gap-4">
         <span className="text-[32px] md:text-[40px]">{service.icon}</span>
-        <h3 className="text-[22px] md:text-[28px] lg:text-[32px] font-bold text-white tracking-wide">{service.title}</h3>
+        <h3 className="text-[22px] md:text-[28px] lg:text-[32px] font-bold text-white tracking-wide" style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}>{service.title}</h3>
       </div>
       <p className="text-[18px] md:text-[22px] text-white/90 leading-relaxed">{service.line}</p>
       <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed">{service.example}</p>

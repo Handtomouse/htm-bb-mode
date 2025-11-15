@@ -46,7 +46,7 @@ export default function TypewriterManifesto({
       transition={{ duration: 0.8, scale: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
       className="text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.4]"
       style={{
-        fontFamily: 'var(--font-mono)',
+        fontFamily: '"argent-pixel-cf", sans-serif',
         color: 'rgba(255,255,255,0.9)',
         letterSpacing: '0.08em',
         textShadow: '0 1px 2px rgba(255,157,35,0.1)',
