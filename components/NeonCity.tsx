@@ -25,7 +25,12 @@ const NeonCity: React.FC = () => {
 
     // Cached color calculations (computed once, huge performance gain)
     const root = document.documentElement;
-    const accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
+    let accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
+
+    // Ensure it's a hex color (remove any whitespace/invalid chars)
+    if (!accentHex.startsWith('#')) {
+      accentHex = '#ff9d23';
+    }
 
     const hexToRgba = (hex: string, alpha: number) => {
       hex = hex.replace('#', '');
@@ -35,24 +40,18 @@ const NeonCity: React.FC = () => {
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
 
-    // Pre-computed colors (no function calls in render loop)
-    const COLOR_LINE = hexToRgba(accentHex, 0.7);
+    // Pre-computed colors (no function calls in render loop) - 15% brighter
+    const COLOR_LINE = hexToRgba(accentHex, 0.85);
     const COLOR_ROAD_LINE = (() => {
-      const r = Math.min(255, parseInt(accentHex.substring(1, 3), 16) + 40);
-      const g = Math.min(255, parseInt(accentHex.substring(3, 5), 16) + 40);
-      const b = Math.min(255, parseInt(accentHex.substring(5, 7), 16) + 40);
-      return `rgba(${r}, ${g}, ${b}, 0.9)`;
+      const r = Math.min(255, parseInt(accentHex.substring(1, 3), 16) + 55);
+      const g = Math.min(255, parseInt(accentHex.substring(3, 5), 16) + 55);
+      const b = Math.min(255, parseInt(accentHex.substring(5, 7), 16) + 55);
+      return `rgba(${r}, ${g}, ${b}, 1.0)`;
     })();
-    const COLOR_HORIZON = hexToRgba(accentHex, 0.2);
+    const COLOR_HORIZON = hexToRgba(accentHex, 0.35);
     const COLOR_ACCENT = accentHex;
 
     let speed = SPEED_BASE;
-
-    // Mouse parallax
-    let mouseX = 0;
-    let mouseY = 0;
-    let smoothMouseX = 0;
-    let smoothMouseY = 0;
 
     // Boost mode
     let isBoostActive = false;
@@ -64,14 +63,10 @@ const NeonCity: React.FC = () => {
 
     const resize = () => {
       if (!canvas) return;
-      // Use getBoundingClientRect for accurate rendered dimensions
       const rect = canvas.getBoundingClientRect();
       width = Math.floor(rect.width);
       height = Math.floor(rect.height);
-
-      // Don't render if canvas hasn't been laid out yet
       if (width === 0 || height === 0) return;
-
       canvas.width = width * dpi;
       canvas.height = height * dpi;
       ctx.setTransform(dpi, 0, 0, dpi, 0, 0);
@@ -88,13 +83,6 @@ const NeonCity: React.FC = () => {
     // Also listen to window resize for additional safety
     window.addEventListener("resize", resize);
     resize();
-
-    // Mouse move handler for parallax
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = (e.clientX / width - 0.5) * 2; // -1 to 1
-      mouseY = (e.clientY / height - 0.5) * 2; // -1 to 1
-    };
-    window.addEventListener("mousemove", handleMouseMove);
 
     // Boost trigger handlers
     const triggerBoost = () => {
@@ -133,11 +121,6 @@ const NeonCity: React.FC = () => {
       type: 'residential' | 'commercial' | 'tower' = 'residential';
       hasSign = false;
       signText = '';
-      hasBillboard = false;
-      billboardPattern: 'grid' | 'bars' | 'pulse' | 'wave' = 'grid';
-      billboardPhase = 0;
-      hasLightWave = false;
-      lightWaveSpeed = 1;
 
       constructor(side: number) {
         this.side = side;
@@ -192,17 +175,6 @@ const NeonCity: React.FC = () => {
           this.signText = signs[Math.floor(Math.random() * signs.length)];
         }
 
-        // Holographic billboards (15% chance, mainly on commercial/tower buildings)
-        this.hasBillboard = (this.type === 'commercial' || this.type === 'tower') && Math.random() > 0.85;
-        if (this.hasBillboard) {
-          const patterns: Array<'grid' | 'bars' | 'pulse' | 'wave'> = ['grid', 'bars', 'pulse', 'wave'];
-          this.billboardPattern = patterns[Math.floor(Math.random() * patterns.length)];
-          this.billboardPhase = Math.random() * Math.PI * 2;
-        }
-
-        // Light wave (25% chance, mainly on tower buildings)
-        this.hasLightWave = this.type === 'tower' && Math.random() > 0.75;
-        this.lightWaveSpeed = 0.5 + Math.random() * 1.5;
       }
 
       update(dt: number) {
@@ -240,9 +212,9 @@ const NeonCity: React.FC = () => {
       buildings.push(new Building(side));
     }
 
-    // Background particles (stars) - Reduced from 80 to 40 for performance
+    // Background particles (stars)
     const particles: Array<{ x: number; y: number; z: number; size: number; speed: number }> = [];
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 25; i++) {
       particles.push({
         x: (Math.random() - 0.5) * width * 2,
         y: Math.random() * height * 0.4 - 50, // Above horizon
@@ -252,38 +224,58 @@ const NeonCity: React.FC = () => {
       });
     }
 
-    // Traffic vehicles
-    const vehicles: Array<{ lane: number; z: number; speed: number; color: string; isEmergency: boolean }> = [];
-    for (let i = 0; i < 12; i++) {
+    // Traffic vehicles with enhanced properties
+    type VehicleType = 'sedan' | 'sports' | 'truck' | 'police' | 'ambulance';
+    const vehicles: Array<{
+      lane: number;
+      z: number;
+      speed: number;
+      bodyColor: string;
+      glowColor: string;
+      isEmergency: boolean;
+      type: VehicleType;
+    }> = [];
+
+    const vehicleColors = [
+      { body: 'rgba(0, 255, 255, 1)', glow: 'rgba(0, 255, 255, 0.6)' }, // Cyan
+      { body: 'rgba(255, 0, 255, 1)', glow: 'rgba(255, 0, 255, 0.6)' }, // Magenta
+      { body: 'rgba(255, 255, 0, 1)', glow: 'rgba(255, 255, 0, 0.6)' }, // Yellow
+      { body: 'rgba(0, 255, 100, 1)', glow: 'rgba(0, 255, 100, 0.6)' }, // Green
+      { body: 'rgba(255, 100, 0, 1)', glow: 'rgba(255, 100, 0, 0.6)' }, // Orange
+      { body: 'rgba(100, 200, 255, 1)', glow: 'rgba(100, 200, 255, 0.6)' }, // Light Blue
+    ];
+
+    for (let i = 0; i < 8; i++) {
       const lanes = [-ROAD_WIDTH * 0.5, -ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.5];
-      const isEmergency = i < 3; // First 3 vehicles are emergency
+      const isEmergency = i < 2;
+
+      let type: VehicleType;
+      let colorSet;
+
+      if (isEmergency) {
+        type = i === 0 ? 'police' : 'ambulance';
+        colorSet = i === 0
+          ? { body: 'rgba(0, 100, 255, 1)', glow: 'rgba(0, 100, 255, 0.8)' } // Police blue
+          : { body: 'rgba(255, 255, 255, 1)', glow: 'rgba(255, 50, 50, 0.8)' }; // Ambulance white/red
+      } else {
+        const rand = Math.random();
+        if (rand < 0.3) type = 'sports';
+        else if (rand < 0.6) type = 'sedan';
+        else type = 'truck';
+        colorSet = vehicleColors[Math.floor(Math.random() * vehicleColors.length)];
+      }
+
       vehicles.push({
         lane: Math.floor(Math.random() * lanes.length),
         z: Math.random() * CITY_DEPTH + 200,
-        speed: isEmergency ? 300 + Math.random() * 100 : 180 + Math.random() * 150,
-        color: isEmergency ? "rgba(255, 255, 255, 1)" : (Math.random() > 0.7 ? "rgba(255, 50, 50, 1)" : "rgba(100, 200, 255, 1)"),
-        isEmergency
+        speed: isEmergency ? 350 + Math.random() * 100 : (type === 'sports' ? 250 + Math.random() * 100 : 180 + Math.random() * 120),
+        bodyColor: colorSet.body,
+        glowColor: colorSet.glow,
+        isEmergency,
+        type
       });
     }
 
-    // Flying vehicles/drones - Reduced from 6 to 3 for performance
-    const flyingVehicles: Array<{ x: number; y: number; z: number; speed: number; bobPhase: number }> = [];
-    for (let i = 0; i < 3; i++) {
-      flyingVehicles.push({
-        x: (Math.random() - 0.5) * ROAD_WIDTH * 4,
-        y: 80 + Math.random() * 120, // Flying height
-        z: Math.random() * CITY_DEPTH + 200,
-        speed: 200 + Math.random() * 100,
-        bobPhase: Math.random() * Math.PI * 2
-      });
-    }
-
-    // Steam vents & smoke particles - Reduced from 5 to 2 vents for performance
-    const steamParticles: Array<{ x: number; y: number; z: number; age: number; maxAge: number; size: number }> = [];
-    const steamVents = [
-      { x: -ROAD_WIDTH * 1.5, z: 600 },
-      { x: ROAD_WIDTH * 1.8, z: 1200 },
-    ];
 
     const projectPoint = (p: { x: number; y: number; z: number }, totalCamX: number = 0) => {
       const z = Math.max(p.z, 10);
@@ -292,7 +284,7 @@ const NeonCity: React.FC = () => {
       const offsetX = (p.x - totalCamX) * scale;
       return {
         x: cx + offsetX,
-        y: cy - (p.y - 80) * scale - smoothMouseY * 0.2 // Elevated camera 80 units above ground
+        y: cy - (p.y - 80) * scale // Elevated camera 80 units above ground
       };
     };
 
@@ -307,7 +299,7 @@ const NeonCity: React.FC = () => {
 
     const drawRoad = (now: number, camX: number) => {
       const t = now * 0.002;
-      const segments = 14;
+      const segments = 10;
       const segLength = CITY_DEPTH / segments;
 
       ctx.lineWidth = 1;
@@ -337,12 +329,6 @@ const NeonCity: React.FC = () => {
         }
       }
 
-      // extra perspective guide rails with pulsing lights
-      ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.4);
-      const guideOffset = ROAD_WIDTH * 2.4;
-      drawEdge({ x: -guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
-      drawEdge({ x: guideOffset, y: 0, z: 40 }, { x: 0, y: 0, z: CITY_DEPTH }, camX);
-
       // Street lights along road edges
       const lightSpacing = 180;
       const numLights = Math.floor(CITY_DEPTH / lightSpacing);
@@ -358,7 +344,7 @@ const NeonCity: React.FC = () => {
         ctx.lineWidth = 2;
         drawEdge(leftBase, leftTop, camX);
 
-        // Light halo
+        // Light glow
         const leftPos = projectPoint(leftTop, camX);
         const pulsePhase = (now * 0.001 + i * 0.3) % 2;
         const intensity = 0.6 + Math.sin(pulsePhase * Math.PI) * 0.4;
@@ -367,17 +353,7 @@ const NeonCity: React.FC = () => {
         ctx.shadowBlur = 12;
         ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
         ctx.fillRect(leftPos.x - 2, leftPos.y - 2, 4, 4);
-
-        // Light cone effect
         ctx.shadowBlur = 0;
-        ctx.globalAlpha = intensity * 0.15;
-        ctx.fillStyle = hexToRgba(COLOR_ACCENT, 0.2);
-        ctx.beginPath();
-        ctx.moveTo(leftPos.x, leftPos.y);
-        ctx.lineTo(leftPos.x - 15, leftPos.y + 40);
-        ctx.lineTo(leftPos.x + 15, leftPos.y + 40);
-        ctx.closePath();
-        ctx.fill();
         ctx.globalAlpha = 1;
 
         // Right side lights
@@ -393,16 +369,7 @@ const NeonCity: React.FC = () => {
         ctx.shadowBlur = 12;
         ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
         ctx.fillRect(rightPos.x - 2, rightPos.y - 2, 4, 4);
-
         ctx.shadowBlur = 0;
-        ctx.globalAlpha = intensity * 0.15;
-        ctx.fillStyle = hexToRgba(COLOR_ACCENT, 0.2);
-        ctx.beginPath();
-        ctx.moveTo(rightPos.x, rightPos.y);
-        ctx.lineTo(rightPos.x - 15, rightPos.y + 40);
-        ctx.lineTo(rightPos.x + 15, rightPos.y + 40);
-        ctx.closePath();
-        ctx.fill();
         ctx.globalAlpha = 1;
       }
     };
@@ -425,13 +392,8 @@ const NeonCity: React.FC = () => {
       const baseSpeed = SPEED_BASE * pulse;
       speed = isBoostActive ? baseSpeed * BOOST_SPEED_MULTIPLIER : baseSpeed;
 
-      // Mouse parallax (smooth interpolation)
-      const parallaxStrength = 30;
-      smoothMouseX += (mouseX * parallaxStrength - smoothMouseX) * 3 * dt;
-      smoothMouseY += (mouseY * parallaxStrength - smoothMouseY) * 3 * dt;
-
-      // Camera stays centered on road, only slight mouse parallax
-      const totalCameraX = smoothMouseX;
+      // Camera centered on road
+      const totalCameraX = 0;
 
       // Horizon - aligned with status bar top
       const horizonY = 65;
@@ -470,204 +432,162 @@ const NeonCity: React.FC = () => {
       // Road
       drawRoad(now, totalCameraX);
 
-      // Steam vents & smoke particles
-      // Spawn new particles
-      steamVents.forEach(vent => {
-        if (Math.random() < 0.08) { // 8% chance per frame to spawn
-          steamParticles.push({
-            x: vent.x + (Math.random() - 0.5) * 20,
-            y: 0,
-            z: vent.z + (Math.random() - 0.5) * 30,
-            age: 0,
-            maxAge: 2 + Math.random() * 2, // 2-4 seconds lifetime
-            size: 3 + Math.random() * 5
-          });
-        }
-      });
 
-      // Update and render steam particles
-      for (let i = steamParticles.length - 1; i >= 0; i--) {
-        const sp = steamParticles[i];
-        sp.age += dt;
-        sp.y += 30 * dt; // Rise upward
-        sp.x += (Math.random() - 0.5) * 10 * dt; // Slight horizontal drift
-        sp.size += 2 * dt; // Expand as it rises
-
-        // Remove old particles
-        if (sp.age > sp.maxAge) {
-          steamParticles.splice(i, 1);
-          continue;
-        }
-
-        // Render particle
-        const distance = sp.z;
-        if (distance < CITY_DEPTH) {
-          const projected = projectPoint(sp, totalCameraX);
-          const lifeProgress = sp.age / sp.maxAge;
-          const alpha = (1 - lifeProgress) * 0.3 * (1 - (distance - 200) / CITY_DEPTH);
-
-          if (alpha > 0.01) {
-            ctx.globalAlpha = Math.max(0, alpha);
-            ctx.fillStyle = 'rgba(200, 200, 200, 0.4)';
-            ctx.shadowBlur = 4;
-            ctx.shadowColor = 'rgba(150, 150, 150, 0.3)';
-            ctx.beginPath();
-            ctx.arc(projected.x, projected.y, sp.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-          }
-        }
-      }
-      ctx.globalAlpha = 1;
-
-      // Traffic vehicles
+      // Traffic vehicles - Enhanced
       const lanes = [-ROAD_WIDTH * 0.5, -ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.5];
       vehicles.forEach(v => {
         v.z -= v.speed * dt;
         if (v.z < 40) {
           v.z = CITY_DEPTH + Math.random() * 400;
           v.lane = Math.floor(Math.random() * lanes.length);
-          // Preserve emergency status, update colors accordingly
-          if (!v.isEmergency) {
-            v.color = Math.random() > 0.7 ? "rgba(255, 50, 50, 1)" : "rgba(100, 200, 255, 1)";
-          }
         }
 
         const vx = lanes[v.lane];
-        const vehicleSize = 8;
-        const vehicleHeight = 5;
-
-        // Vehicle body (small cube)
-        const verts = [
-          { x: vx - vehicleSize/2, y: 0, z: v.z },
-          { x: vx + vehicleSize/2, y: 0, z: v.z },
-          { x: vx - vehicleSize/2, y: vehicleHeight, z: v.z },
-          { x: vx + vehicleSize/2, y: vehicleHeight, z: v.z },
-          { x: vx - vehicleSize/2, y: 0, z: v.z + vehicleSize * 1.5 },
-          { x: vx + vehicleSize/2, y: 0, z: v.z + vehicleSize * 1.5 },
-        ];
-
-        const projected = verts.map(v => projectPoint(v, totalCameraX));
         const distance = v.z;
         const alpha = Math.max(0, Math.min(1, 1 - (distance - 200) / CITY_DEPTH));
 
-        // Motion blur trails (for fast vehicles, especially emergency ones)
-        if (v.isEmergency || isBoostActive) {
-          const trailCount = 4;
-          for (let i = 1; i <= trailCount; i++) {
-            const trailZ = v.z + i * 15;
-            const trailAlpha = alpha * (1 - i / trailCount) * 0.3;
-            const trailVerts = [
-              { x: vx - vehicleSize/2, y: vehicleHeight/2, z: trailZ },
-              { x: vx + vehicleSize/2, y: vehicleHeight/2, z: trailZ },
-            ];
-            const projTrail = trailVerts.map(v => projectPoint(v, totalCameraX));
-            ctx.globalAlpha = trailAlpha;
-            ctx.strokeStyle = v.color;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(projTrail[0].x, projTrail[0].y);
-            ctx.lineTo(projTrail[1].x, projTrail[1].y);
-            ctx.stroke();
-          }
+        // Type-specific dimensions
+        let width, height, length;
+        if (v.type === 'sports') {
+          width = 7; height = 4; length = 12;
+        } else if (v.type === 'truck') {
+          width = 9; height = 7; length = 14;
+        } else {
+          width = 8; height = 5; length = 12;
         }
 
-        ctx.globalAlpha = alpha * 0.8;
-        ctx.strokeStyle = v.color;
-        ctx.lineWidth = 1.5;
-
-        // Draw vehicle outline
-        ctx.beginPath();
-        ctx.moveTo(projected[0].x, projected[0].y);
-        ctx.lineTo(projected[1].x, projected[1].y);
-        ctx.lineTo(projected[3].x, projected[3].y);
-        ctx.lineTo(projected[2].x, projected[2].y);
-        ctx.closePath();
-        ctx.stroke();
-
-        // Headlights/taillights
-        if (distance < 500) {
-          if (v.isEmergency) {
-            // Emergency strobes - alternate red/blue every 100ms
-            const strobePhase = Math.floor(now / 100) % 2;
-            const strobeColor = strobePhase === 0 ? "rgba(255, 0, 0, 1)" : "rgba(0, 100, 255, 1)";
-
-            // Multiple strobe lights (front + top)
-            ctx.fillStyle = strobeColor;
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = strobeColor;
-
-            // Front strobes (larger and brighter)
-            ctx.fillRect(projected[4].x - 2, projected[4].y - 2, 4, 4);
-            ctx.fillRect(projected[5].x - 2, projected[5].y - 2, 4, 4);
-
-            // Roof strobes (top of vehicle)
-            ctx.fillRect(projected[2].x - 1.5, projected[2].y - 1.5, 3, 3);
-            ctx.fillRect(projected[3].x - 1.5, projected[3].y - 1.5, 3, 3);
-
-            ctx.shadowBlur = 0;
-          } else {
-            // Regular headlights/taillights
-            ctx.fillStyle = v.color;
-            ctx.shadowBlur = 4;
-            ctx.shadowColor = v.color;
-            ctx.fillRect(projected[4].x - 1, projected[4].y - 1, 2, 2);
-            ctx.fillRect(projected[5].x - 1, projected[5].y - 1, 2, 2);
-            ctx.shadowBlur = 0;
-          }
-        }
-
-        ctx.globalAlpha = 1;
-      });
-
-      // Flying vehicles/drones
-      flyingVehicles.forEach(fv => {
-        fv.z -= fv.speed * dt;
-        fv.bobPhase += dt * 2; // Bob up and down
-
-        if (fv.z < 40) {
-          fv.z = CITY_DEPTH + Math.random() * 400;
-          fv.x = (Math.random() - 0.5) * ROAD_WIDTH * 4;
-          fv.y = 80 + Math.random() * 120;
-        }
-
-        // Add bobbing motion
-        const bobAmount = Math.sin(fv.bobPhase) * 8;
-        const currentY = fv.y + bobAmount;
-
-        // Draw simple drone shape (diamond)
-        const droneSize = 6;
+        // Vehicle body vertices
         const verts = [
-          { x: fv.x, y: currentY + droneSize, z: fv.z }, // top
-          { x: fv.x + droneSize, y: currentY, z: fv.z }, // right
-          { x: fv.x, y: currentY - droneSize, z: fv.z }, // bottom
-          { x: fv.x - droneSize, y: currentY, z: fv.z }, // left
+          { x: vx - width/2, y: 0, z: v.z },                    // 0: front-left-bottom
+          { x: vx + width/2, y: 0, z: v.z },                    // 1: front-right-bottom
+          { x: vx - width/2, y: height, z: v.z },               // 2: front-left-top
+          { x: vx + width/2, y: height, z: v.z },               // 3: front-right-top
+          { x: vx - width/2, y: 0, z: v.z + length },           // 4: rear-left-bottom
+          { x: vx + width/2, y: 0, z: v.z + length },           // 5: rear-right-bottom
+          { x: vx - width/2, y: height, z: v.z + length },      // 6: rear-left-top
+          { x: vx + width/2, y: height, z: v.z + length },      // 7: rear-right-top
+          // Windshield (angled)
+          { x: vx - width/2, y: height * 1.3, z: v.z + 3 },     // 8: windshield-left
+          { x: vx + width/2, y: height * 1.3, z: v.z + 3 },     // 9: windshield-right
         ];
 
-        const projected = verts.map(v => projectPoint(v, totalCameraX));
-        const distance = fv.z;
-        const alpha = Math.max(0, Math.min(1, 1 - (distance - 200) / CITY_DEPTH));
+        const projected = verts.map(p => projectPoint(p, totalCameraX));
 
-        // Draw drone body
-        ctx.globalAlpha = alpha * 0.7;
-        ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.8);
-        ctx.lineWidth = 1.5;
+        // Underglow neon effect
+        if (distance < 600) {
+          const underglowY = projected[0].y + 2;
+          ctx.globalAlpha = alpha * 0.4;
+          ctx.fillStyle = v.glowColor;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = v.glowColor;
+          ctx.beginPath();
+          ctx.ellipse((projected[0].x + projected[1].x) / 2, underglowY, width * 2, 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+
+        // Draw car body with gradient
+        ctx.globalAlpha = alpha * 0.9;
+        ctx.strokeStyle = v.bodyColor;
+        ctx.lineWidth = 2;
+
+        // Front face
         ctx.beginPath();
         ctx.moveTo(projected[0].x, projected[0].y);
         ctx.lineTo(projected[1].x, projected[1].y);
-        ctx.lineTo(projected[2].x, projected[2].y);
         ctx.lineTo(projected[3].x, projected[3].y);
+        ctx.lineTo(projected[2].x, projected[2].y);
         ctx.closePath();
         ctx.stroke();
 
-        // Drone lights (blinking)
-        if (distance < 600 && Math.floor(now / 300) % 2 === 0) {
-          const center = projectPoint({ x: fv.x, y: currentY, z: fv.z }, totalCameraX);
+        // Top face (roof)
+        ctx.globalAlpha = alpha * 0.7;
+        ctx.beginPath();
+        ctx.moveTo(projected[2].x, projected[2].y);
+        ctx.lineTo(projected[3].x, projected[3].y);
+        ctx.lineTo(projected[7].x, projected[7].y);
+        ctx.lineTo(projected[6].x, projected[6].y);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Side edges
+        ctx.globalAlpha = alpha * 0.8;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(projected[0].x, projected[0].y);
+        ctx.lineTo(projected[4].x, projected[4].y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(projected[1].x, projected[1].y);
+        ctx.lineTo(projected[5].x, projected[5].y);
+        ctx.stroke();
+
+        // Windshield (angled for sports cars)
+        if (v.type === 'sports' && distance < 500) {
+          ctx.globalAlpha = alpha * 0.5;
+          ctx.strokeStyle = 'rgba(100, 200, 255, 0.8)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(projected[2].x, projected[2].y);
+          ctx.lineTo(projected[8].x, projected[8].y);
+          ctx.moveTo(projected[3].x, projected[3].y);
+          ctx.lineTo(projected[9].x, projected[9].y);
+          ctx.stroke();
+        }
+
+        // Headlight beams (forward projection)
+        if (distance < 600) {
+          ctx.globalAlpha = alpha * 0.3;
+          const beamLength = 40;
+          const beam1 = projectPoint({ x: vx - width/3, y: height/2, z: v.z - beamLength }, totalCameraX);
+          const beam2 = projectPoint({ x: vx + width/3, y: height/2, z: v.z - beamLength }, totalCameraX);
+
+          ctx.fillStyle = 'rgba(255, 255, 200, 0.2)';
+          ctx.beginPath();
+          ctx.moveTo(projected[0].x, projected[0].y);
+          ctx.lineTo(projected[1].x, projected[1].y);
+          ctx.lineTo(beam2.x, beam2.y);
+          ctx.lineTo(beam1.x, beam1.y);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Headlights
+        if (distance < 500) {
           ctx.globalAlpha = alpha;
-          ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
-          ctx.shadowBlur = 5;
-          ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
-          ctx.fillRect(center.x - 1, center.y - 1, 2, 2);
+          ctx.fillStyle = 'rgba(255, 255, 200, 1)';
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = 'rgba(255, 255, 200, 0.8)';
+          ctx.fillRect(projected[0].x - 2, projected[0].y - 1, 3, 2);
+          ctx.fillRect(projected[1].x - 1, projected[1].y - 1, 3, 2);
+          ctx.shadowBlur = 0;
+
+          // Taillights (red)
+          ctx.fillStyle = 'rgba(255, 50, 50, 1)';
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = 'rgba(255, 50, 50, 0.6)';
+          ctx.fillRect(projected[4].x - 2, projected[4].y - 1, 3, 2);
+          ctx.fillRect(projected[5].x - 1, projected[5].y - 1, 3, 2);
+          ctx.shadowBlur = 0;
+        }
+
+        // Emergency lights (roof light bar)
+        if (v.isEmergency && distance < 600) {
+          const strobePhase = Math.floor(now / 80) % 2;
+          const strobeColor = v.type === 'police'
+            ? (strobePhase === 0 ? "rgba(255, 0, 0, 1)" : "rgba(0, 100, 255, 1)")
+            : "rgba(255, 50, 50, 1)";
+
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = strobeColor;
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = strobeColor;
+
+          // Roof light bar (elongated)
+          const barY = (projected[2].y + projected[3].y) / 2 - 3;
+          const barX = (projected[2].x + projected[3].x) / 2;
+          ctx.fillRect(barX - 4, barY, 8, 2);
+
           ctx.shadowBlur = 0;
         }
 
@@ -731,39 +651,11 @@ const NeonCity: React.FC = () => {
 
               const projected = projectPoint({ x: wx, y: wy, z: wz }, totalCameraX);
 
-              // Calculate light wave brightness
-              let waveBrightness = 1;
-              if (b.lightWavePattern !== 'none') {
-                const waveTime = now * 0.001 * b.lightWaveSpeed;
-                if (b.lightWavePattern === 'vertical') {
-                  // Vertical wave (top to bottom)
-                  const wavePhase = (win.y / b.windowRows + waveTime) % 1;
-                  waveBrightness = 0.4 + Math.sin(wavePhase * Math.PI * 2) * 0.6;
-                } else if (b.lightWavePattern === 'horizontal') {
-                  // Horizontal wave (left to right)
-                  const wavePhase = (win.x / b.windowCols + waveTime) % 1;
-                  waveBrightness = 0.4 + Math.sin(wavePhase * Math.PI * 2) * 0.6;
-                } else if (b.lightWavePattern === 'spiral') {
-                  // Spiral wave (distance from center)
-                  const centerX = b.windowCols / 2;
-                  const centerY = b.windowRows / 2;
-                  const dist = Math.sqrt((win.x - centerX) ** 2 + (win.y - centerY) ** 2);
-                  const wavePhase = (dist / Math.max(b.windowCols, b.windowRows) + waveTime) % 1;
-                  waveBrightness = 0.4 + Math.sin(wavePhase * Math.PI * 2) * 0.6;
-                }
-              }
-
-              // Window glow with wave effect
-              const finalBrightness = waveBrightness;
-              ctx.globalAlpha = alpha * 0.8 * finalBrightness;
-
-              // Color shift based on wave (cooler when dim, warmer when bright)
-              const r = Math.floor(255 * finalBrightness);
-              const g = Math.floor(200 * finalBrightness);
-              const blue = Math.floor(100 * (0.7 + finalBrightness * 0.3));
-              ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.9)`;
-              ctx.shadowBlur = 3 * finalBrightness;
-              ctx.shadowColor = `rgba(${r}, ${g}, ${blue}, ${0.8 * finalBrightness})`;
+              // Window glow
+              ctx.globalAlpha = alpha * 0.8;
+              ctx.fillStyle = `rgba(255, 200, 100, 0.9)`;
+              ctx.shadowBlur = 3;
+              ctx.shadowColor = `rgba(255, 200, 100, 0.8)`;
               ctx.fillRect(projected.x - 1, projected.y - 1, 2, 2);
               ctx.shadowBlur = 0;
             }
@@ -785,145 +677,6 @@ const NeonCity: React.FC = () => {
           ctx.shadowBlur = 0;
         }
 
-        // Draw holographic billboard
-        if (b.hasBillboard && distance < 700) {
-          const billboardY = b.height * 0.5; // Middle of building
-          const billboardWidth = b.width * 0.8;
-          const billboardHeight = b.height * 0.25;
-
-          // Billboard corners in 3D
-          const bbTL = { x: b.x - billboardWidth / 2, y: billboardY + billboardHeight / 2, z: b.z - 1 };
-          const bbTR = { x: b.x + billboardWidth / 2, y: billboardY + billboardHeight / 2, z: b.z - 1 };
-          const bbBL = { x: b.x - billboardWidth / 2, y: billboardY - billboardHeight / 2, z: b.z - 1 };
-          const bbBR = { x: b.x + billboardWidth / 2, y: billboardY - billboardHeight / 2, z: b.z - 1 };
-
-          const projBB = [bbTL, bbTR, bbBR, bbBL].map(p => projectPoint(p, totalCameraX));
-
-          // Holographic flicker (alpha variation)
-          const flicker = 0.5 + Math.sin(now * 0.007 + b.billboardPhase) * 0.15;
-          const holoAlpha = alpha * flicker;
-
-          // Draw billboard background glow
-          ctx.globalAlpha = holoAlpha * 0.3;
-          ctx.fillStyle = hexToRgba(COLOR_ACCENT, 0.4);
-          ctx.beginPath();
-          ctx.moveTo(projBB[0].x, projBB[0].y);
-          ctx.lineTo(projBB[1].x, projBB[1].y);
-          ctx.lineTo(projBB[2].x, projBB[2].y);
-          ctx.lineTo(projBB[3].x, projBB[3].y);
-          ctx.closePath();
-          ctx.fill();
-
-          // Draw pattern based on type
-          ctx.globalAlpha = holoAlpha * 0.7;
-          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 1);
-          ctx.lineWidth = 1;
-
-          if (b.billboardPattern === 'grid') {
-            // Grid pattern
-            const gridCols = 5;
-            const gridRows = 3;
-            for (let i = 1; i < gridCols; i++) {
-              const t = i / gridCols;
-              const x1 = projBB[0].x + (projBB[1].x - projBB[0].x) * t;
-              const y1 = projBB[0].y + (projBB[1].y - projBB[0].y) * t;
-              const x2 = projBB[3].x + (projBB[2].x - projBB[3].x) * t;
-              const y2 = projBB[3].y + (projBB[2].y - projBB[3].y) * t;
-              ctx.beginPath();
-              ctx.moveTo(x1, y1);
-              ctx.lineTo(x2, y2);
-              ctx.stroke();
-            }
-            for (let i = 1; i < gridRows; i++) {
-              const t = i / gridRows;
-              const x1 = projBB[0].x + (projBB[3].x - projBB[0].x) * t;
-              const y1 = projBB[0].y + (projBB[3].y - projBB[0].y) * t;
-              const x2 = projBB[1].x + (projBB[2].x - projBB[1].x) * t;
-              const y2 = projBB[1].y + (projBB[2].y - projBB[1].y) * t;
-              ctx.beginPath();
-              ctx.moveTo(x1, y1);
-              ctx.lineTo(x2, y2);
-              ctx.stroke();
-            }
-          } else if (b.billboardPattern === 'bars') {
-            // Horizontal bars
-            const barCount = 6;
-            for (let i = 0; i < barCount; i++) {
-              const t = (i + 0.5) / barCount;
-              const brightness = 0.5 + Math.sin(now * 0.003 + i * 0.5 + b.billboardPhase) * 0.5;
-              ctx.globalAlpha = holoAlpha * brightness;
-              const x1 = projBB[0].x + (projBB[3].x - projBB[0].x) * t;
-              const y1 = projBB[0].y + (projBB[3].y - projBB[0].y) * t;
-              const x2 = projBB[1].x + (projBB[2].x - projBB[1].x) * t;
-              const y2 = projBB[1].y + (projBB[2].y - projBB[1].y) * t;
-              ctx.lineWidth = 2;
-              ctx.beginPath();
-              ctx.moveTo(x1, y1);
-              ctx.lineTo(x2, y2);
-              ctx.stroke();
-            }
-          } else if (b.billboardPattern === 'pulse') {
-            // Pulsing center dot
-            const pulse = 0.3 + Math.sin(now * 0.005 + b.billboardPhase) * 0.7;
-            const centerX = (projBB[0].x + projBB[2].x) / 2;
-            const centerY = (projBB[0].y + projBB[2].y) / 2;
-            ctx.globalAlpha = holoAlpha * pulse;
-            ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
-            ctx.beginPath();
-            const radius = 3 + pulse * 5;
-            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-          } else if (b.billboardPattern === 'wave') {
-            // Wave pattern
-            const wavePoints = 20;
-            ctx.beginPath();
-            for (let i = 0; i <= wavePoints; i++) {
-              const t = i / wavePoints;
-              const wave = Math.sin(t * Math.PI * 3 + now * 0.002 + b.billboardPhase) * 0.3;
-              const baseX = projBB[0].x + (projBB[1].x - projBB[0].x) * t;
-              const baseY = projBB[0].y + (projBB[1].y - projBB[0].y) * t;
-              const offsetX = projBB[3].x + (projBB[2].x - projBB[3].x) * t;
-              const offsetY = projBB[3].y + (projBB[2].y - projBB[3].y) * t;
-              const x = baseX + (offsetX - baseX) * (0.5 + wave);
-              const y = baseY + (offsetY - baseY) * (0.5 + wave);
-              if (i === 0) ctx.moveTo(x, y);
-              else ctx.lineTo(x, y);
-            }
-            ctx.lineWidth = 2;
-            ctx.stroke();
-          }
-
-          // Scanline effect
-          ctx.globalAlpha = holoAlpha * 0.4;
-          const scanlineY = ((now * 0.0005 + b.billboardPhase) % 1);
-          const scanX1 = projBB[0].x + (projBB[3].x - projBB[0].x) * scanlineY;
-          const scanY1 = projBB[0].y + (projBB[3].y - projBB[0].y) * scanlineY;
-          const scanX2 = projBB[1].x + (projBB[2].x - projBB[1].x) * scanlineY;
-          const scanY2 = projBB[1].y + (projBB[2].y - projBB[1].y) * scanlineY;
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(scanX1, scanY1);
-          ctx.lineTo(scanX2, scanY2);
-          ctx.stroke();
-
-          // Billboard border
-          ctx.globalAlpha = holoAlpha;
-          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.9);
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(projBB[0].x, projBB[0].y);
-          ctx.lineTo(projBB[1].x, projBB[1].y);
-          ctx.lineTo(projBB[2].x, projBB[2].y);
-          ctx.lineTo(projBB[3].x, projBB[3].y);
-          ctx.closePath();
-          ctx.stroke();
-          ctx.shadowBlur = 0;
-        }
-
         ctx.globalAlpha = 1;
       }
 
@@ -936,7 +689,6 @@ const NeonCity: React.FC = () => {
       cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("keydown", handleKeyDown);
       canvas.removeEventListener("click", handleClick);
     };
@@ -952,7 +704,7 @@ const NeonCity: React.FC = () => {
         width: "100%",
         height: "100%",
         cursor: "pointer",
-        opacity: 0.3
+        opacity: 0.45
       }}
     />
   );

@@ -33,6 +33,7 @@ import {
   InstagramIcon,
   AppGlyph
 } from "./BlackberryIcons";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
@@ -87,6 +88,7 @@ export default function BlackberryOS5Dashboard() {
   const [now, setNow] = useState(new Date());
   const [toast, setToast] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // Top bar state
   const [signalStrength, setSignalStrength] = useState(4);
@@ -101,6 +103,8 @@ export default function BlackberryOS5Dashboard() {
   // Mount and clock tick
   useEffect(() => {
     setMounted(true);
+    // Detect touch device
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -200,7 +204,7 @@ export default function BlackberryOS5Dashboard() {
           return isCharging ? Math.min(100, prev + 1) : Math.max(0, prev - 1);
         }
       });
-    }, 3000); // Faster for demo (3 seconds)
+    }, 30000); // 30 seconds for realistic battery simulation
 
     // Occasionally cycle network types
     const networkInterval = setInterval(() => {
@@ -590,10 +594,11 @@ export default function BlackberryOS5Dashboard() {
           />
           {/* NEON CITY CANVAS - 3D Wireframe Maze - Blur when menu/app open */}
           <div
-            className="transition-all duration-500"
+            className="absolute inset-0 transition-all duration-500"
             style={{
-              filter: (mode === "menu" || openApp !== null) ? "blur(12px)" : "blur(0px)",
-              opacity: (mode === "menu" || openApp !== null) ? 0.3 : 1
+              filter: (mode === "menu" || openApp !== null) ? "blur(8px)" : "blur(0px)",
+              opacity: (mode === "menu" || openApp !== null) ? 0.3 : 1,
+              willChange: "filter, opacity"
             }}
           >
             <NeonCity />
@@ -655,7 +660,7 @@ export default function BlackberryOS5Dashboard() {
               {/* Center: Wordmark on homescreen, App+Time otherwise */}
               {(openApp !== null || mode === "menu" || pathname !== '/') ? (
                 <div className="flex items-center gap-6 text-[20px]">
-                  <img src="/logos/HTM-LOGO-ICON-01.svg" alt="HTM" className="h-6 w-6 opacity-80" style={{ imageRendering: 'pixelated' }} />
+                  <img src="/logos/HTM-LOGO-ICON-01.svg" alt="HTM" className="h-5 w-5 sm:h-6 sm:w-6 opacity-80" style={{ imageRendering: 'pixelated' }} />
                   {openApp !== null && (
                     <>
                       <span className="font-semibold text-[var(--accent)]" style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}>
@@ -688,8 +693,8 @@ export default function BlackberryOS5Dashboard() {
 
               {/* Right: Network + Battery */}
               <div className="flex items-center gap-4">
-                <div className="border border-[#E0E0E0] px-2 py-1 bg-transparent min-w-[48px] flex items-center justify-center flex-shrink-0" style={{ imageRendering: 'pixelated' }}>
-                  <span className="font-heading text-[14px] md:text-[16px] font-medium text-[#E0E0E0] whitespace-nowrap" style={{ fontFamily: 'VT323, monospace' }}>{networkType}</span>
+                <div className="border border-[#E0E0E0] px-2 py-1 bg-transparent min-w-[40px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0" style={{ imageRendering: 'pixelated' }}>
+                  <span className="font-heading text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#E0E0E0] whitespace-nowrap" style={{ fontFamily: 'VT323, monospace' }}>{networkType}</span>
                 </div>
                 <div
                   className="relative"
@@ -713,7 +718,7 @@ export default function BlackberryOS5Dashboard() {
               {/* Time and Date - Compact */}
               <div className="px-4 py-8 md:py-10">
                 {/* Large centered time */}
-                <div className="text-3xl md:text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
+                <div className="text-2xl sm:text-3xl md:text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
                   fontFamily: '"argent-pixel-cf", sans-serif',
                   textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
                 }}>
@@ -748,6 +753,7 @@ export default function BlackberryOS5Dashboard() {
               setSelectedDock={setSelectedDock}
               navigateTo={navigateTo}
               goMenu={goMenu}
+              isTouchDevice={isTouchDevice}
             />
           ) : (
             <MenuGrid
@@ -1481,6 +1487,7 @@ function HomeDockOverlay({
   setSelectedDock,
   navigateTo,
   goMenu,
+  isTouchDevice,
 }: {
   apps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
   dockApps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
@@ -1488,6 +1495,7 @@ function HomeDockOverlay({
   setSelectedDock: React.Dispatch<React.SetStateAction<number>>;
   navigateTo: (app: { name: string; icon: React.ReactNode; path?: string; external?: boolean }) => void;
   goMenu: () => void;
+  isTouchDevice: boolean;
 }) {
   const [touchStart, setTouchStart] = React.useState<number | null>(null);
 
@@ -1522,18 +1530,30 @@ function HomeDockOverlay({
       <div className="w-full max-w-[90%] mx-auto rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05),0_0_2px_rgba(255,157,35,0.3)]">
         {/* Hints at top of dock bar with gradient */}
         <div className="px-4 pt-3 pb-2.5 text-center text-white/80 text-[13px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
-          <span className="opacity-90 font-bold">▲ Menu</span>
-          <span className="mx-2 opacity-50">•</span>
-          <span className="opacity-90 font-bold">◀▶ Navigate</span>
-          <span className="mx-2 opacity-50">•</span>
-          <span className="opacity-90 font-bold">Enter/Tap=Open</span>
+          {isTouchDevice ? (
+            <>
+              <span className="opacity-90 font-bold">Swipe Up = Menu</span>
+              <span className="mx-2 opacity-50">•</span>
+              <span className="opacity-90 font-bold">Swipe ◀▶ Navigate</span>
+              <span className="mx-2 opacity-50">•</span>
+              <span className="opacity-90 font-bold">Tap = Open</span>
+            </>
+          ) : (
+            <>
+              <span className="opacity-90 font-bold">▲ Menu</span>
+              <span className="mx-2 opacity-50">•</span>
+              <span className="opacity-90 font-bold">◀▶ Navigate</span>
+              <span className="mx-2 opacity-50">•</span>
+              <span className="opacity-90 font-bold">Enter/Tap=Open</span>
+            </>
+          )}
         </div>
-        <div className="grid grid-cols-5 gap-4 p-5 place-items-center transition-all duration-300">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 p-3 sm:p-5 place-items-center transition-all duration-300">
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-none border-2 p-3 min-h-[100px]",
+                "group relative flex flex-col items-center justify-center rounded-none border-2 p-2 sm:p-3 min-h-[80px] sm:min-h-[100px]",
                 selectedDock === idx
                   ? "border-[var(--accent)] bg-gradient-to-b from-white/20 to-white/15 backdrop-blur-sm"
                   : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7 hover:scale-105",
@@ -1556,7 +1576,7 @@ function HomeDockOverlay({
               }`}>
                 {app.icon}
               </div>
-              <div className={`font-heading mt-4 text-[13px] leading-none text-center font-semibold transition-all duration-300 ${
+              <div className={`font-heading mt-2 sm:mt-4 text-[11px] sm:text-[13px] leading-none text-center font-semibold transition-all duration-300 ${
                 selectedDock === idx ? "text-[var(--accent)]" : "text-white/90 group-hover:text-white"
               }`}>
                 {app.name}

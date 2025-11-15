@@ -304,6 +304,17 @@ export default function BlackberryAboutContent() {
 
   return (
     <main className="relative w-full h-full bg-black overflow-hidden" role="main" aria-label="About HandToMouse" style={{ fontFamily: "var(--font-body)" }}>
+      {/* Load Progress Indicator - BlackBerry Style */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[2px] bg-[var(--accent)] origin-left z-[9999]"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: data ? 1 : 0.3 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          boxShadow: '0 0 8px rgba(255,157,35,0.6)'
+        }}
+      />
+
       {/* Scroll Progress Gradient Overlay */}
       <div
         className="fixed inset-0 pointer-events-none transition-opacity duration-1000 ease-out"
@@ -515,6 +526,15 @@ export default function BlackberryAboutContent() {
           className="relative"
           style={{ scrollSnapAlign: 'center' }}
         >
+          {/* Luxury Vignette Overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle at 50% 40%, transparent 0%, transparent 40%, rgba(0,0,0,0.2) 100%)',
+              zIndex: 1
+            }}
+          />
+
           <div
             className="sticky top-[20vh] h-[60vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
             style={{
@@ -548,6 +568,16 @@ export default function BlackberryAboutContent() {
             </motion.div>
 
             <div className="relative">
+              {/* BlackBerry Grid Pattern */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)',
+                  backgroundSize: '8px 8px',
+                  opacity: 0.3
+                }}
+              />
+
               {/* Luxury solid title with Apple-esque shadows */}
               <motion.div
                 initial={{
@@ -611,78 +641,98 @@ export default function BlackberryAboutContent() {
                   About
                 </h1>
 
-                {/* Minimal depth lines - 3 horizontal only */}
-                {[0.3, 0.5, 0.7].map((ratio, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: i === 1 ? 0.15 : 0.08 }}
-                    transition={{
-                      duration: 1.0,
-                      delay: 0.8 + i * 0.1,
-                      ease: [0.16, 1, 0.3, 1]
-                    }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      left: '0',
-                      right: '0',
-                      top: `${ratio * 100}%`,
-                      height: '1px',
-                      background: 'rgba(255,255,255,0.15)',
-                      transformOrigin: '50%'
-                    }}
-                    aria-hidden="true"
-                  />
-                ))}
+                {/* Scan line animation - BlackBerry tech aesthetic */}
+                <motion.div
+                  animate={{
+                    top: ['0%', '100%'],
+                    opacity: [0, 0.25, 0.25, 0]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'linear',
+                    times: [0, 0.1, 0.9, 1]
+                  }}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: '0',
+                    right: '0',
+                    height: '2px',
+                    background: 'linear-gradient(90deg, transparent, rgba(255,157,35,0.6), transparent)',
+                    boxShadow: '0 0 12px rgba(255,157,35,0.4)'
+                  }}
+                  aria-hidden="true"
+                />
               </motion.div>
 
-              {/* Solid subtitle */}
+              {/* Upgraded subtitle - BlackBerry branded */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 0.8, y: 0 }}
+                initial={{ opacity: 0, y: 10, letterSpacing: '0.5em' }}
+                animate={{ opacity: 0.9, y: 0, letterSpacing: '0.24em' }}
                 transition={{
-                  duration: 0.8,
+                  duration: 1.2,
                   ease: [0.16, 1, 0.3, 1],
                   delay: 1.0
                 }}
+                className="inline-block px-8 py-3"
                 style={{
-                  marginTop: '32px',
-                  fontSize: '14px',
-                  letterSpacing: '0.3em',
-                  fontFamily: 'var(--font-mono)',
+                  marginTop: '40px',
+                  fontSize: '16px',
+                  fontFamily: '"argent-pixel-cf", sans-serif',
                   color: 'var(--accent)',
                   textTransform: 'uppercase',
-                  textShadow: '0 0 20px rgba(255,157,35,0.4), 0 2px 6px rgba(0,0,0,0.5)'
+                  textShadow: '0 0 20px rgba(255,157,35,0.4), 0 2px 6px rgba(0,0,0,0.5)',
+                  borderTop: '1px solid rgba(255,157,35,0.2)',
+                  borderBottom: '1px solid rgba(255,157,35,0.2)'
                 }}
               >
                 Creative Direction
               </motion.div>
             </div>
 
-            {/* Scroll indicator - HTM icon with subtle pulse */}
+            {/* Scroll indicator - Minimal BlackBerry chevron */}
             <motion.div
-              className="mt-16 md:mt-20"
+              className="mt-16 md:mt-20 flex flex-col items-center gap-2"
               animate={{
-                y: [0, 10, 0],
-                opacity: [0.5, 0.75, 0.5]
+                y: [0, 8, 0]
               }}
               transition={{
-                duration: 2.5,
+                duration: 2,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              style={{
-                filter: 'drop-shadow(0 0 12px rgba(255,157,35,0.4)) drop-shadow(0 0 24px rgba(255,157,35,0.2))'
-              }}
             >
-              <Image
-                src="/logos/HTM-LOGO-ICON-01.svg"
-                alt="Scroll down"
-                width={80}
-                height={80}
-                className="h-20 w-20 md:h-24 md:w-24 opacity-60 rotate-90"
-                priority
-              />
+              {/* Down chevron */}
+              <motion.svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  filter: 'drop-shadow(0 0 8px rgba(255,157,35,0.4))'
+                }}
+                animate={{ opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </motion.svg>
+              {/* "SCROLL" label */}
+              <motion.span
+                style={{
+                  fontSize: '10px',
+                  fontFamily: '"argent-pixel-cf", sans-serif',
+                  color: 'var(--accent)',
+                  letterSpacing: '0.24em',
+                  textShadow: '0 0 8px rgba(255,157,35,0.3)',
+                  opacity: 0.7
+                }}
+              >
+                SCROLL
+              </motion.span>
             </motion.div>
           </div>
         </motion.div>
@@ -717,7 +767,22 @@ export default function BlackberryAboutContent() {
             transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-5xl mx-auto px-8 md:px-16"
           >
-            {/* Clean, centered luxury layout */}
+            {/* Section number label - BlackBerry style */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 0.5, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-[12px] mb-16 md:mb-24"
+              style={{
+                fontFamily: '"argent-pixel-cf", sans-serif',
+                letterSpacing: '0.24em',
+                color: 'var(--accent)'
+              }}
+            >
+              — 01
+            </motion.div>
+            {/* Clean, centered luxury layout - 8px vertical rhythm */}
             <motion.div
               variants={{
                 hidden: {},
@@ -731,7 +796,8 @@ export default function BlackberryAboutContent() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="space-y-16 md:space-y-24"
+              className="space-y-[48px] md:space-y-[64px]"
+              style={{ lineHeight: '1.5' }}
             >
               {/* First statement - Bold opening */}
               <motion.div
@@ -739,33 +805,53 @@ export default function BlackberryAboutContent() {
                   hidden: { opacity: 0, y: 30 },
                   visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="text-center"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                className="text-center p-6 md:p-8 border border-transparent hover:border-[var(--accent)]/20 transition-all duration-300"
+                style={{
+                  cursor: 'default'
+                }}
               >
-                <p
-                  className="text-[22px] md:text-[28px] lg:text-[32px] leading-[1.5] max-w-3xl mx-auto"
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    color: 'rgba(255,255,255,0.95)',
-                    fontWeight: 400,
-                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                  }}
-                >
-                  I work where <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
-                </p>
+                <div className="max-w-4xl mx-auto">
+                  <div
+                    className="text-[10px] mb-4 opacity-50"
+                    style={{
+                      fontFamily: '"argent-pixel-cf", sans-serif',
+                      letterSpacing: '0.12em',
+                      color: 'var(--accent)'
+                    }}
+                  >
+                    // 01
+                  </div>
+                  <p
+                    className="text-[22px] md:text-[28px] lg:text-[32px] leading-[1.5]"
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      color: 'rgba(255,255,255,0.95)',
+                      fontWeight: 300,
+                      textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                      letterSpacing: '0.02em'
+                    }}
+                  >
+                    I work where <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
+                  </p>
+                </div>
               </motion.div>
 
-              {/* Minimal divider */}
+              {/* BB-style dot divider */}
               <motion.div
                 variants={{
-                  hidden: { scaleX: 0, opacity: 0 },
-                  visible: { scaleX: 1, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="w-24 h-[1px] mx-auto"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,157,35,0.4), transparent)',
-                  boxShadow: '0 0 8px rgba(255,157,35,0.2)'
-                }}
-              />
+                className="flex items-center justify-center gap-2"
+              >
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.7 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
+              </motion.div>
 
               {/* Second statement - Philosophy */}
               <motion.div
@@ -773,33 +859,53 @@ export default function BlackberryAboutContent() {
                   hidden: { opacity: 0, y: 30 },
                   visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="text-center"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                className="text-center p-6 md:p-8 border border-transparent hover:border-[var(--accent)]/20 transition-all duration-300"
+                style={{
+                  cursor: 'default'
+                }}
               >
-                <p
-                  className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6] max-w-2xl mx-auto"
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    color: 'rgba(255,255,255,0.9)',
-                    fontWeight: 300,
-                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                  }}
-                >
-                  The work: making something that still feels right in <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>five years</span>, not just five minutes.
-                </p>
+                <div className="max-w-3xl mx-auto">
+                  <div
+                    className="text-[10px] mb-4 opacity-50"
+                    style={{
+                      fontFamily: '"argent-pixel-cf", sans-serif',
+                      letterSpacing: '0.12em',
+                      color: 'var(--accent)'
+                    }}
+                  >
+                    // 02
+                  </div>
+                  <p
+                    className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6]"
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      color: 'rgba(255,255,255,0.9)',
+                      fontWeight: 300,
+                      textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                      letterSpacing: '0.02em'
+                    }}
+                  >
+                    The work: making something that still feels right in <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>five years</span>, not just five minutes.
+                  </p>
+                </div>
               </motion.div>
 
-              {/* Minimal divider */}
+              {/* BB-style dot divider */}
               <motion.div
                 variants={{
-                  hidden: { scaleX: 0, opacity: 0 },
-                  visible: { scaleX: 1, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="w-24 h-[1px] mx-auto"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,157,35,0.4), transparent)',
-                  boxShadow: '0 0 8px rgba(255,157,35,0.2)'
-                }}
-              />
+                className="flex items-center justify-center gap-2"
+              >
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.7 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
+                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
+              </motion.div>
 
               {/* Third statement - Method */}
               <motion.div
@@ -807,19 +913,37 @@ export default function BlackberryAboutContent() {
                   hidden: { opacity: 0, y: 30 },
                   visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
                 }}
-                className="text-center"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                className="text-center p-6 md:p-8 border border-transparent hover:border-[var(--accent)]/20 transition-all duration-300"
+                style={{
+                  cursor: 'default'
+                }}
               >
-                <p
-                  className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6] max-w-2xl mx-auto"
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    color: 'rgba(255,255,255,0.9)',
-                    fontWeight: 300,
-                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                  }}
-                >
-                  The method: <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>research, reference, and restraint</span> — knowing what to leave out.
-                </p>
+                <div className="max-w-3xl mx-auto">
+                  <div
+                    className="text-[10px] mb-4 opacity-50"
+                    style={{
+                      fontFamily: '"argent-pixel-cf", sans-serif',
+                      letterSpacing: '0.12em',
+                      color: 'var(--accent)'
+                    }}
+                  >
+                    // 03
+                  </div>
+                  <p
+                    className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6]"
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      color: 'rgba(255,255,255,0.9)',
+                      fontWeight: 300,
+                      textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                      letterSpacing: '0.02em'
+                    }}
+                  >
+                    The method: <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>research, reference, and restraint</span> — knowing what to leave out.
+                  </p>
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>

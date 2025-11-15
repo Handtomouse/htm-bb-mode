@@ -399,9 +399,9 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
                   className="text-[15px] sm:text-[17px] md:text-[19px]"
                   style={{
                     margin: '0 0 var(--body-mb) 0',
-                    fontWeight: 400,
+                    fontWeight: 300,
                     lineHeight: 1.68,
-                    letterSpacing: '0',
+                    letterSpacing: '0.02em',
                     color: 'rgba(255,255,255,0.9)',
                     textShadow: '0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8)',
                     textAlign: 'center',

@@ -17,8 +17,8 @@ export default function TypewriterManifesto({
   const line2 = "we chase different.";
   const fullText = line1 + " " + line2;
 
-  // Calculate character index from scroll progress
-  const charCount = Math.floor(scrollProgress * fullText.length);
+  // Calculate character index from scroll progress (slowed down - multiplier < 1)
+  const charCount = Math.floor(scrollProgress * fullText.length * 0.7);
 
   // Determine what to show on each line
   const line1Length = line1.length + 1; // +1 for the space
@@ -54,11 +54,26 @@ export default function TypewriterManifesto({
         scale: scaleValue
       }}
       transition={{ duration: 0.8, scale: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
-      className="text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.3]"
+      className="relative text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.6] p-8 md:p-12"
       style={{
-        transition: 'font-size 0.2s ease-out'
+        transition: 'font-size 0.2s ease-out',
+        border: '1px solid rgba(255,157,35,0.2)'
       }}
     >
+      {/* Corner accents - BlackBerry frame */}
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent)]" />
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent)]" />
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent)]" />
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent)]" />
+
+      {/* Character count indicator */}
+      <div
+        className="absolute top-2 right-2 text-[10px] opacity-40"
+        style={{ fontFamily: '"argent-pixel-cf", sans-serif', letterSpacing: '0.12em' }}
+      >
+        {charCount}/{fullText.length}
+      </div>
+
       {/* Line 1: Everyone's chasing new — */}
       <div style={textStyle}>
         {line1Display}
@@ -67,6 +82,9 @@ export default function TypewriterManifesto({
             animate={{ opacity: [0.9, 0.3, 0.9] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="text-[var(--accent)]/90"
+            style={{
+              textShadow: '0 0 8px rgba(255,157,35,0.8), 0 0 16px rgba(255,157,35,0.4)'
+            }}
           >
             |
           </motion.span>
@@ -87,6 +105,9 @@ export default function TypewriterManifesto({
             <motion.span
               animate={{ opacity: [0.9, 0.3, 0.9] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                textShadow: '0 0 8px rgba(255,157,35,0.8), 0 0 16px rgba(255,157,35,0.4)'
+              }}
             >
               |
             </motion.span>
