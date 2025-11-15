@@ -75,6 +75,23 @@ const NeonCity: React.FC = () => {
     const BOOST_COOLDOWN = 8000; // 8 seconds
     const BOOST_SPEED_MULTIPLIER = 1.8;
 
+    // Camera roll (banking effect during turns)
+    let cameraRoll = 0; // in radians
+    const MAX_ROLL = 0.06; // ~3.4 degrees max tilt
+
+    // Lightning storm system
+    let lightningActive = false;
+    let lightningEndTime = 0;
+    let nextLightningTime = 8000 + Math.random() * 12000; // Next strike in 8-20 seconds
+    let lightningBranches: Array<{ x1: number; y1: number; x2: number; y2: number; alpha: number }> = [];
+    const LIGHTNING_DURATION = 150; // milliseconds
+    const LIGHTNING_BRANCH_COUNT = 8;
+
+    // Performance HUD
+    let fps = 60;
+    let frameCount = 0;
+    let lastFpsUpdate = performance.now();
+
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -135,6 +152,14 @@ const NeonCity: React.FC = () => {
       hasSign = false;
       signText = '';
       rooftopType: 'antenna' | 'helipad' | 'dish' | 'none' = 'none';
+      hasBillboard = false;
+      billboardPattern: 'grid' | 'bars' | 'pulse' | 'wave' = 'grid';
+      billboardPhase = 0;
+      lightWavePattern: 'none' | 'vertical' | 'horizontal' | 'spiral' = 'none';
+      lightWaveSpeed = 1;
+      hasSearchlight = false;
+      searchlightAngle = 0;
+      searchlightSpeed = 1;
 
       constructor(side: number) {
         this.side = side;
@@ -196,12 +221,40 @@ const NeonCity: React.FC = () => {
         } else {
           this.rooftopType = 'none';
         }
+
+        // Holographic billboards (15% chance, mainly on commercial/tower buildings)
+        this.hasBillboard = (this.type === 'commercial' || this.type === 'tower') && Math.random() > 0.85;
+        if (this.hasBillboard) {
+          const patterns: Array<'grid' | 'bars' | 'pulse' | 'wave'> = ['grid', 'bars', 'pulse', 'wave'];
+          this.billboardPattern = patterns[Math.floor(Math.random() * patterns.length)];
+          this.billboardPhase = Math.random() * Math.PI * 2;
+        }
+
+        // Light wave patterns (25% chance, mainly on tower buildings)
+        if (this.type === 'tower' && Math.random() > 0.75) {
+          const wavePatterns: Array<'vertical' | 'horizontal' | 'spiral'> = ['vertical', 'horizontal', 'spiral'];
+          this.lightWavePattern = wavePatterns[Math.floor(Math.random() * wavePatterns.length)];
+          this.lightWaveSpeed = 0.5 + Math.random() * 1.5;
+        } else {
+          this.lightWavePattern = 'none';
+        }
+
+        // Rotating searchlights (20% chance, mainly on tall commercial/tower buildings)
+        this.hasSearchlight = (this.type === 'tower' || this.type === 'commercial') && this.height > 200 && Math.random() > 0.8;
+        if (this.hasSearchlight) {
+          this.searchlightAngle = Math.random() * Math.PI * 2;
+          this.searchlightSpeed = 0.3 + Math.random() * 0.7; // radians per second
+        }
       }
 
       update(dt: number) {
         this.z -= speed * dt;
         if (this.z + this.depth < 40) {
           this.reset(false);
+        }
+        // Update searchlight rotation
+        if (this.hasSearchlight) {
+          this.searchlightAngle += this.searchlightSpeed * dt;
         }
       }
 
@@ -246,16 +299,40 @@ const NeonCity: React.FC = () => {
     }
 
     // Traffic vehicles
-    const vehicles: Array<{ lane: number; z: number; speed: number; color: string }> = [];
+    const vehicles: Array<{ lane: number; z: number; speed: number; color: string; isEmergency: boolean }> = [];
     for (let i = 0; i < 12; i++) {
       const lanes = [-ROAD_WIDTH * 0.5, -ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.5];
+      const isEmergency = i < 3; // First 3 vehicles are emergency
       vehicles.push({
         lane: Math.floor(Math.random() * lanes.length),
         z: Math.random() * CITY_DEPTH + 200,
-        speed: 180 + Math.random() * 150,
-        color: Math.random() > 0.7 ? "rgba(255, 50, 50, 1)" : "rgba(100, 200, 255, 1)"
+        speed: isEmergency ? 300 + Math.random() * 100 : 180 + Math.random() * 150,
+        color: isEmergency ? "rgba(255, 255, 255, 1)" : (Math.random() > 0.7 ? "rgba(255, 50, 50, 1)" : "rgba(100, 200, 255, 1)"),
+        isEmergency
       });
     }
+
+    // Flying vehicles/drones
+    const flyingVehicles: Array<{ x: number; y: number; z: number; speed: number; bobPhase: number }> = [];
+    for (let i = 0; i < 6; i++) {
+      flyingVehicles.push({
+        x: (Math.random() - 0.5) * ROAD_WIDTH * 4,
+        y: 80 + Math.random() * 120, // Flying height
+        z: Math.random() * CITY_DEPTH + 200,
+        speed: 200 + Math.random() * 100,
+        bobPhase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // Steam vents & smoke particles
+    const steamParticles: Array<{ x: number; y: number; z: number; age: number; maxAge: number; size: number }> = [];
+    const steamVents = [
+      { x: -ROAD_WIDTH * 1.5, z: 300 },
+      { x: ROAD_WIDTH * 1.8, z: 600 },
+      { x: -ROAD_WIDTH * 2, z: 900 },
+      { x: ROAD_WIDTH * 1.3, z: 1200 },
+      { x: -ROAD_WIDTH * 1.7, z: 1500 },
+    ];
 
     const projectPoint = (p: { x: number; y: number; z: number }, totalCamX: number = 0) => {
       const z = Math.max(p.z, 10);
@@ -391,11 +468,56 @@ const NeonCity: React.FC = () => {
         isBoostActive = false;
       }
 
+      // Lightning storm system
+      if (lightningActive && now > lightningEndTime) {
+        lightningActive = false;
+      }
+      if (!lightningActive && now > nextLightningTime) {
+        // Trigger new lightning strike
+        lightningActive = true;
+        lightningEndTime = now + LIGHTNING_DURATION;
+        nextLightningTime = now + 8000 + Math.random() * 12000;
+
+        // Generate branching lightning bolts
+        lightningBranches = [];
+        const startX = width * (0.3 + Math.random() * 0.4);
+        const startY = 0;
+        const endX = startX + (Math.random() - 0.5) * 200;
+        const endY = height * 0.6;
+
+        // Main bolt
+        lightningBranches.push({ x1: startX, y1: startY, x2: endX, y2: endY, alpha: 1 });
+
+        // Branch bolts (zigzag segments)
+        for (let i = 0; i < LIGHTNING_BRANCH_COUNT; i++) {
+          const t = Math.random();
+          const branchStartX = startX + (endX - startX) * t;
+          const branchStartY = startY + (endY - startY) * t;
+          const branchEndX = branchStartX + (Math.random() - 0.5) * 150;
+          const branchEndY = branchStartY + Math.random() * 100 + 50;
+          lightningBranches.push({
+            x1: branchStartX,
+            y1: branchStartY,
+            x2: branchEndX,
+            y2: branchEndY,
+            alpha: 0.5 + Math.random() * 0.5
+          });
+        }
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       const pulse = 1 + Math.sin(now * 0.0007) * 0.08;
       const baseSpeed = SPEED_BASE * pulse;
       speed = isBoostActive ? baseSpeed * BOOST_SPEED_MULTIPLIER : baseSpeed;
+
+      // Update FPS counter
+      frameCount++;
+      if (now - lastFpsUpdate > 1000) {
+        fps = Math.round(frameCount * 1000 / (now - lastFpsUpdate));
+        frameCount = 0;
+        lastFpsUpdate = now;
+      }
 
       // Turning logic - schedule random turns
       const timeSeconds = now * 0.001;
@@ -422,6 +544,16 @@ const NeonCity: React.FC = () => {
 
       // Add mouse parallax to camera offset
       const totalCameraX = cameraOffsetX + smoothMouseX;
+
+      // Camera roll (banking) - proportional to turn intensity
+      const targetRoll = -(cameraOffsetX / TURN_AMOUNT) * MAX_ROLL; // Negative for natural banking direction
+      cameraRoll += (targetRoll - cameraRoll) * 2.5 * dt;
+
+      // Apply camera roll transformation
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(cameraRoll);
+      ctx.translate(-cx, -cy);
 
       // Horizon
       const horizonY = cy - (FOV / (CITY_DEPTH * 0.45)) * FOV;
@@ -468,6 +600,56 @@ const NeonCity: React.FC = () => {
       // Road
       drawRoad(now, totalCameraX);
 
+      // Steam vents & smoke particles
+      // Spawn new particles
+      steamVents.forEach(vent => {
+        if (Math.random() < 0.08) { // 8% chance per frame to spawn
+          steamParticles.push({
+            x: vent.x + (Math.random() - 0.5) * 20,
+            y: 0,
+            z: vent.z + (Math.random() - 0.5) * 30,
+            age: 0,
+            maxAge: 2 + Math.random() * 2, // 2-4 seconds lifetime
+            size: 3 + Math.random() * 5
+          });
+        }
+      });
+
+      // Update and render steam particles
+      for (let i = steamParticles.length - 1; i >= 0; i--) {
+        const sp = steamParticles[i];
+        sp.age += dt;
+        sp.y += 30 * dt; // Rise upward
+        sp.x += (Math.random() - 0.5) * 10 * dt; // Slight horizontal drift
+        sp.size += 2 * dt; // Expand as it rises
+
+        // Remove old particles
+        if (sp.age > sp.maxAge) {
+          steamParticles.splice(i, 1);
+          continue;
+        }
+
+        // Render particle
+        const distance = sp.z;
+        if (distance < CITY_DEPTH) {
+          const projected = projectPoint(sp, totalCameraX);
+          const lifeProgress = sp.age / sp.maxAge;
+          const alpha = (1 - lifeProgress) * 0.3 * (1 - (distance - 200) / CITY_DEPTH);
+
+          if (alpha > 0.01) {
+            ctx.globalAlpha = Math.max(0, alpha);
+            ctx.fillStyle = 'rgba(200, 200, 200, 0.4)';
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = 'rgba(150, 150, 150, 0.3)';
+            ctx.beginPath();
+            ctx.arc(projected.x, projected.y, sp.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+
       // Traffic vehicles
       const lanes = [-ROAD_WIDTH * 0.5, -ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.5];
       vehicles.forEach(v => {
@@ -475,7 +657,10 @@ const NeonCity: React.FC = () => {
         if (v.z < 40) {
           v.z = CITY_DEPTH + Math.random() * 400;
           v.lane = Math.floor(Math.random() * lanes.length);
-          v.color = Math.random() > 0.7 ? "rgba(255, 50, 50, 1)" : "rgba(100, 200, 255, 1)";
+          // Preserve emergency status, update colors accordingly
+          if (!v.isEmergency) {
+            v.color = Math.random() > 0.7 ? "rgba(255, 50, 50, 1)" : "rgba(100, 200, 255, 1)";
+          }
         }
 
         const vx = lanes[v.lane];
@@ -496,6 +681,27 @@ const NeonCity: React.FC = () => {
         const distance = v.z;
         const alpha = Math.max(0, Math.min(1, 1 - (distance - 200) / CITY_DEPTH));
 
+        // Motion blur trails (for fast vehicles, especially emergency ones)
+        if (v.isEmergency || isBoostActive) {
+          const trailCount = 4;
+          for (let i = 1; i <= trailCount; i++) {
+            const trailZ = v.z + i * 15;
+            const trailAlpha = alpha * (1 - i / trailCount) * 0.3;
+            const trailVerts = [
+              { x: vx - vehicleSize/2, y: vehicleHeight/2, z: trailZ },
+              { x: vx + vehicleSize/2, y: vehicleHeight/2, z: trailZ },
+            ];
+            const projTrail = trailVerts.map(v => projectPoint(v, totalCameraX));
+            ctx.globalAlpha = trailAlpha;
+            ctx.strokeStyle = v.color;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(projTrail[0].x, projTrail[0].y);
+            ctx.lineTo(projTrail[1].x, projTrail[1].y);
+            ctx.stroke();
+          }
+        }
+
         ctx.globalAlpha = alpha * 0.8;
         ctx.strokeStyle = v.color;
         ctx.lineWidth = 1.5;
@@ -511,11 +717,87 @@ const NeonCity: React.FC = () => {
 
         // Headlights/taillights
         if (distance < 500) {
-          ctx.fillStyle = v.color;
-          ctx.shadowBlur = 4;
-          ctx.shadowColor = v.color;
-          ctx.fillRect(projected[4].x - 1, projected[4].y - 1, 2, 2);
-          ctx.fillRect(projected[5].x - 1, projected[5].y - 1, 2, 2);
+          if (v.isEmergency) {
+            // Emergency strobes - alternate red/blue every 100ms
+            const strobePhase = Math.floor(now / 100) % 2;
+            const strobeColor = strobePhase === 0 ? "rgba(255, 0, 0, 1)" : "rgba(0, 100, 255, 1)";
+
+            // Multiple strobe lights (front + top)
+            ctx.fillStyle = strobeColor;
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = strobeColor;
+
+            // Front strobes (larger and brighter)
+            ctx.fillRect(projected[4].x - 2, projected[4].y - 2, 4, 4);
+            ctx.fillRect(projected[5].x - 2, projected[5].y - 2, 4, 4);
+
+            // Roof strobes (top of vehicle)
+            ctx.fillRect(projected[2].x - 1.5, projected[2].y - 1.5, 3, 3);
+            ctx.fillRect(projected[3].x - 1.5, projected[3].y - 1.5, 3, 3);
+
+            ctx.shadowBlur = 0;
+          } else {
+            // Regular headlights/taillights
+            ctx.fillStyle = v.color;
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = v.color;
+            ctx.fillRect(projected[4].x - 1, projected[4].y - 1, 2, 2);
+            ctx.fillRect(projected[5].x - 1, projected[5].y - 1, 2, 2);
+            ctx.shadowBlur = 0;
+          }
+        }
+
+        ctx.globalAlpha = 1;
+      });
+
+      // Flying vehicles/drones
+      flyingVehicles.forEach(fv => {
+        fv.z -= fv.speed * dt;
+        fv.bobPhase += dt * 2; // Bob up and down
+
+        if (fv.z < 40) {
+          fv.z = CITY_DEPTH + Math.random() * 400;
+          fv.x = (Math.random() - 0.5) * ROAD_WIDTH * 4;
+          fv.y = 80 + Math.random() * 120;
+        }
+
+        // Add bobbing motion
+        const bobAmount = Math.sin(fv.bobPhase) * 8;
+        const currentY = fv.y + bobAmount;
+
+        // Draw simple drone shape (diamond)
+        const droneSize = 6;
+        const verts = [
+          { x: fv.x, y: currentY + droneSize, z: fv.z }, // top
+          { x: fv.x + droneSize, y: currentY, z: fv.z }, // right
+          { x: fv.x, y: currentY - droneSize, z: fv.z }, // bottom
+          { x: fv.x - droneSize, y: currentY, z: fv.z }, // left
+        ];
+
+        const projected = verts.map(v => projectPoint(v, totalCameraX));
+        const distance = fv.z;
+        const alpha = Math.max(0, Math.min(1, 1 - (distance - 200) / CITY_DEPTH));
+
+        // Draw drone body
+        ctx.globalAlpha = alpha * 0.7;
+        ctx.strokeStyle = hexToRgba(getAccentColor(), 0.8);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(projected[0].x, projected[0].y);
+        ctx.lineTo(projected[1].x, projected[1].y);
+        ctx.lineTo(projected[2].x, projected[2].y);
+        ctx.lineTo(projected[3].x, projected[3].y);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Drone lights (blinking)
+        if (distance < 600 && Math.floor(now / 300) % 2 === 0) {
+          const center = projectPoint({ x: fv.x, y: currentY, z: fv.z }, totalCameraX);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+          ctx.shadowBlur = 5;
+          ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
+          ctx.fillRect(center.x - 1, center.y - 1, 2, 2);
           ctx.shadowBlur = 0;
         }
 
@@ -562,6 +844,32 @@ const NeonCity: React.FC = () => {
         drawEdge(v[2], v[6], totalCameraX);
         drawEdge(v[3], v[7], totalCameraX);
 
+        // Neon ground glow at building base
+        if (distance < 800) {
+          const baseLeft = projectPoint(v[0], totalCameraX);
+          const baseRight = projectPoint(v[1], totalCameraX);
+          const glowHeight = 25;
+
+          // Create vertical gradient from building base
+          const glowGradient = ctx.createLinearGradient(
+            baseLeft.x, baseLeft.y,
+            baseLeft.x, baseLeft.y + glowHeight
+          );
+          glowGradient.addColorStop(0, hexToRgba(getAccentColor(), 0.15 * alpha));
+          glowGradient.addColorStop(0.6, hexToRgba(getAccentColor(), 0.05 * alpha));
+          glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+          ctx.globalAlpha = alpha * 0.6;
+          ctx.fillStyle = glowGradient;
+          ctx.beginPath();
+          ctx.moveTo(baseLeft.x, baseLeft.y);
+          ctx.lineTo(baseRight.x, baseRight.y);
+          ctx.lineTo(baseRight.x, baseRight.y + glowHeight);
+          ctx.lineTo(baseLeft.x, baseLeft.y + glowHeight);
+          ctx.closePath();
+          ctx.fill();
+        }
+
         // Draw windows (only on nearby buildings for performance)
         if (distance < 800) {
           const windowWidth = b.width / b.windowCols;
@@ -579,11 +887,39 @@ const NeonCity: React.FC = () => {
 
               const projected = projectPoint({ x: wx, y: wy, z: wz }, totalCameraX);
 
-              // Window glow
-              ctx.globalAlpha = alpha * 0.8;
-              ctx.fillStyle = "rgba(255, 200, 100, 0.9)";
-              ctx.shadowBlur = 3;
-              ctx.shadowColor = "rgba(255, 200, 100, 0.8)";
+              // Calculate light wave brightness
+              let waveBrightness = 1;
+              if (b.lightWavePattern !== 'none') {
+                const waveTime = now * 0.001 * b.lightWaveSpeed;
+                if (b.lightWavePattern === 'vertical') {
+                  // Vertical wave (top to bottom)
+                  const wavePhase = (win.y / b.windowRows + waveTime) % 1;
+                  waveBrightness = 0.4 + Math.sin(wavePhase * Math.PI * 2) * 0.6;
+                } else if (b.lightWavePattern === 'horizontal') {
+                  // Horizontal wave (left to right)
+                  const wavePhase = (win.x / b.windowCols + waveTime) % 1;
+                  waveBrightness = 0.4 + Math.sin(wavePhase * Math.PI * 2) * 0.6;
+                } else if (b.lightWavePattern === 'spiral') {
+                  // Spiral wave (distance from center)
+                  const centerX = b.windowCols / 2;
+                  const centerY = b.windowRows / 2;
+                  const dist = Math.sqrt((win.x - centerX) ** 2 + (win.y - centerY) ** 2);
+                  const wavePhase = (dist / Math.max(b.windowCols, b.windowRows) + waveTime) % 1;
+                  waveBrightness = 0.4 + Math.sin(wavePhase * Math.PI * 2) * 0.6;
+                }
+              }
+
+              // Window glow with wave effect
+              const finalBrightness = waveBrightness;
+              ctx.globalAlpha = alpha * 0.8 * finalBrightness;
+
+              // Color shift based on wave (cooler when dim, warmer when bright)
+              const r = Math.floor(255 * finalBrightness);
+              const g = Math.floor(200 * finalBrightness);
+              const b = Math.floor(100 * (0.7 + finalBrightness * 0.3));
+              ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
+              ctx.shadowBlur = 3 * finalBrightness;
+              ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${0.8 * finalBrightness})`;
               ctx.fillRect(projected.x - 1, projected.y - 1, 2, 2);
               ctx.shadowBlur = 0;
             }
@@ -642,8 +978,204 @@ const NeonCity: React.FC = () => {
           }
         }
 
+        // Draw holographic billboard
+        if (b.hasBillboard && distance < 700) {
+          const billboardY = b.height * 0.5; // Middle of building
+          const billboardWidth = b.width * 0.8;
+          const billboardHeight = b.height * 0.25;
+
+          // Billboard corners in 3D
+          const bbTL = { x: b.x - billboardWidth / 2, y: billboardY + billboardHeight / 2, z: b.z - 1 };
+          const bbTR = { x: b.x + billboardWidth / 2, y: billboardY + billboardHeight / 2, z: b.z - 1 };
+          const bbBL = { x: b.x - billboardWidth / 2, y: billboardY - billboardHeight / 2, z: b.z - 1 };
+          const bbBR = { x: b.x + billboardWidth / 2, y: billboardY - billboardHeight / 2, z: b.z - 1 };
+
+          const projBB = [bbTL, bbTR, bbBR, bbBL].map(p => projectPoint(p, totalCameraX));
+
+          // Holographic flicker (alpha variation)
+          const flicker = 0.5 + Math.sin(now * 0.007 + b.billboardPhase) * 0.15;
+          const holoAlpha = alpha * flicker;
+
+          // Draw billboard background glow
+          ctx.globalAlpha = holoAlpha * 0.3;
+          ctx.fillStyle = hexToRgba(getAccentColor(), 0.4);
+          ctx.beginPath();
+          ctx.moveTo(projBB[0].x, projBB[0].y);
+          ctx.lineTo(projBB[1].x, projBB[1].y);
+          ctx.lineTo(projBB[2].x, projBB[2].y);
+          ctx.lineTo(projBB[3].x, projBB[3].y);
+          ctx.closePath();
+          ctx.fill();
+
+          // Draw pattern based on type
+          ctx.globalAlpha = holoAlpha * 0.7;
+          ctx.strokeStyle = hexToRgba(getAccentColor(), 1);
+          ctx.lineWidth = 1;
+
+          if (b.billboardPattern === 'grid') {
+            // Grid pattern
+            const gridCols = 5;
+            const gridRows = 3;
+            for (let i = 1; i < gridCols; i++) {
+              const t = i / gridCols;
+              const x1 = projBB[0].x + (projBB[1].x - projBB[0].x) * t;
+              const y1 = projBB[0].y + (projBB[1].y - projBB[0].y) * t;
+              const x2 = projBB[3].x + (projBB[2].x - projBB[3].x) * t;
+              const y2 = projBB[3].y + (projBB[2].y - projBB[3].y) * t;
+              ctx.beginPath();
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(x2, y2);
+              ctx.stroke();
+            }
+            for (let i = 1; i < gridRows; i++) {
+              const t = i / gridRows;
+              const x1 = projBB[0].x + (projBB[3].x - projBB[0].x) * t;
+              const y1 = projBB[0].y + (projBB[3].y - projBB[0].y) * t;
+              const x2 = projBB[1].x + (projBB[2].x - projBB[1].x) * t;
+              const y2 = projBB[1].y + (projBB[2].y - projBB[1].y) * t;
+              ctx.beginPath();
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(x2, y2);
+              ctx.stroke();
+            }
+          } else if (b.billboardPattern === 'bars') {
+            // Horizontal bars
+            const barCount = 6;
+            for (let i = 0; i < barCount; i++) {
+              const t = (i + 0.5) / barCount;
+              const brightness = 0.5 + Math.sin(now * 0.003 + i * 0.5 + b.billboardPhase) * 0.5;
+              ctx.globalAlpha = holoAlpha * brightness;
+              const x1 = projBB[0].x + (projBB[3].x - projBB[0].x) * t;
+              const y1 = projBB[0].y + (projBB[3].y - projBB[0].y) * t;
+              const x2 = projBB[1].x + (projBB[2].x - projBB[1].x) * t;
+              const y2 = projBB[1].y + (projBB[2].y - projBB[1].y) * t;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(x2, y2);
+              ctx.stroke();
+            }
+          } else if (b.billboardPattern === 'pulse') {
+            // Pulsing center dot
+            const pulse = 0.3 + Math.sin(now * 0.005 + b.billboardPhase) * 0.7;
+            const centerX = (projBB[0].x + projBB[2].x) / 2;
+            const centerY = (projBB[0].y + projBB[2].y) / 2;
+            ctx.globalAlpha = holoAlpha * pulse;
+            ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = hexToRgba(getAccentColor(), 0.8);
+            ctx.beginPath();
+            const radius = 3 + pulse * 5;
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          } else if (b.billboardPattern === 'wave') {
+            // Wave pattern
+            const wavePoints = 20;
+            ctx.beginPath();
+            for (let i = 0; i <= wavePoints; i++) {
+              const t = i / wavePoints;
+              const wave = Math.sin(t * Math.PI * 3 + now * 0.002 + b.billboardPhase) * 0.3;
+              const baseX = projBB[0].x + (projBB[1].x - projBB[0].x) * t;
+              const baseY = projBB[0].y + (projBB[1].y - projBB[0].y) * t;
+              const offsetX = projBB[3].x + (projBB[2].x - projBB[3].x) * t;
+              const offsetY = projBB[3].y + (projBB[2].y - projBB[3].y) * t;
+              const x = baseX + (offsetX - baseX) * (0.5 + wave);
+              const y = baseY + (offsetY - baseY) * (0.5 + wave);
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+
+          // Scanline effect
+          ctx.globalAlpha = holoAlpha * 0.4;
+          const scanlineY = ((now * 0.0005 + b.billboardPhase) % 1);
+          const scanX1 = projBB[0].x + (projBB[3].x - projBB[0].x) * scanlineY;
+          const scanY1 = projBB[0].y + (projBB[3].y - projBB[0].y) * scanlineY;
+          const scanX2 = projBB[1].x + (projBB[2].x - projBB[1].x) * scanlineY;
+          const scanY2 = projBB[1].y + (projBB[2].y - projBB[1].y) * scanlineY;
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(scanX1, scanY1);
+          ctx.lineTo(scanX2, scanY2);
+          ctx.stroke();
+
+          // Billboard border
+          ctx.globalAlpha = holoAlpha;
+          ctx.strokeStyle = hexToRgba(getAccentColor(), 0.9);
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(projBB[0].x, projBB[0].y);
+          ctx.lineTo(projBB[1].x, projBB[1].y);
+          ctx.lineTo(projBB[2].x, projBB[2].y);
+          ctx.lineTo(projBB[3].x, projBB[3].y);
+          ctx.closePath();
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+
+        // Draw rotating searchlight
+        if (b.hasSearchlight && distance < 1000) {
+          const roofTop = { x: b.x, y: b.height, z: b.z };
+          const roofPos = projectPoint(roofTop, totalCameraX);
+
+          // Calculate beam endpoint (rotating around building)
+          const beamLength = 300;
+          const beamEndX = b.x + Math.cos(b.searchlightAngle) * beamLength;
+          const beamEndY = b.height + 150; // Beam extends upward
+          const beamEndZ = b.z + Math.sin(b.searchlightAngle) * beamLength;
+          const beamEnd = projectPoint({ x: beamEndX, y: beamEndY, z: beamEndZ }, totalCameraX);
+
+          // Draw beam (gradient from bright to transparent)
+          ctx.globalAlpha = alpha * 0.15;
+          const beamGradient = ctx.createLinearGradient(roofPos.x, roofPos.y, beamEnd.x, beamEnd.y);
+          beamGradient.addColorStop(0, hexToRgba(getAccentColor(), 0.4));
+          beamGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+          // Draw beam cone
+          ctx.fillStyle = beamGradient;
+          ctx.beginPath();
+          const coneWidth = 30;
+          const perpX = -(beamEnd.y - roofPos.y);
+          const perpY = beamEnd.x - roofPos.x;
+          const perpLen = Math.sqrt(perpX * perpX + perpY * perpY);
+          const normPerpX = (perpX / perpLen) * coneWidth;
+          const normPerpY = (perpY / perpLen) * coneWidth;
+
+          ctx.moveTo(roofPos.x, roofPos.y);
+          ctx.lineTo(beamEnd.x + normPerpX, beamEnd.y + normPerpY);
+          ctx.lineTo(beamEnd.x - normPerpX, beamEnd.y - normPerpY);
+          ctx.closePath();
+          ctx.fill();
+
+          // Draw bright center line
+          ctx.globalAlpha = alpha * 0.4;
+          ctx.strokeStyle = hexToRgba(getAccentColor(), 0.8);
+          ctx.lineWidth = 1.5;
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = hexToRgba(getAccentColor(), 0.6);
+          ctx.beginPath();
+          ctx.moveTo(roofPos.x, roofPos.y);
+          ctx.lineTo(beamEnd.x, beamEnd.y);
+          ctx.stroke();
+
+          // Draw searchlight source
+          ctx.globalAlpha = alpha * 0.9;
+          ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = hexToRgba(getAccentColor(), 0.9);
+          ctx.fillRect(roofPos.x - 2, roofPos.y - 2, 4, 4);
+          ctx.shadowBlur = 0;
+        }
+
         ctx.globalAlpha = 1;
       }
+
+      // Restore transformation (boost effects drawn without rotation)
+      ctx.restore();
 
       // Boost visual effects
       if (isBoostActive) {
@@ -669,6 +1201,92 @@ const NeonCity: React.FC = () => {
           ctx.stroke();
         }
       }
+
+      // Lightning rendering
+      if (lightningActive) {
+        const lightningProgress = (lightningEndTime - now) / LIGHTNING_DURATION; // 1 to 0
+        const flashIntensity = lightningProgress * 0.2;
+
+        // Screen flash (ambient light from lightning)
+        ctx.globalAlpha = flashIntensity;
+        ctx.fillStyle = 'rgba(200, 220, 255, 1)';
+        ctx.fillRect(0, 0, width, height);
+
+        // Draw lightning bolts
+        ctx.globalAlpha = lightningProgress * 0.8 + 0.2;
+        ctx.strokeStyle = 'rgba(220, 230, 255, 1)';
+        ctx.shadowColor = 'rgba(180, 200, 255, 0.8)';
+        ctx.shadowBlur = 15;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+
+        lightningBranches.forEach(branch => {
+          ctx.globalAlpha = branch.alpha * (lightningProgress * 0.7 + 0.3);
+          ctx.beginPath();
+          ctx.moveTo(branch.x1, branch.y1);
+          ctx.lineTo(branch.x2, branch.y2);
+          ctx.stroke();
+        });
+
+        // Inner bright core of main bolt
+        if (lightningBranches.length > 0) {
+          ctx.globalAlpha = lightningProgress;
+          ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+          ctx.shadowBlur = 8;
+          ctx.lineWidth = 1.5;
+          const mainBolt = lightningBranches[0];
+          ctx.beginPath();
+          ctx.moveTo(mainBolt.x1, mainBolt.y1);
+          ctx.lineTo(mainBolt.x2, mainBolt.y2);
+          ctx.stroke();
+        }
+
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+      }
+
+      // Performance HUD (top-right corner)
+      const hudX = width - 180;
+      const hudY = 20;
+      const lineHeight = 18;
+
+      ctx.globalAlpha = 0.8;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(hudX - 10, hudY - 5, 170, lineHeight * 6 + 10);
+
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = hexToRgba(getAccentColor(), 1);
+      ctx.font = 'bold 12px monospace';
+      ctx.textAlign = 'left';
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = hexToRgba(getAccentColor(), 0.6);
+
+      let yOffset = 0;
+      ctx.fillText(`FPS: ${fps}`, hudX, hudY + yOffset);
+      yOffset += lineHeight;
+      ctx.fillText(`Speed: ${Math.round(speed)}`, hudX, hudY + yOffset);
+      yOffset += lineHeight;
+      ctx.fillText(`Buildings: ${buildings.length}`, hudX, hudY + yOffset);
+      yOffset += lineHeight;
+      ctx.fillText(`Vehicles: ${vehicles.length}`, hudX, hudY + yOffset);
+      yOffset += lineHeight;
+      ctx.fillText(`Drones: ${flyingVehicles.length}`, hudX, hudY + yOffset);
+      yOffset += lineHeight;
+      ctx.fillText(`Steam: ${steamParticles.length}`, hudX, hudY + yOffset);
+
+      // Boost indicator
+      if (isBoostActive) {
+        ctx.fillStyle = 'rgba(255, 200, 100, 1)';
+        ctx.fillText('⚡ BOOST', hudX, hudY + yOffset + lineHeight);
+      } else if (now < boostCooldownEnd) {
+        const cooldownProgress = (boostCooldownEnd - now) / BOOST_COOLDOWN;
+        ctx.fillStyle = `rgba(150, 150, 150, ${0.5 + cooldownProgress * 0.5})`;
+        ctx.fillText(`⏳ ${Math.ceil((boostCooldownEnd - now) / 1000)}s`, hudX, hudY + yOffset + lineHeight);
+      }
+
+      ctx.shadowBlur = 0;
+      ctx.textAlign = 'start';
+      ctx.globalAlpha = 1;
 
       frameId = requestAnimationFrame(render);
     };
