@@ -588,8 +588,16 @@ export default function BlackberryOS5Dashboard() {
               animation: "staticMove 8s linear infinite"
             }}
           />
-          {/* NEON CITY CANVAS - 3D Wireframe Maze */}
-          <NeonCity />
+          {/* NEON CITY CANVAS - 3D Wireframe Maze - Blur when menu/app open */}
+          <div
+            className="transition-all duration-500"
+            style={{
+              filter: (mode === "menu" || openApp !== null) ? "blur(12px)" : "blur(0px)",
+              opacity: (mode === "menu" || openApp !== null) ? 0.3 : 1
+            }}
+          >
+            <NeonCity />
+          </div>
 
           {/* Radial Pulse - Center outward */}
           <div
@@ -644,11 +652,19 @@ export default function BlackberryOS5Dashboard() {
                 <SignalBars strength={signalStrength as 0 | 1 | 2 | 3 | 4} />
               </div>
 
-              {/* Center: Wordmark on homescreen, Logo+Time otherwise */}
+              {/* Center: Wordmark on homescreen, App+Time otherwise */}
               {(openApp !== null || mode === "menu" || pathname !== '/') ? (
                 <div className="flex items-center gap-6 text-[20px]">
                   <img src="/logos/HTM-LOGO-ICON-01.svg" alt="HTM" className="h-6 w-6 opacity-80" style={{ imageRendering: 'pixelated' }} />
-                  <span className="font-mono font-semibold">{timeStr}</span>
+                  {openApp !== null && (
+                    <>
+                      <span className="font-semibold text-[var(--accent)]" style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}>
+                        {apps.find(a => a.path?.includes(openApp))?.name || openApp.toUpperCase()}
+                      </span>
+                      <span className="text-[#E0E0E0]/30">•</span>
+                    </>
+                  )}
+                  <span className="font-semibold" style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}>{timeStr}</span>
                   <span className="text-[#E0E0E0]/50">{dateStr}</span>
                 </div>
               ) : (
@@ -698,6 +714,7 @@ export default function BlackberryOS5Dashboard() {
               <div className="px-4 py-8 md:py-10">
                 {/* Large centered time */}
                 <div className="text-3xl md:text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
+                  fontFamily: '"argent-pixel-cf", sans-serif',
                   textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
                 }}>
                   {timeStr}
