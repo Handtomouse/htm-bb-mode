@@ -12,14 +12,22 @@ export default function TypewriterManifesto({
   onComplete,
   scrollProgress
 }: TypewriterManifestoProps) {
-  const fullText = "Everyone's chasing new — we chase different.";
+  // Split text into two lines
+  const line1 = "Everyone's chasing new —";
+  const line2 = "we chase different.";
+  const fullText = line1 + " " + line2;
 
   // Calculate character index from scroll progress
   const charCount = Math.floor(scrollProgress * fullText.length);
-  const displayedText = fullText.slice(0, charCount);
 
-  // Extended cursor visibility (Fix #9): Wider range, less flickering on mobile
+  // Determine what to show on each line
+  const line1Length = line1.length + 1; // +1 for the space
+  const line1Display = fullText.slice(0, Math.min(charCount, line1Length)).replace(line1 + " ", line1);
+  const line2Display = charCount > line1Length ? fullText.slice(line1Length, charCount) : "";
+
+  // Cursor positioning
   const showCursor = scrollProgress > 0.001 && scrollProgress < 0.999;
+  const cursorOnLine1 = charCount <= line1Length;
 
   // Notify completion when fully scrolled through
   useEffect(() => {
@@ -28,13 +36,15 @@ export default function TypewriterManifesto({
     }
   }, [scrollProgress, onComplete]);
 
-  // Split text to apply accent color to "— we chase different."
-  const splitIndex = displayedText.indexOf("—");
-  const beforeAccent = splitIndex >= 0 ? displayedText.slice(0, splitIndex) : displayedText;
-  const accentPart = splitIndex >= 0 ? displayedText.slice(splitIndex) : "";
-
   // Subtle scale effect as typewriter completes (0.7 → 1.0 becomes scale 1.0 → 1.03)
   const scaleValue = scrollProgress >= 0.7 ? 1 + ((scrollProgress - 0.7) / 0.3) * 0.03 : 1;
+
+  const textStyle = {
+    fontFamily: '"argent-pixel-cf", sans-serif',
+    color: 'rgba(255,255,255,0.9)',
+    letterSpacing: '0.08em',
+    textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2), 0 0 24px rgba(255,157,35,0.15)'
+  };
 
   return (
     <motion.div
@@ -44,31 +54,44 @@ export default function TypewriterManifesto({
         scale: scaleValue
       }}
       transition={{ duration: 0.8, scale: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
-      className="text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.4]"
+      className="text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.3]"
       style={{
-        fontFamily: '"argent-pixel-cf", sans-serif',
-        color: 'rgba(255,255,255,0.9)',
-        letterSpacing: '0.08em',
-        textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2), 0 0 24px rgba(255,157,35,0.15)',
-        minHeight: '1.4em',
         transition: 'font-size 0.2s ease-out'
       }}
     >
-      {beforeAccent}
-      <span
-        className="text-[var(--accent)]/90 font-semibold"
-        style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.4)' }}
-      >
-        {accentPart}
-      </span>
-      {showCursor && (
-        <motion.span
-          animate={{ opacity: [0.9, 0.3, 0.9] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="text-[var(--accent)]/90"
+      {/* Line 1: Everyone's chasing new — */}
+      <div style={textStyle}>
+        {line1Display}
+        {showCursor && cursorOnLine1 && (
+          <motion.span
+            animate={{ opacity: [0.9, 0.3, 0.9] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="text-[var(--accent)]/90"
+          >
+            |
+          </motion.span>
+        )}
+      </div>
+
+      {/* Line 2: we chase different. */}
+      {charCount > line1Length && (
+        <div
+          className="text-[var(--accent)]/90 font-semibold"
+          style={{
+            ...textStyle,
+            textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.4)'
+          }}
         >
-          |
-        </motion.span>
+          {line2Display}
+          {showCursor && !cursorOnLine1 && (
+            <motion.span
+              animate={{ opacity: [0.9, 0.3, 0.9] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              |
+            </motion.span>
+          )}
+        </div>
       )}
     </motion.div>
   );
