@@ -1,4 +1,4 @@
-import { VT323, Pixelify_Sans, Handjet, Roboto_Mono, Silkscreen } from "next/font/google";
+import { VT323, Handjet, Roboto_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import SettingsProvider from "@/components/SettingsProvider";
@@ -8,13 +8,6 @@ const vt323 = VT323({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-mono",
-  display: "swap",
-});
-
-const pixelifySans = Pixelify_Sans({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-heading",
   display: "swap",
 });
 
@@ -29,13 +22,6 @@ const robotoMono = Roboto_Mono({
   weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   variable: "--font-body",
-  display: "swap",
-});
-
-const silkscreen = Silkscreen({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-pixel",
   display: "swap",
 });
 
@@ -115,18 +101,13 @@ export default function RootLayout({
         />
         <link
           rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap"
-          as="style"
-        />
-        <link
-          rel="preload"
           href="https://fonts.googleapis.com/css2?family=Handjet:wght@300;400;500;600;700&display=swap"
           as="style"
         />
         {/* Prefetch About page data for instant load */}
         <link rel="prefetch" href="/data/about.json" as="fetch" crossOrigin="anonymous" />
       </head>
-      <body className={`${vt323.variable} ${pixelifySans.variable} ${handjet.variable} ${robotoMono.variable} ${silkscreen.variable} antialiased`} style={{ fontFamily: "var(--font-mono)" }}>
+      <body className={`${vt323.variable} ${handjet.variable} ${robotoMono.variable} antialiased`} style={{ fontFamily: "var(--font-body)" }}>
         <SettingsProvider>
           <LayoutWrapper>
             {children}

@@ -86,7 +86,8 @@
   /* Fonts */
   --font-sans: "Halyard Display", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "VT323", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-  --font-heading: "Pixelify Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "argent-pixel-cf", sans-serif;
+  --font-body: "Roboto Mono", ui-monospace, monospace;
   --font-handjet: "Handjet", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -103,6 +104,7 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
   --font-handjet: var(--font-handjet);
 }
 
@@ -115,7 +117,7 @@
 html,
 body {
   height: 100%;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--ink);
   line-height: 1.6;
@@ -147,8 +149,9 @@ body {
 }
 
 /* Type Hierarchy */
-/* VT323 (mono): Body text, labels, general UI (default)
-   Pixelify Sans (heading): Headings, app titles, important UI elements */
+/* Argent Pixel CF (heading): All headings, titles, navigation, CTAs
+   Roboto Mono (body): Body text, UI elements, forms, descriptions
+   VT323 (mono): Terminal elements, code snippets (rare/accent use) */
 
 h1,
 h2,
@@ -185,6 +188,10 @@ h4 {
 /* Utility classes for font switching */
 .font-heading {
   font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
 }
 
 .font-mono {
