@@ -618,7 +618,7 @@ export default function BlackberryAboutContent() {
               >
                 {/* Main solid text with gradient fade */}
                 <h1
-                  className="relative font-bold uppercase tracking-[0.02em] leading-none select-none"
+                  className="relative font-light uppercase tracking-[0.08em] leading-none select-none"
                   style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 'clamp(140px, 28vw, 450px)',
@@ -626,8 +626,15 @@ export default function BlackberryAboutContent() {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    textShadow: '0 4px 12px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.08)',
-                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 12px 32px rgba(255,157,35,0.08))'
+                    filter: `
+                      drop-shadow(0 1px 2px rgba(0,0,0,0.08))
+                      drop-shadow(0 2px 4px rgba(0,0,0,0.06))
+                      drop-shadow(0 4px 8px rgba(0,0,0,0.05))
+                      drop-shadow(0 8px 16px rgba(0,0,0,0.04))
+                      drop-shadow(0 16px 32px rgba(0,0,0,0.03))
+                      drop-shadow(0 32px 64px rgba(0,0,0,0.02))
+                      drop-shadow(0 8px 24px rgba(255,157,35,0.06))
+                    `
                   }}
                 >
                   ABOUT
@@ -635,7 +642,7 @@ export default function BlackberryAboutContent() {
 
                 {/* Accent glow layer */}
                 <h1
-                  className="absolute inset-0 font-bold uppercase tracking-[0.02em] leading-none select-none pointer-events-none"
+                  className="absolute inset-0 font-light uppercase tracking-[0.08em] leading-none select-none pointer-events-none"
                   aria-hidden="true"
                   style={{
                     fontFamily: 'var(--font-mono)',

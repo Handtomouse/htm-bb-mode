@@ -81,7 +81,7 @@ const NeonCity: React.FC = () => {
       canvas.height = height * dpi;
       ctx.setTransform(dpi, 0, 0, dpi, 0, 0);
       cx = width / 2;
-      cy = height * 0.6;
+      cy = height * 0.75;
     };
 
     // Watch canvas element for size changes (handles ResponsiveStage scaling)
@@ -1086,31 +1086,6 @@ const NeonCity: React.FC = () => {
         }
 
         ctx.globalAlpha = 1;
-      }
-
-      // Boost visual effects
-      if (isBoostActive) {
-        // Motion blur vignette (edges glow)
-        const boostProgress = (boostEndTime - now) / BOOST_DURATION; // 1 to 0
-        const vignette = ctx.createRadialGradient(cx, cy, width * 0.3, cx, cy, width * 0.7);
-        vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        vignette.addColorStop(1, `rgba(255, 200, 100, ${0.08 * (1 - boostProgress * 0.5)})`);
-        ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, width, height);
-
-        // Speed lines hint (horizontal streaks)
-        ctx.strokeStyle = `rgba(255, 200, 100, ${0.15 * (1 - boostProgress)})`;
-        ctx.lineWidth = 1;
-        for (let i = 0; i < 8; i++) {
-          const y = Math.random() * height;
-          const len = 50 + Math.random() * 100;
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(len, y);
-          ctx.moveTo(width, y);
-          ctx.lineTo(width - len, y);
-          ctx.stroke();
-        }
       }
 
       frameId = requestAnimationFrame(render);
