@@ -26,7 +26,7 @@ export default function BlackberrySettingsContent() {
 
   return (
     <div>
-      <BBPageHeader title="SETTINGS" subtitle="Choose your accent color" />
+      <BBPageHeader title="Settings" subtitle="Choose your accent color" />
 
       <div className="space-y-8 md:space-y-12">
         {/* Accent Color */}

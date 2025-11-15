@@ -589,7 +589,7 @@ export default function BlackberryAboutContent() {
                     `
                   }}
                 >
-                  ABOUT
+                  About
                 </h1>
 
                 {/* Accent glow layer */}
@@ -608,7 +608,7 @@ export default function BlackberryAboutContent() {
                     filter: 'blur(1px)'
                   }}
                 >
-                  ABOUT
+                  About
                 </h1>
 
                 {/* Minimal depth lines - 3 horizontal only */}

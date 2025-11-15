@@ -518,7 +518,7 @@ export default function BlackberryContactContent() {
 
   return (
     <div className="w-full h-full overflow-y-auto px-6 md:px-8 py-6">
-      <BBPageHeader title="CONTACT" subtitle="Let's make something sharp" />
+      <BBPageHeader title="Contact" subtitle="Let's make something sharp" />
 
       <div ref={srLiveRef} className="sr-only" role="status" aria-live="assertive" />
 

@@ -84,7 +84,7 @@ export default function BlackberryPortfolioContent() {
             textShadow: "0 0 40px rgba(255, 157, 35, 0.4)",
           }}
         >
-          Portfolio
+          Work
         </h1>
 
         <p className="text-[16px] md:text-[18px] text-white/75 leading-[2.2] font-light tracking-wide mb-8">
