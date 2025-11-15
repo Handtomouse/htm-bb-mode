@@ -503,14 +503,6 @@ const NeonCity: React.FC = () => {
       ctx.lineTo(width, horizonY);
       ctx.stroke();
 
-      // Atmospheric depth fog - layered gradient from bottom to horizon
-      const fogGradient = ctx.createLinearGradient(0, height, 0, horizonY);
-      fogGradient.addColorStop(0, 'rgba(0, 0, 0, 0.1)'); // Subtle at bottom
-      fogGradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.3)'); // Medium at middle
-      fogGradient.addColorStop(1, hexToRgba(getAccentColor(), 0.12)); // Accent tint at horizon
-      ctx.fillStyle = fogGradient;
-      ctx.fillRect(0, horizonY, width, height - horizonY);
-
       // Road
       drawRoad(now, totalCameraX);
 
