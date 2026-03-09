@@ -1,18 +1,35 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-
-const ACCENT = "var(--accent)";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useSpring } from "framer-motion";
 
 interface LuxuryStatCardProps {
   label: string;
   value: string;
   delay: number;
   index: number;
+  // New props — GROUP 1
+  benchmark?: string;
+  trend?: number[];
+  priority?: boolean;
+  story?: string;
+  shareText?: string;
+  // Section-level feature props
+  isSpotlit?: boolean;
 }
 
-export default function LuxuryStatCard({ label, value, delay, index }: LuxuryStatCardProps) {
+export default function LuxuryStatCard({
+  label,
+  value,
+  delay,
+  index,
+  benchmark,
+  trend,
+  priority,
+  story,
+  shareText,
+  isSpotlit,
+}: LuxuryStatCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [hasFlippedBefore, setHasFlippedBefore] = useState(false);
@@ -22,9 +39,26 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
   const [countedValue, setCountedValue] = useState<number>(0);
   const [hasAnimated, setHasAnimated] = useState(false);
 
+  // GROUP 2 new state
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // GROUP 4 — #22 particle burst
+  const [particles, setParticles] = useState<
+    { id: number; x: number; y: number; vx: number; vy: number }[]
+  >([]);
+
+  // GROUP 4 — #39 drag-to-compare
+  const [compareMode, setCompareMode] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  // #21 — Sparkline animation ref
+  const sparklineRef = useRef<SVGPolylineElement>(null);
+  const sparklineLength = useRef<number>(0);
+
   // Improvement #14: Auto-flip first card as demo
   useEffect(() => {
-    if (index === 0 && typeof window !== 'undefined') {
+    if (index === 0 && typeof window !== "undefined") {
       const timer1 = setTimeout(() => setIsFlipped(true), 2000);
       const timer2 = setTimeout(() => setIsFlipped(false), 5000);
       const timer3 = setTimeout(() => setShowTapHint(true), 500);
@@ -39,13 +73,28 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
   }, [index]);
 
   // Context mapping for each stat
-  const contextMap: Record<string, { text: string; comparison?: string; since?: string }> = {
-    "Projects": { text: "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice." },
-    "Retention": { text: "3 in 4 clients return. Systems that outlast the engagement." },
-    "Repeat Clients": { text: "45% return within 18 months. Long-term partnerships over one-off projects." },
-    "Years Active": { text: "6 years. 38+ brands. Built for the long game." },
-    "Response": { text: "48hr average. Usually within 4hr. Clear communication, efficient delivery." },
-    "Industries": { text: "8 sectors. Hospitality to healthcare. Diverse experience, focused execution." }
+  const contextMap: Record<
+    string,
+    { text: string; comparison?: string; since?: string }
+  > = {
+    Projects: {
+      text: "60+ brands since 2020. S'WICH, MapleMoon, Jac+Jack among them. Hospitality, fashion, tech — never the same approach twice.",
+    },
+    Retention: {
+      text: "3 in 4 clients return. Systems that outlast the engagement.",
+    },
+    "Repeat Clients": {
+      text: "45% return within 18 months. Long-term partnerships over one-off projects.",
+    },
+    "Years Active": {
+      text: "6 years. 38+ brands. Built for the long game.",
+    },
+    Response: {
+      text: "48hr average. Usually within 4hr. Clear communication, efficient delivery.",
+    },
+    Industries: {
+      text: "8 sectors. Hospitality to healthcare. Diverse experience, focused execution.",
+    },
   };
 
   const contextData = contextMap[label] || { text: "More context coming soon" };
@@ -54,8 +103,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
   // Parse number and unit separately for styling
   const parseValue = (val: string) => {
     const numericMatch = val.match(/[\d.]+/);
-    if (!numericMatch) return { prefix: '', number: val, suffix: '' };
-
+    if (!numericMatch) return { prefix: "", number: val, suffix: "" };
     const prefix = val.substring(0, numericMatch.index);
     const suffix = val.substring(numericMatch.index! + numericMatch[0].length);
     return { prefix, number: numericMatch[0], suffix };
@@ -68,8 +116,8 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
     const numericValue = parseFloat(number);
     if (isNaN(numericValue) || hasAnimated) return;
 
-    const duration = 2000; // 2 seconds
-    const startTime = Date.now() + (delay * 1000); // Delay matches card appearance
+    const duration = 2000;
+    const startTime = Date.now() + delay * 1000;
     let animationFrame: number;
 
     const animate = () => {
@@ -82,7 +130,6 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
       }
 
       const progress = Math.min(elapsed / duration, 1);
-      // Easing function for smooth deceleration
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.floor(eased * numericValue);
 
@@ -96,11 +143,44 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
     };
 
     animationFrame = requestAnimationFrame(animate);
-
     return () => {
       if (animationFrame) cancelAnimationFrame(animationFrame);
     };
   }, [number, delay, hasAnimated]);
+
+  // GROUP 4 — #22: Particle burst when hasAnimated transitions to true
+  useEffect(() => {
+    if (!hasAnimated) return;
+    const newParticles = Array.from({ length: 12 }, (_, i) => {
+      const angle = (i / 12) * Math.PI * 2;
+      return {
+        id: Date.now() + i,
+        x: 50,
+        y: 50,
+        vx: Math.cos(angle),
+        vy: Math.sin(angle),
+      };
+    });
+    setParticles(newParticles);
+    const timer = setTimeout(() => setParticles([]), 650);
+    return () => clearTimeout(timer);
+  }, [hasAnimated]);
+
+  // GROUP 2 — #28: Sparkline draw animation
+  useEffect(() => {
+    if (!sparklineRef.current || !trend) return;
+    const el = sparklineRef.current;
+    const len = el.getTotalLength ? el.getTotalLength() : 200;
+    sparklineLength.current = len;
+    el.style.strokeDasharray = `${len}`;
+    el.style.strokeDashoffset = `${len}`;
+    // Trigger animation after mount
+    const raf = requestAnimationFrame(() => {
+      el.style.transition = "stroke-dashoffset 800ms ease-out";
+      el.style.strokeDashoffset = "0";
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [trend]);
 
   // Improvement #11: Enhanced flip feedback
   const handleFlip = () => {
@@ -112,7 +192,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
     }
   };
 
-  // Improvement #22: Swipe gesture support
+  // Swipe gesture support
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
   };
@@ -125,8 +205,21 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
     }
   };
 
-  // Improvement #23: Check for reduced motion preference
-  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // GROUP 2 — #40: Share / copy interaction
+  const handleNumberClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const textToCopy = shareText || `${label}: ${value}`;
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(textToCopy).catch(() => {});
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  // Prefers reduced motion
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Parse first sentence for emphasis
   const parseFirstSentence = (text: string) => {
@@ -134,13 +227,64 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
     if (match) {
       return {
         firstSentence: match[0],
-        rest: text.substring(match[0].length).trim()
+        rest: text.substring(match[0].length).trim(),
       };
     }
-    return { firstSentence: text, rest: '' };
+    return { firstSentence: text, rest: "" };
   };
 
   const { firstSentence, rest } = parseFirstSentence(context);
+
+  // GROUP 4 — #21: Odometer digit display
+  // Extract digits + suffix from the displayed count value
+  const displayNumber = hasAnimated ? number : countedValue > 0 ? String(countedValue) : "";
+  const digits = displayNumber.split("");
+
+  // GROUP 2 — #28: Sparkline SVG path computation
+  const buildSparklinePoints = (trendData: number[]): string => {
+    const w = 100;
+    const h = 24;
+    const minVal = Math.min(...trendData);
+    const maxVal = Math.max(...trendData);
+    const range = maxVal - minVal || 1;
+    return trendData
+      .map((v, i) => {
+        const x = (i / (trendData.length - 1)) * w;
+        const y = h - ((v - minVal) / range) * (h - 4) - 2;
+        return `${x},${y}`;
+      })
+      .join(" ");
+  };
+
+  // GROUP 4 — #39: Card body click → toggle compare mode
+  const handleCardBodyClick = (e: React.MouseEvent) => {
+    // Only toggle compare on direct card background click, not number
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-number-el]")) return;
+    if (isFlipped) return; // only on front face
+    setCompareMode((prev) => !prev);
+  };
+
+  // Determine display value for odometer
+  const numericForOdometer = hasAnimated ? number : countedValue > 0 ? String(countedValue) : "0";
+
+  // #33 — Priority card styling extras
+  const priorityStyle = priority
+    ? {
+        transform: "scale(1.05)",
+        borderColor: "rgba(255, 157, 35, 0.3)",
+        boxShadow: "0 0 24px rgba(255, 157, 35, 0.15)",
+      }
+    : {};
+
+  // #35 spotlight effect
+  const spotlitStyle =
+    isSpotlit && !isHovered
+      ? {
+          boxShadow:
+            "0 0 40px rgba(255,157,35,0.35), 0 0 80px rgba(255,157,35,0.1)",
+        }
+      : {};
 
   return (
     <motion.div
@@ -150,12 +294,19 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
       transition={{
         delay,
         duration: prefersReducedMotion ? 0.1 : 0.3,
-        ease: [0.16, 1, 0.3, 1]
+        ease: [0.16, 1, 0.3, 1],
       }}
+      // #35 spotlight pulse
+      animate={
+        isSpotlit
+          ? { scale: [1, 1.03, 1], transition: { duration: 0.4 } }
+          : undefined
+      }
       className="relative w-full"
       style={{
-        perspective: '1000px',
-        aspectRatio: '4 / 3'
+        perspective: "1000px",
+        aspectRatio: "4 / 3",
+        ...priorityStyle,
       }}
     >
       {/* Improvement #13: "Tap to explore" hint on mobile (first 3s) */}
@@ -165,29 +316,50 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: [0.6, 1, 0.6], y: 0 }}
           transition={{ opacity: { duration: 1.5, repeat: Infinity } }}
-          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
+          style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8)" }}
         >
           Tap to explore
         </motion.div>
       )}
 
+      {/* GROUP 4 — #22: Particle burst */}
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          initial={{ x: 0, y: 0, opacity: 1 }}
+          animate={{ x: p.vx * 60, y: p.vy * 60, opacity: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: 3,
+            height: 3,
+            borderRadius: "50%",
+            background: "#ff9d23",
+            pointerEvents: "none",
+            zIndex: 20,
+          }}
+        />
+      ))}
+
       {/* Flip Container */}
       <motion.div
-        animate={{ rotateY: prefersReducedMotion ? 0 : (isFlipped ? 180 : 0) }}
+        animate={{ rotateY: prefersReducedMotion ? 0 : isFlipped ? 180 : 0 }}
         transition={{
           duration: prefersReducedMotion ? 0 : 0.4,
           ease: [0.16, 1, 0.3, 1],
           type: "spring",
           stiffness: 100,
-          damping: 15
+          damping: 15,
         }}
         style={{
-          transformStyle: 'preserve-3d',
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          cursor: 'pointer',
-          transform: prefersReducedMotion && isFlipped ? 'none' : undefined
+          transformStyle: "preserve-3d",
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          cursor: "pointer",
+          transform: prefersReducedMotion && isFlipped ? "none" : undefined,
         }}
         onClick={handleFlip}
         onTouchStart={handleTouchStart}
@@ -195,7 +367,7 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onKeyDown={(e) => {
-          if (e.key === ' ' || e.key === 'Enter') {
+          if (e.key === " " || e.key === "Enter") {
             e.preventDefault();
             handleFlip();
           }
@@ -206,25 +378,29 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
       >
         {/* Front Side */}
         <div
+          onClick={handleCardBodyClick}
           style={{
-            position: 'absolute',
+            position: "absolute",
             inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 'var(--card-padding)',
-            backfaceVisibility: 'hidden',
-            border: 'var(--card-border)',
-            borderRadius: 'var(--card-radius)',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "var(--card-padding)",
+            backfaceVisibility: "hidden",
+            border: "var(--card-border)",
+            borderRadius: "var(--card-radius)",
             boxShadow: isHovered
-              ? '0 0 14px rgba(255,157,35,0.25), var(--card-shadow)'
-              : 'var(--card-shadow)',
-            background: isHovered ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.75)',
-            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+              ? `0 0 14px rgba(255,157,35,0.25), var(--card-shadow)`
+              : `var(--card-shadow)`,
+            background: isHovered
+              ? "rgba(0,0,0,0.85)"
+              : "rgba(0,0,0,0.75)",
+            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+            ...spotlitStyle,
           }}
         >
-          {/* Improvement #12: Corner Fold Hint with fade-in */}
+          {/* Improvement #12: Corner Fold Hint */}
           {isHovered && !isFlipped && (
             <motion.div
               className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8"
@@ -232,81 +408,228 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
               animate={{ opacity: 1 }}
               transition={{ duration: 0.2 }}
               style={{
-                background: 'linear-gradient(225deg, rgba(255,157,35,0.3) 0%, transparent 50%)',
-                clipPath: 'polygon(100% 0, 100% 100%, 0 0)'
+                background:
+                  "linear-gradient(225deg, rgba(255,157,35,0.3) 0%, transparent 50%)",
+                clipPath: "polygon(100% 0, 100% 100%, 0 0)",
               }}
             />
           )}
 
-          {/* Number Display with Improvements #1/#8: Optical kerning & Gold foil effect */}
-          <div className="relative">
-            <div
-              className="text-[38px] md:text-[73px] lg:text-[92px] font-extrabold relative"
+          {/* GROUP 2 — #32: Tooltip above number (story) */}
+          <div className="relative w-full flex flex-col items-center">
+            {tooltipVisible && story && (
+              <motion.div
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute bottom-full left-0 right-0 mb-2 z-50"
+                style={{
+                  background: "#131313",
+                  border: "1px solid #ff9d23",
+                  borderLeft: "3px solid #ff9d23",
+                  padding: "8px 12px",
+                  fontSize: "11px",
+                  fontFamily: "Roboto Mono, monospace",
+                  color: "#EDECEC",
+                  lineHeight: 1.5,
+                }}
+              >
+                {story}
+              </motion.div>
+            )}
+
+            {/* GROUP 4 — #21: Odometer digit flip + GROUP 2 #40: Share interaction */}
+            <motion.div
+              data-number-el="true"
+              className="text-[38px] md:text-[73px] lg:text-[92px] font-extrabold relative flex items-baseline gap-0 cursor-pointer select-none"
               style={{
-                letterSpacing: '-0.04em',
-                background: 'linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                letterSpacing: "-0.04em",
                 filter: isHovered
-                  ? 'drop-shadow(0 0 28px rgba(255,157,35,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
-                  : 'drop-shadow(0 0 14px rgba(255,157,35,0.2)) drop-shadow(0 1px 2px rgba(0,0,0,0.2))',
-                transform: isHovered ? 'scale(1.02) translateZ(5px)' : 'scale(1)',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                willChange: 'transform'
+                  ? "drop-shadow(0 0 28px rgba(255,157,35,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
+                  : "drop-shadow(0 0 14px rgba(255,157,35,0.2)) drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
+                willChange: "transform",
               }}
+              animate={{
+                scale: copied ? [1, 1.15, 1] : 1,
+              }}
+              transition={{ duration: 0.3 }}
+              onMouseEnter={() => setTooltipVisible(true)}
+              onMouseLeave={() => setTooltipVisible(false)}
+              onClick={handleNumberClick}
             >
-              {prefix}{hasAnimated ? number : (countedValue > 0 ? countedValue : '')}
+              {/* COPIED toast */}
+              {copied && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  style={{
+                    position: "absolute",
+                    top: "-28px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    fontSize: "10px",
+                    fontFamily: "Roboto Mono, monospace",
+                    color: "#ff9d23",
+                    background: "#131313",
+                    border: "1px solid #ff9d23",
+                    padding: "2px 8px",
+                    whiteSpace: "nowrap",
+                    letterSpacing: "0.1em",
+                    zIndex: 60,
+                  }}
+                >
+                  COPIED
+                </motion.div>
+              )}
+
+              {/* Prefix (e.g. "$") */}
+              {prefix && (
+                <span
+                  style={{
+                    background:
+                      "linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: copied ? "#FFFFFF" : "transparent",
+                    backgroundClip: "text",
+                    transition: "all 0.3s",
+                  }}
+                >
+                  {prefix}
+                </span>
+              )}
+
+              {/* GROUP 4 — #21: Per-digit slot animation */}
+              {numericForOdometer.split("").map((digit, di) => (
+                <div
+                  key={`${di}-${digit}`}
+                  style={{
+                    overflow: "hidden",
+                    height: "1.1em",
+                    display: "inline-block",
+                  }}
+                >
+                  <motion.span
+                    initial={{ y: "-100%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      duration: Math.max(0.25, 0.4 - di * 0.04),
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    style={{
+                      display: "inline-block",
+                      background: copied
+                        ? "none"
+                        : "linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)",
+                      WebkitBackgroundClip: copied ? undefined : "text",
+                      WebkitTextFillColor: copied ? "#FFFFFF" : "transparent",
+                      backgroundClip: copied ? undefined : "text",
+                      color: copied ? "#FFFFFF" : undefined,
+                      transition: "all 0.3s",
+                    }}
+                  >
+                    {digit}
+                  </motion.span>
+                </div>
+              ))}
+
+              {/* Suffix */}
               {suffix && (
                 <span
                   className="text-[24px] md:text-[49px] lg:text-[59px]"
                   style={{
                     opacity: 0.9,
-                    marginLeft: '0.1em',
-                    background: 'linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
+                    marginLeft: "0.1em",
+                    background: copied
+                      ? "none"
+                      : "linear-gradient(160deg, #ffd700 0%, var(--accent) 30%, #ffaa35 70%, #ffd700 100%)",
+                    WebkitBackgroundClip: copied ? undefined : "text",
+                    WebkitTextFillColor: copied ? "#FFFFFF" : "transparent",
+                    backgroundClip: copied ? undefined : "text",
+                    color: copied ? "#FFFFFF" : undefined,
+                    transition: "all 0.3s",
                   }}
                 >
                   {suffix}
                 </span>
               )}
-            </div>
+            </motion.div>
+
+            {/* GROUP 2 — #28: Mini sparkline */}
+            {trend && trend.length > 1 && (
+              <div style={{ width: "100%", marginTop: "8px" }}>
+                <svg
+                  width="100%"
+                  height="24"
+                  viewBox="0 0 100 24"
+                  preserveAspectRatio="none"
+                  style={{ overflow: "visible" }}
+                >
+                  <polyline
+                    ref={sparklineRef}
+                    points={buildSparklinePoints(trend)}
+                    stroke="#ff9d23"
+                    strokeOpacity="0.5"
+                    fill="none"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            )}
+
+            {/* GROUP 2 — #29: Comparison badge */}
+            {benchmark && (
+              <span
+                style={{
+                  marginTop: "6px",
+                  borderRadius: "9999px",
+                  fontSize: "11px",
+                  color: "#94b039",
+                  border: "1px solid rgba(148,176,57,0.3)",
+                  padding: "2px 8px",
+                  display: "inline-block",
+                }}
+              >
+                ↑ {benchmark}
+              </span>
+            )}
           </div>
 
-          {/* Label with Improvement #5: Refined tracking for luxury magazine feel */}
+          {/* Label */}
           <div
             className="text-[14px] md:text-[22px] lg:text-[26px] uppercase tracking-[0.095em] mt-3 sm:mt-6"
             style={{
-              color: isHovered ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.5)',
-              transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-              fontWeight: 500
+              color: isHovered
+                ? "rgba(255,255,255,0.6)"
+                : "rgba(255,255,255,0.5)",
+              transition: "color 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+              fontWeight: 500,
             }}
           >
             {label}
           </div>
 
-          {/* Improvement #17: "Since 2020" time badges */}
+          {/* "Since" badge */}
           {contextData.since && !isFlipped && (
             <div
               style={{
-                position: 'absolute',
+                position: "absolute",
                 bottom: 16,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                height: 'var(--badge-height)',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 8px',
-                fontSize: '10px',
-                background: 'rgba(255,157,35,0.15)',
-                color: 'rgba(255,157,35,0.8)',
-                border: '0.5px solid rgba(255,157,35,0.3)',
-                borderRadius: '2px',
+                left: "50%",
+                transform: "translateX(-50%)",
+                height: "var(--badge-height)",
+                display: "flex",
+                alignItems: "center",
+                padding: "0 8px",
+                fontSize: "10px",
+                background: "rgba(255,157,35,0.15)",
+                color: "rgba(255,157,35,0.8)",
+                border: "0.5px solid rgba(255,157,35,0.3)",
+                borderRadius: "2px",
                 fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
               }}
             >
               {contextData.since}
@@ -321,60 +644,146 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
               exit={{ opacity: 0 }}
               className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] px-3 py-1.5 rounded uppercase tracking-wider"
               style={{
-                background: 'rgba(255,157,35,0.2)',
-                color: 'var(--accent)',
-                border: '1px solid rgba(255,157,35,0.4)',
-                fontWeight: 600
+                background: "rgba(255,157,35,0.2)",
+                color: "var(--accent)",
+                border: "1px solid rgba(255,157,35,0.4)",
+                fontWeight: 600,
               }}
             >
               VIEWED
             </motion.div>
           )}
+
+          {/* GROUP 4 — #39: Drag-to-compare slider */}
+          {compareMode && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: "rgba(0,0,0,0.92)",
+                borderTop: "1px solid rgba(255,157,35,0.3)",
+                padding: "10px 12px",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "10px",
+                  fontFamily: "Roboto Mono, monospace",
+                  color: "#9A9A9A",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                <span style={{ color: "#ff9d23", fontWeight: 700 }}>
+                  YOU: {value}
+                </span>
+                <div
+                  ref={sliderRef}
+                  style={{
+                    flex: 1,
+                    height: "20px",
+                    background: "rgba(255,157,35,0.1)",
+                    border: "1px solid rgba(255,157,35,0.25)",
+                    borderRadius: "2px",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <motion.div
+                    drag="x"
+                    dragConstraints={sliderRef}
+                    dragElastic={0}
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%,-50%)",
+                      width: "12px",
+                      height: "12px",
+                      background: "#ff9d23",
+                      borderRadius: "2px",
+                      cursor: "grab",
+                      zIndex: 2,
+                    }}
+                    whileDrag={{ cursor: "grabbing" }}
+                  />
+                </div>
+                <span>AVG: {benchmark ?? "N/A"}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCompareMode(false);
+                  }}
+                  style={{
+                    color: "#9A9A9A",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    lineHeight: 1,
+                    padding: "0 2px",
+                  }}
+                  aria-label="Close compare"
+                >
+                  ×
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
 
-        {/* Back Side with Improvement #9: Subtle border radius */}
+        {/* Back Side */}
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 'var(--card-padding)',
-            backfaceVisibility: 'hidden',
-            transform: prefersReducedMotion ? 'scaleX(-1)' : 'rotateY(180deg)',
-            border: 'var(--card-border)',
-            borderRadius: 'var(--card-radius)',
-            boxShadow: 'var(--card-shadow)',
-            background: 'radial-gradient(circle at center, rgba(255,157,35,0.10) 0%, rgba(0,0,0,0.85) 100%)'
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "var(--card-padding)",
+            backfaceVisibility: "hidden",
+            transform: prefersReducedMotion ? "scaleX(-1)" : "rotateY(180deg)",
+            border: "var(--card-border)",
+            borderRadius: "var(--card-radius)",
+            boxShadow: "var(--card-shadow)",
+            background:
+              "radial-gradient(circle at center, rgba(255,157,35,0.10) 0%, rgba(0,0,0,0.85) 100%)",
           }}
         >
-          {/* Context Text with Improvements #2/#3: Better line-height & 2-layer shadows */}
           <motion.div
             className="w-full px-2 sm:px-3 md:px-4"
             initial={{ opacity: 0 }}
-            animate={{ opacity: (isFlipped || (prefersReducedMotion && isFlipped)) ? 1 : 0 }}
+            animate={{
+              opacity:
+                isFlipped || (prefersReducedMotion && isFlipped) ? 1 : 0,
+            }}
             transition={{ duration: 0.2 }}
           >
             <div className="max-w-[300px] sm:max-w-[380px] md:max-w-[460px] lg:max-w-[500px] mx-auto text-center">
-              {/* First Sentence - Larger, Bold, Gold Tint, Own Line */}
               <div
                 className="text-[17px] sm:text-[20px] md:text-[22px]"
                 style={{
-                  margin: 'var(--heading-mt) 0 var(--heading-mb) 0',
+                  margin: "var(--heading-mt) 0 var(--heading-mb) 0",
                   fontWeight: 600,
                   lineHeight: 1.5,
-                  letterSpacing: '-0.005em',
-                  color: '#ffa940',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.8)',
-                  textAlign: 'center'
+                  letterSpacing: "-0.005em",
+                  color: "#ffa940",
+                  textShadow:
+                    "0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.8)",
+                  textAlign: "center",
                 }}
               >
                 {firstSentence}
               </div>
 
-              {/* Improvement #16: Comparison badge */}
               {contextData.comparison && (
                 <motion.div
                   className="inline-block mb-2 px-2 py-1 text-[11px] sm:text-[12px] rounded-sm uppercase tracking-wider"
@@ -382,30 +791,31 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,157,35,0.2))',
-                    color: '#ffd700',
-                    border: '1px solid rgba(255,215,0,0.4)',
+                    background:
+                      "linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,157,35,0.2))",
+                    color: "#ffd700",
+                    border: "1px solid rgba(255,215,0,0.4)",
                     fontWeight: 700,
-                    boxShadow: '0 2px 8px rgba(255,215,0,0.2)'
+                    boxShadow: "0 2px 8px rgba(255,215,0,0.2)",
                   }}
                 >
                   {contextData.comparison}
                 </motion.div>
               )}
 
-              {/* Rest - Smaller, Regular, White, Line Below with Improvement #2: Better line-height (1.68) */}
               {rest && (
                 <div
                   className="text-[15px] sm:text-[17px] md:text-[19px]"
                   style={{
-                    margin: '0 0 var(--body-mb) 0',
+                    margin: "0 0 var(--body-mb) 0",
                     fontWeight: 300,
                     lineHeight: 1.68,
-                    letterSpacing: '0.02em',
-                    color: 'rgba(255,255,255,0.9)',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8)',
-                    textAlign: 'center',
-                    wordBreak: 'normal'
+                    letterSpacing: "0.02em",
+                    color: "rgba(255,255,255,0.9)",
+                    textShadow:
+                      "0 1px 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8)",
+                    textAlign: "center",
+                    wordBreak: "normal",
                   }}
                 >
                   {rest}
@@ -414,19 +824,18 @@ export default function LuxuryStatCard({ label, value, delay, index }: LuxurySta
             </div>
           </motion.div>
 
-          {/* Flip Back Hint */}
           <motion.div
             style={{
-              position: 'absolute',
+              position: "absolute",
               bottom: 16,
               left: 0,
               right: 0,
-              textAlign: 'center',
-              fontSize: '11px',
-              color: 'rgba(255,255,255,0.5)',
+              textAlign: "center",
+              fontSize: "11px",
+              color: "rgba(255,255,255,0.5)",
               fontWeight: 500,
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em'
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isFlipped ? 1 : 0 }}

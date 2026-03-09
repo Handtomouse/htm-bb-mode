@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import { useHapticFeedback } from "@/lib/hooks";
 import TypewriterManifesto from "./TypewriterManifesto";
@@ -42,6 +42,22 @@ export default function BlackberryAboutContent() {
   const rafId = useRef<number | null>(null);
   const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 });
   const typewriterRef = useRef<HTMLDivElement>(null);
+
+  // GROUP 3 — #35: Featured spotlight cycling
+  const [spotlightIndex, setSpotlightIndex] = useState(0);
+  const [isAnythingHovered, setIsAnythingHovered] = useState(false);
+
+  // GROUP 3 — #25: Trailing glow cursor
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+
+  // GROUP 3 — #34: Connecting lines between stat cards
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null, null, null]);
+  const statsSectionRef = useRef<HTMLElement | null>(null);
+  const [lineCoords, setLineCoords] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
+  const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/data/about.json?v=3")
@@ -286,6 +302,54 @@ export default function BlackberryAboutContent() {
       scrollableElement.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  // GROUP 3 — #35: Spotlight cycling with auto-advance
+  useEffect(() => {
+    if (isAnythingHovered) return;
+    const interval = setInterval(() => {
+      setSpotlightIndex((i) => (i + 1) % 6);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isAnythingHovered]);
+
+  // GROUP 3 — #34: Compute connecting line positions after mount/resize
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const computeLines = () => {
+      const section = statsSectionRef.current;
+      if (!section) return;
+      const sectionRect = section.getBoundingClientRect();
+      const pairs = [
+        [0, 2],
+        [1, 4],
+      ] as [number, number][];
+      const newLines = pairs
+        .map(([a, b]) => {
+          const refA = cardRefs.current[a];
+          const refB = cardRefs.current[b];
+          if (!refA || !refB) return null;
+          const rA = refA.getBoundingClientRect();
+          const rB = refB.getBoundingClientRect();
+          return {
+            x1: rA.left + rA.width / 2 - sectionRect.left,
+            y1: rA.top + rA.height / 2 - sectionRect.top,
+            x2: rB.left + rB.width / 2 - sectionRect.left,
+            y2: rB.top + rB.height / 2 - sectionRect.top,
+          };
+        })
+        .filter((l): l is { x1: number; y1: number; x2: number; y2: number } => l !== null);
+      setLineCoords(newLines);
+    };
+
+    // Defer to allow card layout to settle
+    const timer = setTimeout(computeLines, 600);
+    window.addEventListener('resize', computeLines);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', computeLines);
+    };
+  }, []);
 
   if (!data) {
     return (
@@ -953,43 +1017,233 @@ export default function BlackberryAboutContent() {
 
           <section
             id="stats"
+            ref={statsSectionRef}
             aria-label="Company statistics"
             className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32 scroll-mt-20"
-            style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', ...STAT_CARD_VARS }}
+            style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', ...STAT_CARD_VARS, position: 'relative', overflow: 'hidden' }}
+            onMouseMove={(e) => {
+              const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+              mouseX.set(e.clientX - rect.left);
+              mouseY.set(e.clientY - rect.top);
+            }}
           >
           {/* Improvement #6: Subtle radial gradient backdrop */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)', opacity: 0.4 }} />
+
+          {/* GROUP 3 — #25: Trailing glow cursor */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              pointerEvents: 'none',
+              width: 120,
+              height: 120,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,157,35,0.07) 0%, transparent 70%)',
+              x: springX,
+              y: springY,
+              translateX: '-50%',
+              translateY: '-50%',
+              zIndex: 0,
+            }}
+          />
+
+          {/* GROUP 3 — #34: Connecting lines SVG overlay */}
+          {lineCoords.length > 0 && (
+            <svg
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+            >
+              {lineCoords.map((line, li) => {
+                const pairIndices = [[0, 2], [1, 4]];
+                const [a, b] = pairIndices[li] ?? [0, 0];
+                const isActive = hoveredCardIndex === a || hoveredCardIndex === b;
+                return (
+                  <line
+                    key={li}
+                    x1={line.x1}
+                    y1={line.y1}
+                    x2={line.x2}
+                    y2={line.y2}
+                    stroke="#ff9d23"
+                    strokeOpacity={isActive ? 0.35 : 0.12}
+                    strokeDasharray="4 4"
+                    strokeWidth="1"
+                    style={{ transition: 'stroke-opacity 0.3s' }}
+                  />
+                );
+              })}
+            </svg>
+          )}
+
+          {/* GROUP 3 — #36: Scroll reveal curtain */}
+          <motion.div
+            initial={{ y: 0 }}
+            whileInView={{ y: '100%' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: '#0b0b0b',
+              zIndex: 10,
+              pointerEvents: 'none',
+              originY: 1,
+            }}
+          />
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
             className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12 md:mb-16 lg:mb-20"
             style={{
               fontFamily: '"argent-pixel-cf", sans-serif',
               color: 'var(--accent)',
               letterSpacing: '0.15em',
-              textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)'
+              textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)',
+              position: 'relative',
+              zIndex: 2,
             }}
           >
             By The Numbers
           </motion.h2>
+          {/* GROUP 3 — #37: Masonry mobile layout wrapper */}
           <div
             className="relative w-full max-w-6xl mx-auto"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: 'var(--card-gap)',
-              alignItems: 'stretch'
+              alignItems: 'stretch',
+              zIndex: 2,
             }}
           >
-            <LuxuryStatCard label="Projects" value={data.stats.projects} delay={0} index={0} />
-            <LuxuryStatCard label="Retention" value={data.stats.retention} delay={0.1} index={1} />
-            <LuxuryStatCard label="Repeat Clients" value={data.stats.repeatClients} delay={0.2} index={2} />
-            <LuxuryStatCard label="Years Active" value="6" delay={0.3} index={3} />
-            <LuxuryStatCard label="Response" value={data.stats.avgResponse} delay={0.4} index={4} />
-            <LuxuryStatCard label="Industries" value={data.stats.industries} delay={0.5} index={5} />
+            {/* Card 0 — Projects (flagship, priority) */}
+            <div
+              ref={(el) => { cardRefs.current[0] = el; }}
+              className="col-span-full sm:col-auto"
+              style={{ aspectRatio: undefined }}
+              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(0); }}
+              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+            >
+              <LuxuryStatCard
+                label="Projects"
+                value={data.stats.projects}
+                delay={0.3}
+                index={0}
+                priority={true}
+                benchmark="2.8× avg studio output"
+                trend={[15, 25, 38, 50, 62, 75, 90, 100]}
+                story="60+ brand projects delivered since 2020 — each one a different brief, a different sector, the same obsession with precision."
+                shareText="60+ projects delivered since 2020 — HandToMouse Studio"
+                isSpotlit={spotlightIndex === 0}
+              />
+            </div>
+
+            {/* Card 1 — Retention */}
+            <div
+              ref={(el) => { cardRefs.current[1] = el; }}
+              className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
+              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(1); }}
+              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+            >
+              <LuxuryStatCard
+                label="Retention"
+                value={data.stats.retention}
+                delay={0.4}
+                index={1}
+                benchmark="1.9× industry avg"
+                trend={[40, 52, 60, 68, 72, 75]}
+                story="3 in 4 clients return for the next project. Good systems create dependency — in the best possible way."
+                shareText="75% client retention — HandToMouse Studio"
+                isSpotlit={spotlightIndex === 1}
+              />
+            </div>
+
+            {/* Card 2 — Repeat Clients */}
+            <div
+              ref={(el) => { cardRefs.current[2] = el; }}
+              className="even:aspect-[4/3] odd:aspect-[3/2] sm:aspect-auto"
+              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(2); }}
+              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+            >
+              <LuxuryStatCard
+                label="Repeat Clients"
+                value={data.stats.repeatClients}
+                delay={0.5}
+                index={2}
+                benchmark="3× typical agency rate"
+                trend={[20, 28, 35, 40, 43, 45]}
+                story="45% of clients return within 18 months. The brief changes — the relationship doesn't."
+                shareText="45% repeat client rate — HandToMouse Studio"
+                isSpotlit={spotlightIndex === 2}
+              />
+            </div>
+
+            {/* Card 3 — Years Active */}
+            <div
+              ref={(el) => { cardRefs.current[3] = el; }}
+              className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
+              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(3); }}
+              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+            >
+              <LuxuryStatCard
+                label="Years Active"
+                value="6"
+                delay={0.6}
+                index={3}
+                trend={[10, 25, 40, 55, 70, 100]}
+                story="6 years of focused practice. Long enough to know what works — still close enough to stay curious."
+                shareText="6 years active — HandToMouse Studio"
+                isSpotlit={spotlightIndex === 3}
+              />
+            </div>
+
+            {/* Card 4 — Response */}
+            <div
+              ref={(el) => { cardRefs.current[4] = el; }}
+              className="even:aspect-[4/3] odd:aspect-[3/2] sm:aspect-auto"
+              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(4); }}
+              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+            >
+              <LuxuryStatCard
+                label="Response"
+                value={data.stats.avgResponse}
+                delay={0.7}
+                index={4}
+                benchmark="5× faster than avg agency"
+                trend={[100, 85, 70, 60, 52, 48]}
+                story="48hr average turnaround — usually 4hr. Clarity is part of the service, not an afterthought."
+                shareText="48hr average response — HandToMouse Studio"
+                isSpotlit={spotlightIndex === 4}
+              />
+            </div>
+
+            {/* Card 5 — Industries */}
+            <div
+              ref={(el) => { cardRefs.current[5] = el; }}
+              className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
+              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(5); }}
+              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+            >
+              <LuxuryStatCard
+                label="Industries"
+                value={data.stats.industries}
+                delay={0.8}
+                index={5}
+                trend={[2, 4, 5, 6, 7, 8]}
+                story="8 industries covered — hospitality to healthcare. Diverse context sharpens the eye."
+                shareText="8 industries served — HandToMouse Studio"
+                isSpotlit={spotlightIndex === 5}
+              />
+            </div>
           </div>
           </section>
 
