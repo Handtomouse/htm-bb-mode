@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { motion, useSpring, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import { useHapticFeedback } from "@/lib/hooks";
 import TypewriterManifesto from "./TypewriterManifesto";
@@ -9,7 +9,7 @@ import LuxuryStatCard from "./LuxuryStatCard";
 import LuxuryServiceCard from "./LuxuryServiceCard";
 import LuxuryCollapsibleSection from "./LuxuryCollapsibleSection";
 import LuxuryBelief from "./LuxuryBelief";
-import { ACCENT, ACCENT_HOVER, FONTS, STAT_CARD_VARS, type AboutData } from "@/lib/aboutData";
+import { ACCENT, ACCENT_HOVER, STAT_CARD_VARS, type AboutData } from "@/lib/aboutData";
 
 export default function BlackberryAboutContent() {
   const [data, setData] = useState<AboutData | null>(null);

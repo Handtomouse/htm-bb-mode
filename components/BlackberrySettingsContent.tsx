@@ -17,11 +17,8 @@ export default function BlackberrySettingsContent() {
   const [settings, setSettings, isLoaded] = useSettings();
 
   const handleColorChange = (color: { name: string; value: string }) => {
-    console.log("🎨 Color clicked:", color.name, color.value);
-    console.log("📦 Current settings:", settings);
     triggerHaptic(15);
     setSettings({ ...settings, accentColor: color.value });
-    console.log("✅ Settings updated to:", { ...settings, accentColor: color.value });
   };
 
   return (

@@ -17,16 +17,10 @@ export default function SettingsProvider({
   const [settings, , isLoaded] = useSettings();
 
   useEffect(() => {
-    console.log("🔧 SettingsProvider useEffect triggered");
-    console.log("   isLoaded:", isLoaded);
-    console.log("   settings.accentColor:", settings.accentColor);
-
     if (!isLoaded) {
-      console.log("   ⏸️ Waiting for settings to load...");
       return; // Wait for settings to load from localStorage
     }
 
-    console.log("   ✨ Applying accent color:", settings.accentColor);
     applyAccentColor(settings.accentColor);
   }, [settings.accentColor, isLoaded]);
 
@@ -39,24 +33,17 @@ export default function SettingsProvider({
  */
 function applyAccentColor(color: string) {
   if (typeof window === "undefined") {
-    console.log("   ⚠️ Window undefined, skipping apply");
     return;
   }
 
   const root = document.documentElement;
 
-  console.log("   🎨 Setting --accent to:", color);
   // Update primary accent color
   root.style.setProperty("--accent", color);
 
   // Update hover variant (15% lighter)
   const hoverColor = lightenColor(color, 15);
-  console.log("   🎨 Setting --accent-hover to:", hoverColor);
   root.style.setProperty("--accent-hover", hoverColor);
-
-  // Verify it was set
-  const computedAccent = getComputedStyle(root).getPropertyValue("--accent").trim();
-  console.log("   ✅ Verified --accent is now:", computedAccent);
 }
 
 /**
