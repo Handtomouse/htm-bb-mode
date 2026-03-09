@@ -11,7 +11,7 @@ import BlackberryClientsContent from "./BlackberryClientsContent";
 import BlackberryPortfolioContent from "./BlackberryPortfolioContent";
 import BlackberryDonateContent from "./BlackberryDonateContent";
 import BlackberryMessageContent from "./BlackberryMessageContent";
-import NeonCity from "./NeonCity";
+import NeonCity from "./NeonCityOptimized";
 import { ResponsiveStage, HwButton, NotiDot } from "./BlackberryUIComponents";
 import {
   VolumeIcon,
