@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import ProjectImagePlaceholder from "@/components/ProjectImagePlaceholder";
 
 interface Project {
   slug: string;
@@ -15,6 +17,8 @@ interface Project {
   roles: string[];
   description?: string;
   impact?: string[];
+  deliverables?: string[];
+  external?: { url: string };
 }
 
 export default function ProjectPage() {
@@ -49,6 +53,27 @@ export default function ProjectPage() {
       >
         ← BACK TO PORTFOLIO
       </Link>
+
+      {/* Hero cover */}
+      <div className="mb-8 aspect-video overflow-hidden border border-[var(--grid)]">
+        {project.cover ? (
+          <Image
+            src={project.cover}
+            alt={project.title}
+            width={1280}
+            height={720}
+            className="h-full w-full object-cover"
+            priority
+          />
+        ) : (
+          <ProjectImagePlaceholder
+            client={project.client}
+            year={project.year}
+            tags={project.tags}
+            className="aspect-video"
+          />
+        )}
+      </div>
 
       {/* Header */}
       <div className="mb-8">
@@ -108,25 +133,53 @@ export default function ProjectPage() {
         </div>
       )}
 
-      {/* Gallery - Placeholder until images are added */}
+      {/* Gallery */}
       <div className="mb-8">
         <h2 className="mb-4 font-mono text-xl uppercase text-[var(--muted)]">
           Gallery
         </h2>
-        <div className="space-y-4">
-          {project.gallery.map((img, i) => (
-            <div
-              key={i}
-              className="aspect-video bg-gradient-to-br from-[var(--accent)]/20 to-[var(--grid)] flex items-center justify-center border border-[var(--grid)]"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-2 opacity-50">📷</div>
-                <div className="text-xs text-[var(--muted)]">Image {i + 1}</div>
+        {project.gallery && project.gallery.length > 0 ? (
+          <div className="space-y-4">
+            {project.gallery.map((img, i) => (
+              <div
+                key={i}
+                className="overflow-hidden border border-[var(--grid)]"
+              >
+                <Image
+                  src={img}
+                  alt={`${project.title} — image ${i + 1}`}
+                  width={1280}
+                  height={720}
+                  className="h-auto w-full object-cover"
+                />
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="aspect-video overflow-hidden border border-[var(--grid)]">
+            <ProjectImagePlaceholder
+              client={project.client}
+              year={project.year}
+              tags={project.tags}
+              className="aspect-video"
+            />
+          </div>
+        )}
       </div>
+
+      {/* External link */}
+      {project.external?.url && (
+        <div className="mt-8">
+          <a
+            href={project.external.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-sm uppercase text-[var(--accent)] hover:underline"
+          >
+            VIEW PROJECT ↗
+          </a>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,187 +1,248 @@
 "use client";
 
 import { useState } from "react";
-import { useHapticFeedback } from "@/lib/hooks";
-import BBPageHeader from "./BBPageHeader";
-import BBEmptyState from "./BBEmptyState";
-import BBButton from "./BBButton";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
-const ACCENT = "var(--accent)";
-
-type Favourite = {
-  id: string;
-  type: "project" | "link" | "note";
+interface Project {
+  slug: string;
   title: string;
-  subtitle?: string;
-  url?: string;
-  icon: string;
-  addedDate: string;
-};
+  tags: string[];
+  year: number;
+  client: string;
+  cover?: string;
+  summary?: string;
+  external?: { url?: string };
+}
 
-const INITIAL_FAVOURITES: Favourite[] = [
+const PROJECTS: Project[] = [
   {
-    id: "1",
-    type: "project",
-    title: "TechCo Branding",
-    subtitle: "Brand Identity · 2024",
-    url: "/portfolio/techco",
-    icon: "⭐",
-    addedDate: "2024-10-15",
+    slug: "swich-summer-2025",
+    title: "S'WICH — Summer Campaign",
+    tags: ["Campaign", "Content", "Motion"],
+    year: 2025,
+    client: "S'WICH",
+    cover: "/images/projects/swich/cover.jpg",
+    summary: "Iconic summer homage spots across Sydney with a bag motif.",
+    external: { url: "https://eatswich.com.au" },
   },
   {
-    id: "2",
-    type: "link",
-    title: "Instagram",
-    subtitle: "@handtomouse",
-    url: "https://instagram.com/handtomouse",
-    icon: "📷",
-    addedDate: "2024-10-01",
+    slug: "maplemoon-rebrand",
+    title: "MapleMoon — Brand Identity",
+    tags: ["Branding", "Identity", "Packaging"],
+    year: 2024,
+    client: "MapleMoon",
+    cover: "/images/projects/maplemoon/cover.jpg",
+    summary: "Complete rebrand for artisan confectionery with whimsical packaging system.",
   },
   {
-    id: "3",
-    type: "project",
-    title: "RetailX Platform",
-    subtitle: "Web Design · 2024",
-    url: "/portfolio/retailx",
-    icon: "💼",
-    addedDate: "2024-09-20",
+    slug: "jac-jack-aw24",
+    title: "Jac+Jack — AW24 Campaign",
+    tags: ["Fashion", "Photography", "Campaign"],
+    year: 2024,
+    client: "Jac+Jack",
+    cover: "/images/projects/jacjack/cover.jpg",
+    summary: "Minimalist autumn/winter lookbook shot in raw industrial spaces.",
   },
   {
-    id: "4",
-    type: "link",
-    title: "Portfolio",
-    subtitle: "Full Work Archive",
-    url: "/portfolio",
-    icon: "🎨",
-    addedDate: "2024-09-01",
+    slug: "betoota-collabs",
+    title: "Betoota — Collaboration Suite",
+    tags: ["Content", "Strategy", "Branded"],
+    year: 2024,
+    client: "Betoota Collabs",
+    cover: "/images/projects/betoota/cover.jpg",
+    summary: "Multi-brand content partnerships with Australia's satirical news leader.",
   },
   {
-    id: "5",
-    type: "note",
-    title: "Design Principles",
-    subtitle: "Core values & approach",
-    icon: "📝",
-    addedDate: "2024-08-15",
+    slug: "materre-wellness",
+    title: "Materre — Brand Launch",
+    tags: ["Branding", "Web", "Content"],
+    year: 2024,
+    client: "Materre",
+    cover: "/images/projects/materre/cover.jpg",
+    summary: "Holistic brand and digital experience for wellness retreat.",
+  },
+  {
+    slug: "cape-lands-ip",
+    title: "Cape Lands — Print Series",
+    tags: ["IP", "Art Direction", "Print"],
+    year: 2023,
+    client: "Cape Lands",
+    cover: "/images/projects/capelands/cover.jpg",
+    summary: "Limited edition print series celebrating Australian coastal landscapes.",
+  },
+  {
+    slug: "myflowerman-refresh",
+    title: "MyFlowerMan — Digital Refresh",
+    tags: ["Web", "UX", "Ecommerce"],
+    year: 2024,
+    client: "MyFlowerMan",
+    cover: "/images/projects/myflowerman/cover.jpg",
+    summary: "Streamlined ecommerce experience with focus on seasonal ranges.",
+  },
+  {
+    slug: "mix-family-venues",
+    title: "Mix Family Group — Venue System",
+    tags: ["Branding", "Signage", "Experience"],
+    year: 2023,
+    client: "Mix Family Group",
+    cover: "/images/projects/mix/cover.jpg",
+    summary: "Unified identity system across hospitality portfolio.",
   },
 ];
 
-export default function BlackberryFavouritesContent() {
-  const triggerHaptic = useHapticFeedback();
-  const [favourites, setFavourites] = useState<Favourite[]>(INITIAL_FAVOURITES);
-  const [filter, setFilter] = useState<"all" | "project" | "link" | "note">("all");
+function getInitials(client: string): string {
+  return client
+    .split(/[\s''+&—-]+/)
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 3);
+}
 
-  const filtered = filter === "all" ? favourites : favourites.filter((f) => f.type === filter);
+function ProjectCoverImage({ project }: { project: Project }) {
+  const [imgError, setImgError] = useState(false);
 
-  const handleRemove = (id: string) => {
-    setFavourites((prev) => prev.filter((f) => f.id !== id));
-  };
-
-  const handleOpen = (fav: Favourite) => {
-    if (fav.url) {
-      if (fav.url.startsWith("http")) {
-        window.open(fav.url, "_blank");
-      } else {
-        window.location.href = fav.url;
-      }
-    } else {
-      alert(`Note: ${fav.title}\n\n${fav.subtitle || "No additional details"}`);
-    }
-  };
+  if (!project.cover || imgError) {
+    return (
+      <div
+        className="w-full aspect-video flex items-center justify-center"
+        style={{
+          backgroundColor: "#131313",
+          border: "1px solid #ff9d23",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "VT323, monospace",
+            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            color: "#ff9d23",
+            letterSpacing: "0.05em",
+          }}
+        >
+          {getInitials(project.client)}
+        </span>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <BBPageHeader title="FAVOURITES" subtitle="Your bookmarked items" />
+    <div className="w-full aspect-video relative overflow-hidden">
+      <Image
+        src={project.cover}
+        alt={project.title}
+        fill
+        className="object-cover"
+        onError={() => setImgError(true)}
+        sizes="(max-width: 768px) 50vw, 33vw"
+      />
+    </div>
+  );
+}
 
-      <div className="h-16 md:h-24 lg:h-32" />
-
-      {/* Filter Tabs */}
-      <div className="mb-3 flex gap-1 border border-white/10 bg-black/30 p-1">
-        {(["all", "project", "link", "note"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => {
-              triggerHaptic(10);
-              setFilter(f);
-            }}
-            className={`flex-1 px-2 py-1 text-xs font-semibold uppercase ${
-              filter === f ? "bg-[var(--accent)] text-black" : "text-white/60 hover:text-white"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
-      <div className="h-16 md:h-24 lg:h-32" />
-
-      {/* Count */}
-      <div className="mb-3 text-xs text-white/50">
-        {filtered.length} {filtered.length === 1 ? "item" : "items"}
-      </div>
-
-      {/* List */}
-      {filtered.length === 0 ? (
-        <BBEmptyState
-          icon="⭐"
-          title="No favourites yet"
-          description="Start adding your favourite projects and links"
+export default function BlackberryFavouritesContent() {
+  return (
+    <div
+      className="h-full overflow-y-auto"
+      style={{ fontFamily: "Roboto Mono, monospace" }}
+    >
+      {/* Section Header */}
+      <div className="px-4 pt-6 pb-4 md:px-6">
+        <h1
+          className="tracking-widest uppercase text-sm text-[var(--ink)]"
+          style={{ fontFamily: "Roboto Mono, monospace" }}
+        >
+          SELECTED WORK
+        </h1>
+        <div
+          className="mt-1 h-[1px]"
+          style={{ background: "linear-gradient(90deg, #ff9d23 0%, transparent 100%)" }}
         />
-      ) : (
-        <div className="space-y-6 md:space-y-8">
-          {filtered.map((fav) => (
-            <div
-              key={fav.id}
-              className="flex items-center gap-3 border border-white/10 bg-black/30 p-4 md:p-5 lg:p-6 hover:border-[var(--accent)]/50"
+      </div>
+
+      {/* Gallery Grid */}
+      <div className="px-4 pb-8 md:px-6">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
+          {PROJECTS.map((project, index) => (
+            <motion.div
+              key={project.slug}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.45,
+                delay: index * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="group relative flex flex-col overflow-hidden"
+              style={{
+                backgroundColor: "#131313",
+                border: "1px solid #2A2A2A",
+                transition: "box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease",
+              }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0 0 0 1px #ff9d23, 0 4px 24px rgba(255,157,35,0.25)",
+              }}
             >
-              <div className="text-2xl">{fav.icon}</div>
-              <div className="flex-1">
-                <div className="text-base md:text-lg font-semibold text-white">{fav.title}</div>
-                {fav.subtitle && <div className="text-sm text-white/50">{fav.subtitle}</div>}
-              </div>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => {
-                    triggerHaptic(10);
-                    handleOpen(fav);
+              {/* Cover image or placeholder */}
+              <ProjectCoverImage project={project} />
+
+              {/* Card body */}
+              <div className="flex flex-col gap-1.5 p-3">
+                {/* Client name */}
+                <div
+                  className="text-sm font-semibold uppercase leading-tight"
+                  style={{
+                    color: "#ff9d23",
+                    fontFamily: "Roboto Mono, monospace",
+                    letterSpacing: "0.04em",
                   }}
-                  className="px-2 py-1 text-xs font-semibold text-[var(--accent)] hover:underline"
-                  aria-label="Open"
                 >
-                  Open
-                </button>
-                <button
-                  onClick={() => {
-                    triggerHaptic(10);
-                    handleRemove(fav.id);
+                  {project.client}
+                </div>
+
+                {/* Project title */}
+                <div
+                  className="text-xs leading-snug"
+                  style={{
+                    color: "#EDECEC",
+                    fontFamily: "Roboto Mono, monospace",
                   }}
-                  className="px-2 py-1 text-xs font-semibold text-red-400 hover:underline"
-                  aria-label="Remove"
                 >
-                  ×
-                </button>
+                  {project.title.split("—")[1]?.trim() ?? project.title}
+                </div>
+
+                {/* Year */}
+                <div
+                  className="text-xs"
+                  style={{ color: "#9A9A9A", fontFamily: "Roboto Mono, monospace" }}
+                >
+                  {project.year}
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-1.5 py-0.5 text-[10px] uppercase"
+                      style={{
+                        fontFamily: "Roboto Mono, monospace",
+                        color: "#9A9A9A",
+                        border: "1px solid #2A2A2A",
+                        borderRadius: "2px",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      )}
-
-      <div className="h-16 md:h-24 lg:h-32" />
-
-      {/* Add New (Placeholder) */}
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            triggerHaptic(10);
-            alert("Add new favourite feature coming soon!");
-          }}
-          className="w-full border-2 border-dashed border-white/20 bg-black/20 px-4 py-3 text-sm font-semibold text-white/50 hover:border-[var(--accent)]/50 hover:text-[var(--accent)]/70"
-        >
-          + Add Favourite
-        </button>
-      </div>
-
-      <div className="mt-3 text-center text-xs text-white/40">
-        Bookmark your favourite projects, links & notes
       </div>
     </div>
   );
