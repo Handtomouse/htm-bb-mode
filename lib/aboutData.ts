@@ -27,6 +27,7 @@ export const STAT_CARD_VARS = {
 
 // TypeScript interface for About page data structure
 export interface AboutData {
+  beliefs?: Array<{ icon: string; text: string }>;
   hero: {
     title: string;
     headline: string;

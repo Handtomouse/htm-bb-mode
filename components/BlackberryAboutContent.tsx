@@ -456,7 +456,7 @@ export default function BlackberryAboutContent() {
       {/* Floating CTA Button */}
       {showFloatingCTA && data && (
         <motion.a
-          href={`mailto:${data.contact.email}`}
+          href="/contact"
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -543,7 +543,7 @@ export default function BlackberryAboutContent() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <motion.a
-                href={`mailto:${data.contact.email}`}
+                href="/contact"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => triggerHaptic(15)}
@@ -1248,6 +1248,32 @@ export default function BlackberryAboutContent() {
           </section>
 
 
+        {/* Beliefs Section */}
+        {data.beliefs && data.beliefs.length > 0 && (
+          <section id="beliefs" className="py-20 md:py-32 flex flex-col items-center justify-center scroll-mt-20">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-16 md:mb-20"
+              style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
+            >
+              What We Believe
+            </motion.h2>
+            <div className="max-w-3xl mx-auto px-8 md:px-16 space-y-6">
+              {data.beliefs.map((belief, idx) => (
+                <LuxuryBelief
+                  key={idx}
+                  icon={belief.icon}
+                  text={belief.text}
+                  delay={idx * 0.12}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Services Grid */}
 
           <section id="services" aria-label="Our services" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16 scroll-mt-20">
@@ -1275,7 +1301,7 @@ export default function BlackberryAboutContent() {
             className="text-center mt-12 md:mt-16"
           >
             <motion.a
-              href={`mailto:${data.contact.email}`}
+              href="/contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               className="inline-block border-2 border-[var(--accent)] bg-[var(--accent)]/10 px-8 py-4 text-[18px] md:text-[22px] font-bold text-[var(--accent)] uppercase tracking-wide hover:bg-[var(--accent)]/20 transition-all duration-300"
@@ -1577,7 +1603,7 @@ export default function BlackberryAboutContent() {
                       transition={{ delay: idx * 0.12, duration: 0.6 }}
                       className="flex items-start gap-4"
                     >
-                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">✓</span>
+                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">{principle.icon}</span>
                       <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{principle.text}</p>
                     </motion.div>
                   ))}
@@ -1688,21 +1714,21 @@ export default function BlackberryAboutContent() {
                 }}
                 className="flex gap-8 whitespace-nowrap text-[14px] md:text-[16px] text-white/50 uppercase tracking-wider"
               >
-                <span>✓ New client onboarded</span>
+                <span>✓ Jac+Jack W25/SP25 campaign delivered</span>
                 <span>•</span>
-                <span>✓ Campaign launched for Jac+Jack</span>
+                <span>✓ S'WICH Bondi → Redfern → Surry Hills expansion</span>
                 <span>•</span>
-                <span>✓ S'WICH expansion strategy complete</span>
+                <span>✓ MapleMoon in 160+ retailers</span>
                 <span>•</span>
-                <span>✓ 3 new projects in pipeline</span>
+                <span>✓ Aura Therapeutics brand identity complete</span>
                 <span>•</span>
-                <span>✓ New client onboarded</span>
+                <span>✓ Jac+Jack W25/SP25 campaign delivered</span>
                 <span>•</span>
-                <span>✓ Campaign launched for Jac+Jack</span>
+                <span>✓ S'WICH Bondi → Redfern → Surry Hills expansion</span>
                 <span>•</span>
-                <span>✓ S'WICH expansion strategy complete</span>
+                <span>✓ MapleMoon in 160+ retailers</span>
                 <span>•</span>
-                <span>✓ 3 new projects in pipeline</span>
+                <span>✓ Aura Therapeutics brand identity complete</span>
               </motion.div>
             </motion.div>
             </motion.div>
@@ -1744,7 +1770,7 @@ export default function BlackberryAboutContent() {
             </motion.p>
 
             <motion.a
-              href={`mailto:${data.contact.email}`}
+              href="/contact"
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
