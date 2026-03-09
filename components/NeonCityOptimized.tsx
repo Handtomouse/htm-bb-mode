@@ -121,6 +121,7 @@ const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings }) 
     let touchStartY = 0;
     let touchStartDist = 0;
     let pinchZoom = 1;
+    let particlesReady = false;
 
     const resize = () => {
       if (!canvas) return;
@@ -143,10 +144,12 @@ const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings }) 
         offscreenCtx.setTransform(dpi, 0, 0, dpi, 0, 0);
       }
 
-      // Resize particle systems
-      starSystem.resize(width, height);
-      rainSystem.resize(width, height);
-      cloudSystem.resize(width);
+      // Resize particle systems (guard: not initialised on first call)
+      if (particlesReady) {
+        starSystem.resize(width, height);
+        rainSystem.resize(width, height);
+        cloudSystem.resize(width);
+      }
     };
 
     const resizeObserver = new ResizeObserver(() => resize());
@@ -241,6 +244,7 @@ const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings }) 
     const steamSystem = new SteamSystem(RENDERING_CONFIG.NUM_STEAM_VENTS);
     const rainSystem = new RainSystem(PARTICLE_CONFIG.RAIN_PARTICLE_COUNT, width, height);
     const cloudSystem = new CloudSystem(8, width);
+    particlesReady = true;
 
     if (settings.weatherEnabled) {
       rainSystem.enable();

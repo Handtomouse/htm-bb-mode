@@ -286,7 +286,7 @@ export default function BlackberryOS5Dashboard() {
       { name: "Contact", icon: <BBIcon name="mail" variant="solid" size={48} />, path: "/contact" },
       { name: "Message", icon: <BBIcon name="message" variant="solid" size={48} />, path: "/notes" },
       { name: "Games", icon: <BBIcon name="games" variant="solid" size={48} />, path: "/games" },
-      { name: "Instagram", icon: <BBIcon name="instagram" variant="solid" size={48} />, path: "https://www.instagram.com/handtomouse_studio", external: true },
+      { name: "Instagram", icon: <BBIcon name="instagram" variant="solid" size={48} />, path: "https://www.instagram.com/handtomouse.studio", external: true },
     ],
     []
   );
