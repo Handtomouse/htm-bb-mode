@@ -1,15 +1,37 @@
 import Tile from "./Tile";
-import { getIcon } from "@/lib/icons";
+import { type IconName } from "./BBIcon";
 
 export interface NavTile {
   title: string;
   href: string;
-  icon?: string;
+  iconName?: IconName;
   desc?: string;
 }
 
 interface NavGridProps {
   tiles: NavTile[];
+}
+
+// Map tile titles to icon names
+function getTileIconName(title: string): IconName {
+  const titleKey = title.toLowerCase().replace(/\s+/g, "");
+  const iconMap: Record<string, IconName> = {
+    portfolio: "folder",
+    work: "folder",
+    clients: "users",
+    services: "services",
+    web: "globe",
+    showreel: "video",
+    games: "games",
+    notes: "file-text",
+    extras: "star",
+    settings: "settings",
+    favourites: "heart",
+    favorites: "heart",
+    about: "info",
+    contact: "mail",
+  };
+  return iconMap[titleKey] || "info";
 }
 
 export default function NavGrid({ tiles }: NavGridProps) {
@@ -20,7 +42,7 @@ export default function NavGrid({ tiles }: NavGridProps) {
           key={tile.href}
           title={tile.title}
           href={tile.href}
-          icon={tile.icon || getIcon(tile.title.toLowerCase().replace(/\s+/g, ""))}
+          iconName={tile.iconName || getTileIconName(tile.title)}
           desc={tile.desc}
         />
       ))}

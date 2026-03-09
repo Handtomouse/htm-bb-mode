@@ -45,10 +45,15 @@ export class Building {
   }
 
   reset(initial: boolean = false) {
-    const laneOffset = RENDERING_CONFIG.ROAD_WIDTH * BUILDING_CONFIG.LANE_OFFSET_MULTIPLIER;
+    // PHASE 2 FIX #3: Increased clearance to avoid street light overlap
+    const laneOffset = RENDERING_CONFIG.ROAD_WIDTH * 1.5;  // Was 1.2 (96), now 1.5 (120)
     const spread = BUILDING_CONFIG.SPREAD;
+    const minClearance = 40; // Minimum gap from street lights at x=±90
 
-    const sideOffset = laneOffset + Math.random() * spread;
+    const sideOffset = Math.max(
+      laneOffset + Math.random() * spread,
+      RENDERING_CONFIG.ROAD_WIDTH + 20 + minClearance  // Ensures x >= ±110
+    );
     this.x = this.side * sideOffset;
     this.width = BUILDING_CONFIG.MIN_WIDTH + Math.random() * (BUILDING_CONFIG.MAX_WIDTH - BUILDING_CONFIG.MIN_WIDTH);
     this.depth = BUILDING_CONFIG.MIN_DEPTH + Math.random() * (BUILDING_CONFIG.MAX_DEPTH - BUILDING_CONFIG.MIN_DEPTH);

@@ -1,14 +1,14 @@
 import Link from "next/link";
-import InlineIcon from "./InlineIcon";
+import { BBIcon, type IconName } from "./BBIcon";
 
 interface TileProps {
   title: string;
   href: string;
-  icon: string;
+  iconName: IconName;
   desc?: string;
 }
 
-export default function Tile({ title, href, icon, desc }: TileProps) {
+export default function Tile({ title, href, iconName, desc }: TileProps) {
   return (
     <Link
       href={href}
@@ -21,10 +21,9 @@ export default function Tile({ title, href, icon, desc }: TileProps) {
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]
       "
     >
-      <InlineIcon
-        svg={icon}
-        className="mb-4 h-12 w-12 text-[var(--icon)] transition-colors group-hover:text-[var(--accent)] [&>svg]:h-full [&>svg]:w-full"
-      />
+      <div className="mb-4 transition-colors text-[var(--icon)] group-hover:text-[var(--accent)]">
+        <BBIcon name={iconName} variant="solid" size={48} />
+      </div>
       <h2 className="font-mono text-lg text-center">
         <span className="slash-accent">/</span> {title}
       </h2>

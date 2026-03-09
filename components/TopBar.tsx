@@ -60,7 +60,7 @@ export default function TopBar({ notificationCount = 0 }: { notificationCount?: 
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-10 bg-[#000000] text-[#E0E0E0] text-[20px] flex justify-between items-center px-8 border-b border-white/10 z-40 leading-none" style={{ fontFamily: 'VT323, monospace' }}>
+    <div className="fixed top-0 left-0 w-full h-10 bg-[#000000] text-[#E0E0E0] text-[16px] sm:text-[18px] md:text-[20px] flex justify-between items-center px-4 sm:px-6 md:px-8 border-b border-white/10 z-40 leading-none" style={{ fontFamily: 'VT323, monospace' }}>
       {/* CRT shimmer line */}
       <div
         className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-20"
@@ -74,7 +74,7 @@ export default function TopBar({ notificationCount = 0 }: { notificationCount?: 
         <img
           src="/logos/HTM-LOGOS-FULLWORDMARK.svg"
           alt="HandToMouse"
-          className="h-5 w-auto max-w-[120px] sm:max-w-[140px]"
+          className="h-4 sm:h-5 w-auto max-w-[100px] sm:max-w-[120px] md:max-w-[140px]"
           style={{
             objectFit: "contain",
             imageRendering: 'pixelated',
@@ -99,9 +99,9 @@ export default function TopBar({ notificationCount = 0 }: { notificationCount?: 
       {/* Right: Date + Notifications */}
       <div className="flex items-center gap-3 text-[#E0E0E0]/60">
         {mounted ? (
-          <span>{currentDate}</span>
+          <span className="hidden sm:inline truncate max-w-[120px] md:max-w-none">{currentDate}</span>
         ) : (
-          <span className="text-[#E0E0E0]/40">Loading...</span>
+          <span className="hidden sm:inline text-[#E0E0E0]/40">Loading...</span>
         )}
         {notificationCount > 0 && (
           <>

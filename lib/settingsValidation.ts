@@ -23,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   volume: 70,
   trackingEnabled: false,
   analyticsEnabled: false,
+  timeFormat: "12hr",
 };
 
 // Validate individual setting values
@@ -76,6 +77,9 @@ export function validateSettings(settings: Partial<Settings>): Settings {
       typeof settings.analyticsEnabled === "boolean"
         ? settings.analyticsEnabled
         : DEFAULT_SETTINGS.analyticsEnabled,
+    timeFormat: ["12hr", "24hr"].includes(settings.timeFormat as string)
+      ? (settings.timeFormat as "12hr" | "24hr")
+      : DEFAULT_SETTINGS.timeFormat,
   };
 }
 

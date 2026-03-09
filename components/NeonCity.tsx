@@ -61,6 +61,9 @@ const NeonCity: React.FC = () => {
     const BOOST_COOLDOWN = 8000; // 8 seconds
     const BOOST_SPEED_MULTIPLIER = 1.8;
 
+    // PHASE 3 FIX #10: Debug wireframe mode
+    let debugMode = false;
+
     const resize = () => {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
@@ -98,6 +101,12 @@ const NeonCity: React.FC = () => {
       if (e.code === "Space") {
         e.preventDefault();
         triggerBoost();
+      }
+      // PHASE 3 FIX #10: Toggle debug wireframe mode with 'W' key
+      if (e.code === "KeyW" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        debugMode = !debugMode;
+        console.log(`NeonCity Debug Mode: ${debugMode ? 'ON' : 'OFF'}`);
       }
     };
 
@@ -237,6 +246,7 @@ const NeonCity: React.FC = () => {
     }> = [];
 
     const vehicleColors = [
+      { body: 'rgba(255, 157, 35, 1)', glow: 'rgba(255, 157, 35, 0.7)' }, // HTM Brand Orange
       { body: 'rgba(0, 255, 255, 1)', glow: 'rgba(0, 255, 255, 0.6)' }, // Cyan
       { body: 'rgba(255, 0, 255, 1)', glow: 'rgba(255, 0, 255, 0.6)' }, // Magenta
       { body: 'rgba(255, 255, 0, 1)', glow: 'rgba(255, 255, 0, 0.6)' }, // Yellow
@@ -262,7 +272,8 @@ const NeonCity: React.FC = () => {
         if (rand < 0.3) type = 'sports';
         else if (rand < 0.6) type = 'sedan';
         else type = 'truck';
-        colorSet = vehicleColors[Math.floor(Math.random() * vehicleColors.length)];
+        // First 2 non-emergency vehicles get HTM brand color, others random
+        colorSet = (i === 2 || i === 3) ? vehicleColors[0] : vehicleColors[Math.floor(Math.random() * vehicleColors.length)];
       }
 
       vehicles.push({
@@ -297,6 +308,116 @@ const NeonCity: React.FC = () => {
       ctx.stroke();
     };
 
+    // PHASE 3 FIX #9: Ground plane reference grid for spatial awareness
+    const drawGroundGrid = (camX: number) => {
+      ctx.strokeStyle = hexToRgba(accentHex, 0.08);
+      ctx.lineWidth = 0.5;
+
+      // Perpendicular lines (extending from road edges)
+      for (let z = 100; z < CITY_DEPTH; z += 300) {
+        // Left side
+        const left1 = { x: -ROAD_WIDTH, y: 0, z };
+        const left2 = { x: -ROAD_WIDTH - 200, y: 0, z };
+        drawEdge(left1, left2, camX);
+
+        // Right side
+        const right1 = { x: ROAD_WIDTH, y: 0, z };
+        const right2 = { x: ROAD_WIDTH + 200, y: 0, z };
+        drawEdge(right1, right2, camX);
+      }
+
+      // Parallel lines (alongside road)
+      for (let x = ROAD_WIDTH + 50; x < ROAD_WIDTH + 200; x += 50) {
+        const p1 = { x: -x, y: 0, z: 100 };
+        const p2 = { x: -x, y: 0, z: CITY_DEPTH };
+        drawEdge(p1, p2, camX);
+
+        const p3 = { x, y: 0, z: 100 };
+        const p4 = { x, y: 0, z: CITY_DEPTH };
+        drawEdge(p3, p4, camX);
+      }
+    };
+
+    // PHASE 3 FIX #10: Debug wireframe overlay (press 'W' to toggle)
+    const drawDebugOverlay = (camX: number) => {
+      if (!debugMode) return;
+
+      ctx.save();
+      ctx.globalAlpha = 0.8;
+      ctx.font = "10px monospace";
+      ctx.fillStyle = COLOR_ACCENT;
+
+      // Show building bounding boxes and Z-values
+      buildings.forEach((b, i) => {
+        const v = b.getVertices();
+
+        // Draw bounding box in bright color
+        ctx.strokeStyle = 'rgba(0, 255, 0, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+
+        // Front face outline
+        const p0 = projectPoint(v[0], camX);
+        const p1 = projectPoint(v[1], camX);
+        const p2 = projectPoint(v[2], camX);
+        const p3 = projectPoint(v[3], camX);
+
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.lineTo(p3.x, p3.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+
+        // Show Z-depth label
+        if (b.z < 1500) {
+          const labelPos = projectPoint({ x: b.x, y: b.height / 2, z: b.z }, camX);
+          ctx.fillText(`B${i} z:${Math.round(b.z)} h:${Math.round(b.height)}`, labelPos.x + 5, labelPos.y);
+        }
+      });
+
+      // Show street light positions
+      const lightSpacing = 180;
+      const numLights = Math.floor(CITY_DEPTH / lightSpacing);
+      for (let i = 0; i < numLights; i++) {
+        const lz = i * lightSpacing + 100;
+        if (lz < 40 || lz > CITY_DEPTH) continue;
+
+        const lightPos = projectPoint({ x: -ROAD_WIDTH - 10, y: 35, z: lz }, camX);
+        ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
+        ctx.fillRect(lightPos.x - 3, lightPos.y - 3, 6, 6);
+
+        if (lz < 1000) {
+          ctx.fillText(`L${i} z:${Math.round(lz)}`, lightPos.x + 5, lightPos.y);
+        }
+      }
+
+      // Show coordinate axes at origin
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+      ctx.lineWidth = 2;
+      const axisOrigin = { x: 0, y: 0, z: 500 };
+      const axisX = { x: 50, y: 0, z: 500 };
+      const axisY = { x: 0, y: 50, z: 500 };
+      drawEdge(axisOrigin, axisX, camX);
+      ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
+      drawEdge(axisOrigin, axisY, camX);
+
+      // Debug info panel
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(10, 10, 200, 80);
+      ctx.fillStyle = COLOR_ACCENT;
+      ctx.fillText('DEBUG MODE (W to toggle)', 15, 25);
+      ctx.fillText(`Buildings: ${buildings.length}`, 15, 40);
+      ctx.fillText(`Speed: ${Math.round(speed)}`, 15, 55);
+      ctx.fillText(`Camera X: ${Math.round(camX)}`, 15, 70);
+      ctx.fillText(`FOV: ${FOV} | Road: ±${ROAD_WIDTH}`, 15, 85);
+
+      ctx.restore();
+    };
+
     const drawRoad = (now: number, camX: number) => {
       const t = now * 0.002;
       const segments = 10;
@@ -329,13 +450,19 @@ const NeonCity: React.FC = () => {
         }
       }
 
-      // Street lights along road edges
+    };
+
+    // PHASE 1 FIX #2: Street lights extracted to separate function for proper Z-sorting
+    const drawStreetLights = (now: number, camX: number) => {
       const lightSpacing = 180;
       const numLights = Math.floor(CITY_DEPTH / lightSpacing);
 
       for (let i = 0; i < numLights; i++) {
         const lz = i * lightSpacing + 100 - ((now * 0.0005 * SPEED_BASE) % lightSpacing);
         if (lz < 40 || lz > CITY_DEPTH) continue;
+
+        // PHASE 3 FIX #8: LOD - Skip expensive effects for distant lights
+        const useLOD = lz > 1000;
 
         // Left side lights
         const leftBase = { x: -ROAD_WIDTH - 10, y: 0, z: lz };
@@ -350,10 +477,18 @@ const NeonCity: React.FC = () => {
         const intensity = 0.6 + Math.sin(pulsePhase * Math.PI) * 0.4;
         ctx.globalAlpha = intensity * 0.7;
         ctx.fillStyle = COLOR_ROAD_LINE;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
+
+        if (!useLOD) {
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
+        }
+
         ctx.fillRect(leftPos.x - 2, leftPos.y - 2, 4, 4);
-        ctx.shadowBlur = 0;
+
+        if (!useLOD) {
+          ctx.shadowBlur = 0;
+        }
+
         ctx.globalAlpha = 1;
 
         // Right side lights
@@ -366,10 +501,18 @@ const NeonCity: React.FC = () => {
         const rightPos = projectPoint(rightTop, camX);
         ctx.globalAlpha = intensity * 0.7;
         ctx.fillStyle = COLOR_ROAD_LINE;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
+
+        if (!useLOD) {
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
+        }
+
         ctx.fillRect(rightPos.x - 2, rightPos.y - 2, 4, 4);
-        ctx.shadowBlur = 0;
+
+        if (!useLOD) {
+          ctx.shadowBlur = 0;
+        }
+
         ctx.globalAlpha = 1;
       }
     };
@@ -429,9 +572,186 @@ const NeonCity: React.FC = () => {
       ctx.lineTo(width, horizonY);
       ctx.stroke();
 
-      // Road
+      // PHASE 3 FIX #9: Ground plane grid for depth perception
+      drawGroundGrid(totalCameraX);
+
+      // Road (without street lights - they're now in render queue)
       drawRoad(now, totalCameraX);
 
+      // PHASE 1 FIX #1: Unified Render Queue for proper Z-sorting
+      // Create render queue with buildings and street lights
+      type RenderItem = {
+        type: 'building' | 'streetLight';
+        z: number;
+        zFar: number;
+        data?: any;
+      };
+
+      const renderQueue: RenderItem[] = [];
+
+      // Add buildings to render queue
+      buildings.forEach(b => {
+        b.update(dt);
+        // PHASE 2 FIX #4: Composite Z-Y sorting (height factored into depth)
+        const heightPenalty = b.height * 0.1;
+        renderQueue.push({
+          type: 'building',
+          z: b.z,
+          zFar: b.z + b.depth - heightPenalty,
+          data: b
+        });
+      });
+
+      // Add street lights to render queue
+      const lightSpacing = 180;
+      const numLights = Math.floor(CITY_DEPTH / lightSpacing);
+      for (let i = 0; i < numLights; i++) {
+        const lz = i * lightSpacing + 100 - ((now * 0.0005 * SPEED_BASE) % lightSpacing);
+        if (lz < 40 || lz > CITY_DEPTH) continue;
+
+        renderQueue.push({
+          type: 'streetLight',
+          z: lz,
+          zFar: lz,
+          data: { index: i, z: lz, now }
+        });
+      }
+
+      // Sort by Z-depth (back to front) - fixes floating issue!
+      renderQueue.sort((a, b) => b.zFar - a.zFar);
+
+      // Render all elements in correct order
+      renderQueue.forEach(item => {
+        if (item.type === 'building') {
+          const b = item.data;
+          const v = b.getVertices();
+          const distance = b.z;
+          const fogFactor = Math.max(0, Math.min(1, (distance - 200) / CITY_DEPTH));
+          const alpha = 0.7 - fogFactor * 0.5;
+
+          // Front rectangle with fog
+          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, alpha);
+          ctx.lineWidth = 1.2;
+          drawEdge(v[0], v[1], totalCameraX);
+          drawEdge(v[1], v[3], totalCameraX);
+          drawEdge(v[3], v[2], totalCameraX);
+          drawEdge(v[2], v[0], totalCameraX);
+
+          // Back rectangle (dimmer)
+          ctx.globalAlpha = alpha * 0.6;
+          drawEdge(v[4], v[5], totalCameraX);
+          drawEdge(v[5], v[7], totalCameraX);
+          drawEdge(v[7], v[6], totalCameraX);
+          drawEdge(v[6], v[4], totalCameraX);
+
+          // Connect front/back (side edges)
+          ctx.globalAlpha = alpha * 0.7;
+          drawEdge(v[0], v[4], totalCameraX);
+          drawEdge(v[1], v[5], totalCameraX);
+          drawEdge(v[2], v[6], totalCameraX);
+          drawEdge(v[3], v[7], totalCameraX);
+
+          // Draw windows (only on nearby buildings for performance)
+          if (distance < 800) {
+            const windowWidth = b.width / b.windowCols;
+            const windowHeight = b.height / b.windowRows;
+
+            b.windows.forEach((win: any) => {
+              // Flicker effect
+              const flickerPhase = (now * 0.001 + win.flicker) % 1;
+              const isFlickering = flickerPhase < 0.1 && Math.random() > 0.8;
+
+              if (win.lit && !isFlickering) {
+                const wx = b.x - b.width / 2 + (win.x + 0.5) * windowWidth;
+                const wy = (win.y + 0.5) * windowHeight;
+                // PHASE 2 FIX #5: Variable window depth across building face
+                const wz = b.z + b.depth * (0.2 + (win.x / b.windowCols) * 0.6);
+
+                const projected = projectPoint({ x: wx, y: wy, z: wz }, totalCameraX);
+
+                // Window glow
+                ctx.globalAlpha = alpha * 0.8;
+                ctx.fillStyle = `rgba(255, 200, 100, 0.9)`;
+                ctx.shadowBlur = 3;
+                ctx.shadowColor = `rgba(255, 200, 100, 0.8)`;
+                ctx.fillRect(projected.x - 1, projected.y - 1, 2, 2);
+                ctx.shadowBlur = 0;
+              }
+            });
+          }
+
+          // Draw neon sign
+          if (b.hasSign && distance < 600) {
+            const signY = b.height * 0.7;
+            const signPos = projectPoint({ x: b.x, y: signY, z: b.z }, totalCameraX);
+
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.9);
+            ctx.font = "bold 12px monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(b.signText, signPos.x, signPos.y);
+            ctx.shadowBlur = 0;
+          }
+
+          ctx.globalAlpha = 1;
+        } else if (item.type === 'streetLight') {
+          // Draw street light (both left and right)
+          const lz = item.data.z;
+          const i = item.data.index;
+          const useLOD = lz > 1000;
+
+          // Left side light
+          const leftBase = { x: -ROAD_WIDTH - 10, y: 0, z: lz };
+          const leftTop = { x: -ROAD_WIDTH - 10, y: 35, z: lz };
+          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.5);
+          ctx.lineWidth = 2;
+          drawEdge(leftBase, leftTop, totalCameraX);
+
+          const leftPos = projectPoint(leftTop, totalCameraX);
+          const pulsePhase = (now * 0.001 + i * 0.3) % 2;
+          const intensity = 0.6 + Math.sin(pulsePhase * Math.PI) * 0.4;
+          ctx.globalAlpha = intensity * 0.7;
+          ctx.fillStyle = COLOR_ROAD_LINE;
+
+          if (!useLOD) {
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
+          }
+
+          ctx.fillRect(leftPos.x - 2, leftPos.y - 2, 4, 4);
+
+          if (!useLOD) {
+            ctx.shadowBlur = 0;
+          }
+
+          // Right side light
+          const rightBase = { x: ROAD_WIDTH + 10, y: 0, z: lz };
+          const rightTop = { x: ROAD_WIDTH + 10, y: 35, z: lz };
+          ctx.strokeStyle = hexToRgba(COLOR_ACCENT, 0.5);
+          ctx.lineWidth = 2;
+          drawEdge(rightBase, rightTop, totalCameraX);
+
+          const rightPos = projectPoint(rightTop, totalCameraX);
+          ctx.globalAlpha = intensity * 0.7;
+          ctx.fillStyle = COLOR_ROAD_LINE;
+
+          if (!useLOD) {
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.8);
+          }
+
+          ctx.fillRect(rightPos.x - 2, rightPos.y - 2, 4, 4);
+
+          if (!useLOD) {
+            ctx.shadowBlur = 0;
+          }
+
+          ctx.globalAlpha = 1;
+        }
+      });
 
       // Traffic vehicles - Enhanced
       const lanes = [-ROAD_WIDTH * 0.5, -ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.2, ROAD_WIDTH * 0.5];
@@ -594,91 +914,16 @@ const NeonCity: React.FC = () => {
         ctx.globalAlpha = 1;
       });
 
-      // Buildings
-      buildings.sort(
-        (a, b) => (b.z + b.depth) - (a.z + a.depth)
-      );
+      // HTM Logo Watermark (bottom-right, subtle branding)
+      ctx.globalAlpha = 0.15;
+      ctx.fillStyle = COLOR_ACCENT;
+      ctx.font = "bold 11px monospace";
+      ctx.textAlign = "right";
+      ctx.fillText("HTM", width - 12, height - 12);
+      ctx.globalAlpha = 1;
 
-      ctx.strokeStyle = COLOR_LINE;
-      ctx.lineWidth = 1.2;
-
-      for (const b of buildings) {
-        b.update(dt);
-        const v = b.getVertices();
-
-        // Calculate distance for LOD and fog
-        const distance = b.z;
-        const fogFactor = Math.max(0, Math.min(1, (distance - 200) / CITY_DEPTH));
-        const alpha = 0.7 - fogFactor * 0.5; // Fade distant buildings
-
-        // Front rectangle with fog
-        ctx.globalAlpha = alpha;
-        ctx.strokeStyle = hexToRgba(COLOR_ACCENT, alpha);
-        ctx.lineWidth = 1.2;
-        drawEdge(v[0], v[1], totalCameraX);
-        drawEdge(v[1], v[3], totalCameraX);
-        drawEdge(v[3], v[2], totalCameraX);
-        drawEdge(v[2], v[0], totalCameraX);
-
-        // Back rectangle (dimmer)
-        ctx.globalAlpha = alpha * 0.6;
-        drawEdge(v[4], v[5], totalCameraX);
-        drawEdge(v[5], v[7], totalCameraX);
-        drawEdge(v[7], v[6], totalCameraX);
-        drawEdge(v[6], v[4], totalCameraX);
-
-        // Connect front/back (side edges)
-        ctx.globalAlpha = alpha * 0.7;
-        drawEdge(v[0], v[4], totalCameraX);
-        drawEdge(v[1], v[5], totalCameraX);
-        drawEdge(v[2], v[6], totalCameraX);
-        drawEdge(v[3], v[7], totalCameraX);
-
-        // Draw windows (only on nearby buildings for performance)
-        if (distance < 800) {
-          const windowWidth = b.width / b.windowCols;
-          const windowHeight = b.height / b.windowRows;
-
-          b.windows.forEach(win => {
-            // Flicker effect
-            const flickerPhase = (now * 0.001 + win.flicker) % 1;
-            const isFlickering = flickerPhase < 0.1 && Math.random() > 0.8;
-
-            if (win.lit && !isFlickering) {
-              const wx = b.x - b.width / 2 + (win.x + 0.5) * windowWidth;
-              const wy = (win.y + 0.5) * windowHeight;
-              const wz = b.z + b.depth * 0.3;
-
-              const projected = projectPoint({ x: wx, y: wy, z: wz }, totalCameraX);
-
-              // Window glow
-              ctx.globalAlpha = alpha * 0.8;
-              ctx.fillStyle = `rgba(255, 200, 100, 0.9)`;
-              ctx.shadowBlur = 3;
-              ctx.shadowColor = `rgba(255, 200, 100, 0.8)`;
-              ctx.fillRect(projected.x - 1, projected.y - 1, 2, 2);
-              ctx.shadowBlur = 0;
-            }
-          });
-        }
-
-        // Draw neon sign
-        if (b.hasSign && distance < 600) {
-          const signY = b.height * 0.7;
-          const signPos = projectPoint({ x: b.x, y: signY, z: b.z }, totalCameraX);
-
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = hexToRgba(COLOR_ACCENT, 1);
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = hexToRgba(COLOR_ACCENT, 0.9);
-          ctx.font = "bold 12px monospace";
-          ctx.textAlign = "center";
-          ctx.fillText(b.signText, signPos.x, signPos.y);
-          ctx.shadowBlur = 0;
-        }
-
-        ctx.globalAlpha = 1;
-      }
+      // PHASE 3 FIX #10: Debug wireframe overlay (press 'W' to toggle)
+      drawDebugOverlay(totalCameraX);
 
       frameId = requestAnimationFrame(render);
     };
@@ -704,7 +949,7 @@ const NeonCity: React.FC = () => {
         width: "100%",
         height: "100%",
         cursor: "pointer",
-        opacity: 0.45
+        opacity: 0.65  // PHASE 1 FIX #3: Increased from 0.45 for better visibility
       }}
     />
   );

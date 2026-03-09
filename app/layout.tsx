@@ -1,4 +1,4 @@
-import { VT323, Handjet, Roboto_Mono } from "next/font/google";
+import { VT323, Handjet, Roboto_Mono, Source_Code_Pro } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import SettingsProvider from "@/components/SettingsProvider";
@@ -22,6 +22,13 @@ const robotoMono = Roboto_Mono({
   weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const sourceCodePro = Source_Code_Pro({
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-source-code",
   display: "swap",
 });
 
@@ -106,8 +113,38 @@ export default function RootLayout({
         />
         {/* Prefetch About page data for instant load */}
         <link rel="prefetch" href="/data/about.json" as="fetch" crossOrigin="anonymous" />
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "HandToMouse",
+              "alternateName": "HandToMouse Studio",
+              "url": "https://handtomouse.org",
+              "logo": "https://htm-bb-mode.vercel.app/logos/HTM-LOGO-ICON-01.svg",
+              "description": "Independent creative direction and cultural strategy from Sydney. Everyone's chasing new — we chase different.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Sydney",
+                "addressRegion": "NSW",
+                "addressCountry": "AU"
+              },
+              "founder": {
+                "@type": "Person",
+                "name": "Nate Don",
+                "jobTitle": "Creative Director",
+                "email": "hello@handtomouse.com"
+              },
+              "sameAs": [
+                "https://www.instagram.com/handtomouse_studio"
+              ]
+            })
+          }}
+        />
       </head>
-      <body className={`${vt323.variable} ${handjet.variable} ${robotoMono.variable} antialiased`} style={{ fontFamily: "var(--font-body)" }}>
+      <body className={`${vt323.variable} ${handjet.variable} ${robotoMono.variable} ${sourceCodePro.variable} antialiased`} style={{ fontFamily: "var(--font-body)" }}>
         <SettingsProvider>
           <LayoutWrapper>
             {children}

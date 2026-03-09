@@ -1,0 +1,191 @@
+/**
+ * BBIcon Luxury Styling System
+ * Implements BlackBerry 20-point transformation aesthetic
+ */
+
+.bbIcon {
+  /* Base */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* Default color */
+  color: currentColor;
+
+  /* Smooth transitions */
+  transition: all var(--duration-fast) var(--ease-luxury);
+
+  /* Base shadow (subtle depth) */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))
+          drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Ensure SVG fills container */
+.bbIcon :global(svg) {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ========================================
+   VARIANT STYLES
+   ======================================== */
+
+/* Pixel Art Variant - Nostalgic BB hardware */
+.variant-pixel {
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+.variant-pixel :global(svg) {
+  image-rendering: pixelated;
+}
+
+/* Outline Variant - Luxury strokes */
+.variant-outline {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))
+          drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Solid Variant - Bold fills */
+.variant-solid {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))
+          drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
+}
+
+/* ========================================
+   COLOR VARIANTS
+   ======================================== */
+
+.color-accent {
+  color: var(--accent);
+}
+
+.color-white {
+  color: var(--ink);
+}
+
+.color-grey {
+  color: var(--icon);
+}
+
+.color-green {
+  color: var(--accent-3);
+}
+
+.color-red {
+  color: var(--accent-2);
+}
+
+.color-inherit {
+  color: inherit;
+}
+
+/* ========================================
+   GLOW EFFECTS
+   ======================================== */
+
+/* Standard glow */
+.glow {
+  filter: drop-shadow(0 0 16px rgba(255, 157, 35, 0.4))
+          drop-shadow(0 0 24px rgba(255, 157, 35, 0.2))
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Accent color glow enhancement */
+.color-accent.glow {
+  filter: drop-shadow(0 0 20px rgba(255, 157, 35, 0.5))
+          drop-shadow(0 0 32px rgba(255, 157, 35, 0.3))
+          drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Green glow */
+.color-green.glow {
+  filter: drop-shadow(0 0 16px rgba(148, 176, 57, 0.4))
+          drop-shadow(0 0 24px rgba(148, 176, 57, 0.2))
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Red glow */
+.color-red.glow {
+  filter: drop-shadow(0 0 16px rgba(169, 38, 36, 0.4))
+          drop-shadow(0 0 24px rgba(169, 38, 36, 0.2))
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* ========================================
+   INTERACTIVE STATES
+   ======================================== */
+
+.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.clickable:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 24px rgba(255, 157, 35, 0.5))
+          drop-shadow(0 0 36px rgba(255, 157, 35, 0.3))
+          drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}
+
+.clickable:active {
+  transform: scale(0.95);
+  filter: drop-shadow(0 0 12px rgba(255, 157, 35, 0.4))
+          drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+}
+
+.clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Accent hover glow */
+.color-accent.clickable:hover {
+  filter: drop-shadow(0 0 32px rgba(255, 157, 35, 0.6))
+          drop-shadow(0 0 48px rgba(255, 157, 35, 0.4))
+          drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .bbIcon {
+    transition: none;
+  }
+
+  .clickable:hover {
+    transform: none;
+  }
+
+  .clickable:active {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .bbIcon {
+    filter: none;
+  }
+
+  .color-accent {
+    color: #ffaa00;
+  }
+}
+
+/* ========================================
+   SIZE VARIANTS (utility classes)
+   ======================================== */
+
+.bbIcon.size-xs { width: 16px; height: 16px; }
+.bbIcon.size-sm { width: 20px; height: 20px; }
+.bbIcon.size-md { width: 24px; height: 24px; }
+.bbIcon.size-lg { width: 32px; height: 32px; }
+.bbIcon.size-xl { width: 48px; height: 48px; }
+.bbIcon.size-2xl { width: 64px; height: 64px; }

@@ -17,6 +17,7 @@ export interface Settings {
   volume: number; // 0 to 100
   trackingEnabled: boolean;
   analyticsEnabled: boolean;
+  timeFormat: "12hr" | "24hr";
 }
 
 export function useSettings() {

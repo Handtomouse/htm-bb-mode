@@ -8,13 +8,15 @@ export function HwButton({
   label,
   onClick,
   disabled,
-  className
+  className,
+  ...dataProps
 }: {
   children: React.ReactNode;
   label: string;
   onClick: () => void;
   disabled?: boolean;
-  className?: string
+  className?: string;
+  [key: string]: any;
 }) {
   const [isHovered, setIsHovered] = React.useState(false);
   const [isPressed, setIsPressed] = React.useState(false);
@@ -27,6 +29,7 @@ export function HwButton({
       }}
       aria-label={label}
       className={`group flex flex-col items-center gap-1 flex-1 min-w-0 ${disabled ? "opacity-40 pointer-events-none" : ""} ${className || ""}`}
+      {...dataProps}
       style={{
         transition: "all 0.3s ease",
         position: "relative",
@@ -72,8 +75,9 @@ export function HwButton({
         </div>
       </div>
       <div
-        className="text-[13px] leading-none opacity-85 mt-1 font-bold transition-all duration-300"
+        className="text-[13px] leading-none opacity-85 mt-1 font-extrabold transition-all duration-300"
         style={{
+          fontFamily: 'var(--font-source-code)',
           letterSpacing: "0.02em",
           textShadow: "0 1px 2px rgba(0,0,0,0.6)"
         }}

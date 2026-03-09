@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { MonoIcons, BBIcons } from "@/lib/icons";
+import { BBIcon } from "./BBIcon";
+import { BBIcons } from "@/lib/icons"; // Keep for custom power icon temporarily
 import InlineIcon from "./InlineIcon";
 
 interface DockProps {
@@ -33,7 +34,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
           data-active={isActive("/") ? "true" : undefined}
           className="transition-all hover:scale-110"
         >
-          <InlineIcon svg={BBIcons.menu} className="[&>svg]:block" />
+          <BBIcon name="menu" variant="pixel" size={28} color="grey" ariaLabel="Home" />
         </a>
         <a
           href="/services"
@@ -41,7 +42,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
           data-active={isActive("/services") ? "true" : undefined}
           className="transition-all hover:scale-110"
         >
-          <InlineIcon svg={MonoIcons.services} className="[&>svg]:block" />
+          <BBIcon name="settings" variant="outline" size={28} color="white" ariaLabel="Services" />
         </a>
         <a
           href="/contact"
@@ -49,7 +50,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
           data-active={isActive("/contact") ? "true" : undefined}
           className="transition-all hover:scale-110"
         >
-          <InlineIcon svg={BBIcons.call} className="[&>svg]:block" />
+          <BBIcon name="phone" variant="pixel" size={28} color="green" ariaLabel="Contact" />
         </a>
         <a
           href="#"
@@ -57,7 +58,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
           aria-label="Back"
           className="transition-all hover:scale-110"
         >
-          <InlineIcon svg={BBIcons.back} className="[&>svg]:block" />
+          <BBIcon name="back" variant="pixel" size={28} color="grey" ariaLabel="Back" />
         </a>
         <a
           href="/clients"
@@ -65,7 +66,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
           data-active={isActive("/clients") ? "true" : undefined}
           className="transition-all hover:scale-110"
         >
-          <InlineIcon svg={MonoIcons.clients} className="[&>svg]:block" />
+          <BBIcon name="users" variant="outline" size={28} color="white" ariaLabel="Clients" />
         </a>
         <button
           onClick={onPowerClick}
@@ -87,7 +88,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
         data-active={isActive("/") ? "true" : undefined}
         className="transition-all hover:scale-110"
       >
-        <InlineIcon svg={MonoIcons.home} className="[&>svg]:block" />
+        <BBIcon name="home" variant="solid" size={28} color="white" ariaLabel="Home" />
       </a>
       <a
         href="/services"
@@ -95,7 +96,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
         data-active={isActive("/services") ? "true" : undefined}
         className="transition-all hover:scale-110"
       >
-        <InlineIcon svg={MonoIcons.services} className="[&>svg]:block" />
+        <BBIcon name="settings" variant="solid" size={28} color="white" ariaLabel="Services" />
       </a>
       <a
         href="/contact"
@@ -103,7 +104,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
         data-active={isActive("/contact") ? "true" : undefined}
         className="transition-all hover:scale-110"
       >
-        <InlineIcon svg={MonoIcons.contact} className="[&>svg]:block" />
+        <BBIcon name="mail" variant="solid" size={28} color="white" ariaLabel="Contact" />
       </a>
       <a
         href="#"
@@ -111,7 +112,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
         aria-label="Back"
         className="transition-all hover:scale-110"
       >
-        <InlineIcon svg={MonoIcons.back} className="[&>svg]:block" />
+        <BBIcon name="back" variant="solid" size={28} color="white" ariaLabel="Back" />
       </a>
       <a
         href="/clients"
@@ -119,7 +120,7 @@ export default function Dock({ mode, onPowerClick }: DockProps) {
         data-active={isActive("/clients") ? "true" : undefined}
         className="transition-all hover:scale-110"
       >
-        <InlineIcon svg={MonoIcons.clients} className="[&>svg]:block" />
+        <BBIcon name="users" variant="solid" size={28} color="white" ariaLabel="Clients" />
       </a>
     </footer>
   );
