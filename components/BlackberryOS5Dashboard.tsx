@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useSettings } from "@/lib/hooks";
+import { useSettings, useHapticFeedback } from "@/lib/hooks";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
 import BlackberryAboutContent from "./BlackberryAboutContent";
 import BlackberryWormholeContent from "./BlackberryWormholeContent";
 import BlackberryClientsContent from "./BlackberryClientsContent";
 import BlackberryPortfolioContent from "./BlackberryPortfolioContent";
+import BlackberryDonateContent from "./BlackberryDonateContent";
+import BlackberryMessageContent from "./BlackberryMessageContent";
 import NeonCity from "./NeonCity";
 import { ResponsiveStage, HwButton, NotiDot } from "./BlackberryUIComponents";
 import {
@@ -19,20 +21,9 @@ import {
   PixelMenuIcon,
   PixelBackIcon,
   PixelPowerIcon,
-  AboutIcon,
-  WorkIcon,
-  ClientsIcon,
-  FavouritesIcon,
-  ShowreelIcon,
-  SettingsIcon,
-  DonateIcon,
-  WormholeIcon,
-  ContactIcon,
-  MessageIcon,
-  GamesIcon,
-  InstagramIcon,
   AppGlyph
 } from "./BlackberryIcons";
+import { BBIcon } from "./BBIcon";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Lazy load content components for better performance
@@ -78,17 +69,20 @@ export default function BlackberryOS5Dashboard() {
   const [openAppIndex, setOpenAppIndex] = useState<number | null>(null);
   const [showContext, setShowContext] = useState(false);
   const [poweredOn, setPoweredOn] = useState(true);
+  const [showPowerOnAnimation, setShowPowerOnAnimation] = useState(false);
   const [openApp, setOpenApp] = useState<string | null>(null); // Track which app is open
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false); // Keyboard shortcuts overlay
   const [isLocked, setIsLocked] = useState(false); // Lock screen state
+  const [unlockSwipeProgress, setUnlockSwipeProgress] = useState(0); // 0-100
   const [konamiActive, setKonamiActive] = useState(false); // Easter egg state
   const [konamiSequence, setKonamiSequence] = useState<string[]>([]); // Track key sequence
 
   // Time/UI state
   const [now, setNow] = useState(new Date());
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type?: "info" | "success" | "warning" | "error" } | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   // Top bar state
   const [signalStrength, setSignalStrength] = useState(4);
@@ -96,6 +90,9 @@ export default function BlackberryOS5Dashboard() {
   const [networkType, setNetworkType] = useState<"3G" | "4G" | "5G" | "WiFi">("3G");
   const [showBatteryTooltip, setShowBatteryTooltip] = useState(false);
   const [isCharging, setIsCharging] = useState(false);
+
+  // Battery saver mode (auto-enables when battery < 20%)
+  const isBatterySaverMode = batteryLevel < 20 && !isCharging;
 
   // Refs
   const screenRef = useRef<HTMLDivElement | null>(null);
@@ -105,9 +102,41 @@ export default function BlackberryOS5Dashboard() {
     setMounted(true);
     // Detect touch device
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+    // Detect prefers-reduced-motion
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    // Listen for changes to motion preference
+    const handleMotionChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handleMotionChange);
+
     const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+      mediaQuery.removeEventListener('change', handleMotionChange);
+    };
   }, []);
+
+  // Auto-dismiss toast after 3 seconds
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
+  // CRT power-on animation trigger
+  const prevPoweredOn = useRef(poweredOn);
+  useEffect(() => {
+    if (!prevPoweredOn.current && poweredOn) {
+      // Power just turned on
+      setShowPowerOnAnimation(true);
+      const timer = setTimeout(() => setShowPowerOnAnimation(false), 200);
+      return () => clearTimeout(timer);
+    }
+    prevPoweredOn.current = poweredOn;
+  }, [poweredOn]);
 
   // Easter egg: Konami code (↑ ↑ ↓ ↓ ← → ← → B A)
   useEffect(() => {
@@ -134,7 +163,13 @@ export default function BlackberryOS5Dashboard() {
 
             const colors = ["var(--accent)", "var(--accent-hover)", "#FFC266", "#FFD699"];
 
+            // HTM logo shape for confetti (simple square representing the logo icon)
+            const htmShape = confetti.default.shapeFromPath({
+              path: 'M0 0 L10 0 L10 10 L0 10 Z'
+            });
+
             (function frame() {
+              // Regular confetti from sides
               confetti.default({
                 particleCount: 3,
                 angle: 60,
@@ -149,6 +184,21 @@ export default function BlackberryOS5Dashboard() {
                 origin: { x: 1, y: 0.6 },
                 colors: colors
               });
+
+              // HTM brand confetti from center (less frequent for subtlety)
+              if (Math.random() > 0.6) {
+                confetti.default({
+                  particleCount: 1,
+                  angle: 90,
+                  spread: 80,
+                  origin: { x: 0.5, y: 0.4 },
+                  colors: ["#FF9D23"],
+                  shapes: [htmShape],
+                  scalar: 1.5,
+                  gravity: 0.6,
+                  drift: 0
+                });
+              }
 
               if (Date.now() < end) {
                 requestAnimationFrame(frame);
@@ -225,18 +275,18 @@ export default function BlackberryOS5Dashboard() {
   type App = { name: string; icon: React.ReactNode; path?: string; external?: boolean };
   const apps: App[] = useMemo(
     () => [
-      { name: "About", icon: <AboutIcon />, path: "/about" },
-      { name: "Work", icon: <WorkIcon />, path: "/portfolio" },
-      { name: "Clients", icon: <ClientsIcon />, path: "/clients" },
-      { name: "Favourites", icon: <FavouritesIcon />, path: "/favourites" },
-      { name: "Showreel", icon: <ShowreelIcon />, path: "/showreel" },
-      { name: "Settings", icon: <SettingsIcon />, path: "/settings" },
-      { name: "Donate", icon: <DonateIcon />, path: "/contact" },
-      { name: "Wormhole", icon: <WormholeIcon />, path: "/wormhole" },
-      { name: "Contact", icon: <ContactIcon />, path: "/contact" },
-      { name: "Message", icon: <MessageIcon />, path: "/notes" },
-      { name: "Games", icon: <GamesIcon />, path: "/games" },
-      { name: "Instagram", icon: <InstagramIcon />, path: "https://www.instagram.com/handtomouse_studio", external: true },
+      { name: "About", icon: <BBIcon name="info" variant="solid" size={48} />, path: "/about" },
+      { name: "Work", icon: <BBIcon name="folder" variant="solid" size={48} />, path: "/portfolio" },
+      { name: "Clients", icon: <BBIcon name="users" variant="solid" size={48} />, path: "/clients" },
+      { name: "Favourites", icon: <BBIcon name="heart" variant="solid" size={48} />, path: "/favourites" },
+      { name: "Showreel", icon: <BBIcon name="video" variant="solid" size={48} />, path: "/showreel" },
+      { name: "Settings", icon: <BBIcon name="settings" variant="solid" size={48} />, path: "/settings" },
+      { name: "Donate", icon: <BBIcon name="heart" variant="solid" size={48} color="accent" />, path: "/contact" },
+      { name: "Wormhole", icon: <BBIcon name="wormhole" variant="solid" size={48} color="accent" glow />, path: "/wormhole" },
+      { name: "Contact", icon: <BBIcon name="mail" variant="solid" size={48} />, path: "/contact" },
+      { name: "Message", icon: <BBIcon name="message" variant="solid" size={48} />, path: "/notes" },
+      { name: "Games", icon: <BBIcon name="games" variant="solid" size={48} />, path: "/games" },
+      { name: "Instagram", icon: <BBIcon name="instagram" variant="solid" size={48} />, path: "https://www.instagram.com/handtomouse_studio", external: true },
     ],
     []
   );
@@ -247,6 +297,12 @@ export default function BlackberryOS5Dashboard() {
     () => dockNames.map((n) => apps.find((a) => a.name === n)!).filter(Boolean),
     [apps]
   );
+
+  // Notification badges (hardcoded for demo - would come from real data)
+  const notificationCounts: Record<string, number> = {
+    "Contact": 1,
+    "Message": 3,
+  };
 
   // Derived
   const COLUMNS = 3;
@@ -263,7 +319,7 @@ export default function BlackberryOS5Dashboard() {
     const appMap: Record<string, string> = {
       "Work": "portfolio",
       "Clients": "clients",
-      "Message": "notes",
+      "Message": "message",
       "About": "about",
       "Settings": "settings",
       "Contact": "contact",
@@ -271,7 +327,7 @@ export default function BlackberryOS5Dashboard() {
       "Favourites": "favourites",
       "Games": "games",
       "Wormhole": "wormhole",
-      "Donate": "contact" // Map Donate to contact as well
+      "Donate": "donate"
     };
 
     const appId = appMap[app.name];
@@ -509,7 +565,13 @@ export default function BlackberryOS5Dashboard() {
   }, [poweredOn, openApp, openAppIndex, showContext, mode, selectedMenu, rows, COLUMNS, apps.length, dockApps.length, showKeyboardHelp, isLocked]);
 
   // Time strings (only render on client to avoid hydration mismatch)
-  const timeStr = mounted ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--";
+  const timeStr = mounted
+    ? now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: settings.timeFormat === "12hr"
+      })
+    : "--:--";
   const dateStr = mounted ? now.toLocaleDateString([], { weekday: "short", day: "2-digit", month: "short", year: "numeric" }) : "Loading...";
 
   // Dynamic wallpaper colors based on time of day
@@ -567,7 +629,7 @@ export default function BlackberryOS5Dashboard() {
         <div className="px-4 pt-4 pb-2 flex items-center justify-between text-white/60 text-[11px]">
           <div className={`h-1.5 w-16 rounded-none ${poweredOn ? "bg-white/10" : "bg-transparent"}`} />
           <div
-            className={`h-2 w-2 rounded-none ${poweredOn ? "bg-emerald-400 shadow-[0_0_12px_3px_rgba(16,185,129,0.8)]" : "bg-transparent"}`}
+            className={`h-2 w-2 rounded-none ${poweredOn ? "bg-[#FF9D23] shadow-[0_0_12px_3px_rgba(255,157,35,0.8)] animate-pulse" : "bg-transparent"}`}
             title="Notification LED"
           />
         </div>
@@ -650,7 +712,7 @@ export default function BlackberryOS5Dashboard() {
 
           {/* Status bar - BlackBerry OS style */}
           {poweredOn && (
-            <div className="relative z-10 flex items-center justify-between text-[20px] text-[#E0E0E0] px-8 py-4 bg-[#000000] border-b border-white/10" style={{ fontFamily: 'VT323, monospace' }}>
+            <div className="relative z-10 flex items-center justify-between text-[20px] text-[#E0E0E0] px-8 py-4 bg-[#000000] border-b border-white/10" style={{ fontFamily: 'var(--font-source-code)' }}>
               {/* Left: Sound + Signal */}
               <div className="flex items-center gap-4">
                 <VolumeIcon />
@@ -659,18 +721,18 @@ export default function BlackberryOS5Dashboard() {
 
               {/* Center: Wordmark on homescreen, App+Time otherwise */}
               {(openApp !== null || mode === "menu" || pathname !== '/') ? (
-                <div className="flex items-center gap-6 text-[20px]">
+                <div className="flex items-center gap-2 sm:gap-4 md:gap-6 text-[16px] sm:text-[18px] md:text-[20px] overflow-hidden">
                   <img src="/logos/HTM-LOGO-ICON-01.svg" alt="HTM" className="h-5 w-5 sm:h-6 sm:w-6 opacity-80" style={{ imageRendering: 'pixelated' }} />
                   {openApp !== null && (
                     <>
-                      <span className="font-semibold text-[var(--accent)]" style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}>
+                      <span className="font-extrabold text-[var(--accent)] truncate max-w-[80px] sm:max-w-[120px] md:max-w-none" style={{ fontFamily: 'var(--font-source-code)' }}>
                         {apps.find(a => a.path?.includes(openApp))?.name || openApp.toUpperCase()}
                       </span>
                       <span className="text-[#E0E0E0]/30">•</span>
                     </>
                   )}
-                  <span className="font-semibold" style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}>{timeStr}</span>
-                  <span className="text-[#E0E0E0]/50">{dateStr}</span>
+                  <span className="font-bold" style={{ fontFamily: 'var(--font-source-code)' }}>{timeStr}</span>
+                  <span className="hidden md:inline text-[#E0E0E0]/50 font-light truncate" style={{ fontFamily: 'var(--font-source-code)' }}>{dateStr}</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center" style={{ paddingLeft: '40px' }}>
@@ -693,8 +755,8 @@ export default function BlackberryOS5Dashboard() {
 
               {/* Right: Network + Battery */}
               <div className="flex items-center gap-4">
-                <div className="border border-[#E0E0E0] px-2 py-1 bg-transparent min-w-[40px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0" style={{ imageRendering: 'pixelated' }}>
-                  <span className="font-heading text-[12px] sm:text-[14px] md:text-[16px] font-medium text-[#E0E0E0] whitespace-nowrap" style={{ fontFamily: 'VT323, monospace' }}>{networkType}</span>
+                <div className="border border-[#E0E0E0] px-2 py-1 bg-transparent min-w-[32px] sm:min-w-[40px] md:min-w-[48px] flex items-center justify-center flex-shrink-0" style={{ imageRendering: 'pixelated' }}>
+                  <span className="font-heading text-[12px] sm:text-[14px] md:text-[16px] font-black text-[#E0E0E0] whitespace-nowrap" style={{ fontFamily: 'var(--font-source-code)' }}>{networkType}</span>
                 </div>
                 <div
                   className="relative"
@@ -703,7 +765,7 @@ export default function BlackberryOS5Dashboard() {
                 >
                   <Battery level={batteryLevel} charging={isCharging} />
                   {showBatteryTooltip && (
-                    <div className="absolute -bottom-7 right-0 bg-black/95 text-white text-[18px] px-4 py-2 rounded-sm whitespace-nowrap z-50 border border-white/20 shadow-lg">
+                    <div className="absolute -bottom-7 right-0 bg-black/95 text-white text-[18px] px-4 py-2 rounded-sm whitespace-nowrap z-50 border border-white/20 shadow-lg" style={{ fontFamily: 'var(--font-source-code)' }}>
                       {batteryLevel}% {isCharging && "⚡ Charging"}
                     </div>
                   )}
@@ -718,17 +780,17 @@ export default function BlackberryOS5Dashboard() {
               {/* Time and Date - Compact */}
               <div className="px-4 py-8 md:py-10">
                 {/* Large centered time */}
-                <div className="text-2xl sm:text-3xl md:text-4xl font-extralight tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
-                  fontFamily: '"argent-pixel-cf", sans-serif',
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
+                  fontFamily: 'var(--font-source-code)',
                   textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
                 }}>
                   {timeStr}
                 </div>
                 {/* Date below */}
-                <div className="text-xs mt-2 opacity-80 tracking-wide font-medium">{dateStr}</div>
+                <div className="text-xs mt-2 opacity-80 tracking-wide font-light" style={{ fontFamily: 'var(--font-source-code)' }}>{dateStr}</div>
                 {/* Notifications indicator */}
                 {mounted && (
-                  <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] text-white/50">
+                  <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] text-white/50 font-extralight" style={{ fontFamily: 'var(--font-source-code)' }}>
                     <div className="flex items-center gap-1">
                       <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-pulse" />
                       <span>No notifications</span>
@@ -740,30 +802,35 @@ export default function BlackberryOS5Dashboard() {
           )}
 
           {/* Main area */}
-          {openApp !== null ? (
-            // App is open - render content inside BB screen
-            <main role="main">
-              <AppContent appId={openApp} />
-            </main>
-          ) : mode === "home" ? (
-            <HomeDockOverlay
-              apps={apps}
-              dockApps={dockApps}
-              selectedDock={selectedDock}
-              setSelectedDock={setSelectedDock}
-              navigateTo={navigateTo}
-              goMenu={goMenu}
-              isTouchDevice={isTouchDevice}
-            />
-          ) : (
-            <MenuGrid
-              apps={apps}
-              selected={selectedMenu}
-              setSelected={setSelectedMenu}
-              navigateTo={navigateTo}
-              setShowContext={setShowContext}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            {openApp !== null ? (
+              // App is open - render content inside BB screen
+              <main role="main" key="app-content">
+                <AppContent appId={openApp} prefersReducedMotion={prefersReducedMotion} />
+              </main>
+            ) : mode === "home" ? (
+              <HomeDockOverlay
+                key="home-dock"
+                apps={apps}
+                dockApps={dockApps}
+                selectedDock={selectedDock}
+                setSelectedDock={setSelectedDock}
+                navigateTo={navigateTo}
+                goMenu={goMenu}
+                isTouchDevice={isTouchDevice}
+                notificationCounts={notificationCounts}
+              />
+            ) : (
+              <MenuGrid
+                key="menu-grid"
+                apps={apps}
+                selected={selectedMenu}
+                setSelected={setSelectedMenu}
+                navigateTo={navigateTo}
+                setShowContext={setShowContext}
+              />
+            )}
+          </AnimatePresence>
 
 
           {/* LOCK SCREEN */}
@@ -773,23 +840,62 @@ export default function BlackberryOS5Dashboard() {
               aria-label="Device locked"
               onTouchStart={(e) => {
                 const startY = e.touches[0].clientY;
+                let rafId: number;
+
                 const handleTouchMove = (moveEvent: TouchEvent) => {
-                  const currentY = moveEvent.touches[0].clientY;
-                  if (startY - currentY > 100) { // Swipe up to unlock
-                    setIsLocked(false);
-                  }
+                  cancelAnimationFrame(rafId);
+                  rafId = requestAnimationFrame(() => {
+                    const currentY = moveEvent.touches[0].clientY;
+                    const distance = startY - currentY;
+                    const progress = Math.min(100, Math.max(0, (distance / 100) * 100));
+                    setUnlockSwipeProgress(progress);
+
+                    if (distance > 100) {
+                      setIsLocked(false);
+                      setUnlockSwipeProgress(0);
+                      document.removeEventListener('touchmove', handleTouchMove);
+                      document.removeEventListener('touchend', handleTouchEnd);
+                    }
+                  });
                 };
-                document.addEventListener('touchmove', handleTouchMove, { once: true });
+
+                const handleTouchEnd = () => {
+                  cancelAnimationFrame(rafId);
+                  setUnlockSwipeProgress(0);
+                  document.removeEventListener('touchmove', handleTouchMove);
+                  document.removeEventListener('touchend', handleTouchEnd);
+                };
+
+                document.addEventListener('touchmove', handleTouchMove);
+                document.addEventListener('touchend', handleTouchEnd);
               }}
             >
               <div className="text-center px-6">
-                <div className="text-6xl mb-4 animate-pulse">🔒</div>
-                <div className="text-2xl font-light text-white mb-2">{timeStr}</div>
-                <div className="text-sm text-white/60 mb-6">{dateStr}</div>
-                <div className="text-xs text-white/40 mt-8 flex flex-col gap-2">
+                <div className="mb-4 flex justify-center">
+                  <img
+                    src="/logos/HTM-LOGO-ICON-01.svg"
+                    alt="Locked"
+                    className="h-16 w-16 opacity-60 animate-pulse"
+                    style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 157, 35, 0.4))' }}
+                  />
+                </div>
+                <div className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-source-code)' }}>{timeStr}</div>
+                <div className="text-sm text-white/60 mb-6 font-light" style={{ fontFamily: 'var(--font-source-code)' }}>{dateStr}</div>
+                <div className="text-xs text-white/40 mt-8 flex flex-col gap-2" style={{ fontFamily: 'var(--font-source-code)' }}>
                   <div className="animate-pulse">Swipe up to unlock</div>
                   <div className="opacity-60">Press L to unlock</div>
                 </div>
+              </div>
+
+              {/* Swipe progress bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
+                <div
+                  className="h-full bg-gradient-to-r from-[var(--accent)]/60 via-[var(--accent)] to-[var(--accent)]/60 transition-all duration-100"
+                  style={{
+                    width: `${unlockSwipeProgress}%`,
+                    boxShadow: unlockSwipeProgress > 0 ? '0 0 12px rgba(255, 157, 35, 0.6)' : 'none'
+                  }}
+                />
               </div>
             </div>
           )}
@@ -797,7 +903,44 @@ export default function BlackberryOS5Dashboard() {
           {/* POWER OFF OVERLAY (full screen OFF) */}
           {!poweredOn && (
             <div className="absolute inset-0 bg-black grid place-items-center" aria-label="Device off">
-              <div className="uppercase tracking-[0.2em] text-xs sm:text-sm" style={{ color: ACCENT }}>System Off</div>
+              <div className="uppercase tracking-[0.2em] text-xs sm:text-sm" style={{ color: ACCENT, fontFamily: 'var(--font-source-code)' }}>System Off</div>
+            </div>
+          )}
+
+          {/* CRT POWER-ON ANIMATION */}
+          {showPowerOnAnimation && !prefersReducedMotion && (
+            <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden">
+              <motion.div
+                initial={{ scaleY: 0, scaleX: 1 }}
+                animate={{ scaleY: 1, scaleX: 1 }}
+                transition={{ duration: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
+                className="absolute inset-0 bg-black"
+                style={{
+                  transformOrigin: "center",
+                  boxShadow: "inset 0 0 100px 20px rgba(255, 157, 35, 0.3)"
+                }}
+              />
+              <motion.div
+                initial={{ opacity: 0.8 }}
+                animate={{ opacity: 0 }}
+                transition={{ duration: 0.15, delay: 0.05 }}
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(180deg, transparent 0%, rgba(255, 157, 35, 0.2) 48%, rgba(255, 157, 35, 0.3) 50%, rgba(255, 157, 35, 0.2) 52%, transparent 100%)"
+                }}
+              />
+            </div>
+          )}
+
+          {/* BATTERY SAVER MODE OVERLAY */}
+          {isBatterySaverMode && poweredOn && (
+            <div className="absolute inset-0 bg-black/30 pointer-events-none z-40">
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-yellow-900/80 border border-yellow-600/60 px-4 py-2 rounded-sm backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-yellow-200 text-xs font-mono">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+                  <span>Battery Saver Mode ({batteryLevel}%)</span>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -839,8 +982,9 @@ export default function BlackberryOS5Dashboard() {
                 </div>
               </div>
               <div
-                className="text-[13px] leading-none opacity-85 mt-1 font-bold transition-all duration-300"
+                className="text-[13px] leading-none opacity-85 mt-1 font-extrabold transition-all duration-300"
                 style={{
+                  fontFamily: 'var(--font-source-code)',
                   letterSpacing: "0.02em",
                   textShadow: "0 1px 2px rgba(0,0,0,0.6)"
                 }}
@@ -851,7 +995,7 @@ export default function BlackberryOS5Dashboard() {
             <HwButton label="Back" onClick={goBack} disabled={!poweredOn}>
               <PixelBackIcon />
             </HwButton>
-            <HwButton label="Power" onClick={togglePower} className={!poweredOn ? "animate-pulse" : ""}>
+            <HwButton label="Power" onClick={togglePower} className={!poweredOn ? "animate-pulse" : ""} data-brand-sound="power-on">
               <PixelPowerIcon />
             </HwButton>
           </div>
@@ -862,7 +1006,7 @@ export default function BlackberryOS5Dashboard() {
       {showContext && openAppIndex === null && poweredOn && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end justify-start p-4">
           <div className="w-48 rounded-none border border-white/15 bg-black/80 text-white shadow-xl overflow-hidden">
-            <div className="px-3 py-2 text-[14px] font-semibold border-b border-white/10">Menu</div>
+            <div className="px-3 py-2 text-[14px] font-bold border-b border-white/10 text-blue-400">Menu</div>
             <ul className="text-[14px] divide-y divide-white/10">
               {[
                 { label: "Open", action: () => openSelected() },
@@ -876,6 +1020,9 @@ export default function BlackberryOS5Dashboard() {
                 </li>
               ))}
             </ul>
+            <div className="px-3 py-2 text-[10px] text-white/40 border-t border-white/10 text-center font-mono">
+              Made in Sydney by HTM
+            </div>
           </div>
         </div>
       )}
@@ -908,7 +1055,7 @@ export default function BlackberryOS5Dashboard() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
               <div className="flex items-center gap-2">
                 <span className="text-lg">⌨️</span>
-                <span className="font-mono text-sm uppercase font-semibold">Keyboard Shortcuts</span>
+                <span className="font-mono text-sm uppercase font-extrabold">Keyboard Shortcuts</span>
               </div>
               <button className="opacity-70 hover:opacity-100 text-lg" onClick={() => setShowKeyboardHelp(false)}>✕</button>
             </div>
@@ -938,11 +1085,62 @@ export default function BlackberryOS5Dashboard() {
       )}
 
       {/* Toast */}
-      {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[14px] px-3 py-1.5 rounded-none border border-white/15 shadow-lg">
-          {toast}
-        </div>
-      )}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 0 } : { y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { y: -100, opacity: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", damping: 20, stiffness: 300 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[60] w-full max-w-sm px-4"
+          >
+            <div className="bg-black/95 border border-white/20 shadow-2xl backdrop-blur-md">
+              <div className="flex items-center gap-3 p-4">
+                {/* Icon based on type */}
+                <div className="flex-shrink-0">
+                  {toast.type === "success" && (
+                    <div className="w-6 h-6 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center">
+                      <span className="text-green-400 text-sm">✓</span>
+                    </div>
+                  )}
+                  {toast.type === "error" && (
+                    <div className="w-6 h-6 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                      <span className="text-red-400 text-sm">✕</span>
+                    </div>
+                  )}
+                  {toast.type === "warning" && (
+                    <div className="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center">
+                      <span className="text-yellow-400 text-sm">!</span>
+                    </div>
+                  )}
+                  {(!toast.type || toast.type === "info") && (
+                    <div className="w-6 h-6 rounded-full bg-[var(--accent)]/20 border border-[var(--accent)]/40 flex items-center justify-center">
+                      <span className="text-[var(--accent)] text-sm">i</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Message */}
+                <div className="flex-1 text-white text-[13px] font-mono leading-relaxed">
+                  {toast.message}
+                </div>
+
+                {/* Close button */}
+                <button
+                  onClick={() => setToast(null)}
+                  className="flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-colors duration-200"
+                  aria-label="Dismiss notification"
+                >
+                  <div className="relative w-3 h-3">
+                    <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 rotate-45" />
+                    <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-white/60 -rotate-45" />
+                  </div>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </ResponsiveStage>
   );
 }
@@ -952,7 +1150,7 @@ export default function BlackberryOS5Dashboard() {
 // =====================
 
 // AppContent - renders page content inside BB screen
-function AppContent({ appId }: { appId: string }) {
+function AppContent({ appId, prefersReducedMotion = false }: { appId: string; prefersReducedMotion?: boolean }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
@@ -1004,14 +1202,17 @@ function AppContent({ appId }: { appId: string }) {
   // Wormhole gets full screen (no status bar, no bottom padding)
   const isFullscreen = appId === "wormhole";
   return (
-    <div
-      className={`scrollable-content absolute left-0 right-0 ${isFullscreen ? "top-0 bottom-0" : "top-[72px] bottom-[32px]"} overflow-y-auto transition-opacity duration-300 ${
-        fadeIn ? "opacity-100" : "opacity-0"
-      } ${isFullscreen ? "" : "bg-black/40 backdrop-blur-sm"}`}
+    <motion.div
+      key={appId}
+      initial={prefersReducedMotion ? { opacity: 1 } : { x: "100%", opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={prefersReducedMotion ? { opacity: 0 } : { x: "-100%", opacity: 0 }}
+      transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", damping: 25, stiffness: 200 }}
+      className={`scrollable-content absolute left-0 right-0 ${isFullscreen ? "top-0 bottom-0" : "top-[72px] bottom-[32px]"} overflow-y-auto ${isFullscreen ? "" : "bg-black/40 backdrop-blur-sm"} ${appId === "message" ? "flex flex-col" : ""}`}
     >
-      <div className={appId === "wormhole" || appId === "about" || appId === "clients" || appId === "portfolio" ? "" : "p-4"}>
+      <div className={appId === "wormhole" || appId === "about" || appId === "clients" || appId === "portfolio" || appId === "message" ? "h-full" : "p-4"}>
         {loading ? (
-          <div className="text-white/60 text-sm">Loading...</div>
+          <BBSkeletonCard />
         ) : appId === "portfolio" ? (
           <BlackberryPortfolioContent />
         ) : appId === "clients" ? (
@@ -1047,12 +1248,14 @@ function AppContent({ appId }: { appId: string }) {
             <BlackberryWebContent />
           </Suspense>
         ) : appId === "donate" ? (
-          <PlaceholderContent title="Donate" />
+          <BlackberryDonateContent />
+        ) : appId === "message" ? (
+          <BlackberryMessageContent />
         ) : (
           <PlaceholderContent title="Unknown App" />
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1488,6 +1691,7 @@ function HomeDockOverlay({
   navigateTo,
   goMenu,
   isTouchDevice,
+  notificationCounts,
 }: {
   apps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
   dockApps: { name: string; icon: React.ReactNode; path?: string; external?: boolean }[];
@@ -1496,6 +1700,7 @@ function HomeDockOverlay({
   navigateTo: (app: { name: string; icon: React.ReactNode; path?: string; external?: boolean }) => void;
   goMenu: () => void;
   isTouchDevice: boolean;
+  notificationCounts: Record<string, number>;
 }) {
   const [touchStart, setTouchStart] = React.useState<number | null>(null);
 
@@ -1527,33 +1732,33 @@ function HomeDockOverlay({
       onTouchEnd={handleTouchEnd}
     >
       {/* Bold-style bottom dock overlay */}
-      <div className="w-full max-w-[90%] mx-auto rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05),0_0_2px_rgba(255,157,35,0.3)]">
+      <div className="w-full max-w-[95%] sm:max-w-[90%] mx-auto rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05),0_0_2px_rgba(255,157,35,0.3)]">
         {/* Hints at top of dock bar with gradient */}
-        <div className="px-4 pt-3 pb-2.5 text-center text-white/80 text-[13px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest">
+        <div className="px-3 sm:px-4 pt-2 sm:pt-3 pb-2 sm:pb-2.5 text-center text-white/80 text-[11px] sm:text-[13px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest" style={{ fontFamily: 'var(--font-source-code)' }}>
           {isTouchDevice ? (
             <>
-              <span className="opacity-90 font-bold">Swipe Up = Menu</span>
+              <span className="opacity-90 font-semibold">Swipe Up = Menu</span>
               <span className="mx-2 opacity-50">•</span>
-              <span className="opacity-90 font-bold">Swipe ◀▶ Navigate</span>
+              <span className="opacity-90 font-semibold">Swipe ◀▶ Navigate</span>
               <span className="mx-2 opacity-50">•</span>
-              <span className="opacity-90 font-bold">Tap = Open</span>
+              <span className="opacity-90 font-semibold">Tap = Open</span>
             </>
           ) : (
             <>
-              <span className="opacity-90 font-bold">▲ Menu</span>
+              <span className="opacity-90 font-semibold">▲ Menu</span>
               <span className="mx-2 opacity-50">•</span>
-              <span className="opacity-90 font-bold">◀▶ Navigate</span>
+              <span className="opacity-90 font-semibold">◀▶ Navigate</span>
               <span className="mx-2 opacity-50">•</span>
-              <span className="opacity-90 font-bold">Enter/Tap=Open</span>
+              <span className="opacity-90 font-semibold">Enter/Tap=Open</span>
             </>
           )}
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 p-3 sm:p-5 place-items-center transition-all duration-300">
+        <div className="grid grid-cols-5 gap-0.5 sm:gap-2 md:gap-2.5 p-1.5 sm:p-3 md:p-5 place-items-stretch transition-all duration-300" style={{ gridAutoRows: '1fr' }}>
           {dockApps.map((app, idx) => (
             <button
               key={app.name}
               className={[
-                "group relative flex flex-col items-center justify-center rounded-none border-2 p-2 sm:p-3 min-h-[80px] sm:min-h-[100px]",
+                "group relative flex flex-col items-center justify-center rounded-none border-2 p-3 sm:p-3 md:p-4 h-full w-full",
                 selectedDock === idx
                   ? "border-[var(--accent)] bg-gradient-to-b from-white/20 to-white/15 backdrop-blur-sm"
                   : "border-white/20 bg-gradient-to-b from-white/8 to-white/5 hover:border-white/30 hover:from-white/10 hover:to-white/7 hover:scale-105",
@@ -1569,17 +1774,34 @@ function HomeDockOverlay({
               onClick={() => navigateTo(app)}
               aria-label={app.name}
             >
-              <div className={`h-18 w-18 transition-all duration-300 ${
-                selectedDock === idx
-                  ? "brightness-130 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)]"
-                  : "brightness-100 group-hover:brightness-110"
-              }`}>
-                {app.icon}
-              </div>
-              <div className={`font-heading mt-2 sm:mt-4 text-[11px] sm:text-[13px] leading-none text-center font-semibold transition-all duration-300 ${
-                selectedDock === idx ? "text-[var(--accent)]" : "text-white/90 group-hover:text-white"
-              }`}>
-                {app.name}
+              <div className="flex flex-col items-center justify-center gap-0.5">
+                <div className="relative">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    className={`h-16 w-16 sm:h-16 sm:w-16 md:h-20 md:w-20 transition-all duration-300 ${
+                      selectedDock === idx
+                        ? "brightness-130 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)]"
+                        : "brightness-100 group-hover:brightness-110"
+                    }`}
+                  >
+                    {app.icon}
+                  </motion.div>
+                  {/* Notification badge */}
+                  {notificationCounts[app.name] > 0 && (
+                    <div className="absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 min-w-[14px] sm:min-w-[18px] h-[14px] sm:h-[18px] rounded-full bg-red-500 border-2 border-black flex items-center justify-center">
+                      <span className="text-[8px] sm:text-[10px] font-bold text-white px-0.5 sm:px-1" style={{ fontFamily: 'var(--font-source-code)' }}>
+                        {notificationCounts[app.name] > 9 ? '9+' : notificationCounts[app.name]}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className={`text-[9px] sm:text-[11px] md:text-[13px] leading-none text-center font-medium transition-all duration-300 ${
+                  selectedDock === idx ? "text-[var(--accent)]" : "text-white/90 group-hover:text-white"
+                }`} style={{ fontFamily: 'var(--font-source-code)' }}>
+                  {app.name}
+                </div>
               </div>
               {selectedDock === idx && (
                 <div className="pointer-events-none absolute inset-0 rounded-lg shadow-[inset_0_0_18px_rgba(255,157,35,0.2)]" />
@@ -1635,7 +1857,10 @@ function MenuGrid({
             }}
             aria-label={app.name}
           >
-            <div
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
               className={`h-18 w-18 transition-all duration-300 ${
                 selected === idx
                   ? "brightness-135 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)] scale-115"
@@ -1644,12 +1869,13 @@ function MenuGrid({
               style={{ transformOrigin: "center" }}
             >
               {app.icon}
-            </div>
+            </motion.div>
             <div
-              className={`font-heading mt-3 text-[14px] leading-none text-center font-semibold transition-all duration-300 ${
+              className={`mt-3 text-[14px] leading-none text-center font-bold transition-all duration-300 ${
                 selected === idx ? "text-[var(--accent)] scale-105" : "text-white/90 group-hover:text-white"
               }`}
               style={{
+                fontFamily: 'var(--font-source-code)',
                 letterSpacing: "0.02em",
                 textShadow: selected === idx
                   ? "0 0 8px rgba(255,157,35,0.6), 0 1px 2px rgba(0,0,0,0.8)"
