@@ -2,7 +2,7 @@
  * Shared theme constants for consistent styling across all Blackberry components
  */
 
-export const ACCENT = "#FF9D23";
+export const ACCENT = "#F7A835";
 export const ACCENT_HOVER = "#FFB84D";
 export const ACCENT_DARK = "#F4A259";
 
