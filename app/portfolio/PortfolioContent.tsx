@@ -12,6 +12,7 @@ interface Project {
   year: number;
   client: string;
   cover: string;
+  description?: string;
 }
 
 export default function PortfolioContent() {
@@ -42,6 +43,23 @@ export default function PortfolioContent() {
       <h1 className="mb-4 font-mono text-4xl uppercase">
         <span className="slash-accent">/</span> PORTFOLIO
       </h1>
+
+      {/* Currency signal */}
+      <div
+        className="mb-6"
+        style={{
+          fontFamily: 'Roboto Mono, monospace',
+          fontSize: '11px',
+          color: '#4A4A4A',
+          letterSpacing: '0.08em',
+          borderLeft: '2px solid #ff9d23',
+          paddingLeft: '10px',
+          lineHeight: 1.6,
+        }}
+      >
+        <span style={{ color: '#3A3A3A', textTransform: 'uppercase' }}>Currently working with:</span>{' '}
+        <span style={{ color: '#6A6A6A' }}>S&apos;WICH · MapleMoon · Jac+Jack · Aura Therapeutics</span>
+      </div>
 
       {/* Filter */}
       <div className="mb-8 flex flex-wrap gap-2">
@@ -82,6 +100,7 @@ export default function PortfolioContent() {
                   client={project.client}
                   year={project.year}
                   tags={project.tags}
+                  description={project.description}
                   className="aspect-video"
                 />
               )}

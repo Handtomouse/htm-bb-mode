@@ -288,55 +288,165 @@ export default function ServicesContent() {
         })}
       </div>
 
+      {/* Pricing signal block */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.6,
+          delay: services.length * 0.05 + 0.2,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="mt-20"
+      >
+        {/* Section rule */}
+        <div
+          className="mb-8 h-[1px]"
+          style={{
+            background: "linear-gradient(90deg, #ff9d23 0%, transparent 60%)",
+          }}
+        />
+
+        {/* Pricing rows */}
+        <div
+          className="mb-1 text-[10px] uppercase tracking-widest"
+          style={{ fontFamily: "Roboto Mono, monospace", color: "#9A9A9A" }}
+        >
+          Pricing
+        </div>
+        <div
+          className="mb-6 space-y-3"
+          style={{
+            fontFamily: "Roboto Mono, monospace",
+            borderLeft: "2px solid #2A2A2A",
+            paddingLeft: "1rem",
+          }}
+        >
+          {/* Projects row */}
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <span
+              style={{ fontSize: "0.7rem", color: "#9A9A9A", textTransform: "uppercase", letterSpacing: "0.15em" }}
+            >
+              Projects
+            </span>
+            <span
+              style={{ fontSize: "1rem", color: "var(--ink)", letterSpacing: "0.04em" }}
+            >
+              $10k–$25k
+            </span>
+            <span style={{ fontSize: "0.7rem", color: "#9A9A9A" }}>·</span>
+            <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>
+              Most: 4–8 weeks
+            </span>
+          </div>
+          {/* Retainers row */}
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <span
+              style={{ fontSize: "0.7rem", color: "#9A9A9A", textTransform: "uppercase", letterSpacing: "0.15em" }}
+            >
+              Retainers
+            </span>
+            <span
+              style={{ fontSize: "1rem", color: "var(--ink)", letterSpacing: "0.04em" }}
+            >
+              $5k–$8k/m
+            </span>
+            <span style={{ fontSize: "0.7rem", color: "#9A9A9A" }}>·</span>
+            <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>
+              20–30hrs, 4-week sprints
+            </span>
+          </div>
+        </div>
+
+        {/* Payment terms */}
+        <div
+          className="mb-1 text-[10px] uppercase tracking-widest"
+          style={{ fontFamily: "Roboto Mono, monospace", color: "#9A9A9A" }}
+        >
+          Payment terms
+        </div>
+        <div
+          className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs"
+          style={{
+            fontFamily: "Roboto Mono, monospace",
+            borderLeft: "2px solid #2A2A2A",
+            paddingLeft: "1rem",
+          }}
+        >
+          {[
+            { pct: "50%", label: "start" },
+            { pct: "20%", label: "mid" },
+            { pct: "15%", label: "pre-launch" },
+            { pct: "15%", label: "handoff" },
+          ].map((t, i, arr) => (
+            <span key={t.label} className="flex items-baseline gap-1.5">
+              <span style={{ color: "#ff9d23" }}>{t.pct}</span>
+              <span style={{ color: "var(--muted)" }}>{t.label}</span>
+              {i < arr.length - 1 && (
+                <span style={{ color: "#2A2A2A", marginLeft: "0.25rem" }}>·</span>
+              )}
+            </span>
+          ))}
+        </div>
+
+        {/* Guarantee */}
+        <p
+          className="mb-12 text-xs"
+          style={{
+            fontFamily: "Roboto Mono, monospace",
+            color: "#9A9A9A",
+            fontStyle: "italic",
+          }}
+        >
+          Unhappy after Week 1? Full refund.
+        </p>
+      </motion.div>
+
       {/* CTA section */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
           duration: 0.6,
-          delay: services.length * 0.05 + 0.3,
+          delay: services.length * 0.05 + 0.5,
           ease: [0.16, 1, 0.3, 1],
         }}
-        className="mt-20 flex flex-col items-center text-center px-4"
+        className="flex flex-col items-center text-center px-4 pb-10"
       >
         <div
-          className="mb-2 h-[1px] w-24"
+          className="mb-6 h-[1px] w-24"
           style={{ backgroundColor: "#2A2A2A" }}
         />
         <h2
-          className="mb-3 uppercase tracking-widest"
+          className="mb-8 uppercase"
           style={{
-            fontFamily: "Roboto Mono, monospace",
-            fontSize: "clamp(1.1rem, 3vw, 1.6rem)",
+            fontFamily: "'argent-pixel-cf', 'Handjet', monospace",
+            fontSize: "clamp(1rem, 3vw, 1.5rem)",
             color: "var(--ink)",
-            letterSpacing: "0.18em",
+            letterSpacing: "0.12em",
+            fontVariant: "small-caps",
+            maxWidth: "36ch",
+            lineHeight: 1.3,
           }}
         >
-          READY TO WORK TOGETHER?
+          The right brief always gets a yes.
         </h2>
-        <p
-          className="mb-8 text-sm"
-          style={{
-            fontFamily: "Roboto Mono, monospace",
-            color: "var(--muted)",
-          }}
-        >
-          Let&apos;s build something worth remembering.
-        </p>
         <Link href="/contact">
           <motion.button
+            whileHover={{ backgroundColor: "#ff9d23", color: "#000000" }}
             whileTap={{ scale: 0.96, y: 1 }}
-            className="px-8 py-3 text-sm font-semibold uppercase tracking-widest"
+            className="px-8 py-3 text-sm uppercase tracking-widest"
             style={{
               fontFamily: "Roboto Mono, monospace",
-              backgroundColor: "#ff9d23",
-              color: "#000000",
-              border: "none",
+              backgroundColor: "transparent",
+              color: "#ff9d23",
+              border: "1px solid #ff9d23",
               cursor: "pointer",
               letterSpacing: "0.15em",
+              transition: "background-color 0.2s ease, color 0.2s ease",
             }}
           >
-            GET IN TOUCH
+            START A CONVERSATION →
           </motion.button>
         </Link>
       </motion.div>

@@ -1172,6 +1172,18 @@ export default function BlackberryWormholeContent() {
       {/* Controls */}
       {!isWarping && !isLoading && !showExitWarning && hasSeenWarning && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-8 gap-8">
+          {/* Framing line */}
+          <p style={{
+            fontFamily: "monospace",
+            fontSize: "0.75rem",
+            color: "rgba(255, 255, 255, 0.4)",
+            letterSpacing: "0.08em",
+            textAlign: "center",
+            marginBottom: "-0.5rem"
+          }}>
+            60 things worth your time.
+          </p>
+
           {/* Category Selector */}
           <div className="flex flex-wrap gap-2 gap-y-3 justify-center max-w-full">
             {(['all', 'interactive', 'games', 'weirdFun', 'music', 'educational', 'retro'] as const).map((cat) => {

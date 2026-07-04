@@ -77,6 +77,9 @@ export default function BlackberryOS5Dashboard() {
   const [konamiActive, setKonamiActive] = useState(false); // Easter egg state
   const [konamiSequence, setKonamiSequence] = useState<string[]>([]); // Track key sequence
 
+  // Boot sequence state — show once per device via localStorage
+  const [showBoot, setShowBoot] = useState(false);
+
   // Time/UI state
   const [now, setNow] = useState(new Date());
   const [toast, setToast] = useState<{ message: string; type?: "info" | "success" | "warning" | "error" } | null>(null);
@@ -100,6 +103,12 @@ export default function BlackberryOS5Dashboard() {
   // Mount and clock tick
   useEffect(() => {
     setMounted(true);
+
+    // Boot sequence: show once per device
+    if (!localStorage.getItem('htm_booted')) {
+      setShowBoot(true);
+    }
+
     // Detect touch device
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
@@ -392,6 +401,12 @@ export default function BlackberryOS5Dashboard() {
     setToast(null);
   };
 
+  // Stable callback for boot sequence — must not change on re-render (clock ticks every second)
+  const handleBootComplete = useCallback(() => {
+    setShowBoot(false);
+    localStorage.setItem('htm_booted', '1');
+  }, []);
+
   // Auto-lock after inactivity (2 minutes)
   useEffect(() => {
     let lockTimer: NodeJS.Timeout;
@@ -619,7 +634,7 @@ export default function BlackberryOS5Dashboard() {
     <ResponsiveStage margin={24}>
       {/* Device body */}
       <div
-        className="relative w-screen h-screen rounded-none shadow-2xl ring-1 ring-white/10 overflow-hidden"
+        className="relative w-screen h-[100dvh] rounded-none shadow-2xl ring-1 ring-white/10 overflow-hidden"
         style={{
           backgroundImage:
             "radial-gradient(180%_120% at 50% -20%, #0a1220 10%, #000 70%), linear-gradient(180deg, rgba(255,255,255,0.06), transparent)",
@@ -635,7 +650,7 @@ export default function BlackberryOS5Dashboard() {
         </div>
 
         {/* Screen */}
-        <div ref={screenRef} className="mx-8 rounded-none overflow-hidden ring-1 ring-white/15 relative h-[calc(100vh-180px)]">
+        <div ref={screenRef} className="mx-8 rounded-none overflow-hidden ring-1 ring-white/15 relative h-[calc(100dvh-180px)]">
           {/* Wallpaper with static effect - time-based colors */}
           <div
             className="absolute inset-0 transition-colors duration-[3000ms]"
@@ -797,6 +812,13 @@ export default function BlackberryOS5Dashboard() {
                     </div>
                   </div>
                 )}
+                {/* Ambient identity copy — owner info line */}
+                <div
+                  className="mt-5 text-[11px] tracking-wide text-center"
+                  style={{ fontFamily: 'var(--font-source-code)', color: '#4A4A4A' }}
+                >
+                  Independent creative direction. Sydney.
+                </div>
               </div>
             </div>
           )}
@@ -930,6 +952,13 @@ export default function BlackberryOS5Dashboard() {
                 }}
               />
             </div>
+          )}
+
+          {/* BB BOOT SEQUENCE — first-visit only */}
+          {showBoot && (
+            <BBBootSequence
+              onComplete={handleBootComplete}
+            />
           )}
 
           {/* BATTERY SAVER MODE OVERLAY */}
@@ -1148,6 +1177,93 @@ export default function BlackberryOS5Dashboard() {
 // =====================
 // Subcomponents
 // =====================
+
+// BBBootSequence — first-visit startup animation (one-time, tracked via localStorage)
+function BBBootSequence({ onComplete }: { onComplete: () => void }) {
+  const [phase, setPhase] = React.useState<"black" | "logo" | "bar" | "ready" | "done">("black");
+  const [barWidth, setBarWidth] = React.useState(0);
+
+  React.useEffect(() => {
+    // black (0.3s) → logo (0.5s) → bar (0.8s) → ready (0.4s) → done (0.5s)
+    const t1 = setTimeout(() => setPhase("logo"), 300);
+    const t2 = setTimeout(() => { setPhase("bar"); setBarWidth(0); }, 800);
+    const t3 = setTimeout(() => setBarWidth(100), 850); // start bar fill immediately after phase change
+    const t4 = setTimeout(() => setPhase("ready"), 1600);
+    const t5 = setTimeout(() => setPhase("done"), 2000);
+    const t6 = setTimeout(() => onComplete(), 2500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); clearTimeout(t6); };
+  }, [onComplete]);
+
+  return (
+    <AnimatePresence>
+      {phase !== "done" && (
+        <motion.div
+          key="boot"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="absolute inset-0 bg-black flex flex-col items-center justify-center z-50"
+          style={{ fontFamily: 'var(--font-source-code)' }}
+        >
+          {/* BB logo flash */}
+          <AnimatePresence>
+            {(phase === "logo" || phase === "bar" || phase === "ready") && (
+              <motion.div
+                key="boot-logo"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="text-center mb-8"
+              >
+                <div
+                  className="text-2xl font-bold tracking-[0.25em] uppercase"
+                  style={{ color: '#ff9d23', fontFamily: "'argent-pixel-cf', var(--font-source-code)" }}
+                >
+                  HANDTOMOUSE
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Loading bar */}
+          <AnimatePresence>
+            {(phase === "bar" || phase === "ready") && (
+              <motion.div
+                key="boot-bar"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                className="w-48 h-[3px] bg-white/10 relative overflow-hidden"
+              >
+                <div
+                  className="absolute inset-y-0 left-0 bg-[#ff9d23] transition-all"
+                  style={{ width: `${barWidth}%`, transitionDuration: '800ms', transitionTimingFunction: 'linear' }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* System ready text */}
+          <AnimatePresence>
+            {phase === "ready" && (
+              <motion.div
+                key="boot-ready"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="mt-6 text-[11px] tracking-[0.3em] uppercase"
+                style={{ color: 'rgba(255,255,255,0.4)' }}
+              >
+                SYSTEM READY
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 // AppContent - renders page content inside BB screen
 function AppContent({ appId, prefersReducedMotion = false }: { appId: string; prefersReducedMotion?: boolean }) {

@@ -70,6 +70,7 @@ export default function ProjectPage() {
             client={project.client}
             year={project.year}
             tags={project.tags}
+            description={project.description}
             className="aspect-video"
           />
         )}
@@ -161,6 +162,7 @@ export default function ProjectPage() {
               client={project.client}
               year={project.year}
               tags={project.tags}
+              description={project.description}
               className="aspect-video"
             />
           </div>
