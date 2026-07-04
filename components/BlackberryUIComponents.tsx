@@ -149,7 +149,7 @@ export function ResponsiveStage({
   }, [recompute]);
 
   return (
-    <div className="w-screen h-screen bg-black grid place-items-center overflow-hidden">
+    <div className="w-screen h-[100dvh] bg-black grid place-items-center overflow-hidden">
       <div ref={contentRef} style={{ transform: `scale(${scale})`, transformOrigin: "center center", willChange: "transform" }}>
         {children}
       </div>

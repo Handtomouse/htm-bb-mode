@@ -32,6 +32,11 @@ const sourceCodePro = Source_Code_Pro({
   display: "swap",
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata = {
   metadataBase: new URL('https://htm-bb-mode.vercel.app'),
   title: {
