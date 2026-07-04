@@ -2,58 +2,1023 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, useSpring, useMotionValue } from "framer-motion";
-import Image from "next/image";
 import { useHapticFeedback } from "@/lib/hooks";
 import TypewriterManifesto from "./TypewriterManifesto";
 import LuxuryStatCard from "./LuxuryStatCard";
-import LuxuryServiceCard from "./LuxuryServiceCard";
 import LuxuryCollapsibleSection from "./LuxuryCollapsibleSection";
-import LuxuryBelief from "./LuxuryBelief";
 import { ACCENT, ACCENT_HOVER, STAT_CARD_VARS, type AboutData } from "@/lib/aboutData";
 
-export default function BlackberryAboutContent() {
+// ─── Dot divider ─────────────────────────────────────────────────────────────
+function DotDivider() {
+  return (
+    <div className="flex items-center justify-center gap-2 my-6">
+      {[0.3, 0.5, 0.7, 0.5, 0.3].map((op, i) => (
+        <div key={i} className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: op }} />
+      ))}
+    </div>
+  );
+}
+
+// ─── Zone 1 hook strip ───────────────────────────────────────────────────────
+function HookStrip({ data }: { data: AboutData }) {
+  return (
+    <section
+      id="hook"
+      aria-label="About HandToMouse"
+      className="px-6 md:px-12 pt-8 pb-6 space-y-5"
+    >
+      {/* Headline */}
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="text-[18px] md:text-[22px] text-white/95 leading-snug"
+        style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}
+      >
+        {data.hero.headline}
+      </motion.p>
+
+      {/* POV — sharpest line from subline */}
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        className="text-[14px] md:text-[16px] leading-relaxed"
+        style={{ fontFamily: "var(--font-body)", color: "rgba(255,255,255,0.55)" }}
+      >
+        Finding the small, precise angle no one else has noticed yet.
+      </motion.p>
+
+      {/* Badges */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="flex flex-wrap gap-2"
+      >
+        {data.hero.badges.map((badge, i) => (
+          <span
+            key={i}
+            className="px-3 py-1 text-[11px] uppercase tracking-[0.12em] border"
+            style={{
+              fontFamily: '"argent-pixel-cf", sans-serif',
+              borderColor: "rgba(255,157,35,0.4)",
+              color: ACCENT,
+              background: "rgba(255,157,35,0.06)",
+            }}
+          >
+            {badge}
+          </span>
+        ))}
+      </motion.div>
+
+      {/* Proof strip */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="flex flex-wrap gap-4 pt-2 border-t"
+        style={{ borderColor: "rgba(255,255,255,0.08)" }}
+      >
+        <span
+          className="text-[12px] uppercase tracking-[0.1em]"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,255,255,0.45)" }}
+        >
+          60+ projects
+        </span>
+        <span style={{ color: "rgba(255,255,255,0.2)" }}>·</span>
+        <span
+          className="text-[12px] uppercase tracking-[0.1em]"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,255,255,0.45)" }}
+        >
+          78% retention
+        </span>
+        <span style={{ color: "rgba(255,255,255,0.2)" }}>·</span>
+        <span
+          className="text-[12px] uppercase tracking-[0.1em]"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,255,255,0.45)" }}
+        >
+          Est. 2020
+        </span>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Zone 2 — What We Do ─────────────────────────────────────────────────────
+function WhatWeDo({ data }: { data: AboutData }) {
+  return (
+    <section
+      id="services"
+      aria-label="Services"
+      className="px-6 md:px-12 py-6 space-y-4 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+    >
+      <motion.h2
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-[11px] uppercase tracking-[0.18em]"
+        style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+      >
+        What We Do
+      </motion.h2>
+
+      <div className="space-y-3">
+        {data.services.map((svc, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, x: -12 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.08, duration: 0.5 }}
+            className="flex items-baseline gap-3"
+          >
+            <span className="text-[16px] flex-shrink-0" aria-hidden="true">
+              {svc.icon}
+            </span>
+            <span
+              className="text-[14px] md:text-[15px] text-white/90"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              <span className="font-medium">{svc.title}</span>
+              <span className="text-white/40 mx-2">—</span>
+              <span className="text-white/60">{svc.line}</span>
+            </span>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Pricing signal */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+        className="pt-3 border-t"
+        style={{ borderColor: "rgba(255,255,255,0.06)" }}
+      >
+        <p
+          className="text-[12px] uppercase tracking-[0.1em]"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,255,255,0.35)" }}
+        >
+          {data.pricing.projects} projects&nbsp;&nbsp;·&nbsp;&nbsp;{data.pricing.retainers}/m retainers
+        </p>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Zone 3 — Proof cards ────────────────────────────────────────────────────
+function ProofSection({
+  data,
+  onOpenWork,
+}: {
+  data: AboutData;
+  onOpenWork?: () => void;
+}) {
+  return (
+    <section
+      id="proof"
+      aria-label="Client proof"
+      className="px-6 md:px-12 py-6 space-y-4 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+    >
+      <motion.h2
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-[11px] uppercase tracking-[0.18em]"
+        style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+      >
+        Proof
+      </motion.h2>
+
+      <div className="space-y-3">
+        {data.proof.highlights.map((h, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1, duration: 0.55 }}
+            className="border-l-2 pl-4 py-2"
+            style={{ borderColor: "rgba(255,157,35,0.4)" }}
+          >
+            <div className="flex items-baseline justify-between gap-2">
+              <span
+                className="text-[14px] font-bold text-white uppercase tracking-wide"
+                style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}
+              >
+                {h.label}
+              </span>
+              <span
+                className="text-[11px] flex-shrink-0"
+                style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,157,35,0.6)" }}
+              >
+                {h.duration}
+              </span>
+            </div>
+            <p
+              className="text-[13px] mt-1 leading-snug"
+              style={{ fontFamily: "var(--font-body)", color: "rgba(255,255,255,0.65)" }}
+            >
+              {h.line}
+            </p>
+            {h.quote && (
+              <p
+                className="text-[12px] mt-1 italic"
+                style={{ color: "rgba(255,157,35,0.75)" }}
+              >
+                {h.quote}
+              </p>
+            )}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Client strip */}
+      {data.proof.clients && data.proof.clients.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="flex flex-wrap gap-x-4 gap-y-1 pt-2"
+        >
+          {data.proof.clients.map((c, i) => (
+            <span
+              key={i}
+              className="text-[11px] uppercase tracking-[0.1em]"
+              style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,255,255,0.3)" }}
+            >
+              {c}
+            </span>
+          ))}
+        </motion.div>
+      )}
+
+      {/* See work CTA */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <button
+          onClick={onOpenWork}
+          className="text-[12px] uppercase tracking-[0.12em] hover:opacity-80 transition-opacity"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+        >
+          See work →
+        </button>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Zone 4 — Process (collapsed by default) ─────────────────────────────────
+function ProcessSection({ data }: { data: AboutData }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <section
+      id="process"
+      aria-label="Process"
+      className="px-6 md:px-12 py-6 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+    >
+      <button
+        className="w-full flex items-center justify-between group"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+      >
+        <span
+          className="text-[11px] uppercase tracking-[0.18em]"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+        >
+          Process
+        </span>
+        {/* collapsed summary */}
+        {!expanded && (
+          <span
+            className="text-[11px] text-white/40 tracking-wide"
+            style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}
+          >
+            ① Plan → ② Produce → ③ Train
+          </span>
+        )}
+        <motion.span
+          animate={{ rotate: expanded ? 90 : 0 }}
+          transition={{ duration: 0.25 }}
+          className="text-[12px] ml-2 flex-shrink-0"
+          style={{ color: ACCENT }}
+        >
+          ▶
+        </motion.span>
+      </button>
+
+      <motion.div
+        initial={false}
+        animate={expanded ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={{ overflow: "hidden" }}
+      >
+        <div className="pt-4 space-y-4">
+          {data.process.steps.map((step, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: -10 }}
+              animate={expanded ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: idx * 0.1, duration: 0.4 }}
+              className="flex items-start gap-4 border-l-2 pl-4 py-2"
+              style={{ borderColor: "rgba(255,157,35,0.35)" }}
+            >
+              <span className="text-[18px] flex-shrink-0" style={{ color: ACCENT }}>
+                {step.num}
+              </span>
+              <div>
+                <div
+                  className="text-[14px] font-bold text-white tracking-wide"
+                  style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}
+                >
+                  {step.title}{" "}
+                  <span style={{ color: ACCENT }}>· {step.promise}</span>
+                </div>
+                <div
+                  className="text-[12px] mt-1"
+                  style={{ color: "rgba(255,255,255,0.45)" }}
+                >
+                  {step.duration}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Beliefs compact grid ────────────────────────────────────────────────────
+function BeliefsGrid({ data }: { data: AboutData }) {
+  if (!data.beliefs || data.beliefs.length === 0) return null;
+  return (
+    <section
+      id="beliefs"
+      aria-label="Beliefs"
+      className="px-6 md:px-12 py-6 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+    >
+      <motion.h2
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-[11px] uppercase tracking-[0.18em] mb-4"
+        style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+      >
+        What We Believe
+      </motion.h2>
+      <div className="space-y-2">
+        {data.beliefs.map((b, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, x: -8 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.07, duration: 0.45 }}
+            className="flex items-baseline gap-3"
+          >
+            <span className="text-[13px] flex-shrink-0">{b.icon}</span>
+            <span
+              className="text-[13px] text-white/70 leading-snug"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {b.text}
+            </span>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ─── Details collapsibles (ops / pricing / who) ──────────────────────────────
+function DetailsSection({
+  data,
+  openSection,
+  setOpenSection,
+}: {
+  data: AboutData;
+  openSection: string | null;
+  setOpenSection: (s: string | null) => void;
+}) {
+  const toggle = (id: string) =>
+    setOpenSection(openSection === id ? null : id);
+
+  return (
+    <section
+      id="details"
+      aria-label="Details"
+      className="px-6 md:px-12 py-6 space-y-4 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+    >
+      <motion.h2
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-[11px] uppercase tracking-[0.18em]"
+        style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+      >
+        Details
+      </motion.h2>
+
+      {/* Ops — condensed to 3 bullets */}
+      <LuxuryCollapsibleSection
+        title="How We Work"
+        icon="⚙️"
+        isOpen={openSection === "ops"}
+        onToggle={() => toggle("ops")}
+      >
+        <div className="space-y-3">
+          <p
+            className="text-[14px] text-white/70 leading-relaxed"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            {data.setup.line}
+          </p>
+          <div className="space-y-2 pt-2">
+            {data.ops.items.slice(0, 3).map((item, idx) => (
+              <div key={idx} className="flex items-start gap-3">
+                <span className="text-[14px] flex-shrink-0" style={{ color: ACCENT }}>
+                  {item.icon}
+                </span>
+                <p
+                  className="text-[13px] text-white/80 leading-snug"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
+          {/* Not right for — 2 lines max */}
+          <div
+            className="pt-3 border-t text-[12px] leading-snug"
+            style={{
+              borderColor: "rgba(255,255,255,0.08)",
+              fontFamily: "var(--font-body)",
+              color: "rgba(255,255,255,0.4)",
+            }}
+          >
+            Not right for: urgent rebrands, vanity-metric briefs, or &ldquo;make us viral&rdquo; asks.
+          </div>
+        </div>
+      </LuxuryCollapsibleSection>
+
+      {/* Pricing */}
+      <LuxuryCollapsibleSection
+        title="Pricing & Terms"
+        icon="💰"
+        isOpen={openSection === "pricing"}
+        onToggle={() => toggle("pricing")}
+      >
+        <div className="space-y-6">
+          <div>
+            <p
+              className="text-[11px] uppercase tracking-[0.1em] mb-1"
+              style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+            >
+              Projects
+            </p>
+            <p className="text-[22px] font-bold text-white">{data.pricing.projects}</p>
+            <p className="text-[12px] text-white/50 mt-1">{data.pricing.projectLength}</p>
+          </div>
+          <div>
+            <p
+              className="text-[11px] uppercase tracking-[0.1em] mb-1"
+              style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+            >
+              Retainers
+            </p>
+            <p className="text-[22px] font-bold text-white">{data.pricing.retainers}</p>
+            <p className="text-[12px] text-white/50 mt-1">{data.pricing.retainerDetails}</p>
+          </div>
+          <div
+            className="border-t pt-4 space-y-1"
+            style={{ borderColor: "rgba(255,255,255,0.08)" }}
+          >
+            <p className="text-[12px] text-white/60">{data.pricing.terms}</p>
+            <p
+              className="text-[11px]"
+              style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-body)" }}
+            >
+              {data.pricing.termsDetail}
+            </p>
+          </div>
+          <div
+            className="border border-[var(--accent)]/30 px-4 py-3 text-[13px] text-white/80"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            {data.pricing.guarantee}
+          </div>
+        </div>
+      </LuxuryCollapsibleSection>
+
+      {/* Who */}
+      <LuxuryCollapsibleSection
+        title="Who I Work With"
+        icon="🤝"
+        isOpen={openSection === "who"}
+        onToggle={() => toggle("who")}
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            {data.hero.principles.map((p, idx) => (
+              <div key={idx} className="flex items-start gap-3">
+                <span className="text-[14px] flex-shrink-0">{p.icon}</span>
+                <p
+                  className="text-[13px] text-white/80 leading-snug"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {p.text}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Philosophy — one punchy line, rest hidden */}
+          <div
+            className="border-t pt-3 text-[13px] italic leading-snug"
+            style={{
+              borderColor: "rgba(255,255,255,0.08)",
+              color: "rgba(255,157,35,0.75)",
+              fontFamily: "var(--font-body)",
+            }}
+          >
+            &ldquo;I&apos;m not interested in trends or templates. I&apos;m interested in ideas with backbone — things that stick because they mean something.&rdquo;
+          </div>
+        </div>
+      </LuxuryCollapsibleSection>
+    </section>
+  );
+}
+
+// ─── Typewriter section ──────────────────────────────────────────────────────
+function TypewriterSection({
+  typewriterRef,
+  typewriterScrollProgress,
+  typewriterOpacity,
+  onTypewriterComplete,
+}: {
+  typewriterRef: React.RefObject<HTMLDivElement>;
+  typewriterScrollProgress: number;
+  typewriterOpacity: number;
+  onTypewriterComplete: () => void;
+}) {
+  return (
+    <section
+      id="typewriter"
+      className="flex items-center justify-center py-12 md:py-16 scroll-mt-20"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-3xl mx-auto text-center px-6 md:px-12"
+      >
+        <div ref={typewriterRef}>
+          <TypewriterManifesto
+            text="Everyone's chasing new — we chase different."
+            onComplete={onTypewriterComplete}
+            scrollProgress={typewriterScrollProgress}
+            opacity={typewriterOpacity}
+          />
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Stats section (unchanged logic, identical markup) ────────────────────────
+function StatsSection({
+  data,
+  mouseX,
+  mouseY,
+  springX,
+  springY,
+  statsSectionRef,
+  cardRefs,
+  lineCoords,
+  hoveredCardIndex,
+  setHoveredCardIndex,
+  isAnythingHovered,
+  setIsAnythingHovered,
+  spotlightIndex,
+}: {
+  data: AboutData;
+  mouseX: ReturnType<typeof useMotionValue<number>>;
+  mouseY: ReturnType<typeof useMotionValue<number>>;
+  springX: ReturnType<typeof useSpring>;
+  springY: ReturnType<typeof useSpring>;
+  statsSectionRef: React.MutableRefObject<HTMLElement | null>;
+  cardRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  lineCoords: { x1: number; y1: number; x2: number; y2: number }[];
+  hoveredCardIndex: number | null;
+  setHoveredCardIndex: (i: number | null) => void;
+  isAnythingHovered: boolean;
+  setIsAnythingHovered: (v: boolean) => void;
+  spotlightIndex: number;
+}) {
+  return (
+    <section
+      id="stats"
+      ref={statsSectionRef}
+      aria-label="Company statistics"
+      className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-20 scroll-mt-20"
+      style={{ minHeight: "calc(var(--vh, 1vh) * 80)", ...STAT_CARD_VARS, position: "relative", overflow: "hidden" }}
+      onMouseMove={(e) => {
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+      }}
+    >
+      {/* Radial gradient backdrop */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)",
+          opacity: 0.4,
+        }}
+      />
+
+      {/* Trailing glow cursor */}
+      <motion.div
+        style={{
+          position: "absolute",
+          pointerEvents: "none",
+          width: 120,
+          height: 120,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(255,157,35,0.07) 0%, transparent 70%)",
+          x: springX,
+          y: springY,
+          translateX: "-50%",
+          translateY: "-50%",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Connecting lines SVG overlay */}
+      {lineCoords.length > 0 && (
+        <svg
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
+        >
+          {lineCoords.map((line, li) => {
+            const pairIndices = [[0, 2], [1, 4]];
+            const [a, b] = pairIndices[li] ?? [0, 0];
+            const isActive = hoveredCardIndex === a || hoveredCardIndex === b;
+            return (
+              <line
+                key={li}
+                x1={line.x1}
+                y1={line.y1}
+                x2={line.x2}
+                y2={line.y2}
+                stroke="#ff9d23"
+                strokeOpacity={isActive ? 0.35 : 0.12}
+                strokeDasharray="4 4"
+                strokeWidth="1"
+                style={{ transition: "stroke-opacity 0.3s" }}
+              />
+            );
+          })}
+        </svg>
+      )}
+
+      {/* Scroll reveal curtain */}
+      <motion.div
+        initial={{ y: 0 }}
+        whileInView={{ y: "100%" }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "#0b0b0b",
+          zIndex: 10,
+          pointerEvents: "none",
+          originY: 1,
+        }}
+      />
+
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+        className="text-[32px] md:text-[40px] lg:text-[52px] font-bold uppercase text-center mb-10 md:mb-14"
+        style={{
+          fontFamily: '"argent-pixel-cf", sans-serif',
+          color: "var(--accent)",
+          letterSpacing: "0.15em",
+          textShadow: "0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        By The Numbers
+      </motion.h2>
+
+      <div
+        className="relative w-full max-w-6xl mx-auto"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "var(--card-gap)",
+          alignItems: "stretch",
+          zIndex: 2,
+        }}
+      >
+        <div
+          ref={(el) => { cardRefs.current[0] = el; }}
+          className="col-span-full sm:col-auto"
+          onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(0); }}
+          onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+        >
+          <LuxuryStatCard
+            label="Projects"
+            value={data.stats.projects}
+            delay={0.3}
+            index={0}
+            priority={true}
+            benchmark="2.8× avg studio output"
+            trend={[15, 25, 38, 50, 62, 75, 90, 100]}
+            story="60+ brand projects delivered since 2020 — each one a different brief, a different sector, the same obsession with precision."
+            shareText="60+ projects delivered since 2020 — HandToMouse Studio"
+            isSpotlit={spotlightIndex === 0}
+          />
+        </div>
+
+        <div
+          ref={(el) => { cardRefs.current[1] = el; }}
+          className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
+          onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(1); }}
+          onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+        >
+          <LuxuryStatCard
+            label="Retention"
+            value={data.stats.retention}
+            delay={0.4}
+            index={1}
+            benchmark="1.9× industry avg"
+            trend={[40, 52, 60, 68, 72, 75]}
+            story="3 in 4 clients return for the next project. Good systems create dependency — in the best possible way."
+            shareText="75% client retention — HandToMouse Studio"
+            isSpotlit={spotlightIndex === 1}
+          />
+        </div>
+
+        <div
+          ref={(el) => { cardRefs.current[2] = el; }}
+          className="even:aspect-[4/3] odd:aspect-[3/2] sm:aspect-auto"
+          onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(2); }}
+          onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+        >
+          <LuxuryStatCard
+            label="Repeat Clients"
+            value={data.stats.repeatClients}
+            delay={0.5}
+            index={2}
+            benchmark="3× typical agency rate"
+            trend={[20, 28, 35, 40, 43, 45]}
+            story="45% of clients return within 18 months. The brief changes — the relationship doesn't."
+            shareText="45% repeat client rate — HandToMouse Studio"
+            isSpotlit={spotlightIndex === 2}
+          />
+        </div>
+
+        <div
+          ref={(el) => { cardRefs.current[3] = el; }}
+          className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
+          onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(3); }}
+          onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+        >
+          <LuxuryStatCard
+            label="Years Active"
+            value="6"
+            delay={0.6}
+            index={3}
+            trend={[10, 25, 40, 55, 70, 100]}
+            story="6 years of focused practice. Long enough to know what works — still close enough to stay curious."
+            shareText="6 years active — HandToMouse Studio"
+            isSpotlit={spotlightIndex === 3}
+          />
+        </div>
+
+        <div
+          ref={(el) => { cardRefs.current[4] = el; }}
+          className="even:aspect-[4/3] odd:aspect-[3/2] sm:aspect-auto"
+          onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(4); }}
+          onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+        >
+          <LuxuryStatCard
+            label="Response"
+            value={data.stats.avgResponse}
+            delay={0.7}
+            index={4}
+            benchmark="5× faster than avg agency"
+            trend={[100, 85, 70, 60, 52, 48]}
+            story="48hr average turnaround — usually 4hr. Clarity is part of the service, not an afterthought."
+            shareText="48hr average response — HandToMouse Studio"
+            isSpotlit={spotlightIndex === 4}
+          />
+        </div>
+
+        <div
+          ref={(el) => { cardRefs.current[5] = el; }}
+          className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
+          onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(5); }}
+          onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
+        >
+          <LuxuryStatCard
+            label="Industries"
+            value={data.stats.industries}
+            delay={0.8}
+            index={5}
+            trend={[2, 4, 5, 6, 7, 8]}
+            story="8 industries covered — hospitality to healthcare. Diverse context sharpens the eye."
+            shareText="8 industries served — HandToMouse Studio"
+            isSpotlit={spotlightIndex === 5}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Zone 5 — Contact signal ──────────────────────────────────────────────────
+function ContactSignal({ data }: { data: AboutData }) {
+  return (
+    <section
+      id="contact"
+      aria-label="Contact"
+      className="px-6 md:px-12 py-8 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.3)" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="space-y-5"
+      >
+        <p
+          className="text-[15px] md:text-[17px] text-white/85 leading-snug"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          {data.contact.status}
+        </p>
+
+        <p
+          className="text-[12px] uppercase tracking-[0.1em]"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,255,255,0.35)" }}
+        >
+          {data.contact.responseTime}
+        </p>
+
+        <motion.a
+          href="/contact"
+          whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(255,157,35,0.6)` }}
+          whileTap={{ scale: 0.97 }}
+          className="inline-block border-2 border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-[13px] font-bold text-black uppercase tracking-[0.1em] transition-all duration-300"
+          style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}
+        >
+          Start a Conversation →
+        </motion.a>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Now block ────────────────────────────────────────────────────────────────
+function NowBlock({ data }: { data: AboutData }) {
+  return (
+    <section
+      id="now"
+      className="px-6 md:px-12 py-6 border-t"
+      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="space-y-3"
+      >
+        <div className="flex items-baseline gap-3">
+          <span
+            className="text-[11px] uppercase tracking-[0.18em]"
+            style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: ACCENT }}
+          >
+            Now
+          </span>
+          <span
+            className="text-[11px]"
+            style={{ color: "rgba(255,255,255,0.3)", fontFamily: '"argent-pixel-cf", sans-serif' }}
+          >
+            {data.now.lastUpdated}
+          </span>
+        </div>
+        <p
+          className="text-[13px] leading-snug text-white/65"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          {data.now.currentFocus}
+        </p>
+
+        {/* Ticker */}
+        <div className="overflow-hidden border-t pt-3" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          <motion.div
+            animate={{ x: [0, -900] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+            className="flex gap-6 whitespace-nowrap"
+          >
+            {[
+              "✓ Jac+Jack W25/SP25 campaign delivered",
+              "✓ S'WICH Bondi → Redfern → Surry Hills",
+              "✓ MapleMoon 160+ retailers",
+              "✓ Aura Therapeutics brand identity",
+            ].concat([
+              "✓ Jac+Jack W25/SP25 campaign delivered",
+              "✓ S'WICH Bondi → Redfern → Surry Hills",
+              "✓ MapleMoon 160+ retailers",
+              "✓ Aura Therapeutics brand identity",
+            ]).map((t, i) => (
+              <span
+                key={i}
+                className="text-[11px] uppercase tracking-[0.08em]"
+                style={{ color: "rgba(255,255,255,0.3)", fontFamily: '"argent-pixel-cf", sans-serif' }}
+              >
+                {t}
+                {i < 7 && <span className="mx-4" style={{ color: "rgba(255,255,255,0.15)" }}>·</span>}
+              </span>
+            ))}
+          </motion.div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+export default function BlackberryAboutContent({
+  onOpenWork,
+}: {
+  onOpenWork?: () => void;
+}) {
   const [data, setData] = useState<AboutData | null>(null);
   const [openSection, setOpenSection] = useState<string | null>(null);
 
-  // Scroll tracking states
+  // Scroll tracking
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [heroOpacity, setHeroOpacity] = useState(1);
-  const [aboutParallax, setAboutParallax] = useState(0);
-  const [floatingElementsOffset, setFloatingElementsOffset] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
   const [typewriterOpacity, setTypewriterOpacity] = useState(1);
-  const [headlineOpacity, setHeadlineOpacity] = useState(1);
   const [typewriterScrollProgress, setTypewriterScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-
-  // Animation completion tracking
-  const [typewriterComplete, setTypewriterComplete] = useState(false);
-  const [headlineComplete, setHeadlineComplete] = useState(false);
-
-  // Haptic feedback for touch interactions
-  const triggerHaptic = useHapticFeedback();
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
-  const [showExitIntent, setShowExitIntent] = useState(false);
-  const exitIntentShown = useRef(false);
 
+  // Animation completion
+  const [typewriterComplete, setTypewriterComplete] = useState(false);
+
+  const triggerHaptic = useHapticFeedback();
   const lastScrollTop = useRef(0);
   const rafId = useRef<number | null>(null);
-  const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 });
   const typewriterRef = useRef<HTMLDivElement>(null);
 
-  // GROUP 3 — #35: Featured spotlight cycling
+  // Spotlight cycling
   const [spotlightIndex, setSpotlightIndex] = useState(0);
   const [isAnythingHovered, setIsAnythingHovered] = useState(false);
 
-  // GROUP 3 — #25: Trailing glow cursor
+  // Trailing cursor
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
 
-  // GROUP 3 — #34: Connecting lines between stat cards
+  // Stat card refs
   const cardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null, null, null]);
   const statsSectionRef = useRef<HTMLElement | null>(null);
   const [lineCoords, setLineCoords] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
@@ -65,291 +1030,152 @@ export default function BlackberryAboutContent() {
       .then((json) => setData(json));
   }, []);
 
-  // Detect mobile/touch devices with debounced resize (Fix #1, #3)
+  // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isSmallScreen = window.innerWidth < 768;
-      setIsMobile(isTouchDevice || isSmallScreen);
+      const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      setIsMobile(isTouchDevice || window.innerWidth < 768);
     };
-
     checkMobile();
+    let t: NodeJS.Timeout;
+    const onResize = () => { clearTimeout(t); t = setTimeout(checkMobile, 200); };
+    window.addEventListener("resize", onResize);
+    return () => { clearTimeout(t); window.removeEventListener("resize", onResize); };
+  }, []);
 
-    // Debounce resize handler to 200ms
-    let resizeTimer: NodeJS.Timeout;
-    const debouncedResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(checkMobile, 200);
+  // Fix mobile viewport height
+  useEffect(() => {
+    const setVH = () => {
+      document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
     };
-
-    window.addEventListener('resize', debouncedResize);
+    setVH();
+    window.addEventListener("resize", setVH);
+    window.addEventListener("orientationchange", setVH);
     return () => {
-      clearTimeout(resizeTimer);
-      window.removeEventListener('resize', debouncedResize);
+      window.removeEventListener("resize", setVH);
+      window.removeEventListener("orientationchange", setVH);
     };
   }, []);
 
-  // Show scroll indicator after typewriter completes
+  // Scroll snap (desktop only)
   useEffect(() => {
-    if (typewriterComplete && headlineComplete) {
-      const timeout = setTimeout(() => {
-        setShowScrollIndicator(true);
-      }, 500);
-      return () => clearTimeout(timeout);
-    }
-  }, [typewriterComplete, headlineComplete]);
-
-  // Exit intent detection (desktop only)
-  useEffect(() => {
-    if (isMobile || exitIntentShown.current) return;
-
-    const handleMouseLeave = (e: MouseEvent) => {
-      // Trigger when mouse moves to top 50px of viewport with upward velocity
-      if (e.clientY <= 50 && e.movementY < 0 && !exitIntentShown.current) {
-        exitIntentShown.current = true;
-        setShowExitIntent(true);
-      }
-    };
-
-    document.addEventListener('mouseleave', handleMouseLeave);
-    return () => document.removeEventListener('mouseleave', handleMouseLeave);
-  }, [isMobile]);
-
-  // Enable scroll snap & smooth scroll (Fix #3, #10: desktop only)
-  useEffect(() => {
-    const scrollableElement = document.querySelector('.scrollable-content') as HTMLElement;
-    if (!scrollableElement) return;
-
+    const el = document.querySelector(".scrollable-content") as HTMLElement | null;
+    if (!el) return;
     if (isMobile) {
-      // Mobile: Disable scroll snap (interferes with momentum), remove smooth scroll
-      scrollableElement.style.scrollSnapType = 'none';
-      scrollableElement.style.scrollBehavior = 'auto';
+      el.style.scrollSnapType = "none";
+      el.style.scrollBehavior = "auto";
     } else {
-      // Desktop: Enable proximity snap + smooth scroll for luxurious feel
-      scrollableElement.style.scrollSnapType = 'y proximity';
-      scrollableElement.style.scrollPaddingTop = '80px';
-      scrollableElement.style.scrollBehavior = 'smooth';
+      el.style.scrollSnapType = "y proximity";
+      el.style.scrollPaddingTop = "80px";
+      el.style.scrollBehavior = "smooth";
     }
-
     return () => {
-      scrollableElement.style.scrollSnapType = '';
-      scrollableElement.style.scrollPaddingTop = '';
-      scrollableElement.style.scrollBehavior = '';
+      el.style.scrollSnapType = "";
+      el.style.scrollPaddingTop = "";
+      el.style.scrollBehavior = "";
     };
   }, [isMobile]);
 
-  const handleTypewriterComplete = useCallback(() => {
-    setTypewriterComplete(true);
-  }, []);
+  const handleTypewriterComplete = useCallback(() => setTypewriterComplete(true), []);
 
-  const handleHeadlineComplete = useCallback(() => {
-    setHeadlineComplete(true);
-  }, []);
-
-  // Scroll handler with RAF optimization
+  // Scroll handler (RAF-optimised)
   const handleScroll = useCallback(() => {
-    // Cancel any pending animation frame to ensure only one runs per scroll
-    if (rafId.current !== null) {
-      cancelAnimationFrame(rafId.current);
-    }
-
-    // Schedule calculations for next frame (batches multiple scroll events)
+    if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     rafId.current = requestAnimationFrame(() => {
-      const scrollableElement = document.querySelector('.scrollable-content');
-      if (scrollableElement) {
-        const scrollTop = scrollableElement.scrollTop;
-        const scrollHeight = scrollableElement.scrollHeight - scrollableElement.clientHeight;
-        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-        setScrollProgress(progress);
+      const el = document.querySelector(".scrollable-content");
+      if (!el) return;
+      const scrollTop = el.scrollTop;
+      const scrollHeight = el.scrollHeight - el.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      setScrollProgress(progress);
+      setShowBackToTop(scrollTop > 300);
 
-        // Back-to-top button after 300px
-        setShowBackToTop(scrollTop > 300);
-
-        // Floating CTA after Stats section (~2000px)
-        setShowFloatingCTA(scrollTop > 2000);
-
-        // Section detection for navigation dots
-        const sections = ["value", "stats", "services", "process", "proof", "details", "now", "contact"];
-        let currentSection = "";
-        for (const sectionId of sections) {
-          const section = document.getElementById(sectionId);
-          if (section) {
-            const rect = section.getBoundingClientRect();
-            // Section is active if its top is above middle of viewport and bottom is below middle
-            if (rect.top <= scrollableElement.clientHeight / 2 && rect.bottom >= scrollableElement.clientHeight / 2) {
-              currentSection = sectionId;
-              break;
-            }
+      const sections = ["hook", "services", "proof", "process", "stats", "beliefs", "details", "now", "contact"];
+      let current = "";
+      for (const id of sections) {
+        const section = document.getElementById(id);
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= el.clientHeight / 2 && rect.bottom >= el.clientHeight / 2) {
+            current = id;
+            break;
           }
         }
-        setActiveSection(currentSection);
-
-        // Hero fade: 300px→1000px range (gentler exit)
-        const heroFadeStart = 300;
-        const heroFadeEnd = 1000;
-        const heroFade = Math.max(0, Math.min(1, 1 - (scrollTop - heroFadeStart) / (heroFadeEnd - heroFadeStart)));
-        setHeroOpacity(heroFade);
-
-        // Typewriter scroll progress & fade: PIXEL-BASED (predictable across all screens)
-        if (typewriterRef.current) {
-          const typewriterRect = typewriterRef.current.getBoundingClientRect();
-          const viewportHeight = scrollableElement.clientHeight;
-          const typewriterTop = typewriterRect.top;
-          const typewriterBottom = typewriterRect.bottom;
-
-          // Calculate section center distance from viewport center (pixel-based)
-          const sectionCenter = typewriterTop + (typewriterRect.height / 2);
-          const viewportCenter = viewportHeight / 2;
-          const distanceFromCenter = sectionCenter - viewportCenter;
-
-          // TYPING ANIMATION: Based on distance from center (not viewport %)
-          // Starts when section center is 500px below viewport center
-          // Completes when section center is 50px below viewport center
-          // Total range: 450px of scrolling (smoother, more luxurious)
-          let scrollProgress = 0;
-
-          if (distanceFromCenter > 500) {
-            // Section center more than 500px below viewport center - not started
-            scrollProgress = 0;
-          } else if (distanceFromCenter > 50) {
-            // Section center between 500px below and 50px below center
-            // Progress from 0 to 1 over 450px of scrolling
-            scrollProgress = (500 - distanceFromCenter) / 450;
-          } else {
-            // Section center at 50px below viewport center or higher - complete
-            scrollProgress = 1;
-          }
-
-          const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
-          setTypewriterScrollProgress(clampedProgress);
-
-          // FADE OPACITY: Based on absolute pixels from viewport top (not %)
-          // Fades out only when section is within 40px of top edge
-          let fadeOpacity = 1;
-
-          if (typewriterTop > viewportHeight) {
-            // Section completely below viewport
-            fadeOpacity = 0;
-          } else if (typewriterBottom < 0) {
-            // Section completely above viewport
-            fadeOpacity = 0;
-          } else if (typewriterTop > viewportHeight - 100) {
-            // Section entering from bottom - fade in over 100px
-            fadeOpacity = (viewportHeight - typewriterTop) / 100;
-          } else if (typewriterTop < 40 && typewriterTop > 0) {
-            // Section within 40px of top - fade out
-            fadeOpacity = typewriterTop / 40;
-          } else {
-            // Section fully visible in viewport
-            fadeOpacity = 1;
-          }
-
-          setTypewriterOpacity(Math.max(0, Math.min(1, fadeOpacity)));
-
-          // Headline opacity: Fade in when typewriter ≥ 70% complete (smoother reveal)
-          const headlineFade = clampedProgress >= 0.7 ? Math.min(1, (clampedProgress - 0.7) / 0.25) : 0;
-          setHeadlineOpacity(headlineFade);
-        }
-
-        // Parallax: move UP to create separation
-        const parallaxOffset = Math.max(scrollTop * -0.2, -20);
-        setAboutParallax(parallaxOffset);
-
-        // Floating elements parallax
-        setFloatingElementsOffset(scrollTop * 0.3);
-
-        lastScrollTop.current = scrollTop;
       }
+      setActiveSection(current);
+
+      // Typewriter scroll progress
+      if (typewriterRef.current) {
+        const tr = typewriterRef.current.getBoundingClientRect();
+        const vh = el.clientHeight;
+        const center = tr.top + tr.height / 2;
+        const dist = center - vh / 2;
+        let sp = 0;
+        if (dist <= 50) sp = 1;
+        else if (dist <= 500) sp = (500 - dist) / 450;
+        setTypewriterScrollProgress(Math.max(0, Math.min(1, sp)));
+
+        let fade = 1;
+        if (tr.top > vh) fade = 0;
+        else if (tr.bottom < 0) fade = 0;
+        else if (tr.top > vh - 100) fade = (vh - tr.top) / 100;
+        else if (tr.top < 40 && tr.top > 0) fade = tr.top / 40;
+        setTypewriterOpacity(Math.max(0, Math.min(1, fade)));
+      }
+
+      lastScrollTop.current = scrollTop;
     });
   }, []);
 
-  // Attach scroll listener with RAF cleanup
   useEffect(() => {
-    const scrollableElement = document.querySelector('.scrollable-content');
-    if (scrollableElement) {
-      scrollableElement.addEventListener('scroll', handleScroll);
-      handleScroll(); // Initial call
-      return () => {
-        scrollableElement.removeEventListener('scroll', handleScroll);
-        // Cancel any pending RAF on unmount
-        if (rafId.current !== null) {
-          cancelAnimationFrame(rafId.current);
-        }
-      };
-    }
+    const el = document.querySelector(".scrollable-content");
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+      if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+    };
   }, [handleScroll]);
 
-  // Fix mobile viewport height (100vh issue with address bar)
-  useEffect(() => {
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-
-    setVH();
-    window.addEventListener('resize', setVH);
-    window.addEventListener('orientationchange', setVH);
-
-    return () => {
-      window.removeEventListener('resize', setVH);
-      window.removeEventListener('orientationchange', setVH);
-    };
-  }, []);
-
-  const scrollToTop = () => {
-    const scrollableElement = document.querySelector('.scrollable-content');
-    if (scrollableElement) {
-      scrollableElement.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  // GROUP 3 — #35: Spotlight cycling with auto-advance
+  // Spotlight cycling
   useEffect(() => {
     if (isAnythingHovered) return;
-    const interval = setInterval(() => {
-      setSpotlightIndex((i) => (i + 1) % 6);
-    }, 5000);
+    const interval = setInterval(() => setSpotlightIndex((i) => (i + 1) % 6), 5000);
     return () => clearInterval(interval);
   }, [isAnythingHovered]);
 
-  // GROUP 3 — #34: Compute connecting line positions after mount/resize
+  // Connecting line positions
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const computeLines = () => {
+    if (typeof window === "undefined") return;
+    const compute = () => {
       const section = statsSectionRef.current;
       if (!section) return;
-      const sectionRect = section.getBoundingClientRect();
-      const pairs = [
-        [0, 2],
-        [1, 4],
-      ] as [number, number][];
-      const newLines = pairs
+      const sr = section.getBoundingClientRect();
+      const pairs: [number, number][] = [[0, 2], [1, 4]];
+      const lines = pairs
         .map(([a, b]) => {
-          const refA = cardRefs.current[a];
-          const refB = cardRefs.current[b];
-          if (!refA || !refB) return null;
-          const rA = refA.getBoundingClientRect();
-          const rB = refB.getBoundingClientRect();
+          const rA = cardRefs.current[a]?.getBoundingClientRect();
+          const rB = cardRefs.current[b]?.getBoundingClientRect();
+          if (!rA || !rB) return null;
           return {
-            x1: rA.left + rA.width / 2 - sectionRect.left,
-            y1: rA.top + rA.height / 2 - sectionRect.top,
-            x2: rB.left + rB.width / 2 - sectionRect.left,
-            y2: rB.top + rB.height / 2 - sectionRect.top,
+            x1: rA.left + rA.width / 2 - sr.left,
+            y1: rA.top + rA.height / 2 - sr.top,
+            x2: rB.left + rB.width / 2 - sr.left,
+            y2: rB.top + rB.height / 2 - sr.top,
           };
         })
         .filter((l): l is { x1: number; y1: number; x2: number; y2: number } => l !== null);
-      setLineCoords(newLines);
+      setLineCoords(lines);
     };
-
-    // Defer to allow card layout to settle
-    const timer = setTimeout(computeLines, 600);
-    window.addEventListener('resize', computeLines);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', computeLines);
-    };
+    const t = setTimeout(compute, 600);
+    window.addEventListener("resize", compute);
+    return () => { clearTimeout(t); window.removeEventListener("resize", compute); };
   }, []);
+
+  const scrollToTop = () => {
+    document.querySelector(".scrollable-content")?.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (!data) {
     return (
@@ -357,7 +1183,7 @@ export default function BlackberryAboutContent() {
         <motion.div
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="text-[20px] text-white/70"
+          className="text-[16px] text-white/70"
           style={{ fontFamily: "var(--font-body)" }}
         >
           LOADING...
@@ -367,1430 +1193,169 @@ export default function BlackberryAboutContent() {
   }
 
   return (
-    <main className="relative w-full h-full bg-black overflow-hidden" role="main" aria-label="About HandToMouse" style={{ fontFamily: "var(--font-body)" }}>
-      {/* Load Progress Indicator - BlackBerry Style */}
+    <main
+      className="relative w-full h-full bg-black overflow-hidden"
+      role="main"
+      aria-label="About HandToMouse"
+      style={{ fontFamily: "var(--font-body)" }}
+    >
+      {/* Load progress bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-[2px] bg-[var(--accent)] origin-left z-[9999]"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: data ? 1 : 0.3 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          boxShadow: '0 0 8px rgba(255,157,35,0.6)'
-        }}
+        style={{ boxShadow: "0 0 8px rgba(255,157,35,0.6)" }}
       />
 
-      {/* Scroll Progress Gradient Overlay */}
+      {/* Scroll Progress Gradient */}
       <div
         className="fixed inset-0 pointer-events-none transition-opacity duration-1000 ease-out"
         style={{
           background: `radial-gradient(circle at 50% 50%, rgba(255,157,35,${scrollProgress * 0.0005}) 0%, transparent 70%)`,
-          opacity: Math.min(scrollProgress / 100, 0.5)
+          opacity: Math.min(scrollProgress / 100, 0.5),
         }}
       />
 
-      {/* Optimized Parallax Background Layer */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-20"
-        style={{
-          background: 'radial-gradient(circle at 30% 40%, rgba(255,157,35,0.06) 0%, transparent 60%)',
-          transform: `translateY(${floatingElementsOffset * 0.3}px)`,
-          willChange: 'transform'
-        }}
-      />
-
-      {/* Optimized Floating geometric elements */}
-      <div
-        className="fixed w-32 h-32 border border-[var(--accent)]/8 pointer-events-none"
-        style={{
-          top: '15%',
-          left: '8%',
-          transform: `translateY(${floatingElementsOffset * 0.8}px) rotate(45deg)`,
-          willChange: 'transform'
-        }}
-      />
-      <div
-        className="fixed w-20 h-20 border border-[var(--accent)]/6 pointer-events-none"
-        style={{
-          bottom: '25%',
-          right: '12%',
-          transform: `translateY(${floatingElementsOffset * 0.6}px) rotate(30deg)`,
-          willChange: 'transform',
-          clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
-        }}
-      />
-
-      {/* Skip Links for Keyboard Navigation */}
+      {/* Skip links */}
       <div className="sr-only focus-within:not-sr-only">
         <a
           href="#services"
-          className="fixed top-4 left-4 z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black"
+          className="fixed top-4 left-4 z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[12px] font-bold uppercase tracking-wide focus:outline-none"
         >
           Skip to Services
         </a>
         <a
-          href="#details"
-          className="fixed top-4 left-[180px] z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black"
-        >
-          Skip to Details
-        </a>
-        <a
           href="#contact"
-          className="fixed top-4 left-[360px] z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[14px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black"
+          className="fixed top-4 left-[160px] z-[100] bg-[var(--accent)] text-black px-4 py-2 text-[12px] font-bold uppercase tracking-wide focus:outline-none"
         >
           Skip to Contact
         </a>
       </div>
 
-      {/* ARIA Live Region for Screen Readers */}
-      <div
-        className="sr-only"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {scrollProgress > 90 && "Near end of page"}
-        {scrollProgress > 50 && scrollProgress <= 90 && "Halfway through page"}
+      {/* ARIA live region */}
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {activeSection && `Currently viewing ${activeSection} section`}
       </div>
 
-      {/* Floating CTA Button */}
-      {showFloatingCTA && data && (
-        <motion.a
-          href="/contact"
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(255,157,35,0.9)' }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => triggerHaptic(15)}
-          className="fixed bottom-8 left-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-[14px] md:text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[var(--accent-hover)] transition-all duration-300 touch-manipulation shadow-lg"
-          aria-label="Get in touch"
-        >
-          Get in Touch →
-        </motion.a>
-      )}
-
-      {/* Section Navigation Dots */}
-      <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3" aria-label="Section navigation">
+      {/* Section nav dots */}
+      <nav
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-2"
+        aria-label="Section navigation"
+      >
         {[
-          { id: "value", label: "Value" },
-          { id: "stats", label: "Stats" },
+          { id: "hook", label: "Intro" },
           { id: "services", label: "Services" },
-          { id: "process", label: "Process" },
           { id: "proof", label: "Proof" },
+          { id: "process", label: "Process" },
+          { id: "stats", label: "Stats" },
           { id: "details", label: "Details" },
           { id: "now", label: "Now" },
-          { id: "contact", label: "Contact" }
-        ].map((section) => (
+          { id: "contact", label: "Contact" },
+        ].map((s) => (
           <a
-            key={section.id}
-            href={`#${section.id}`}
+            key={s.id}
+            href={`#${s.id}`}
             onClick={(e) => {
               e.preventDefault();
-              document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth" });
+              document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" });
               triggerHaptic(10);
             }}
             className="group relative flex items-center"
-            aria-label={`Go to ${section.label} section`}
+            aria-label={`Go to ${s.label} section`}
           >
-            <span className="absolute right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[11px] text-[var(--accent)] uppercase tracking-wider font-medium whitespace-nowrap bg-black/80 px-2 py-1 border border-[var(--accent)]/30">
-              {section.label}
+            <span className="absolute right-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[10px] text-[var(--accent)] uppercase tracking-wider whitespace-nowrap bg-black/80 px-2 py-0.5 border border-[var(--accent)]/30">
+              {s.label}
             </span>
             <div
-              className={`w-2 h-2 rounded-full border transition-all duration-300 ${
-                activeSection === section.id
-                  ? "bg-[var(--accent)] border-[var(--accent)] w-3 h-3 shadow-[0_0_8px_rgba(255,157,35,0.8)]"
-                  : "bg-transparent border-[var(--accent)]/40 group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)]/50"
+              className={`w-1.5 h-1.5 rounded-full border transition-all duration-300 ${
+                activeSection === s.id
+                  ? "bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_6px_rgba(255,157,35,0.8)]"
+                  : "bg-transparent border-[var(--accent)]/40 group-hover:border-[var(--accent)]"
               }`}
             />
           </a>
         ))}
       </nav>
 
-      {/* Exit Intent Popup */}
-      {showExitIntent && data && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-          onClick={() => setShowExitIntent(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl mx-4 border-2 border-[var(--accent)] bg-black p-8 md:p-12 shadow-[0_0_80px_rgba(255,157,35,0.4)]"
-          >
-            <button
-              onClick={() => setShowExitIntent(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-[var(--accent)] text-[24px] transition-colors"
-              aria-label="Close"
-            >
-              ✕
-            </button>
-
-            <h3 className="text-[28px] md:text-[36px] font-bold text-[var(--accent)] uppercase tracking-[0.08em] mb-6">
-              Wait — One Last Thing
-            </h3>
-            <p className="text-[18px] md:text-[22px] text-white/90 leading-relaxed mb-8">
-              {data.contact.status} • {data.contact.responseTime}
-            </p>
-            <p className="text-[16px] md:text-[18px] text-white/70 leading-relaxed mb-8">
-              Most projects start with a 30-min discovery call. No pitch, no pressure — just clarity on whether we're a fit.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <motion.a
-                href="/contact"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => triggerHaptic(15)}
-                className="flex-1 border-2 border-[var(--accent)] bg-[var(--accent)] px-8 py-4 text-center text-[16px] font-bold text-black uppercase tracking-wide hover:bg-[var(--accent-hover)] transition-all duration-300"
-              >
-                Book a Call →
-              </motion.a>
-              <button
-                onClick={() => setShowExitIntent(false)}
-                className="flex-1 border-2 border-[var(--accent)]/40 bg-transparent px-8 py-4 text-[16px] font-bold text-[var(--accent)] uppercase tracking-wide hover:border-[var(--accent)] hover:bg-[var(--accent)]/10 transition-all duration-300"
-              >
-                Keep Browsing
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* Back to Top Button */}
+      {/* Back to top */}
       {showBackToTop && (
         <motion.button
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           whileTap={{ scale: 0.85 }}
-          onClick={() => {
-            triggerHaptic(15);
-            scrollToTop();
-          }}
-          className="fixed bottom-8 right-8 z-50 border-2 border-[var(--accent)] bg-[var(--accent)] p-4 hover:bg-[var(--accent-hover)] active:bg-[#ff8800] hover:shadow-[0_0_40px_rgba(255,157,35,0.8)] transition-all duration-300 touch-manipulation"
+          onClick={() => { triggerHaptic(15); scrollToTop(); }}
+          className="fixed bottom-6 right-6 z-50 border border-[var(--accent)] bg-[var(--accent)] p-3 hover:bg-[var(--accent-hover)] transition-all duration-300 touch-manipulation"
           aria-label="Scroll to top"
         >
-          <span className="text-black text-[24px]">↑</span>
+          <span className="text-black text-[16px]">↑</span>
         </motion.button>
       )}
 
-      {/* Main Content */}
-      <div className="w-full px-6 md:px-12 lg:px-20">
-        {/* Hero Section with Sticky Title & Floating Icon */}
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative"
-          style={{ scrollSnapAlign: 'center' }}
-        >
-          {/* Luxury Vignette Overlay */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle at 50% 40%, transparent 0%, transparent 40%, rgba(0,0,0,0.2) 100%)',
-              zIndex: 1
-            }}
-          />
+      {/* ── CONTENT ─────────────────────────────────────────────────────────── */}
+      <div className="w-full">
 
-          <div
-            className="sticky top-[20vh] h-[60vh] flex flex-col items-center justify-center text-center gap-24 md:gap-32"
-            style={{
-              opacity: heroOpacity,
-              transform: `translateY(${aboutParallax}px) scale(${1 + (scrollProgress * 0.001)})`,
-              transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease',
-              pointerEvents: heroOpacity < 0.5 ? 'none' : 'auto',
-              zIndex: heroOpacity < 0.5 ? -1 : 20,
-              visibility: heroOpacity < 0.05 ? 'hidden' : 'visible'
-            }}
-          >
-            {/* Read Time Indicator - Top Right Corner - More Visible */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 0.8, y: 0 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
-              className="fixed top-24 right-6 md:right-12 z-30"
-            >
-              <div
-                className="px-4 py-2 backdrop-blur-md bg-black/40"
-                style={{
-                  fontSize: '11px',
-                  letterSpacing: '0.12em',
-                  fontFamily: '"argent-pixel-cf", sans-serif',
-                  border: '1px solid rgba(255,157,35,0.3)',
-                  boxShadow: '0 0 16px rgba(255,157,35,0.25), 0 2px 8px rgba(0,0,0,0.6)'
-                }}
-              >
-                <span className="text-[var(--accent)]/90 uppercase font-medium">~3 min read</span>
-              </div>
-            </motion.div>
+        {/* ZONE 1 — Hook (always visible, above the fold) */}
+        <HookStrip data={data} />
 
-            <div className="relative">
-              {/* BlackBerry Grid Pattern */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)',
-                  backgroundSize: '8px 8px',
-                  opacity: 0.3
-                }}
-              />
+        <DotDivider />
 
-              {/* Luxury solid title with Apple-esque shadows */}
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                  filter: 'blur(8px)'
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  filter: 'blur(0px)'
-                }}
-                transition={{
-                  duration: 1.2,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 0.3
-                }}
-                className="relative"
-              >
-                {/* Main solid text with gradient fade */}
-                <h1
-                  className="relative font-normal uppercase tracking-[0.15em] leading-none select-none"
-                  style={{
-                    fontFamily: '"argent-pixel-cf", sans-serif',
-                    fontSize: 'clamp(80px, 18vw, 280px)',
-                    background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.4) 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    WebkitTextStroke: '0px',
-                    filter: `
-                      drop-shadow(0 1px 2px rgba(0,0,0,0.08))
-                      drop-shadow(0 2px 4px rgba(0,0,0,0.06))
-                      drop-shadow(0 4px 8px rgba(0,0,0,0.05))
-                      drop-shadow(0 8px 16px rgba(0,0,0,0.04))
-                      drop-shadow(0 16px 32px rgba(0,0,0,0.03))
-                      drop-shadow(0 32px 64px rgba(0,0,0,0.02))
-                      drop-shadow(0 8px 24px rgba(255,157,35,0.06))
-                    `
-                  }}
-                >
-                  About
-                </h1>
+        {/* ZONE 2 — What We Do */}
+        <WhatWeDo data={data} />
 
-                {/* Accent glow layer */}
-                <h1
-                  className="absolute inset-0 font-normal uppercase tracking-[0.15em] leading-none select-none pointer-events-none"
-                  aria-hidden="true"
-                  style={{
-                    fontFamily: '"argent-pixel-cf", sans-serif',
-                    fontSize: 'clamp(80px, 18vw, 280px)',
-                    background: `linear-gradient(180deg, var(--accent) 0%, transparent 60%)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    WebkitTextStroke: '0px',
-                    opacity: 0.12,
-                    filter: 'blur(1px)'
-                  }}
-                >
-                  About
-                </h1>
+        <DotDivider />
 
-                {/* Scan line animation - BlackBerry tech aesthetic */}
-                <motion.div
-                  animate={{
-                    top: ['0%', '100%'],
-                    opacity: [0, 0.25, 0.25, 0]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'linear',
-                    times: [0, 0.1, 0.9, 1]
-                  }}
-                  className="absolute pointer-events-none"
-                  style={{
-                    left: '0',
-                    right: '0',
-                    height: '2px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,157,35,0.6), transparent)',
-                    boxShadow: '0 0 12px rgba(255,157,35,0.4)'
-                  }}
-                  aria-hidden="true"
-                />
-              </motion.div>
+        {/* ZONE 3 — Proof */}
+        <ProofSection data={data} onOpenWork={onOpenWork} />
 
-              {/* Upgraded subtitle - BlackBerry branded */}
-              <motion.div
-                initial={{ opacity: 0, y: 10, letterSpacing: '0.5em' }}
-                animate={{ opacity: 0.9, y: 0, letterSpacing: '0.24em' }}
-                transition={{
-                  duration: 1.2,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 1.0
-                }}
-                className="inline-block px-8 py-3"
-                style={{
-                  marginTop: '40px',
-                  fontSize: '16px',
-                  fontFamily: '"argent-pixel-cf", sans-serif',
-                  color: 'var(--accent)',
-                  textTransform: 'uppercase',
-                  textShadow: '0 0 20px rgba(255,157,35,0.4), 0 2px 6px rgba(0,0,0,0.5)',
-                  borderTop: '1px solid rgba(255,157,35,0.2)',
-                  borderBottom: '1px solid rgba(255,157,35,0.2)'
-                }}
-              >
-                Creative Direction
-              </motion.div>
-            </div>
+        <DotDivider />
 
-            {/* Scroll indicator - Minimal BlackBerry chevron */}
-            <motion.div
-              className="mt-16 md:mt-20 flex flex-col items-center gap-2"
-              animate={{
-                y: [0, 8, 0]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              {/* Down chevron */}
-              <motion.svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--accent)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{
-                  filter: 'drop-shadow(0 0 8px rgba(255,157,35,0.4))'
-                }}
-                animate={{ opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </motion.svg>
-              {/* "SCROLL" label */}
-              <motion.span
-                style={{
-                  fontSize: '10px',
-                  fontFamily: '"argent-pixel-cf", sans-serif',
-                  color: 'var(--accent)',
-                  letterSpacing: '0.24em',
-                  textShadow: '0 0 8px rgba(255,157,35,0.3)',
-                  opacity: 0.7
-                }}
-              >
-                SCROLL
-              </motion.span>
-            </motion.div>
-          </div>
-        </motion.div>
+        {/* ZONE 4 — Process */}
+        <ProcessSection data={data} />
 
-        {/* Typewriter Section - Standalone */}
-        <section id="typewriter" className="min-h-[60vh] flex items-center justify-center py-16 md:py-20 scroll-mt-20 mb-32 md:mb-48">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-4xl mx-auto text-center px-8 md:px-16"
-          >
-            {/* Typewriter Headline */}
-            <div ref={typewriterRef}>
-              <TypewriterManifesto
-                text="Everyone's chasing new — we chase different."
-                onComplete={handleTypewriterComplete}
-                scrollProgress={typewriterScrollProgress}
-                opacity={typewriterOpacity}
-              />
-            </div>
-          </motion.div>
-        </section>
+        {/* Typewriter interlude */}
+        <TypewriterSection
+          typewriterRef={typewriterRef as React.RefObject<HTMLDivElement>}
+          typewriterScrollProgress={typewriterScrollProgress}
+          typewriterOpacity={typewriterOpacity}
+          onTypewriterComplete={handleTypewriterComplete}
+        />
 
-        {/* Body Text Section - Luxury Redesign */}
-        <section id="value" className="min-h-[50vh] md:min-h-[60vh] flex items-center justify-center py-20 md:py-32 scroll-mt-20 mt-48 md:mt-64">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-5xl mx-auto px-8 md:px-16"
-          >
-            {/* Section number label - BlackBerry style */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 0.5, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-[12px] mb-16 md:mb-24"
-              style={{
-                fontFamily: '"argent-pixel-cf", sans-serif',
-                letterSpacing: '0.24em',
-                color: 'var(--accent)'
-              }}
-            >
-              — 01
-            </motion.div>
-            {/* Clean, centered luxury layout - 8px vertical rhythm */}
-            <motion.div
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.3,
-                    delayChildren: 0.4
-                  }
-                }
-              }}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="space-y-[48px] md:space-y-[64px]"
-              style={{ lineHeight: '1.5' }}
-            >
-              {/* First statement - Bold opening */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
-                }}
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-                className="text-center p-6 md:p-8 border border-transparent hover:border-[var(--accent)]/20 transition-all duration-300"
-                style={{
-                  cursor: 'default'
-                }}
-              >
-                <div className="max-w-4xl mx-auto">
-                  <div
-                    className="text-[10px] mb-4 opacity-50"
-                    style={{
-                      fontFamily: '"argent-pixel-cf", sans-serif',
-                      letterSpacing: '0.12em',
-                      color: 'var(--accent)'
-                    }}
-                  >
-                    // 01
-                  </div>
-                  <p
-                    className="text-[22px] md:text-[28px] lg:text-[32px] leading-[1.5]"
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      color: 'rgba(255,255,255,0.95)',
-                      fontWeight: 300,
-                      textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                      letterSpacing: '0.02em'
-                    }}
-                  >
-                    I work where <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>ideas meet culture</span> — finding the small, precise angle no one else has noticed yet.
-                  </p>
-                </div>
-              </motion.div>
+        {/* Stats grid — untouched logic */}
+        <StatsSection
+          data={data}
+          mouseX={mouseX}
+          mouseY={mouseY}
+          springX={springX}
+          springY={springY}
+          statsSectionRef={statsSectionRef}
+          cardRefs={cardRefs}
+          lineCoords={lineCoords}
+          hoveredCardIndex={hoveredCardIndex}
+          setHoveredCardIndex={setHoveredCardIndex}
+          isAnythingHovered={isAnythingHovered}
+          setIsAnythingHovered={setIsAnythingHovered}
+          spotlightIndex={spotlightIndex}
+        />
 
-              {/* BB-style dot divider */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-                }}
-                className="flex items-center justify-center gap-2"
-              >
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.7 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
-              </motion.div>
+        {/* Beliefs compact */}
+        <BeliefsGrid data={data} />
 
-              {/* Second statement - Philosophy */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
-                }}
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-                className="text-center p-6 md:p-8 border border-transparent hover:border-[var(--accent)]/20 transition-all duration-300"
-                style={{
-                  cursor: 'default'
-                }}
-              >
-                <div className="max-w-3xl mx-auto">
-                  <div
-                    className="text-[10px] mb-4 opacity-50"
-                    style={{
-                      fontFamily: '"argent-pixel-cf", sans-serif',
-                      letterSpacing: '0.12em',
-                      color: 'var(--accent)'
-                    }}
-                  >
-                    // 02
-                  </div>
-                  <p
-                    className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6]"
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      color: 'rgba(255,255,255,0.9)',
-                      fontWeight: 300,
-                      textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                      letterSpacing: '0.02em'
-                    }}
-                  >
-                    The work: making something that still feels right in <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>five years</span>, not just five minutes.
-                  </p>
-                </div>
-              </motion.div>
+        {/* Details (collapsibles) */}
+        <DetailsSection
+          data={data}
+          openSection={openSection}
+          setOpenSection={setOpenSection}
+        />
 
-              {/* BB-style dot divider */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-                }}
-                className="flex items-center justify-center gap-2"
-              >
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.7 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.5 }} />
-                <div className="w-1 h-1 rounded-full bg-[var(--accent)]" style={{ opacity: 0.3 }} />
-              </motion.div>
+        {/* Now block */}
+        <NowBlock data={data} />
 
-              {/* Third statement - Method */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }
-                }}
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-                className="text-center p-6 md:p-8 border border-transparent hover:border-[var(--accent)]/20 transition-all duration-300"
-                style={{
-                  cursor: 'default'
-                }}
-              >
-                <div className="max-w-3xl mx-auto">
-                  <div
-                    className="text-[10px] mb-4 opacity-50"
-                    style={{
-                      fontFamily: '"argent-pixel-cf", sans-serif',
-                      letterSpacing: '0.12em',
-                      color: 'var(--accent)'
-                    }}
-                  >
-                    // 03
-                  </div>
-                  <p
-                    className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.6]"
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      color: 'rgba(255,255,255,0.9)',
-                      fontWeight: 300,
-                      textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                      letterSpacing: '0.02em'
-                    }}
-                  >
-                    The method: <span className="text-[var(--accent)] font-medium" style={{ textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.3)' }}>research, reference, and restraint</span> — knowing what to leave out.
-                  </p>
-                </div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* Stats Grid - Social Proof */}
-
-          <section
-            id="stats"
-            ref={statsSectionRef}
-            aria-label="Company statistics"
-            className="relative flex flex-col items-center justify-center px-4 md:px-8 lg:px-12 py-32 scroll-mt-20"
-            style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', ...STAT_CARD_VARS, position: 'relative', overflow: 'hidden' }}
-            onMouseMove={(e) => {
-              const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-              mouseX.set(e.clientX - rect.left);
-              mouseY.set(e.clientY - rect.top);
-            }}
-          >
-          {/* Improvement #6: Subtle radial gradient backdrop */}
-          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)', opacity: 0.4 }} />
-
-          {/* GROUP 3 — #25: Trailing glow cursor */}
-          <motion.div
-            style={{
-              position: 'absolute',
-              pointerEvents: 'none',
-              width: 120,
-              height: 120,
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(255,157,35,0.07) 0%, transparent 70%)',
-              x: springX,
-              y: springY,
-              translateX: '-50%',
-              translateY: '-50%',
-              zIndex: 0,
-            }}
-          />
-
-          {/* GROUP 3 — #34: Connecting lines SVG overlay */}
-          {lineCoords.length > 0 && (
-            <svg
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                pointerEvents: 'none',
-                zIndex: 1,
-              }}
-            >
-              {lineCoords.map((line, li) => {
-                const pairIndices = [[0, 2], [1, 4]];
-                const [a, b] = pairIndices[li] ?? [0, 0];
-                const isActive = hoveredCardIndex === a || hoveredCardIndex === b;
-                return (
-                  <line
-                    key={li}
-                    x1={line.x1}
-                    y1={line.y1}
-                    x2={line.x2}
-                    y2={line.y2}
-                    stroke="#ff9d23"
-                    strokeOpacity={isActive ? 0.35 : 0.12}
-                    strokeDasharray="4 4"
-                    strokeWidth="1"
-                    style={{ transition: 'stroke-opacity 0.3s' }}
-                  />
-                );
-              })}
-            </svg>
-          )}
-
-          {/* GROUP 3 — #36: Scroll reveal curtain */}
-          <motion.div
-            initial={{ y: 0 }}
-            whileInView={{ y: '100%' }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: '#0b0b0b',
-              zIndex: 10,
-              pointerEvents: 'none',
-              originY: 1,
-            }}
-          />
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-            className="text-[40px] md:text-[48px] lg:text-[64px] font-bold uppercase text-center mb-12 md:mb-16 lg:mb-20"
-            style={{
-              fontFamily: '"argent-pixel-cf", sans-serif',
-              color: 'var(--accent)',
-              letterSpacing: '0.15em',
-              textShadow: '0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)',
-              position: 'relative',
-              zIndex: 2,
-            }}
-          >
-            By The Numbers
-          </motion.h2>
-          {/* GROUP 3 — #37: Masonry mobile layout wrapper */}
-          <div
-            className="relative w-full max-w-6xl mx-auto"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: 'var(--card-gap)',
-              alignItems: 'stretch',
-              zIndex: 2,
-            }}
-          >
-            {/* Card 0 — Projects (flagship, priority) */}
-            <div
-              ref={(el) => { cardRefs.current[0] = el; }}
-              className="col-span-full sm:col-auto"
-              style={{ aspectRatio: undefined }}
-              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(0); }}
-              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
-            >
-              <LuxuryStatCard
-                label="Projects"
-                value={data.stats.projects}
-                delay={0.3}
-                index={0}
-                priority={true}
-                benchmark="2.8× avg studio output"
-                trend={[15, 25, 38, 50, 62, 75, 90, 100]}
-                story="60+ brand projects delivered since 2020 — each one a different brief, a different sector, the same obsession with precision."
-                shareText="60+ projects delivered since 2020 — HandToMouse Studio"
-                isSpotlit={spotlightIndex === 0}
-              />
-            </div>
-
-            {/* Card 1 — Retention */}
-            <div
-              ref={(el) => { cardRefs.current[1] = el; }}
-              className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
-              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(1); }}
-              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
-            >
-              <LuxuryStatCard
-                label="Retention"
-                value={data.stats.retention}
-                delay={0.4}
-                index={1}
-                benchmark="1.9× industry avg"
-                trend={[40, 52, 60, 68, 72, 75]}
-                story="3 in 4 clients return for the next project. Good systems create dependency — in the best possible way."
-                shareText="75% client retention — HandToMouse Studio"
-                isSpotlit={spotlightIndex === 1}
-              />
-            </div>
-
-            {/* Card 2 — Repeat Clients */}
-            <div
-              ref={(el) => { cardRefs.current[2] = el; }}
-              className="even:aspect-[4/3] odd:aspect-[3/2] sm:aspect-auto"
-              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(2); }}
-              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
-            >
-              <LuxuryStatCard
-                label="Repeat Clients"
-                value={data.stats.repeatClients}
-                delay={0.5}
-                index={2}
-                benchmark="3× typical agency rate"
-                trend={[20, 28, 35, 40, 43, 45]}
-                story="45% of clients return within 18 months. The brief changes — the relationship doesn't."
-                shareText="45% repeat client rate — HandToMouse Studio"
-                isSpotlit={spotlightIndex === 2}
-              />
-            </div>
-
-            {/* Card 3 — Years Active */}
-            <div
-              ref={(el) => { cardRefs.current[3] = el; }}
-              className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
-              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(3); }}
-              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
-            >
-              <LuxuryStatCard
-                label="Years Active"
-                value="6"
-                delay={0.6}
-                index={3}
-                trend={[10, 25, 40, 55, 70, 100]}
-                story="6 years of focused practice. Long enough to know what works — still close enough to stay curious."
-                shareText="6 years active — HandToMouse Studio"
-                isSpotlit={spotlightIndex === 3}
-              />
-            </div>
-
-            {/* Card 4 — Response */}
-            <div
-              ref={(el) => { cardRefs.current[4] = el; }}
-              className="even:aspect-[4/3] odd:aspect-[3/2] sm:aspect-auto"
-              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(4); }}
-              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
-            >
-              <LuxuryStatCard
-                label="Response"
-                value={data.stats.avgResponse}
-                delay={0.7}
-                index={4}
-                benchmark="5× faster than avg agency"
-                trend={[100, 85, 70, 60, 52, 48]}
-                story="48hr average turnaround — usually 4hr. Clarity is part of the service, not an afterthought."
-                shareText="48hr average response — HandToMouse Studio"
-                isSpotlit={spotlightIndex === 4}
-              />
-            </div>
-
-            {/* Card 5 — Industries */}
-            <div
-              ref={(el) => { cardRefs.current[5] = el; }}
-              className="odd:aspect-[3/2] even:aspect-[4/3] sm:aspect-auto"
-              onMouseEnter={() => { setIsAnythingHovered(true); setHoveredCardIndex(5); }}
-              onMouseLeave={() => { setIsAnythingHovered(false); setHoveredCardIndex(null); }}
-            >
-              <LuxuryStatCard
-                label="Industries"
-                value={data.stats.industries}
-                delay={0.8}
-                index={5}
-                trend={[2, 4, 5, 6, 7, 8]}
-                story="8 industries covered — hospitality to healthcare. Diverse context sharpens the eye."
-                shareText="8 industries served — HandToMouse Studio"
-                isSpotlit={spotlightIndex === 5}
-              />
-            </div>
-          </div>
-          </section>
-
-
-        {/* Beliefs Section */}
-        {data.beliefs && data.beliefs.length > 0 && (
-          <section id="beliefs" className="py-20 md:py-32 flex flex-col items-center justify-center scroll-mt-20">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-16 md:mb-20"
-              style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
-            >
-              What We Believe
-            </motion.h2>
-            <div className="max-w-3xl mx-auto px-8 md:px-16 space-y-6">
-              {data.beliefs.map((belief, idx) => (
-                <LuxuryBelief
-                  key={idx}
-                  icon={belief.icon}
-                  text={belief.text}
-                  delay={idx * 0.12}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Services Grid */}
-
-          <section id="services" aria-label="Our services" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-12 md:space-y-16 scroll-mt-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="sticky top-8 z-10 text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] bg-black/90 py-4"
-            style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
-          >
-            What We Do
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
-            {data.services.map((service, idx) => (
-              <LuxuryServiceCard key={idx} service={service} delay={idx * 0.25} />
-            ))}
-          </div>
-          {/* Mini CTA - Interim Conversion Opportunity */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mt-12 md:mt-16"
-          >
-            <motion.a
-              href="/contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-block border-2 border-[var(--accent)] bg-[var(--accent)]/10 px-8 py-4 text-[18px] md:text-[22px] font-bold text-[var(--accent)] uppercase tracking-wide hover:bg-[var(--accent)]/20 transition-all duration-300"
-            >
-              {scrollProgress < 40 ? "Ready to start? →" : scrollProgress < 70 ? "Still interested? →" : "Let's talk →"}
-            </motion.a>
-          </motion.div>
-          </section>
-
-
-        {/* Process - Standalone Section */}
-        <section id="process" className="py-16 md:py-20 flex flex-col items-center justify-center scroll-mt-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
-            style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
-          >
-            How I Work
-          </motion.h2>
-
-          <div className="max-w-4xl mx-auto px-8 md:px-16 space-y-6">
-            {data.process.steps.map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-start gap-6 border-l-2 border-[var(--accent)]/40 pl-6 py-3 hover:border-[var(--accent)] hover:pl-8 transition-all duration-700"
-              >
-                <span className="text-[28px] text-[var(--accent)]">{step.num}</span>
-                <div>
-                  <div className="font-bold text-[18px] md:text-[22px] text-white leading-relaxed tracking-wide">
-                    {step.title} • <span className="text-[var(--accent)]">{step.promise}</span>
-                  </div>
-                  <div className="text-[16px] md:text-[18px] text-white/60 mt-2">{step.duration}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-
-        {/* Proof - Client Highlights & Industries */}
-        <section id="proof" className="py-16 md:py-20 flex flex-col items-center justify-center scroll-mt-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[28px] md:text-[36px] lg:text-[48px] font-bold text-[var(--accent)] uppercase text-center tracking-[0.08em] mb-12 md:mb-16"
-            style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 24px rgba(255,157,35,0.4)' }}
-          >
-            Proof
-          </motion.h2>
-
-          <div className="max-w-5xl mx-auto px-8 md:px-16 space-y-10 md:space-y-12">
-            {data.proof.highlights.map((highlight, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="border-l-4 border-[var(--accent)]/60 pl-6 md:pl-8 py-4"
-              >
-                <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-3">
-                  <h3 className="text-[24px] md:text-[28px] font-bold text-white tracking-wide">
-                    {highlight.label}
-                  </h3>
-                  <span className="text-[14px] md:text-[16px] text-[var(--accent)] uppercase tracking-wider">
-                    {highlight.duration}
-                  </span>
-                </div>
-
-                <p className="text-[16px] md:text-[20px] text-white/80 leading-relaxed mb-4">
-                  {highlight.line}
-                </p>
-
-                {highlight.quote && (
-                  <p className="text-[16px] md:text-[18px] text-[var(--accent)]/90 italic leading-relaxed">
-                    {highlight.quote}
-                  </p>
-                )}
-              </motion.div>
-            ))}
-
-            {/* Client Logos */}
-            {data.proof.clients && data.proof.clients.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-                className="text-center mt-12 pt-8 border-t border-white/10"
-              >
-                <p className="text-[13px] md:text-[15px] text-white/40 uppercase tracking-[0.15em] mb-6">
-                  Trusted by
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-                  {data.proof.clients.map((client, idx) => (
-                    <motion.span
-                      key={idx}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5 + idx * 0.1, duration: 0.4 }}
-                      className="text-[18px] md:text-[22px] font-bold text-white/60 uppercase tracking-wide hover:text-[var(--accent)] transition-colors duration-300"
-                    >
-                      {client}
-                    </motion.span>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Industries Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-center mt-8 pt-8 border-t border-white/20"
-            >
-              <p className="text-[16px] md:text-[20px] text-white/70 uppercase tracking-wider">
-                <span className="text-[var(--accent)] font-bold text-[24px] md:text-[28px]">{data.stats.industries}</span> Industries
-                <span className="block mt-2 text-[14px] md:text-[16px] text-white/50 normal-case tracking-normal">
-                  Hospitality • Fashion • E-commerce • Health • Tech • Finance • Arts • Education
-                </span>
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
-
-        {/* Collapsible Sections */}
-
-          <section id="details" className="min-h-screen py-20 flex flex-col items-center justify-center space-y-8 md:space-y-12 scroll-mt-20">
-            {/* Expand/Collapse All Toggle */}
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              onClick={() => {
-                const allOpen = openSection === "all";
-                setOpenSection(allOpen ? null : "all");
-              }}
-              className="border border-[var(--accent)]/40 bg-[var(--accent)]/5 px-6 py-3 text-[14px] md:text-[16px] text-[var(--accent)] uppercase tracking-wide hover:bg-[var(--accent)]/10 hover:border-[var(--accent)] transition-all duration-300"
-            >
-              {openSection === "all" ? "Collapse all ▲" : "Expand all details ▼"}
-            </motion.button>
-
-            <LuxuryCollapsibleSection
-              title="Operations & Setup"
-              icon="⚙️"
-              isOpen={openSection === "ops" || openSection === "all"}
-              onToggle={() => setOpenSection(openSection === "ops" ? null : "ops")}
-            >
-              <div className="space-y-10">
-              <div>
-                <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Operations</h4>
-                <div className="space-y-4">
-                  {data.ops.items.map((item, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.12, duration: 0.6 }}
-                      className="flex items-start gap-4"
-                    >
-                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">{item.icon}</span>
-                      <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{item.text}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-white/20 pt-8">
-                <p className="text-[16px] md:text-[20px] text-white/80 leading-loose">{data.setup.line}</p>
-              </div>
-              </div>
-            </LuxuryCollapsibleSection>
-
-            <LuxuryCollapsibleSection
-              title="Philosophy"
-              icon="💭"
-              isOpen={openSection === "philosophy" || openSection === "all"}
-              onToggle={() => setOpenSection(openSection === "philosophy" ? null : "philosophy")}
-            >
-              <div className="space-y-8">
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.6 }}
-                  className="text-[18px] md:text-[24px] text-white/90 leading-[1.8]"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
-                  {data.hero.subline}
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                  className="border-l-4 border-[var(--accent)]/60 pl-6 py-4"
-                >
-                  <p className="text-[16px] md:text-[20px] text-[var(--accent)]/90 leading-relaxed italic">
-                    {data.hero.origin}
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                  className="space-y-4 pt-6 border-t border-white/20"
-                >
-                  <h4 className="text-[18px] md:text-[22px] font-bold text-white uppercase tracking-[0.08em]">Principles</h4>
-                  {data.hero.principles.map((principle, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + (idx * 0.1), duration: 0.6 }}
-                      className="flex items-start gap-4"
-                    >
-                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">{principle.icon}</span>
-                      <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{principle.text}</p>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </LuxuryCollapsibleSection>
-
-            <LuxuryCollapsibleSection
-              title="Pricing & Terms"
-              icon="💰"
-              isOpen={openSection === "pricing" || openSection === "all"}
-              onToggle={() => setOpenSection(openSection === "pricing" ? null : "pricing")}
-            >
-              <div className="space-y-10">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.6 }}
-              >
-                <h4 className="text-[20px] md:text-[24px] font-bold text-[var(--accent)] mb-4 tracking-wide">Projects</h4>
-                <p className="text-[28px] md:text-[36px] font-bold text-white mb-3">{data.pricing.projects}</p>
-                <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed">{data.pricing.projectLength}</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-              >
-                <h4 className="text-[20px] md:text-[24px] font-bold text-[var(--accent)] mb-4 tracking-wide">Retainers</h4>
-                <p className="text-[28px] md:text-[36px] font-bold text-white mb-3">{data.pricing.retainers}</p>
-                <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed">{data.pricing.retainerDetails}</p>
-              </motion.div>
-
-              <div className="border-t border-white/20 pt-8">
-                <h4 className="text-[18px] md:text-[20px] font-bold text-white mb-4 uppercase tracking-[0.08em]">Payment Terms</h4>
-                <p className="text-[16px] md:text-[20px] text-white mb-3 leading-relaxed">{data.pricing.terms}</p>
-                <p className="text-[14px] md:text-[16px] text-white/60 leading-relaxed">{data.pricing.termsDetail}</p>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-                whileHover={{ scale: 1.02 }}
-                className="border-2 border-[var(--accent)]/50 bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent)]/5 p-8 md:p-10 hover:shadow-[0_0_40px_rgba(255,157,35,0.5)] transition-all duration-700"
-              >
-                <p className="text-[18px] md:text-[24px] text-white font-bold leading-relaxed">{data.pricing.guarantee}</p>
-              </motion.div>
-              </div>
-            </LuxuryCollapsibleSection>
-
-            <LuxuryCollapsibleSection
-              title="Who I Work With"
-              icon="🤝"
-              isOpen={openSection === "who" || openSection === "all"}
-              onToggle={() => setOpenSection(openSection === "who" ? null : "who")}
-            >
-              <div className="space-y-10">
-              <div>
-                <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Best For</h4>
-                <div className="space-y-4">
-                  {data.hero.principles.map((principle, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.12, duration: 0.6 }}
-                      className="flex items-start gap-4"
-                    >
-                      <span className="text-[20px] text-[var(--accent)] flex-shrink-0">{principle.icon}</span>
-                      <p className="text-[16px] md:text-[20px] text-white/90 leading-relaxed">{principle.text}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-[20px] md:text-[24px] font-bold text-white mb-6 uppercase tracking-[0.08em]">Not Right For</h4>
-                <div className="space-y-4">
-                  {data.notRightFor.items.map((item, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.12, duration: 0.6 }}
-                      className="flex items-start gap-4"
-                    >
-                      <span className="text-[20px] text-white/50 flex-shrink-0">{item.icon}</span>
-                      <p className="text-[16px] md:text-[20px] text-white/70 leading-relaxed">{item.text}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-white/20 pt-8">
-                <div className="flex flex-wrap gap-3">
-                  {data.proof.highlights.map((highlight, idx) => (
-                    <motion.span
-                      key={idx}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: idx * 0.08, duration: 0.4 }}
-                      whileHover={{ scale: 1.05, borderColor: ACCENT }}
-                      className="border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-4 py-2 text-[14px] md:text-[16px] text-[var(--accent)] font-medium uppercase tracking-wide cursor-default transition-all duration-300"
-                    >
-                      {highlight.label}
-                    </motion.span>
-                  ))}
-                </div>
-              </div>
-              </div>
-            </LuxuryCollapsibleSection>
-          </section>
-        
-
-        {/* Now Block - Full Width Accent */}
-
-          <section id="now" className="min-h-[50vh] flex items-center justify-center scroll-mt-20">
-            <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-6xl mx-auto border-2 border-[var(--accent)] bg-gradient-to-br from-[var(--accent)]/10 to-transparent p-10 md:p-16 space-y-6 hover:shadow-[0_0_60px_rgba(255,157,35,0.6)] transition-shadow duration-700"
-          >
-            <motion.h2
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[32px] md:text-[48px] font-bold text-[var(--accent)] uppercase tracking-[0.08em]"
-              style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 20px rgba(255,157,35,0.5)' }}
-            >
-              Now
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-[16px] md:text-[18px] text-white/60 tracking-wide"
-            >
-              Last updated: {data.now.lastUpdated}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[18px] md:text-[24px] text-white leading-loose"
-            >
-              {data.now.currentFocus}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[20px] md:text-[28px] text-[var(--accent)] font-bold tracking-wide"
-            >
-              {data.now.status}
-            </motion.p>
-
-            {/* Social Proof Ticker */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="border-t border-[var(--accent)]/30 pt-6 mt-6 overflow-hidden"
-            >
-              <motion.div
-                animate={{ x: [0, -1200] }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                className="flex gap-8 whitespace-nowrap text-[14px] md:text-[16px] text-white/50 uppercase tracking-wider"
-              >
-                <span>✓ Jac+Jack W25/SP25 campaign delivered</span>
-                <span>•</span>
-                <span>✓ S'WICH Bondi → Redfern → Surry Hills expansion</span>
-                <span>•</span>
-                <span>✓ MapleMoon in 160+ retailers</span>
-                <span>•</span>
-                <span>✓ Aura Therapeutics brand identity complete</span>
-                <span>•</span>
-                <span>✓ Jac+Jack W25/SP25 campaign delivered</span>
-                <span>•</span>
-                <span>✓ S'WICH Bondi → Redfern → Surry Hills expansion</span>
-                <span>•</span>
-                <span>✓ MapleMoon in 160+ retailers</span>
-                <span>•</span>
-                <span>✓ Aura Therapeutics brand identity complete</span>
-              </motion.div>
-            </motion.div>
-            </motion.div>
-          </section>
-        
-
-        {/* Contact CTA - Full Height */}
-
-          <section id="contact" aria-label="Contact information" role="region" className="relative min-h-[70vh] py-20 flex items-center justify-center scroll-mt-20">
-            {/* Background gradient that builds toward CTA */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent)]/5 to-[var(--accent)]/10 pointer-events-none" />
-
-            <motion.div
-            initial={{ opacity: 0, y: 60, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative border-4 border-[var(--accent)]/40 bg-gradient-to-b from-black/60 to-black/40 p-16 md:p-24 lg:p-32 text-center space-y-12 max-w-5xl hover:border-[var(--accent)] hover:shadow-[0_0_80px_rgba(255,157,35,0.7)] transition-all duration-700"
-          >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[36px] md:text-[52px] lg:text-[68px] font-black text-white uppercase tracking-[0.08em] leading-tight"
-              style={{ fontFamily: '"argent-pixel-cf", sans-serif', textShadow: '0 0 30px rgba(255,157,35,0.3)' }}
-            >
-              Let's Work Together
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.7 }}
-              className="text-[20px] md:text-[28px] text-white/90 leading-loose tracking-wide"
-            >
-              {data.contact.status} • {data.contact.responseTime}
-            </motion.p>
-
-            <motion.a
-              href="/contact"
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: ACCENT_HOVER,
-                boxShadow: '0 0 60px rgba(255,157,35,0.9)'
-              }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-block border-4 border-[var(--accent)] bg-[var(--accent)] px-12 py-6 text-[24px] md:text-[32px] font-black text-black uppercase tracking-[0.08em] transition-all duration-700"
-            >
-              GET IN TOUCH →
-            </motion.a>
-            </motion.div>
-          </section>
-
+        {/* ZONE 5 — Contact signal */}
+        <ContactSignal data={data} />
 
       </div>
     </main>
   );
 }
-
