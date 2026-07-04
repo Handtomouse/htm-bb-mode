@@ -185,6 +185,31 @@ function SnakeGame() {
     }
   };
 
+  // Physical keyboard controls (arrows steer, space pauses)
+  useEffect(() => {
+    const keyToDir: Record<string, Direction> = {
+      ArrowUp: "up",
+      ArrowDown: "down",
+      ArrowLeft: "left",
+      ArrowRight: "right",
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      const dir = keyToDir[e.key];
+      if (dir) {
+        e.preventDefault();
+        handleKeyPress(dir);
+      } else if (e.key === " ") {
+        e.preventDefault();
+        if (!gameOver) setIsPaused((p) => !p);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [direction, gameOver]);
+
   return (
     <div>
       <div className="mb-3 flex items-center justify-between border border-white/10 bg-black/30 p-2 text-xs text-white">

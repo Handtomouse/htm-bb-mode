@@ -46,7 +46,6 @@ export default function BlackberryWormholeContent() {
   const [currentHint, setCurrentHint] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
   const [canAbort, setCanAbort] = useState(false);
-  const [colorShift, setColorShift] = useState(0);
   const [showAbortFeedback, setShowAbortFeedback] = useState(false);
   const [journeyHistory, setJourneyHistory] = useState<Array<{url: string, hint: string, timestamp: number}>>([]);
   const [boost, setBoost] = useState(false);
@@ -251,14 +250,6 @@ export default function BlackberryWormholeContent() {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isWarping, boost, hecticSpeed, konamiActive, isHyperhyperspace]);
 
-
-  // Color shift animation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setColorShift((prev) => (prev + 0.01) % (Math.PI * 2));
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
 
   // Track mouse movement for parallax effect (throttled with RAF for 60fps max)
   useEffect(() => {

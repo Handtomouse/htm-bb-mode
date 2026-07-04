@@ -28,7 +28,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Lazy load content components for better performance
 const BlackberryContactContent = lazy(() => import("./BlackberryContactContent"));
-const BlackberrySettingsContent = lazy(() => import("./BlackberrySettingsContent"));
 const BlackberrySettingsContentNew = lazy(() => import("./BlackberrySettingsContentNew"));
 const BlackberryShowreelContent = lazy(() => import("./BlackberryShowreelContent"));
 const BlackberryFavouritesContent = lazy(() => import("./BlackberryFavouritesContent"));
@@ -437,8 +436,13 @@ export default function BlackberryOS5Dashboard() {
   // Keyboard navigation (disabled when OFF)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Check if user is typing in an input field FIRST: the ?/Shift+L
+      // shortcuts below must never swallow characters typed into forms
+      const activeEl = document.activeElement as HTMLElement;
+      const isTyping = activeEl?.tagName === "INPUT" || activeEl?.tagName === "TEXTAREA" || activeEl?.tagName === "SELECT" || activeEl?.isContentEditable;
+
       // Keyboard help overlay
-      if (e.key === "?" && poweredOn && !isLocked) {
+      if (e.key === "?" && poweredOn && !isLocked && !isTyping) {
         setShowKeyboardHelp(prev => !prev);
         e.preventDefault();
         return;
@@ -466,15 +470,11 @@ export default function BlackberryOS5Dashboard() {
       }
 
       // Lock with L key
-      if (e.key.toLowerCase() === "l" && e.shiftKey) {
+      if (e.key.toLowerCase() === "l" && e.shiftKey && !isTyping) {
         setIsLocked(true);
         e.preventDefault();
         return;
       }
-
-      // Check if user is typing in an input field
-      const activeEl = document.activeElement as HTMLElement;
-      const isTyping = activeEl?.tagName === "INPUT" || activeEl?.tagName === "TEXTAREA" || activeEl?.tagName === "SELECT" || activeEl?.isContentEditable;
 
       // If an app is open, ESC/Backspace closes it (unless typing)
       if (openApp !== null) {
