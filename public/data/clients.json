@@ -56,7 +56,6 @@
     "yearStarted": 2018,
     "results": "Launched mobile banking platform with 250,000+ downloads in first 6 months",
     "deliverables": ["Mobile App", "UX Design", "API Integration", "Security Audit"],
-    "testimonial": "Transformed our digital banking experience with innovative solutions.",
     "logo": "/images/clients/bankwest.png"
   },
   {
@@ -123,7 +122,6 @@
     "yearStarted": 2021,
     "results": "Created premium digital showroom experience with VR configurator",
     "deliverables": ["Website", "VR Experience", "CRM Integration"],
-    "testimonial": "Captured the essence of Ferrari with stunning digital craftsmanship.",
     "logo": "/images/clients/ferrari.png"
   },
   {
@@ -146,7 +144,6 @@
     "yearStarted": 2019,
     "results": "Achieved 40% increase in member engagement and 28% growth in online account registrations",
     "deliverables": ["Brand Strategy", "Website Redesign", "Digital Campaign", "Member Portal"],
-    "testimonial": "Exceptional strategic partner who delivered beyond expectations.",
     "logo": "/images/clients/hesta.png"
   },
   {
@@ -182,7 +179,8 @@
     "projects": 1,
     "featured": false,
     "status": "completed",
-    "tagline": "Premium maple syrup"
+    "tagline": "Premium maple syrup",
+    "testimonial": "'Built a brand we can scale with' — Founder"
   },
   {
     "name": "MedBox",
@@ -247,7 +245,6 @@
     "yearStarted": 2017,
     "results": "Delivered enterprise integration platform serving 15,000+ users across APAC",
     "deliverables": ["Integration Platform", "Custom Components", "Training Program", "Documentation"],
-    "testimonial": "World-class technical expertise and project delivery.",
     "logo": "/images/clients/salesforce.png"
   },
   {
@@ -290,6 +287,7 @@
     "projects": 3,
     "featured": false,
     "status": "active",
+    "testimonial": "'They get hospitality' — Dan Hooper, Founder",
     "logo": "/images/clients/swich.png"
   },
   {
