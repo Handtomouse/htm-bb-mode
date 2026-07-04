@@ -1,329 +1,255 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import BBPageHeader from "./BBPageHeader";
 import { useSettings, useClickSound, useHapticFeedback } from "@/lib/hooks";
-import {
-  isDisposableEmail,
-  getTemplateByKeyword,
-  getCharacterWarningLevel,
-  formatTimeAgo,
-  getFileTypeIcon,
-  formatFileSize,
-  KEYBOARD_SHORTCUTS,
-  getCompletionSummary,
-} from "@/lib/formUtils";
-import {
-  ACCENT,
-  isEmail,
-  EMAIL_DOMAIN_SUGGESTIONS,
-  MAX_FILES,
-  MAX_FILE_SIZE_MB,
-  MAX_FILE_SIZE,
-  BUDGETS,
-  TIMELINES,
-  SERVICES,
-} from "@/lib/contactFormData";
+import { isEmail } from "@/lib/contactFormData";
 
-type ContactMode = "quick" | "brief";
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type FormErrors = Partial<Record<keyof Payload, string>> & { summary?: string };
-
-type Payload = {
-  mode: ContactMode;
+type Answers = {
   name: string;
+  project: string;
+  serviceType: string;
+  serviceOther: string;
+  timeline: string;
   email: string;
-  message: string;
-  company?: string;
-  budget?: string;
-  timeline?: string;
-  services?: string[];
-  referral?: string;
-  attachment_url?: string;
-  consent: boolean;
-  website?: string; // honeypot
-  startedAt?: number;
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
 };
 
+type Step = 0 | 1 | 2 | 3 | 4;
+
+const TOTAL_STEPS = 5;
+
+const SERVICE_OPTIONS = [
+  "Brand Strategy",
+  "Campaign Creative",
+  "Content Systems",
+  "Something else",
+] as const;
+
+const TIMELINE_OPTIONS = [
+  "ASAP (< 4 weeks)",
+  "Standard (4–8 weeks)",
+  "No rush — let's talk first",
+] as const;
+
+// ─── Slide variants ───────────────────────────────────────────────────────────
+
+const slideVariants = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? 60 : -60,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { type: "spring" as const, stiffness: 380, damping: 30 },
+  },
+  exit: (dir: number) => ({
+    x: dir > 0 ? -60 : 60,
+    opacity: 0,
+    transition: { duration: 0.18, ease: "easeIn" as const },
+  }),
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function validateStep(step: Step, answers: Answers): string | null {
+  switch (step) {
+    case 0:
+      if (!answers.name.trim() || answers.name.trim().length < 2)
+        return "Need at least 2 characters.";
+      return null;
+    case 1:
+      if (!answers.project.trim() || answers.project.trim().length < 30)
+        return "Tell me a bit more — at least a sentence.";
+      return null;
+    case 2:
+      if (!answers.serviceType) return "Pick one to continue.";
+      if (answers.serviceType === "Something else" && !answers.serviceOther.trim())
+        return "Tell me what you're after.";
+      return null;
+    case 3:
+      if (!answers.timeline) return "Pick one to continue.";
+      return null;
+    case 4:
+      if (!answers.email.trim() || !isEmail(answers.email.trim()))
+        return "That doesn't look like a valid email.";
+      return null;
+  }
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+interface ProgressDotsProps {
+  step: Step;
+}
+
+function ProgressDots({ step }: ProgressDotsProps) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        marginBottom: 20,
+      }}
+    >
+      {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            width: i === step ? 18 : 6,
+            height: 6,
+            borderRadius: 3,
+            background: i === step ? "var(--accent)" : i < step ? "var(--accent)" : "var(--grid)",
+            opacity: i < step ? 0.5 : 1,
+            transition: "all 0.25s ease",
+          }}
+        />
+      ))}
+      <span
+        style={{
+          marginLeft: 8,
+          fontSize: 10,
+          fontFamily: "var(--font-mono, monospace)",
+          color: "rgba(255,255,255,0.35)",
+          letterSpacing: "0.08em",
+        }}
+      >
+        {step + 1} of {TOTAL_STEPS}
+      </span>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export default function BlackberryContactContent() {
-  // Improvement #8: Settings integration
   const [settings] = useSettings();
   const playClickSound = useClickSound(settings.sound);
   const triggerHaptic = useHapticFeedback();
 
-  const [mode, setMode] = useState<ContactMode>("quick");
-  const [data, setData] = useState<Payload>({
-    mode: "quick",
+  const [step, setStep] = useState<Step>(0);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = back
+  const [answers, setAnswers] = useState<Answers>({
     name: "",
-    email: "",
-    message: "",
-    company: "",
-    budget: "",
+    project: "",
+    serviceType: "",
+    serviceOther: "",
     timeline: "",
-    services: [],
-    referral: "",
-    attachment_url: "",
-    consent: true,
-    website: "",
-    startedAt: undefined,
+    email: "",
   });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false); // Improvement #20
-  const [toast, setToast] = useState<{ type: "success" | "error" | "info"; msg: string; id: number } | null>(null);
-  const [countdown, setCountdown] = useState(7);
-  const [online, setOnline] = useState(true);
-  const [cooldown, setCooldown] = useState(0);
-  const [savedMsg, setSavedMsg] = useState<string>("");
-  const [lastSavedTime, setLastSavedTime] = useState<number | null>(null); // Improvement #9
-  const [files, setFiles] = useState<File[]>([]);
-  const [filesError, setFilesError] = useState<string>("");
-  const [isDragging, setIsDragging] = useState(false); // Improvement #5
-  const [showShortcuts, setShowShortcuts] = useState(false); // Improvement #13
-  const submitAbortRef = useRef<AbortController | null>(null);
-  const saveTimerRef = useRef<number | null>(null);
-  const lastSavedIntervalRef = useRef<number | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [startedAt] = useState(() => Date.now());
 
-  const nameRef = useRef<HTMLInputElement | null>(null);
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const messageRef = useRef<HTMLTextAreaElement | null>(null);
-  const companyRef = useRef<HTMLInputElement | null>(null);
-  const budgetRef = useRef<HTMLSelectElement | null>(null); // Improvement #2
-  const srLiveRef = useRef<HTMLDivElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
-  const resizeTextArea = () => {
-    const el = messageRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
-  };
+  // Auto-focus on mount and step change
+  useEffect(() => {
+    const t = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 320);
+    return () => clearTimeout(t);
+  }, [step]);
 
-  const announce = (msg: string) => {
-    const el = srLiveRef.current;
-    if (!el) return;
-    el.textContent = msg;
-  };
-
-  const isValidHttpUrl = (value: string) => {
-    if (!value) return true;
-    try {
-      const u = new URL(value);
-      return u.protocol === "http:" || u.protocol === "https:";
-    } catch {
-      return false;
+  const advance = useCallback(() => {
+    const err = validateStep(step, answers);
+    if (err) {
+      setError(err);
+      return;
     }
-  };
-
-  // Timer + startedAt
-  useEffect(() => {
-    const started = Date.now();
-    setData((d) => ({ ...d, startedAt: started }));
-    const i = window.setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
-    return () => window.clearInterval(i);
-  }, []);
-
-  // Online status
-  useEffect(() => {
-    const update = () => setOnline(navigator.onLine);
-    update();
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
-    return () => {
-      window.removeEventListener("online", update);
-      window.removeEventListener("offline", update);
-    };
-  }, []);
-
-  // Draft persistence with Improvement #9: timestamp tracking
-  const DRAFT_KEY = "bb-contact-draft";
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setData((d) => ({ ...d, ...parsed }));
-        setLastSavedTime(Date.now());
-      }
-    } catch {}
-  }, []);
-
-  useEffect(() => {
-    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = window.setTimeout(() => {
-      try {
-        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-        const now = Date.now();
-        setLastSavedTime(now);
-        setSavedMsg("Saved");
-        const reduce = settings.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.setTimeout(() => setSavedMsg("") , reduce ? 1200 : 600);
-      } catch {}
-    }, 400);
-    return () => { if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current); };
-  }, [data, settings.reducedMotion]);
-
-  // Improvement #9: Update "last saved" indicator every 5 seconds
-  useEffect(() => {
-    if (lastSavedIntervalRef.current) window.clearInterval(lastSavedIntervalRef.current);
-    if (lastSavedTime) {
-      lastSavedIntervalRef.current = window.setInterval(() => {
-        setLastSavedTime((prev) => prev); // Trigger re-render for formatTimeAgo
-      }, 5000);
+    setError(null);
+    if (step < TOTAL_STEPS - 1) {
+      playClickSound();
+      triggerHaptic([5]);
+      setDirection(1);
+      setStep((s) => (s + 1) as Step);
     }
-    return () => { if (lastSavedIntervalRef.current) window.clearInterval(lastSavedIntervalRef.current); };
-  }, [lastSavedTime]);
+  }, [step, answers, playClickSound, triggerHaptic]);
 
-  // Leave-page protection
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      if ((data.message?.trim()?.length || 0) > 0 && !submitting) {
-        e.preventDefault();
-        e.returnValue = "";
+  const goBack = useCallback(() => {
+    if (step > 0) {
+      setError(null);
+      setDirection(-1);
+      setStep((s) => (s - 1) as Step);
+    }
+  }, [step]);
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter" && !e.shiftKey && step !== 1) {
+      e.preventDefault();
+      if (step === TOTAL_STEPS - 1) {
+        handleSubmit();
+      } else {
+        advance();
       }
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [data.message, submitting]);
-
-  function showToast(type: "success" | "error" | "info", msg: string) {
-    const id = Date.now();
-    setToast({ type, msg, id });
-    setTimeout(() => setToast((t) => (t?.id === id ? null : t)), 4000);
+    }
   }
 
-  const computeErrors = (payload: Payload): FormErrors => {
-    const e: FormErrors = {};
-    const name = payload.name.trim();
-    const email = payload.email.trim();
-    const message = payload.message.trim();
-    if (name.length < 2 || name.length > 80) e.name = "Please enter 2–80 characters.";
-    if (!isEmail(email)) e.email = "Enter a valid email.";
-    if (message.length < 30) e.message = `Add ${30 - message.length} more characters.`;
-    if (payload.attachment_url && !isValidHttpUrl(payload.attachment_url)) e.attachment_url = "Enter a valid URL (http/https).";
-    if (payload.website && payload.website.trim() !== "") e.summary = "Spam detected.";
-    return e;
-  };
-
-  const validateFiles = (list: File[]): string => {
-    if (list.length > MAX_FILES) return `Attach up to ${MAX_FILES} files.`;
-    for (const f of list) {
-      if (f.size > MAX_FILE_SIZE) return `"${f.name}" is over ${MAX_FILE_SIZE_MB}MB.`;
-    }
-    return "";
-  };
-
-  const disabledByTimer = countdown > 0;
-  const formValid = useMemo(() => {
-    const e = computeErrors(data);
-    const fe = validateFiles(files);
-    return (
-      Object.keys(e).length === 0 && !fe && data.consent && !disabledByTimer && online && !submitting && cooldown === 0
-    );
-  }, [data, files, disabledByTimer, online, submitting, cooldown]);
-
-  const focusFirstError = (e: FormErrors) => {
-    if (e.name) return nameRef.current?.focus();
-    if (e.email) return emailRef.current?.focus();
-    if (e.message) return messageRef.current?.focus();
-    if (e.attachment_url) return (document.getElementById('attachment_url') as HTMLInputElement|null)?.focus();
-    if (e.summary && companyRef.current) return companyRef.current.focus();
-  };
-
-  const emailSuggestion = useMemo(() => {
-    const m = data.email.split("@");
-    if (m.length !== 2) return "";
-    const domain = m[1].toLowerCase();
-    const sug = EMAIL_DOMAIN_SUGGESTIONS[domain];
-    return sug ? `${m[0]}@${sug}` : "";
-  }, [data.email]);
-
-  async function onSubmit(ev: React.FormEvent) {
-    ev.preventDefault();
-
-    const filesErr = validateFiles(files);
-    setFilesError(filesErr);
-    if (filesErr) {
-      showToast("error", filesErr);
-      fileInputRef.current?.focus();
+  async function handleSubmit() {
+    const err = validateStep(step, answers);
+    if (err) {
+      setError(err);
       return;
     }
+    setError(null);
+    setSubmitting(true);
 
-    const trimmed: Payload = {
-      ...data,
-      name: data.name.trim(),
-      email: data.email.trim(),
-      message: data.message.trim(),
-      referral: data.referral?.trim() || "",
-      company: data.company?.trim() || "",
-      attachment_url: data.attachment_url?.trim() || "",
-      mode,
+    // Build services array from serviceType answer
+    const services: string[] = [];
+    if (answers.serviceType && answers.serviceType !== "Something else") {
+      services.push(answers.serviceType);
+    } else if (answers.serviceType === "Something else" && answers.serviceOther) {
+      services.push(answers.serviceOther.trim());
+    }
+
+    // Build message from project description (+ service other if applicable)
+    const messageParts = [answers.project.trim()];
+    if (answers.serviceType === "Something else" && answers.serviceOther.trim()) {
+      messageParts.push(`Service type: ${answers.serviceOther.trim()}`);
+    }
+
+    const payload = {
+      mode: "quick" as const,
+      name: answers.name.trim(),
+      email: answers.email.trim(),
+      message: messageParts.join("\n\n"),
+      timeline: answers.timeline,
+      services,
+      consent: true,
+      startedAt,
     };
 
-    const e = computeErrors(trimmed);
-    if (Object.keys(e).length > 0 || !trimmed.consent || disabledByTimer || !online) {
-      setErrors(e);
-      focusFirstError(e);
-      showToast("error", e.summary || (online ? "Please fix the highlighted fields." : "You're offline. Submit when back online."));
-      announce("Validation errors in form");
-      return;
-    }
-
-    if (submitAbortRef.current) submitAbortRef.current.abort();
-    submitAbortRef.current = new AbortController();
-
-    setSubmitting(true);
-    setErrors({});
-    announce("Submitting message");
-
     try {
-      let res: Response;
-      if (files.length > 0) {
-        const form = new FormData();
-        form.append("payload", JSON.stringify(trimmed));
-        files.forEach((f, i) => form.append(`file${i+1}`, f, f.name));
-        res = await fetch("/api/contact", { method: "POST", body: form, signal: submitAbortRef.current.signal });
-      } else {
-        res = await fetch("/api/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(trimmed),
-          signal: submitAbortRef.current.signal,
-        });
-      }
-
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({} as any));
-        throw new Error(j?.error || `Failed with ${res.status}`);
-      }
-
-      (window as any).dataLayer?.push({
-        event: "contact_submit",
-        mode,
-        budget: data.budget || null,
-        timeline: data.timeline || null,
-        services: data.services || [],
-        attachments: files.length,
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      // Improvement #18: Enhanced confetti with settings respect
-      const prefersReducedMotion = settings.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({} as Record<string, unknown>));
+        throw new Error((j?.error as string) || `Failed with ${res.status}`);
+      }
+
+      // Fire confetti
+      const prefersReducedMotion =
+        settings.reducedMotion ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (!prefersReducedMotion) {
-        // Success sound and haptic
         triggerHaptic([10, 50, 10]);
         if (settings.sound) playClickSound();
-
-        // BB-themed confetti with custom shapes
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['var(--accent)', 'var(--accent)', 'var(--accent-hover)', '#FFC266'],
-          shapes: ['square', 'circle'],
+          colors: ["#ff9d23", "#FFC266"],
+          shapes: ["square", "circle"],
           gravity: 1,
           drift: 0,
           ticks: 200,
@@ -334,8 +260,8 @@ export default function BlackberryContactContent() {
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ['var(--accent)', 'var(--accent)'],
-            shapes: ['square'],
+            colors: ["#ff9d23"],
+            shapes: ["square"],
           });
         }, 250);
         setTimeout(() => {
@@ -344,727 +270,553 @@ export default function BlackberryContactContent() {
             angle: 120,
             spread: 55,
             origin: { x: 1 },
-            colors: ['var(--accent-hover)', '#FFC266'],
-            shapes: ['square'],
+            colors: ["#FFC266"],
+            shapes: ["square"],
           });
         }, 400);
       }
 
-      // Improvement #20: Success state
-      setSubmitSuccess(true);
-      showToast("success", "Thanks—got it. I'll reply within 1 business day.");
-      announce("Message sent successfully");
-      try { localStorage.removeItem(DRAFT_KEY); } catch {}
-      setLastSavedTime(null);
-
-      // Don't clear form immediately - show success state first
-      setTimeout(() => {
-        setData((d) => ({
-          ...d,
-          name: "",
-          email: "",
-          message: "",
-          company: "",
-          budget: "",
-          timeline: "",
-          services: [],
-          referral: "",
-          attachment_url: "",
-          website: "",
-        }));
-        setFiles([]);
-        nameRef.current?.focus();
-        setCooldown(2);
-      }, 3000);
-    } catch (err: any) {
-      console.error(err);
-      showToast("error", err?.message || "Couldn't send just now. Please try again when online.");
-      announce("Submission failed");
+      setSubmitted(true);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Couldn't send just now. Please try again.";
+      setError(msg);
     } finally {
       setSubmitting(false);
     }
   }
 
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const t = window.setInterval(() => setCooldown((c) => (c > 0 ? c - 1 : 0)), 1000);
-    return () => window.clearInterval(t);
-  }, [cooldown]);
-
-  // Improvement #13: Enhanced keyboard shortcuts
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-      triggerHaptic(15);
-      const form = e.currentTarget as HTMLElement;
-      (form.querySelector('[data-submit]') as HTMLButtonElement | null)?.click();
-      return;
-    }
-    if (e.key === "Escape") {
-      triggerHaptic(10);
-      if (toast) setToast(null);
-      if (showShortcuts) setShowShortcuts(false);
-      return;
-    }
-    if (e.altKey && (e.key === "r" || e.key === "R")) {
-      e.preventDefault();
-      triggerHaptic(15);
-      setData((d) => ({ ...d, name: "", email: "", message: "", company: "", budget: "", timeline: "", services: [], referral: "", attachment_url: "" }));
-      setFiles([]);
-      showToast("info", "Form cleared");
-      announce("Form cleared");
-      return;
-    }
-    // Improvement #13: Mode switching shortcuts
-    if (e.altKey && (e.key === "q" || e.key === "Q")) {
-      e.preventDefault();
-      triggerHaptic(10);
-      setMode("quick");
-      playClickSound();
-      showToast("info", "Switched to Quick mode");
-      announce("Switched to Quick message mode");
-      return;
-    }
-    if (e.altKey && (e.key === "b" || e.key === "B")) {
-      e.preventDefault();
-      triggerHaptic(10);
-      setMode("brief");
-      playClickSound();
-      showToast("info", "Switched to Brief mode");
-      announce("Switched to Project brief mode");
-      return;
-    }
-    // Toggle shortcuts help
-    if (e.key === "?" && e.shiftKey) {
-      e.preventDefault();
-      triggerHaptic(10);
-      setShowShortcuts((prev) => !prev);
-      announce(showShortcuts ? "Keyboard shortcuts hidden" : "Keyboard shortcuts displayed");
-      return;
-    }
-  };
-
-  const onBlurTrim = (k: keyof Payload) => (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const v = (e.target.value || "").trim();
-    setData((d) => ({ ...d, [k]: v } as Payload));
-  };
-
-  const remaining = Math.max(0, 30 - (data.message?.trim().length || 0));
-  const goal = 30;
-  const progress = Math.min(goal, (data.message?.trim().length || 0));
-
-  // Improvement #1 & #6: Character counters and field completion
-  const nameLength = data.name.trim().length;
-  const emailLength = data.email.trim().length;
-  const messageLength = data.message.trim().length;
-  const nameValid = nameLength >= 2 && nameLength <= 80;
-  const emailValid = isEmail(data.email.trim());
-  const messageValid = messageLength >= 30;
-
-  // Improvement #10: Character warnings
-  const nameWarning = getCharacterWarningLevel(nameLength, 80);
-  const emailWarning = getCharacterWarningLevel(emailLength, 254);
-
-  // Improvement #6: Completion summary
-  const completionSummary = getCompletionSummary(data, mode);
-
-  // Improvement #12: Disposable email check
-  const emailDisposable = data.email.trim() && isDisposableEmail(data.email.trim());
-
-  // Improvement #5: Drag & drop visual feedback
-  const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const onDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (e.currentTarget === e.target) {
-      setIsDragging(false);
-    }
-  };
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const dt = e.dataTransfer;
-    if (dt.files && dt.files.length) {
-      const next = Array.from(dt.files).slice(0, MAX_FILES);
-      const all = [...files, ...next].slice(0, MAX_FILES);
-      const err = validateFiles(all);
-      setFilesError(err);
-      if (!err) {
-        setFiles(all);
-        showToast("info", `Added ${next.length} file${next.length > 1 ? 's' : ''}`);
-        announce(`Added ${next.length} file${next.length > 1 ? 's' : ''}`);
-      }
-      return;
-    }
-    const uri = dt.getData("text/uri-list") || dt.getData("text/plain");
-    if (uri) setData((d) => ({ ...d, attachment_url: uri }));
-  };
-
-  const onPickFiles: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const selected = Array.from(e.target.files || []).slice(0, MAX_FILES);
-    const all = [...files, ...selected].slice(0, MAX_FILES);
-    const err = validateFiles(all);
-    setFilesError(err);
-    if (!err) setFiles(all);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const removeFile = (idx: number) => {
-    setFiles((arr) => arr.filter((_, i) => i !== idx));
-  };
-
-  return (
-    <div className="w-full h-full overflow-y-auto px-6 md:px-8 py-6">
-      <BBPageHeader title="Contact" subtitle="Let's make something sharp" />
-
-      <div ref={srLiveRef} className="sr-only" role="status" aria-live="assertive" />
-
-      <div className="sr-only" role="status" aria-live="assertive">
-        {errors.summary}
-      </div>
-
-      {!online && (
-        <div className="mb-4 border border-red-400 bg-red-400/20 p-3 text-sm text-red-400">
-          You're offline. You can keep typing—submit when back online.
-        </div>
-      )}
-
-      {/* Improvement #9: Enhanced saved indicator with timestamp */}
-      {(savedMsg || lastSavedTime) && (
-        <div className="mb-3 flex items-center gap-2 text-xs text-white/50" aria-live="polite">
-          {savedMsg && <span className="text-green-400">✓ {savedMsg}</span>}
-          {!savedMsg && lastSavedTime && (
-            <span>Last saved: {formatTimeAgo(lastSavedTime)}</span>
-          )}
-        </div>
-      )}
-
-      {toast && (
-        <div className="pointer-events-none fixed right-4 top-4 z-50">
+  // ── Success screen ──────────────────────────────────────────────────────────
+  if (submitted) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <BBPageHeader title="Contact" subtitle="Get in touch" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 28 }}
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 24px 32px",
+            textAlign: "center",
+          }}
+        >
+          {/* BB-style status badge */}
           <div
-            className={`pointer-events-auto border p-3 text-sm shadow-lg ${
-              toast.type === "success"
-                ? "border-green-400 bg-green-400/20 text-green-400"
-                : toast.type === "error"
-                ? "border-red-400 bg-red-400/20 text-red-400"
-                : "border-white/20 bg-white/10 text-white"
-            }`}
-            role="status"
-            aria-live="polite"
+            style={{
+              display: "inline-block",
+              padding: "4px 12px",
+              border: "1px solid var(--accent)",
+              borderRadius: 2,
+              fontFamily: "var(--font-mono, monospace)",
+              fontSize: 11,
+              letterSpacing: "0.15em",
+              color: "var(--accent)",
+              marginBottom: 24,
+            }}
           >
-            {toast.msg}
+            MESSAGE SENT
           </div>
-        </div>
-      )}
 
-      {/* Improvement #6: Form completion indicator */}
-      {completionSummary.completed > 0 && (
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex-1 h-1 bg-white/10 overflow-hidden">
-            <div
-              className="h-full bg-[var(--accent)] transition-all duration-500"
-              style={{ width: `${completionSummary.percentage}%` }}
-            />
-          </div>
-          <span className="text-xs text-white/65 font-mono">
-            {completionSummary.completed}/{completionSummary.total} fields
-          </span>
-        </div>
-      )}
+          <p
+            style={{
+              fontSize: 18,
+              fontWeight: 600,
+              color: "var(--ink)",
+              lineHeight: 1.4,
+              maxWidth: 280,
+              margin: 0,
+            }}
+          >
+            Got it, {answers.name.split(" ")[0]}.
+          </p>
+          <p
+            style={{
+              fontSize: 14,
+              color: "var(--muted)",
+              marginTop: 12,
+              lineHeight: 1.5,
+              maxWidth: 260,
+            }}
+          >
+            I&apos;ll be back within 24 hours&nbsp;— usually&nbsp;4.
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
-      {/* Improvement #13: Keyboard shortcuts panel */}
-      {showShortcuts && (
-        <div className="mb-4 border border-[var(--accent)]/30 bg-[#0a0a0a] p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-mono text-[var(--accent)] uppercase tracking-wider">Keyboard Shortcuts</h3>
-            <button
-              type="button"
-              onClick={() => {
-                triggerHaptic(10);
-                setShowShortcuts(false);
-              }}
-              className="text-white/50 hover:text-white/80 text-xs"
-            >
-              ✕
-            </button>
-          </div>
-          <div className="space-y-2">
-            {KEYBOARD_SHORTCUTS.map((shortcut, idx) => (
-              <div key={idx} className="flex items-center justify-between text-xs">
-                <kbd className="px-2 py-1 bg-white/5 border border-white/10 font-mono">{shortcut.key}</kbd>
-                <span className="text-white/65">{shortcut.action}</span>
-              </div>
-            ))}
-            <div className="flex items-center justify-between text-xs">
-              <kbd className="px-2 py-1 bg-white/5 border border-white/10 font-mono">Shift + ?</kbd>
-              <span className="text-white/65">Toggle this help</span>
-            </div>
-          </div>
-        </div>
-      )}
+  // ── Form steps ──────────────────────────────────────────────────────────────
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <BBPageHeader title="Contact" subtitle="Get in touch" />
 
-      {/* Form Container */}
       <div
-        className="relative border border-white/5 bg-[#0a0a0a] p-10 sm:p-16 md:p-20 mb-6"
         style={{
-          boxShadow: '0 0 20px var(--accent)10'
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          padding: "16px 20px 24px",
+          overflow: "hidden",
         }}
       >
-        {/* Mode toggle */}
-        <div className="mb-8 flex gap-4" role="tablist">
-          {(["quick", "brief"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => {
-                setMode(m);
-                // Improvement #8: Sound feedback
-                triggerHaptic(10);
-                playClickSound();
-                announce(`Switched to ${m === "quick" ? "Quick message" : "Project brief"} mode`);
-              }}
-              className="flex-1 transition-all hover:scale-110 active:scale-95"
+        <ProgressDots step={step} />
+
+        {/* Animated step container */}
+        <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={step}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
               style={{
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                letterSpacing: "0.05em",
-                background: mode === m ? "rgba(255, 255, 255, 0.1)" : "transparent",
-                color: mode === m ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.6)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                borderRadius: "6px",
-                padding: "0.5rem 1rem",
-                boxShadow: "none",
-                filter: "none"
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
               }}
-              role="tab"
-              aria-selected={mode === m}
             >
-              {m === "quick" ? "Quick" : "Brief"}
-            </button>
-          ))}
+              {step === 0 && (
+                <StepName
+                  value={answers.name}
+                  onChange={(v) => {
+                    setAnswers((a) => ({ ...a, name: v }));
+                    setError(null);
+                  }}
+                  onKeyDown={handleKeyDown}
+                  inputRef={inputRef as React.RefObject<HTMLInputElement>}
+                  error={error}
+                />
+              )}
+              {step === 1 && (
+                <StepProject
+                  value={answers.project}
+                  onChange={(v) => {
+                    setAnswers((a) => ({ ...a, project: v }));
+                    setError(null);
+                  }}
+                  onKeyDown={handleKeyDown}
+                  inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
+                  error={error}
+                />
+              )}
+              {step === 2 && (
+                <StepService
+                  serviceType={answers.serviceType}
+                  serviceOther={answers.serviceOther}
+                  onSelect={(v) => {
+                    setAnswers((a) => ({
+                      ...a,
+                      serviceType: v,
+                      serviceOther: v !== "Something else" ? "" : a.serviceOther,
+                    }));
+                    setError(null);
+                    // Auto-advance unless "Something else" (needs text input)
+                    // Bypass advance() to avoid stale closure — we know v is valid
+                    if (v !== "Something else") {
+                      setTimeout(() => {
+                        playClickSound();
+                        triggerHaptic([5]);
+                        setDirection(1);
+                        setStep((s) => (s + 1) as Step);
+                      }, 400);
+                    }
+                  }}
+                  onOtherChange={(v) => {
+                    setAnswers((a) => ({ ...a, serviceOther: v }));
+                    setError(null);
+                  }}
+                  error={error}
+                />
+              )}
+              {step === 3 && (
+                <StepTimeline
+                  value={answers.timeline}
+                  onSelect={(v) => {
+                    setAnswers((a) => ({ ...a, timeline: v }));
+                    setError(null);
+                    setTimeout(() => {
+                      playClickSound();
+                      triggerHaptic([5]);
+                      setDirection(1);
+                      setStep((s) => (s + 1) as Step);
+                    }, 400);
+                  }}
+                  error={error}
+                />
+              )}
+              {step === 4 && (
+                <StepEmail
+                  value={answers.email}
+                  onChange={(v) => {
+                    setAnswers((a) => ({ ...a, email: v }));
+                    setError(null);
+                  }}
+                  onKeyDown={handleKeyDown}
+                  inputRef={inputRef as React.RefObject<HTMLInputElement>}
+                  error={error}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        <form
-          noValidate
-          className={`space-y-8 md:space-y-10 lg:space-y-12 transition-all duration-300 ${isDragging ? 'ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[#0a0a0a]' : ''}`}
-          onSubmit={onSubmit}
-          onKeyDown={onKeyDown}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
+        {/* Navigation buttons */}
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            marginTop: 16,
+            flexShrink: 0,
+          }}
         >
-          {/* Improvement #5: Drag indicator overlay */}
-          {isDragging && (
-            <div className="absolute inset-0 bg-[var(--accent)]/10 border-2 border-dashed border-[var(--accent)] flex items-center justify-center pointer-events-none z-10">
-              <div className="bg-[#0a0a0a] px-6 py-3 border border-[var(--accent)]">
-                <p className="text-[var(--accent)] font-mono text-sm uppercase tracking-wider">📎 Drop files here</p>
-              </div>
-            </div>
-          )}
-
-          {/* Improvement #19: Loading overlay */}
-          {submitting && (
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-20">
-              <div className="bg-[#0a0a0a] border border-[var(--accent)] px-8 py-6 flex items-center gap-4">
-                <div className="animate-spin h-5 w-5 border-2 border-[var(--accent)] border-t-transparent rounded-full"></div>
-                <p className="text-white font-mono text-sm uppercase tracking-wider">Sending...</p>
-              </div>
-            </div>
-          )}
-
-          {/* Improvement #20: Success state overlay */}
-          {submitSuccess && !submitting && (
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-20">
-              <div className="bg-[#0a0a0a] border-2 border-[var(--accent)] px-12 py-10 text-center max-w-md">
-                <div className="text-4xl mb-4">✓</div>
-                <h3 className="text-xl font-bold text-[var(--accent)] mb-3 uppercase tracking-wider">Message Sent!</h3>
-                <p className="text-white/80 mb-4 text-sm leading-relaxed">
-                  Thanks for reaching out. I'll reply within 1 business day.
-                </p>
-                <div className="text-xs text-white/50 mb-4">
-                  Usually reply within 4 hours • Sydney (AEST/AEDT)
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic(10);
-                    setSubmitSuccess(false);
-                  }}
-                  className="border border-[var(--accent)] bg-[var(--accent)] text-black px-6 py-2 text-xs font-mono uppercase tracking-wider hover:bg-[var(--accent-hover)] transition-colors duration-300"
-                >
-                  Send another message
-                </button>
-              </div>
-            </div>
-          )}
-          {/* Honeypot */}
-          <div className="sr-only" aria-hidden>
-            <input
-              id="website"
-              name="website"
-              autoComplete="off"
-              tabIndex={-1}
-              value={data.website}
-              onChange={(e) => setData({ ...data, website: e.target.value })}
-              className="h-0 w-0 opacity-0"
-            />
-          </div>
-
-          {/* Contact Details Section Header */}
-          <div className="border-b border-white/10 pb-3 mb-4">
-            <h3 className="font-mono text-base md:text-lg text-[var(--accent)] uppercase tracking-wider">Contact Details</h3>
-          </div>
-
-          {/* Name + Email */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="name" className="font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider flex items-center gap-2">
-                  Name*
-                  {/* Improvement #6: Completion indicator */}
-                  {nameValid && <span className="text-green-400 text-sm">✓</span>}
-                </label>
-                {/* Improvement #1: Character counter */}
-                <span className={`text-xs font-mono ${
-                  nameWarning === 'danger' ? 'text-red-400' :
-                  nameWarning === 'warning' ? 'text-orange-400' :
-                  'text-white/40'
-                }`}>
-                  {nameLength}/80
-                </span>
-              </div>
-              <input
-                id="name"
-                ref={nameRef}
-                type="text"
-                required
-                maxLength={120}
-                autoComplete="name"
-                inputMode="text"
-                value={data.name}
-                onChange={(e) => {
-                  setData({ ...data, name: e.target.value });
-                  // Improvement #14: ARIA announcement for milestones
-                  const len = e.target.value.trim().length;
-                  if (len === 2) announce("Name minimum length reached");
-                  if (len === 70) announce("10 characters remaining for name");
-                }}
-                onBlur={(e) => {
-                  onBlurTrim("name")(e);
-                  // Improvement #2: Auto-focus next field
-                  if (nameValid && emailRef.current) {
-                    emailRef.current.focus();
-                  }
-                }}
-                className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
-                  errors.name
-                    ? "border-red-400 bg-red-400/20 animate-pulse"
-                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-                }`}
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm md:text-base text-red-400 font-medium">{errors.name}</p>
-              )}
-              {/* Improvement #10: Warning when approaching limit */}
-              {!errors.name && nameLength > 70 && nameLength < 80 && (
-                <p className="mt-1 text-xs text-orange-400">
-                  {80 - nameLength} characters remaining
-                </p>
-              )}
-            </div>
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="email" className="font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider flex items-center gap-2">
-                  Email*
-                  {/* Improvement #6: Completion indicator */}
-                  {emailValid && <span className="text-green-400 text-sm">✓</span>}
-                </label>
-                {/* Improvement #1: Character counter */}
-                <span className={`text-xs font-mono ${
-                  emailWarning === 'danger' ? 'text-red-400' :
-                  emailWarning === 'warning' ? 'text-orange-400' :
-                  'text-white/40'
-                }`}>
-                  {emailLength}/254
-                </span>
-              </div>
-              <input
-                id="email"
-                ref={emailRef}
-                type="email"
-                required
-                maxLength={254}
-                autoComplete="email"
-                inputMode="email"
-                value={data.email}
-                onChange={(e) => {
-                  setData({ ...data, email: e.target.value });
-                  // Improvement #14: ARIA announcement
-                  if (isEmail(e.target.value.trim())) {
-                    announce("Valid email entered");
-                  }
-                }}
-                onBlur={(e) => {
-                  onBlurTrim("email")(e);
-                  // Improvement #2: Auto-focus next field
-                  if (emailValid && messageRef.current) {
-                    messageRef.current.focus();
-                  }
-                }}
-                className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
-                  errors.email
-                    ? "border-red-400 bg-red-400/20 animate-pulse"
-                    : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-                }`}
-              />
-              {emailSuggestion && !errors.email && (
-                <button
-                  type="button"
-                  className="mt-1 text-xs underline text-white/65 hover:text-[var(--accent)]"
-                  onClick={() => {
-                    triggerHaptic(10);
-                    setData((d) => ({ ...d, email: emailSuggestion }));
-                    announce("Email corrected");
-                  }}
-                >
-                  Did you mean {emailSuggestion}?
-                </button>
-              )}
-              {/* Improvement #12: Disposable email warning */}
-              {emailDisposable && !errors.email && (
-                <p className="mt-1 text-xs text-orange-400 flex items-center gap-1">
-                  ⚠️ Temporary emails may not receive replies
-                </p>
-              )}
-              {errors.email && (
-                <p className="mt-1 text-sm md:text-base text-red-400 font-medium">{errors.email}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Company (brief) */}
-          {mode === "brief" && (
-            <div>
-              <label htmlFor="company" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Company</label>
-              <input
-                id="company"
-                ref={companyRef}
-                type="text"
-                maxLength={120}
-                value={data.company}
-                onChange={(e) => setData({ ...data, company: e.target.value })}
-                onBlur={onBlurTrim("company")}
-                className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-              />
-            </div>
-          )}
-
-          {/* Message */}
-          <div>
-            <label htmlFor="message" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">
-              {mode === "quick" ? "Message* (≥ 30 chars)" : "Brief* (≥ 30 chars)"}
-            </label>
-            <textarea
-              id="message"
-              ref={messageRef}
-              required
-              rows={6}
-              maxLength={5000}
-              onInput={resizeTextArea}
-              value={data.message}
-              onChange={(e) => setData({ ...data, message: e.target.value })}
-              onBlur={onBlurTrim("message")}
-              className={`w-full border px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 ${
-                errors.message
-                  ? "border-red-400 bg-red-400/20 animate-pulse"
-                  : "border-white/10 bg-[#0b0b0b] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-              }`}
-            />
-            {!errors.message && (
-              <p className="mt-1 text-sm text-white/80">Minimum 30 characters.</p>
-            )}
-            <div className="mt-1 flex items-center gap-2 text-xs text-white/65">
-              <meter min={0} max={goal} value={progress} className="h-1 w-24"></meter>
-              <span className={remaining > 0 ? "text-white/65" : "text-green-400"}>
-                {remaining > 0 ? `${remaining} more` : "Good"}
-              </span>
-            </div>
-            {errors.message && (
-              <p className="mt-1 text-sm md:text-base text-red-400 font-medium">{errors.message}</p>
-            )}
-          </div>
-
-          {/* Brief-only fields */}
-          {mode === "brief" && (
-            <>
-              {/* Project Info Section Header */}
-              <div className="border-b border-white/10 pb-3 mb-4">
-                <h3 className="font-mono text-base md:text-lg text-[var(--accent)] uppercase tracking-wider">Project Info</h3>
-              </div>
-
-              <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="budget" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Budget</label>
-                  <select
-                    id="budget"
-                    value={data.budget}
-                    onChange={(e) => setData({ ...data, budget: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-                  >
-                    <option value="">Select…</option>
-                    {BUDGETS.map((b) => (
-                      <option key={b} value={b}>{b}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="timeline" className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Timeline</label>
-                  <select
-                    id="timeline"
-                    value={data.timeline}
-                    onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                    className="w-full border border-white/10 bg-[#0b0b0b] px-6 py-5 md:px-8 md:py-6 lg:px-10 lg:py-7 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-white outline-none transition-all duration-500 focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-                  >
-                    <option value="">Select…</option>
-                    {TIMELINES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <fieldset className="border border-white/10 p-4">
-                <legend className="px-2 font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Services</legend>
-                <div className="grid grid-cols-2 gap-3">
-                  {SERVICES.map((s) => {
-                    const checked = data.services?.includes(s) ?? false;
-                    return (
-                      <label key={s} className="inline-flex cursor-pointer items-center gap-2 font-mono text-xs text-white hover:text-white/90 transition-colors duration-500">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[var(--accent)] transition-all duration-500"
-                          checked={checked}
-                          onChange={(e) => {
-                            const next = new Set(data.services);
-                            if (e.target.checked) next.add(s); else next.delete(s);
-                            setData({ ...data, services: Array.from(next) });
-                          }}
-                        />
-                        <span className="text-xs">{s}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </fieldset>
-            </div>
-            </>
-          )}
-
-          {/* Attachments Section Header */}
-          <div className="border-b border-white/10 pb-3 mb-4">
-            <h3 className="font-mono text-base md:text-lg text-[var(--accent)] uppercase tracking-wider">Attachments</h3>
-          </div>
-
-          {/* Files */}
-          <div>
-            <label className="mb-2 block font-mono text-base md:text-lg lg:text-xl font-semibold text-white/90 uppercase tracking-wider">Files (up to {MAX_FILES}, ≤{MAX_FILE_SIZE_MB}MB)</label>
-            <div className="border border-dashed border-white/10 bg-[#0b0b0b] p-4">
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                onChange={onPickFiles}
-                accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.zip"
-                className="block w-full font-mono text-xs text-white/65 file:mr-3 file:border file:border-white/10 file:bg-[#131313] file:px-3 file:py-2 file:text-xs file:text-white hover:file:border-[var(--accent)]"
-              />
-              <p className="mt-2 text-xs text-white/65">Drag & drop files here</p>
-              {filesError && <p className="mt-1 text-xs text-red-400">{filesError}</p>}
-              {files.length > 0 && (
-                <ul className="mt-3 space-y-2 font-mono text-xs text-white/65">
-                  {files.map((f, i) => (
-                    <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 border border-white/5 bg-[#0b0b0b] p-2">
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        {/* Improvement #11: File type icon */}
-                        <span className="text-base flex-shrink-0">{getFileTypeIcon(f.name)}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="truncate">{f.name}</div>
-                          {/* Improvement #11: File size display */}
-                          <div className="text-[10px] text-white/40">{formatFileSize(f.size)}</div>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className="border border-white/10 bg-[#131313] px-2 py-1 text-xs hover:border-[var(--accent)] hover:text-[var(--accent)] flex-shrink-0"
-                        onClick={() => {
-                          triggerHaptic(10);
-                          removeFile(i);
-                          announce(`Removed ${f.name}`);
-                        }}
-                        aria-label={`Remove ${f.name}`}
-                      >
-                        ✕
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          {/* Consent */}
-          <label className="inline-flex items-center gap-2 font-mono text-xs text-white/65 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={data.consent}
-              onChange={(e) => setData({ ...data, consent: e.target.checked })}
-              className="h-4 w-4 appearance-none border border-white/10 bg-[#0b0b0b] checked:bg-[var(--accent)] transition-all duration-500"
-            />
-            I agree to be contacted
-          </label>
-
-          {/* Submit */}
-          <div className="space-y-3 pt-4">
+          {step > 0 && (
             <button
-              data-submit
-              type="submit"
-              disabled={!formValid}
-              className="w-full transition-all hover:scale-110 active:scale-95"
+              onClick={goBack}
               style={{
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                letterSpacing: "0.05em",
-                textTransform: "capitalize",
-                background: formValid ? "rgba(255, 255, 255, 0.1)" : "transparent",
-                color: formValid ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.4)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                borderRadius: "8px",
-                padding: "0.5rem 0.75rem",
-                boxShadow: "none",
-                filter: "none",
-                cursor: formValid ? "pointer" : "not-allowed"
+                flex: "0 0 auto",
+                padding: "10px 16px",
+                background: "transparent",
+                border: "1px solid var(--grid)",
+                borderRadius: 3,
+                color: "var(--muted)",
+                fontFamily: "var(--font-mono, monospace)",
+                fontSize: 11,
+                letterSpacing: "0.1em",
+                cursor: "pointer",
               }}
             >
-              {submitting ? "Sending…" : mode === "quick" ? "Send" : "Send Brief"}
+              ← BACK
             </button>
+          )}
 
-            {(disabledByTimer || cooldown>0) && (
-              <div className="text-center">
-                <span className="text-sm md:text-base text-white/65 font-mono">
-                  {disabledByTimer ? `Ready in ${countdown}s` : `Wait ${cooldown}s`}
-                </span>
-              </div>
-            )}
-          </div>
-        </form>
+          <button
+            onClick={step === TOTAL_STEPS - 1 ? handleSubmit : advance}
+            disabled={submitting}
+            style={{
+              flex: 1,
+              padding: "10px 20px",
+              background: submitting ? "rgba(255,157,35,0.4)" : "var(--accent, #FF9D23)",
+              border: "none",
+              borderRadius: 3,
+              color: "#000",
+              fontFamily: "var(--font-mono, monospace)",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              cursor: submitting ? "not-allowed" : "pointer",
+              transition: "background 0.15s ease",
+            }}
+          >
+            {submitting
+              ? "SENDING…"
+              : step === TOTAL_STEPS - 1
+              ? "SEND MESSAGE"
+              : "NEXT →"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Step components ──────────────────────────────────────────────────────────
+
+const questionStyle: React.CSSProperties = {
+  fontSize: 17,
+  fontWeight: 600,
+  color: "var(--ink)",
+  lineHeight: 1.35,
+  marginBottom: 20,
+  marginTop: 4,
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  background: "rgba(255,255,255,0.05)",
+  border: "1px solid var(--grid)",
+  borderRadius: 3,
+  padding: "11px 14px",
+  color: "var(--ink)",
+  fontSize: 14,
+  fontFamily: "var(--font-body)",
+  outline: "none",
+  boxSizing: "border-box",
+  caretColor: "var(--accent, #FF9D23)",
+};
+
+const errorStyle: React.CSSProperties = {
+  fontSize: 12,
+  color: "var(--error)",
+  marginTop: 8,
+  fontFamily: "var(--font-mono, monospace)",
+};
+
+const hintStyle: React.CSSProperties = {
+  fontSize: 12,
+  color: "var(--muted)",
+  marginTop: 8,
+  fontFamily: "var(--font-mono, monospace)",
+};
+
+// Step 0 — Name
+function StepName({
+  value,
+  onChange,
+  onKeyDown,
+  inputRef,
+  error,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  inputRef: React.RefObject<HTMLInputElement>;
+  error: string | null;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <p style={questionStyle}>What&apos;s your name?</p>
+      <input
+        ref={inputRef}
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        placeholder="First name is fine."
+        autoComplete="given-name"
+        style={{
+          ...inputStyle,
+          borderColor: error ? "var(--error)" : "var(--grid)",
+        }}
+      />
+      {error ? (
+        <p style={errorStyle}>{error}</p>
+      ) : (
+        <p style={hintStyle}>Press Enter to continue</p>
+      )}
+    </div>
+  );
+}
+
+// Step 1 — Project
+function StepProject({
+  value,
+  onChange,
+  onKeyDown,
+  inputRef,
+  error,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  inputRef: React.RefObject<HTMLTextAreaElement>;
+  error: string | null;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <p style={questionStyle}>What are you working on?</p>
+      <textarea
+        ref={inputRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        placeholder="Tell me about the project — or just the problem."
+        rows={4}
+        style={{
+          ...inputStyle,
+          resize: "none",
+          lineHeight: 1.55,
+          borderColor: error ? "var(--error)" : "var(--grid)",
+        }}
+      />
+      {error ? (
+        <p style={errorStyle}>{error}</p>
+      ) : (
+        <p style={hintStyle}>Shift+Enter for new line</p>
+      )}
+    </div>
+  );
+}
+
+// Step 2 — Service
+function StepService({
+  serviceType,
+  serviceOther,
+  onSelect,
+  onOtherChange,
+  error,
+}: {
+  serviceType: string;
+  serviceOther: string;
+  onSelect: (v: string) => void;
+  onOtherChange: (v: string) => void;
+  error: string | null;
+}) {
+  const otherRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (serviceType === "Something else") {
+      setTimeout(() => otherRef.current?.focus(), 50);
+    }
+  }, [serviceType]);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <p style={questionStyle}>What kind of help are you looking for?</p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 8,
+        }}
+      >
+        {SERVICE_OPTIONS.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onSelect(opt)}
+            style={{
+              padding: "10px 12px",
+              background:
+                serviceType === opt
+                  ? "var(--accent, #FF9D23)"
+                  : "rgba(255,255,255,0.05)",
+              border:
+                serviceType === opt
+                  ? "1px solid var(--accent, #FF9D23)"
+                  : "1px solid rgba(255,255,255,0.15)",
+              borderRadius: 3,
+              color: serviceType === opt ? "#000" : "rgba(255,255,255,0.75)",
+              fontFamily: "var(--font-mono, monospace)",
+              fontSize: 11,
+              fontWeight: serviceType === opt ? 700 : 400,
+              letterSpacing: "0.06em",
+              cursor: "pointer",
+              textAlign: "left",
+              transition: "all 0.15s ease",
+            }}
+          >
+            {opt}
+          </button>
+        ))}
       </div>
 
-      <p className="text-xs text-white/65 text-center">
-        Usually reply within 1 business day. Sydney (AEST/AEDT).
-      </p>
+      <AnimatePresence>
+        {serviceType === "Something else" && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: "auto", marginTop: 10 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            style={{ overflow: "hidden" }}
+          >
+            <input
+              ref={otherRef}
+              type="text"
+              value={serviceOther}
+              onChange={(e) => onOtherChange(e.target.value)}
+              placeholder="What are you after?"
+              style={inputStyle}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {error && <p style={errorStyle}>{error}</p>}
+    </div>
+  );
+}
+
+// Step 3 — Timeline
+function StepTimeline({
+  value,
+  onSelect,
+  error,
+}: {
+  value: string;
+  onSelect: (v: string) => void;
+  error: string | null;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <p style={questionStyle}>What&apos;s your timeline?</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {TIMELINE_OPTIONS.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onSelect(opt)}
+            style={{
+              padding: "11px 14px",
+              background:
+                value === opt
+                  ? "var(--accent, #FF9D23)"
+                  : "rgba(255,255,255,0.05)",
+              border:
+                value === opt
+                  ? "1px solid var(--accent, #FF9D23)"
+                  : "1px solid rgba(255,255,255,0.15)",
+              borderRadius: 3,
+              color: value === opt ? "#000" : "rgba(255,255,255,0.75)",
+              fontFamily: "var(--font-mono, monospace)",
+              fontSize: 11,
+              fontWeight: value === opt ? 700 : 400,
+              letterSpacing: "0.06em",
+              cursor: "pointer",
+              textAlign: "left",
+              transition: "all 0.15s ease",
+            }}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+      {error && <p style={errorStyle}>{error}</p>}
+    </div>
+  );
+}
+
+// Step 4 — Email
+function StepEmail({
+  value,
+  onChange,
+  onKeyDown,
+  inputRef,
+  error,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  inputRef: React.RefObject<HTMLInputElement>;
+  error: string | null;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <p style={questionStyle}>How do I reach you?</p>
+      <input
+        ref={inputRef}
+        type="email"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        placeholder="hello@yourbrand.com"
+        autoComplete="email"
+        style={{
+          ...inputStyle,
+          borderColor: error ? "var(--error)" : "var(--grid)",
+        }}
+      />
+      {error ? (
+        <p style={errorStyle}>{error}</p>
+      ) : (
+        <p style={hintStyle}>Press Enter to send</p>
+      )}
     </div>
   );
 }
