@@ -51,7 +51,7 @@ export const hoverLift = {
  */
 export const accentButtonHover = {
   whileHover: {
-    boxShadow: "0 0 40px rgba(255, 157, 35, 0.8)",
+    boxShadow: "0 0 40px rgba(247, 168, 53, 0.8)",
     scale: 1.05,
   },
   transition: { duration: 0.3 },
@@ -139,9 +139,9 @@ export function createFadeZones(isMobile: boolean) {
  */
 export function accentGlow(intensity: "subtle" | "medium" | "intense" = "medium") {
   const glowMap = {
-    subtle: "0 0 20px rgba(255, 157, 35, 0.3)",
-    medium: "0 0 40px rgba(255, 157, 35, 0.5)",
-    intense: "0 0 60px rgba(255, 157, 35, 0.8)",
+    subtle: "0 0 20px rgba(247, 168, 53, 0.3)",
+    medium: "0 0 40px rgba(247, 168, 53, 0.5)",
+    intense: "0 0 60px rgba(247, 168, 53, 0.8)",
   };
   return glowMap[intensity];
 }
@@ -151,9 +151,9 @@ export function accentGlow(intensity: "subtle" | "medium" | "intense" = "medium"
  */
 export function accentTextGlow(intensity: "subtle" | "medium" | "intense" = "medium") {
   const glowMap = {
-    subtle: "0 0 30px rgba(255, 157, 35, 0.3)",
-    medium: "0 0 40px rgba(255, 157, 35, 0.5)",
-    intense: "0 0 60px rgba(255, 157, 35, 0.6), 0 0 100px rgba(255, 157, 35, 0.3)",
+    subtle: "0 0 30px rgba(247, 168, 53, 0.3)",
+    medium: "0 0 40px rgba(247, 168, 53, 0.5)",
+    intense: "0 0 60px rgba(247, 168, 53, 0.6), 0 0 100px rgba(247, 168, 53, 0.3)",
   };
   return glowMap[intensity];
 }
@@ -193,10 +193,10 @@ export const keyframes = {
   glow: `
     @keyframes glow {
       0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 157, 35, 0.3);
+        box-shadow: 0 0 20px rgba(247, 168, 53, 0.3);
       }
       50% {
-        box-shadow: 0 0 40px rgba(255, 157, 35, 0.6);
+        box-shadow: 0 0 40px rgba(247, 168, 53, 0.6);
       }
     }
   `,

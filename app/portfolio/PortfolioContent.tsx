@@ -52,7 +52,7 @@ export default function PortfolioContent() {
           fontSize: '11px',
           color: '#4A4A4A',
           letterSpacing: '0.08em',
-          borderLeft: '2px solid #ff9d23',
+          borderLeft: '2px solid #F7A835',
           paddingLeft: '10px',
           lineHeight: 1.6,
         }}

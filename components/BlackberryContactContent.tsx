@@ -248,7 +248,7 @@ export default function BlackberryContactContent() {
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ["#ff9d23", "#FFC266"],
+          colors: ["#F7A835", "#FFC266"],
           shapes: ["square", "circle"],
           gravity: 1,
           drift: 0,
@@ -260,7 +260,7 @@ export default function BlackberryContactContent() {
             angle: 60,
             spread: 55,
             origin: { x: 0 },
-            colors: ["#ff9d23"],
+            colors: ["#F7A835"],
             shapes: ["square"],
           });
         }, 250);
@@ -505,7 +505,7 @@ export default function BlackberryContactContent() {
             style={{
               flex: 1,
               padding: "10px 20px",
-              background: submitting ? "rgba(255,157,35,0.4)" : "var(--accent, #FF9D23)",
+              background: submitting ? "rgba(247, 168, 53,0.4)" : "var(--accent, #F7A835)",
               border: "none",
               borderRadius: 3,
               color: "#000",
@@ -551,7 +551,7 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "var(--font-body)",
   outline: "none",
   boxSizing: "border-box",
-  caretColor: "var(--accent, #FF9D23)",
+  caretColor: "var(--accent, #F7A835)",
 };
 
 const errorStyle: React.CSSProperties = {
@@ -687,11 +687,11 @@ function StepService({
               padding: "10px 12px",
               background:
                 serviceType === opt
-                  ? "var(--accent, #FF9D23)"
+                  ? "var(--accent, #F7A835)"
                   : "rgba(255,255,255,0.05)",
               border:
                 serviceType === opt
-                  ? "1px solid var(--accent, #FF9D23)"
+                  ? "1px solid var(--accent, #F7A835)"
                   : "1px solid rgba(255,255,255,0.15)",
               borderRadius: 3,
               color: serviceType === opt ? "#000" : "rgba(255,255,255,0.75)",
@@ -756,11 +756,11 @@ function StepTimeline({
               padding: "11px 14px",
               background:
                 value === opt
-                  ? "var(--accent, #FF9D23)"
+                  ? "var(--accent, #F7A835)"
                   : "rgba(255,255,255,0.05)",
               border:
                 value === opt
-                  ? "1px solid var(--accent, #FF9D23)"
+                  ? "1px solid var(--accent, #F7A835)"
                   : "1px solid rgba(255,255,255,0.15)",
               borderRadius: 3,
               color: value === opt ? "#000" : "rgba(255,255,255,0.75)",

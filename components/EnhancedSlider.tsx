@@ -121,7 +121,7 @@ export default function EnhancedSlider({
             [&::-webkit-slider-thumb]:bg-[var(--accent)]
             [&::-webkit-slider-thumb]:border
             [&::-webkit-slider-thumb]:border-white/20
-            [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)]
+            [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(247, 168, 53,0.6)]
             ${prefersReducedMotion ? "" : "[&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150"}
             hover:[&::-webkit-slider-thumb]:scale-110
             active:[&::-webkit-slider-thumb]:scale-125

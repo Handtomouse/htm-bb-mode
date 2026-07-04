@@ -56,7 +56,7 @@ const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings }) 
 
     const updateColorCache = () => {
       const root = document.documentElement;
-      const accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
+      const accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#F7A835';
 
       const hexToRgba = (hex: string, alpha: number) => {
         hex = hex.replace('#', '');

@@ -48,7 +48,7 @@ export default function BlackberryDonateContent() {
       {/* Heading */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-          <span style={{ color: '#ff9d23', fontSize: '10px' }}>●</span>
+          <span style={{ color: '#F7A835', fontSize: '10px' }}>●</span>
           <span style={{
             fontFamily: '"argent-pixel-cf", "VT323", monospace',
             fontSize: '16px',
@@ -133,7 +133,7 @@ export default function BlackberryDonateContent() {
         whileHover={{ backgroundColor: '#ffae4a' }}
         whileTap={{ scale: 0.98 }}
         style={{
-          background: '#ff9d23',
+          background: '#F7A835',
           color: '#0b0b0b',
           fontFamily: '"Roboto Mono", monospace',
           fontWeight: 700,

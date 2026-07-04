@@ -1,5 +1,5 @@
 // Accent color
-export const ACCENT = "#FF9D23";
+export const ACCENT = "#F7A835";
 
 // Email validation
 export const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);

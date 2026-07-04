@@ -42,12 +42,12 @@ export function HwButton({
         className="grid place-items-center h-[88px] sm:h-[104px] w-full rounded-none border-2 backdrop-blur-sm transition-all duration-300 ease-out"
         style={{
           background: "linear-gradient(145deg, #141414 0%, #0f0f0f 25%, #0a0a0a 50%, #060606 75%, #000000 100%)",
-          borderColor: isHovered ? "rgba(255,157,35,0.45)" : "rgba(255,255,255,0.3)",
+          borderColor: isHovered ? "rgba(247, 168, 53,0.45)" : "rgba(255,255,255,0.3)",
           boxShadow: isPressed
             ? "inset 0 5px 10px rgba(0,0,0,0.95), inset 0 0 15px rgba(0,0,0,0.9)"
             : isHovered
-            ? "0 0 12px rgba(255,157,35,0.5), 0 0 16px rgba(255,157,35,0.25), inset 0 0 10px rgba(255,157,35,0.18), inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -1px 0 rgba(255,157,35,0.15)"
-            : "3px 3px 8px rgba(0,0,0,0.8), inset 0 1px 3px rgba(255,255,255,0.08), inset 0 0 8px rgba(0,0,0,0.9), inset 0 -1px 0 rgba(255,157,35,0.08)",
+            ? "0 0 12px rgba(247, 168, 53,0.5), 0 0 16px rgba(247, 168, 53,0.25), inset 0 0 10px rgba(247, 168, 53,0.18), inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -1px 0 rgba(247, 168, 53,0.15)"
+            : "3px 3px 8px rgba(0,0,0,0.8), inset 0 1px 3px rgba(255,255,255,0.08), inset 0 0 8px rgba(0,0,0,0.9), inset 0 -1px 0 rgba(247, 168, 53,0.08)",
           transform: isPressed ? "scale(0.95)" : isHovered ? "scale(1.03)" : "scale(1)",
           transformOrigin: "center",
           padding: "2px"
@@ -68,7 +68,7 @@ export function HwButton({
         <div
           className="h-12 sm:h-16 w-12 sm:w-16 transition-all duration-300 ease-out group-hover:[&_svg_rect]:fill-[var(--accent)] group-hover:[&_svg_rect]:stroke-[var(--accent)] group-hover:[&_svg_g]:fill-[var(--accent)] group-hover:[&_svg_g]:stroke-[var(--accent)]"
           style={{
-            filter: isHovered ? "drop-shadow(0 0 4px rgba(255,157,35,0.6))" : "none"
+            filter: isHovered ? "drop-shadow(0 0 4px rgba(247, 168, 53,0.6))" : "none"
           }}
         >
           {children}

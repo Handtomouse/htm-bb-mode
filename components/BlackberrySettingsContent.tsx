@@ -5,7 +5,7 @@ import BBPageHeader from "./BBPageHeader";
 
 // Accent color options
 const ACCENT_COLORS = [
-  { name: "Orange", value: "#ff9d23" },
+  { name: "Orange", value: "#F7A835" },
   { name: "Blue", value: "#3b82f6" },
   { name: "Purple", value: "#a855f7" },
   { name: "Green", value: "#22c55e" },

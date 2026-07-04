@@ -44,9 +44,9 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
         transition: "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
         transform: hovered ? "translateY(-2px)" : "translateY(0)",
         boxShadow: hovered
-          ? "0 8px 32px rgba(255,157,35,0.15), 0 0 0 1px #ff9d23"
+          ? "0 8px 32px rgba(247, 168, 53,0.15), 0 0 0 1px #F7A835"
           : "none",
-        borderColor: hovered ? "#ff9d23" : "var(--grid)",
+        borderColor: hovered ? "#F7A835" : "var(--grid)",
         overflow: "hidden",
       }}
     >
@@ -58,7 +58,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           left: 0,
           bottom: 0,
           width: 2,
-          backgroundColor: "#ff9d23",
+          backgroundColor: "#F7A835",
           transform: hovered ? "scaleY(1)" : "scaleY(0)",
           transformOrigin: "top",
           transition: "transform 0.3s ease",
@@ -71,7 +71,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           <span
             style={{
               fontSize: "1.5rem",
-              color: "#ff9d23",
+              color: "#F7A835",
               lineHeight: 1,
               flexShrink: 0,
               marginTop: 2,
@@ -140,13 +140,13 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
                     lineHeight: 1.6,
                   }}
                 >
-                  {/* #ff9d23 square bullet */}
+                  {/* #F7A835 square bullet */}
                   <span
                     style={{
                       display: "inline-block",
                       width: 6,
                       height: 6,
-                      backgroundColor: "#ff9d23",
+                      backgroundColor: "#F7A835",
                       flexShrink: 0,
                       marginTop: 5,
                     }}
@@ -233,7 +233,7 @@ export default function ServicesContent() {
             lineHeight: 1,
           }}
         >
-          <span style={{ color: "#ff9d23" }}>/</span> SERVICES
+          <span style={{ color: "#F7A835" }}>/</span> SERVICES
         </h1>
         <p
           className="max-w-lg text-sm leading-relaxed"
@@ -244,7 +244,7 @@ export default function ServicesContent() {
         <div
           className="mt-4 h-[1px]"
           style={{
-            background: "linear-gradient(90deg, #ff9d23 0%, transparent 60%)",
+            background: "linear-gradient(90deg, #F7A835 0%, transparent 60%)",
           }}
         />
       </motion.div>
@@ -265,9 +265,9 @@ export default function ServicesContent() {
                 style={{
                   fontFamily: "Roboto Mono, monospace",
                   fontSize: "0.75rem",
-                  color: "#ff9d23",
+                  color: "#F7A835",
                   letterSpacing: "0.25em",
-                  borderLeft: "2px solid #ff9d23",
+                  borderLeft: "2px solid #F7A835",
                   paddingLeft: "0.75rem",
                 }}
               >
@@ -303,7 +303,7 @@ export default function ServicesContent() {
         <div
           className="mb-8 h-[1px]"
           style={{
-            background: "linear-gradient(90deg, #ff9d23 0%, transparent 60%)",
+            background: "linear-gradient(90deg, #F7A835 0%, transparent 60%)",
           }}
         />
 
@@ -380,7 +380,7 @@ export default function ServicesContent() {
             { pct: "15%", label: "handoff" },
           ].map((t, i, arr) => (
             <span key={t.label} className="flex items-baseline gap-1.5">
-              <span style={{ color: "#ff9d23" }}>{t.pct}</span>
+              <span style={{ color: "#F7A835" }}>{t.pct}</span>
               <span style={{ color: "var(--muted)" }}>{t.label}</span>
               {i < arr.length - 1 && (
                 <span style={{ color: "#2A2A2A", marginLeft: "0.25rem" }}>·</span>
@@ -433,14 +433,14 @@ export default function ServicesContent() {
         </h2>
         <Link href="/contact">
           <motion.button
-            whileHover={{ backgroundColor: "#ff9d23", color: "#000000" }}
+            whileHover={{ backgroundColor: "#F7A835", color: "#000000" }}
             whileTap={{ scale: 0.96, y: 1 }}
             className="px-8 py-3 text-sm uppercase tracking-widest"
             style={{
               fontFamily: "Roboto Mono, monospace",
               backgroundColor: "transparent",
-              color: "#ff9d23",
-              border: "1px solid #ff9d23",
+              color: "#F7A835",
+              border: "1px solid #F7A835",
               cursor: "pointer",
               letterSpacing: "0.15em",
               transition: "background-color 0.2s ease, color 0.2s ease",

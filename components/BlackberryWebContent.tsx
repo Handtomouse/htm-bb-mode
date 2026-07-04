@@ -67,7 +67,7 @@ function BrowserChrome({ url }: { url?: string }) {
         />
         <div
           className="rounded-full"
-          style={{ width: 6, height: 6, backgroundColor: "#ff9d23" }}
+          style={{ width: 6, height: 6, backgroundColor: "#F7A835" }}
         />
         <div
           className="rounded-full"
@@ -112,7 +112,7 @@ function SiteCard({ site, index }: { site: LiveSite; index: number }) {
         transition: "box-shadow 0.25s ease, border-color 0.25s ease",
       }}
       whileHover={{
-        boxShadow: "0 0 0 1px #ff9d23, 0 4px 24px rgba(255,157,35,0.2)",
+        boxShadow: "0 0 0 1px #F7A835, 0 4px 24px rgba(247, 168, 53,0.2)",
       }}
     >
       {/* Browser chrome mockup */}
@@ -168,13 +168,13 @@ function SiteCard({ site, index }: { site: LiveSite; index: number }) {
               className="text-xs font-semibold uppercase tracking-widest px-3 py-1.5 transition-all duration-200"
               style={{
                 fontFamily: "Roboto Mono, monospace",
-                color: "#ff9d23",
-                border: "1px solid #ff9d23",
+                color: "#F7A835",
+                border: "1px solid #F7A835",
                 background: "transparent",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-                  "rgba(255,157,35,0.1)";
+                  "rgba(247, 168, 53,0.1)";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
@@ -229,7 +229,7 @@ export default function BlackberryWebContent() {
         </h1>
         <div
           className="mt-1 h-[1px]"
-          style={{ background: "linear-gradient(90deg, #ff9d23 0%, transparent 100%)" }}
+          style={{ background: "linear-gradient(90deg, #F7A835 0%, transparent 100%)" }}
         />
       </div>
 
@@ -246,10 +246,10 @@ export default function BlackberryWebContent() {
             backgroundColor: "#0b0b0b",
             border: "1px solid #2A2A2A",
             color: "#EDECEC",
-            caretColor: "#ff9d23",
+            caretColor: "#F7A835",
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = "#ff9d23";
+            e.currentTarget.style.borderColor = "#F7A835";
           }}
           onBlur={(e) => {
             e.currentTarget.style.borderColor = "#2A2A2A";

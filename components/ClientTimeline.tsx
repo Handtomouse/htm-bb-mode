@@ -24,7 +24,7 @@ export default function ClientTimeline() {
           initial={{ opacity: 0, x: -20 }}
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
           transition={{ duration: 0.4, delay: idx * 0.1 }}
-          whileHover={{ x: 5, backgroundColor: "rgba(255,157,35,0.05)" }}
+          whileHover={{ x: 5, backgroundColor: "rgba(247, 168, 53,0.05)" }}
           className="flex items-center justify-between border-l-2 border-[var(--accent)]/40 pl-4 py-3 transition-all"
         >
           <div className="flex-1">

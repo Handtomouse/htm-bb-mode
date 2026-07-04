@@ -110,14 +110,14 @@ function ProjectCoverImage({ project }: { project: Project }) {
         className="w-full aspect-video flex items-center justify-center"
         style={{
           backgroundColor: "#131313",
-          border: "1px solid #ff9d23",
+          border: "1px solid #F7A835",
         }}
       >
         <span
           style={{
             fontFamily: "VT323, monospace",
             fontSize: "clamp(2rem, 5vw, 3.5rem)",
-            color: "#ff9d23",
+            color: "#F7A835",
             letterSpacing: "0.05em",
           }}
         >
@@ -157,7 +157,7 @@ export default function BlackberryFavouritesContent() {
         </h1>
         <div
           className="mt-1 h-[1px]"
-          style={{ background: "linear-gradient(90deg, #ff9d23 0%, transparent 100%)" }}
+          style={{ background: "linear-gradient(90deg, #F7A835 0%, transparent 100%)" }}
         />
       </div>
 
@@ -182,7 +182,7 @@ export default function BlackberryFavouritesContent() {
               }}
               whileHover={{
                 scale: 1.02,
-                boxShadow: "0 0 0 1px #ff9d23, 0 4px 24px rgba(255,157,35,0.25)",
+                boxShadow: "0 0 0 1px #F7A835, 0 4px 24px rgba(247, 168, 53,0.25)",
               }}
             >
               {/* Cover image or placeholder */}
@@ -194,7 +194,7 @@ export default function BlackberryFavouritesContent() {
                 <div
                   className="text-sm font-semibold uppercase leading-tight"
                   style={{
-                    color: "#ff9d23",
+                    color: "#F7A835",
                     fontFamily: "Roboto Mono, monospace",
                     letterSpacing: "0.04em",
                   }}

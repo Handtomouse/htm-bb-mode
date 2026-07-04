@@ -428,7 +428,7 @@ export default function IconComparisonPage() {
         <style jsx>{`
           .icon-card:hover {
             border-color: var(--accent);
-            background: rgba(255, 157, 35, 0.05);
+            background: rgba(247, 168, 53, 0.05);
           }
         `}</style>
       </div>
@@ -452,7 +452,7 @@ function LibraryCard({ name, description, count, pros, cons, isActive, onClick }
       onClick={onClick}
       style={{
         padding: "1.5rem",
-        background: isActive ? "rgba(255, 157, 35, 0.1)" : "rgba(255, 255, 255, 0.02)",
+        background: isActive ? "rgba(247, 168, 53, 0.1)" : "rgba(255, 255, 255, 0.02)",
         border: `2px solid ${isActive ? "var(--accent)" : "var(--grid)"}`,
         borderRadius: "var(--radius)",
         cursor: "pointer",

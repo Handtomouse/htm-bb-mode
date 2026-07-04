@@ -453,8 +453,8 @@ export default function ClientsContent() {
             <h1
               className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[var(--accent)] mb-20 md:mb-24 leading-[0.9]"
               style={{
-                textShadow: '0 0 40px rgba(255, 157, 35, 0.4), 0 0 80px rgba(255, 157, 35, 0.2)',
-                WebkitTextStroke: '0.5px rgba(255, 157, 35, 0.3)',
+                textShadow: '0 0 40px rgba(247, 168, 53, 0.4), 0 0 80px rgba(247, 168, 53, 0.2)',
+                WebkitTextStroke: '0.5px rgba(247, 168, 53, 0.3)',
                 transform: `translateY(${scrollY * 0.3}px)`,
                 opacity: 1 - (scrollY / 800)
               }}
@@ -928,8 +928,8 @@ if (typeof document !== 'undefined' && !document.querySelector('#modal-animation
   style.id = 'modal-animations';
   style.textContent = `
     @keyframes modalPulse {
-      0%, 100% { box-shadow: 0 0 40px rgba(255, 157, 35, 0.15), 0 0 60px rgba(255, 157, 35, 0.08); }
-      50% { box-shadow: 0 0 50px rgba(255, 157, 35, 0.20), 0 0 70px rgba(255, 157, 35, 0.12); }
+      0%, 100% { box-shadow: 0 0 40px rgba(247, 168, 53, 0.15), 0 0 60px rgba(247, 168, 53, 0.08); }
+      50% { box-shadow: 0 0 50px rgba(247, 168, 53, 0.20), 0 0 70px rgba(247, 168, 53, 0.12); }
     }
     @keyframes ripple {
       0%, 100% { box-shadow: 0 0 12px #06ffa5, 0 0 20px rgba(6, 255, 165, 0.25); }

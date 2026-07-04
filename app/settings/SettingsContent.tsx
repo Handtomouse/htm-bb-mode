@@ -131,8 +131,8 @@ export default function SettingsContent() {
               className="text-[70px] md:text-[100px] lg:text-[130px] font-light text-[var(--accent)] mb-12 leading-[0.9]"
               style={{
                 textShadow:
-                  "0 0 40px rgba(255, 157, 35, 0.4), 0 0 80px rgba(255, 157, 35, 0.2)",
-                WebkitTextStroke: "0.5px rgba(255, 157, 35, 0.3)",
+                  "0 0 40px rgba(247, 168, 53, 0.4), 0 0 80px rgba(247, 168, 53, 0.2)",
+                WebkitTextStroke: "0.5px rgba(247, 168, 53, 0.3)",
                 transform: `translateY(${scrollY * 0.3}px)`,
                 opacity: 1 - scrollY / 800,
               }}
@@ -285,7 +285,7 @@ export default function SettingsContent() {
                   onChange={(e) =>
                     updateSetting("brightness", Number(e.target.value))
                   }
-                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)]"
+                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(247, 168, 53,0.6)]"
                 />
               </div>
             </div>
@@ -343,7 +343,7 @@ export default function SettingsContent() {
                   value={settings.volume}
                   onChange={(e) => updateSetting("volume", Number(e.target.value))}
                   disabled={!settings.sound}
-                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(247, 168, 53,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -373,7 +373,7 @@ export default function SettingsContent() {
                     updateSetting("animationSpeed", Number(e.target.value))
                   }
                   disabled={settings.reducedMotion}
-                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(255,157,35,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-1 bg-white/10 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white/20 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(247, 168, 53,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 

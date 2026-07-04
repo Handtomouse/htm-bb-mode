@@ -8,7 +8,7 @@
 // Color System Types
 // ============================================
 
-export type AccentColor = "#ff9d23";
+export type AccentColor = "#F7A835";
 export type AccentHoverColor = "#FFB84D";
 
 export type BaseColor =
@@ -23,7 +23,7 @@ export type SemanticColor =
   | "#22c55e"  // success
   | "#ef4444"  // error
   | "#fbbf24"  // warning
-  | "#ff9d23"; // info (accent)
+  | "#F7A835"; // info (accent)
 
 export type OpacityValue = 0.03 | 0.05 | 0.08 | 0.10 | 0.15 | 0.20 | 0.30 | 0.50;
 
@@ -177,7 +177,7 @@ export interface CardProps {
  * Helper to create rgba colors with proper opacity
  */
 export function accentWithOpacity(opacity: OpacityValue): string {
-  return `rgba(255, 157, 35, ${opacity})`;
+  return `rgba(247, 168, 53, ${opacity})`;
 }
 
 /**

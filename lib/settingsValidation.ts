@@ -14,7 +14,7 @@ export const DEFAULT_SETTINGS: Settings = {
   dockMode: "mono",
   sound: true,
   theme: "dark",
-  accentColor: "#ff9d23",
+  accentColor: "#F7A835",
   fontSize: "medium",
   reducedMotion: false,
   animationSpeed: 1.0,

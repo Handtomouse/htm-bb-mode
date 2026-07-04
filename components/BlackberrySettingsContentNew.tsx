@@ -560,7 +560,7 @@ export default function BlackberrySettingsContentNew() {
                   }}
                   className={`flex-1 px-3 py-2.5 border text-xs uppercase tracking-wide transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black ${
                     settings.dockMode === mode
-                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(255,157,35,0.2)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] shadow-[0_0_10px_rgba(247, 168, 53,0.2)]"
                       : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/[0.02]"
                   }`}
                 >
@@ -741,7 +741,7 @@ export default function BlackberrySettingsContentNew() {
                 setShowPresetsModal(true);
               }}
               aria-label="Open preset themes menu"
-              className="w-full px-5 py-3.5 border border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 text-xs uppercase tracking-[0.12em] transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_10px_rgba(255,157,35,0.15)] hover:shadow-[0_0_16px_rgba(255,157,35,0.25)]"
+              className="w-full px-5 py-3.5 border border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 text-xs uppercase tracking-[0.12em] transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_10px_rgba(247, 168, 53,0.15)] hover:shadow-[0_0_16px_rgba(247, 168, 53,0.25)]"
             >
               <span className="inline-block mr-2">🎨</span>
               Load Preset Theme

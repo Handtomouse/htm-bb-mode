@@ -48,7 +48,7 @@ export function SignalBars({ strength = 4 }: { strength?: 0 | 1 | 2 | 3 | 4 }) {
 
 export function Battery({ level = 50, charging = false }: { level?: number; charging?: boolean }) {
   const pct = Math.max(0, Math.min(100, level));
-  const color = pct < 20 ? "#ef4444" : charging ? "#FF9D23" : "#22c55e"; // HTM Brand Orange when charging
+  const color = pct < 20 ? "#ef4444" : charging ? "#F7A835" : "#22c55e"; // HTM Brand Orange when charging
 
   return (
     <div className={`relative h-6 w-12 rounded-none border-2 border-white/70 ${charging ? "animate-pulse" : ""}`}>

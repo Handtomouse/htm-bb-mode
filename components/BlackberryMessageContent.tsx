@@ -130,7 +130,7 @@ export default function BlackberryMessageContent() {
                 {unreadCount > 0 && (
                   <span
                     style={{
-                      background: '#ff9d23',
+                      background: '#F7A835',
                       color: '#0b0b0b',
                       fontSize: '10px',
                       fontWeight: 700,
@@ -174,7 +174,7 @@ export default function BlackberryMessageContent() {
                         width: '6px',
                         height: '6px',
                         borderRadius: '50%',
-                        background: isUnread ? '#ff9d23' : 'transparent',
+                        background: isUnread ? '#F7A835' : 'transparent',
                         flexShrink: 0,
                       }}
                     />
@@ -193,7 +193,7 @@ export default function BlackberryMessageContent() {
                         flexShrink: 0,
                         fontFamily: '"VT323", monospace',
                         fontSize: '16px',
-                        color: '#ff9d23',
+                        color: '#F7A835',
                       }}
                     >
                       {thread.avatar}
@@ -266,7 +266,7 @@ export default function BlackberryMessageContent() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#ff9d23',
+                  color: '#F7A835',
                   cursor: 'pointer',
                   fontFamily: '"Roboto Mono", monospace',
                   fontSize: '14px',

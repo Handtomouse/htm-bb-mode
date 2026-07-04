@@ -39,12 +39,12 @@ export async function sendContactNotification(
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #0b0b0b; color: #F4A259; padding: 20px; border-left: 4px solid #F4A259; }
+    .header { background: #0b0b0b; color: #F7A835; padding: 20px; border-left: 4px solid #F7A835; }
     .content { background: #f9f9f9; padding: 20px; margin: 20px 0; }
     .field { margin: 15px 0; }
     .label { font-weight: 600; color: #666; font-size: 12px; text-transform: uppercase; }
     .value { margin-top: 5px; color: #333; }
-    .badge { display: inline-block; padding: 4px 8px; background: #F4A259; color: #000; border-radius: 3px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .badge { display: inline-block; padding: 4px 8px; background: #F7A835; color: #000; border-radius: 3px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
     .footer { text-align: center; padding: 20px; color: #999; font-size: 12px; }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .tag { background: #e0e0e0; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
@@ -66,7 +66,7 @@ export async function sendContactNotification(
 
       <div class="field">
         <div class="label">Message</div>
-        <div class="value" style="white-space: pre-wrap; background: white; padding: 15px; border-left: 3px solid #F4A259;">${message}</div>
+        <div class="value" style="white-space: pre-wrap; background: white; padding: 15px; border-left: 3px solid #F7A835;">${message}</div>
       </div>
 
       ${
@@ -111,7 +111,7 @@ export async function sendContactNotification(
         attachment_url
           ? `<div class="field">
         <div class="label">Attachment Link</div>
-        <div class="value"><a href="${attachment_url}" style="color: #F4A259;">${attachment_url}</a></div>
+        <div class="value"><a href="${attachment_url}" style="color: #F7A835;">${attachment_url}</a></div>
       </div>`
           : ""
       }
@@ -196,10 +196,10 @@ export async function sendAutoReply(name: string, email: string) {
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #0b0b0b; color: #F4A259; padding: 30px 20px; text-align: center; }
+    .header { background: #0b0b0b; color: #F7A835; padding: 30px 20px; text-align: center; }
     .logo { font-size: 32px; font-weight: 700; margin: 0; }
     .content { padding: 30px 20px; }
-    .cta { display: inline-block; background: #F4A259; color: #000; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: 600; margin: 20px 0; }
+    .cta { display: inline-block; background: #F7A835; color: #000; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: 600; margin: 20px 0; }
     .footer { text-align: center; padding: 20px; color: #999; font-size: 12px; border-top: 1px solid #eee; }
   </style>
 </head>
@@ -219,9 +219,9 @@ export async function sendAutoReply(name: string, email: string) {
 
       <p>In the meantime, feel free to:</p>
       <ul>
-        <li><a href="https://www.handtomouse.org/portfolio" style="color: #F4A259;">Browse my recent work</a></li>
-        <li><a href="https://www.instagram.com/handtomouse" style="color: #F4A259;">Check out @handtomouse on Instagram</a></li>
-        <li><a href="https://www.handtomouse.org/services" style="color: #F4A259;">Learn more about my services</a></li>
+        <li><a href="https://www.handtomouse.org/portfolio" style="color: #F7A835;">Browse my recent work</a></li>
+        <li><a href="https://www.instagram.com/handtomouse" style="color: #F7A835;">Check out @handtomouse on Instagram</a></li>
+        <li><a href="https://www.handtomouse.org/services" style="color: #F7A835;">Learn more about my services</a></li>
       </ul>
 
       <p>Looking forward to connecting!</p>
@@ -229,7 +229,7 @@ export async function sendAutoReply(name: string, email: string) {
       <p>
         <strong>Nate</strong><br>
         HandToMouse<br>
-        <a href="https://www.handtomouse.org" style="color: #F4A259;">www.handtomouse.org</a>
+        <a href="https://www.handtomouse.org" style="color: #F7A835;">www.handtomouse.org</a>
       </p>
     </div>
 

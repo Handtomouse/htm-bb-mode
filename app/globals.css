@@ -8,9 +8,9 @@
   --muted: #9A9A9A;
   --grid: #2A2A2A;
 
-  /* Accent Colors (standardized to #ff9d23) */
-  --accent: #ff9d23;           /* Primary brand orange */
-  --accent-hover: #FFB84D;     /* Hover state */
+  /* Accent Colors (standardized to #F7A835) */
+  --accent: #F7A835;           /* Primary brand orange */
+  --accent-hover: #FF9D23;     /* Hover state (HTM Bright) */
   --accent-2: #a92624;         /* Secondary accent (red) */
   --accent-3: #94b039;         /* Tertiary accent (green) */
   --icon: #6b6b6b;
@@ -22,8 +22,8 @@
   --error-bg: rgba(239, 68, 68, 0.1);
   --warning: #fbbf24;
   --warning-bg: rgba(251, 191, 36, 0.1);
-  --info: #ff9d23;
-  --info-bg: rgba(255, 157, 35, 0.1);
+  --info: #F7A835;
+  --info-bg: rgba(247, 168, 53, 0.1);
 
   /* Border Radius */
   --radius: 16px;
@@ -79,9 +79,9 @@
   --z-tooltip: 60;
 
   /* Shadows */
-  --shadow: 0 0 0 1px rgba(255, 157, 35, 0.2), 0 6px 30px rgba(255, 157, 35, 0.08);
-  --shadow-glow: 0 0 40px rgba(255, 157, 35, 0.5);
-  --shadow-glow-intense: 0 0 60px rgba(255, 157, 35, 0.8);
+  --shadow: 0 0 0 1px rgba(247, 168, 53, 0.2), 0 6px 30px rgba(247, 168, 53, 0.08);
+  --shadow-glow: 0 0 40px rgba(247, 168, 53, 0.5);
+  --shadow-glow-intense: 0 0 60px rgba(247, 168, 53, 0.8);
 
   /* Fonts */
   --font-sans: "Halyard Display", ui-sans-serif, system-ui, -apple-system, sans-serif;

@@ -4,11 +4,11 @@
       "error",
       {
         "selector": "Literal[value=/\\#F4A259/i]",
-        "message": "Use #ff9d23 instead of #F4A259 for accent color (style guide violation)"
+        "message": "Use canon accent #F7A835 (brand canon) instead of #F4A259"
       },
       {
-        "selector": "Literal[value=/\\#f4a259/i]",
-        "message": "Use #ff9d23 instead of #f4a259 for accent color (style guide violation)"
+        "selector": "Literal[value=/\\#ff9d23/i]",
+        "message": "Use canon accent #F7A835 (or var(--accent)) instead of legacy #ff9d23"
       }
     ]
   },

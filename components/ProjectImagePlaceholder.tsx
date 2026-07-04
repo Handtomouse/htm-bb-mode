@@ -20,7 +20,7 @@ export default function ProjectImagePlaceholder({
       className={`w-full h-full relative overflow-hidden ${className}`}
       style={{
         background: '#0d0d0d',
-        borderLeft: '3px solid #ff9d23',
+        borderLeft: '3px solid #F7A835',
         transition: 'box-shadow 0.2s ease, transform 0.2s ease',
       }}
     >
@@ -44,8 +44,8 @@ export default function ProjectImagePlaceholder({
           right: 0,
           width: '20px',
           height: '20px',
-          borderBottom: '1px solid #ff9d23',
-          borderLeft: '1px solid #ff9d23',
+          borderBottom: '1px solid #F7A835',
+          borderLeft: '1px solid #F7A835',
           opacity: 0.35,
         }}
       />
@@ -97,8 +97,8 @@ export default function ProjectImagePlaceholder({
                   style={{
                     fontFamily: 'Roboto Mono, monospace',
                     fontSize: '9px',
-                    color: '#ff9d23',
-                    border: '1px solid rgba(255,157,35,0.35)',
+                    color: '#F7A835',
+                    border: '1px solid rgba(247, 168, 53,0.35)',
                     padding: '2px 6px',
                     letterSpacing: '0.12em',
                     textTransform: 'uppercase',

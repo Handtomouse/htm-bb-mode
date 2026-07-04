@@ -43,7 +43,7 @@ export default function TypewriterManifesto({
     fontFamily: '"argent-pixel-cf", sans-serif',
     color: 'rgba(255,255,255,0.9)',
     letterSpacing: '0.08em',
-    textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2), 0 0 24px rgba(255,157,35,0.15)'
+    textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2), 0 0 24px rgba(247, 168, 53,0.15)'
   };
 
   return (
@@ -57,7 +57,7 @@ export default function TypewriterManifesto({
       className="relative text-[32px] md:text-[40px] lg:text-[48px] font-medium leading-[1.6] p-8 md:p-12"
       style={{
         transition: 'font-size 0.2s ease-out',
-        border: '1px solid rgba(255,157,35,0.2)'
+        border: '1px solid rgba(247, 168, 53,0.2)'
       }}
     >
       {/* Corner accents - BlackBerry frame */}
@@ -83,7 +83,7 @@ export default function TypewriterManifesto({
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="text-[var(--accent)]/90"
             style={{
-              textShadow: '0 0 8px rgba(255,157,35,0.8), 0 0 16px rgba(255,157,35,0.4)'
+              textShadow: '0 0 8px rgba(247, 168, 53,0.8), 0 0 16px rgba(247, 168, 53,0.4)'
             }}
           >
             |
@@ -97,7 +97,7 @@ export default function TypewriterManifesto({
           className="text-[var(--accent)]/90 font-semibold"
           style={{
             ...textStyle,
-            textShadow: '0 0 16px rgba(255,157,35,0.4), 0 2px 4px rgba(0,0,0,0.4)'
+            textShadow: '0 0 16px rgba(247, 168, 53,0.4), 0 2px 4px rgba(0,0,0,0.4)'
           }}
         >
           {line2Display}
@@ -106,7 +106,7 @@ export default function TypewriterManifesto({
               animate={{ opacity: [0.9, 0.3, 0.9] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               style={{
-                textShadow: '0 0 8px rgba(255,157,35,0.8), 0 0 16px rgba(255,157,35,0.4)'
+                textShadow: '0 0 8px rgba(247, 168, 53,0.8), 0 0 16px rgba(247, 168, 53,0.4)'
               }}
             >
               |

@@ -201,7 +201,7 @@ export default function BlackberryOS5Dashboard() {
                   angle: 90,
                   spread: 80,
                   origin: { x: 0.5, y: 0.4 },
-                  colors: ["#FF9D23"],
+                  colors: ["#F7A835"],
                   shapes: [htmShape],
                   scalar: 1.5,
                   gravity: 0.6,
@@ -644,7 +644,7 @@ export default function BlackberryOS5Dashboard() {
         <div className="px-4 pt-4 pb-2 flex items-center justify-between text-white/60 text-[11px]">
           <div className={`h-1.5 w-16 rounded-none ${poweredOn ? "bg-white/10" : "bg-transparent"}`} />
           <div
-            className={`h-2 w-2 rounded-none ${poweredOn ? "bg-[#FF9D23] shadow-[0_0_12px_3px_rgba(255,157,35,0.8)] animate-pulse" : "bg-transparent"}`}
+            className={`h-2 w-2 rounded-none ${poweredOn ? "bg-[#F7A835] shadow-[0_0_12px_3px_rgba(247, 168, 53,0.8)] animate-pulse" : "bg-transparent"}`}
             title="Notification LED"
           />
         </div>
@@ -685,7 +685,7 @@ export default function BlackberryOS5Dashboard() {
           <div
             className="absolute inset-0 opacity-[0.08] pointer-events-none"
             style={{
-              background: "radial-gradient(circle at center, rgba(255, 157, 35, 0.6) 0%, transparent 50%)",
+              background: "radial-gradient(circle at center, rgba(247, 168, 53, 0.6) 0%, transparent 50%)",
               animation: "radialPulse 3s ease-out infinite"
             }}
           />
@@ -797,7 +797,7 @@ export default function BlackberryOS5Dashboard() {
                 {/* Large centered time */}
                 <div className="text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums tracking-tight mb-1 animate-[fadeIn_0.5s_ease-in-out]" style={{
                   fontFamily: 'var(--font-source-code)',
-                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 157, 35, 0.1)"
+                  textShadow: "0 2px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(247, 168, 53, 0.1)"
                 }}>
                   {timeStr}
                 </div>
@@ -898,7 +898,7 @@ export default function BlackberryOS5Dashboard() {
                     src="/logos/HTM-LOGO-ICON-01.svg"
                     alt="Locked"
                     className="h-16 w-16 opacity-60 animate-pulse"
-                    style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 157, 35, 0.4))' }}
+                    style={{ filter: 'drop-shadow(0 4px 12px rgba(247, 168, 53, 0.4))' }}
                   />
                 </div>
                 <div className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-source-code)' }}>{timeStr}</div>
@@ -915,7 +915,7 @@ export default function BlackberryOS5Dashboard() {
                   className="h-full bg-gradient-to-r from-[var(--accent)]/60 via-[var(--accent)] to-[var(--accent)]/60 transition-all duration-100"
                   style={{
                     width: `${unlockSwipeProgress}%`,
-                    boxShadow: unlockSwipeProgress > 0 ? '0 0 12px rgba(255, 157, 35, 0.6)' : 'none'
+                    boxShadow: unlockSwipeProgress > 0 ? '0 0 12px rgba(247, 168, 53, 0.6)' : 'none'
                   }}
                 />
               </div>
@@ -939,7 +939,7 @@ export default function BlackberryOS5Dashboard() {
                 className="absolute inset-0 bg-black"
                 style={{
                   transformOrigin: "center",
-                  boxShadow: "inset 0 0 100px 20px rgba(255, 157, 35, 0.3)"
+                  boxShadow: "inset 0 0 100px 20px rgba(247, 168, 53, 0.3)"
                 }}
               />
               <motion.div
@@ -948,7 +948,7 @@ export default function BlackberryOS5Dashboard() {
                 transition={{ duration: 0.15, delay: 0.05 }}
                 className="absolute inset-0"
                 style={{
-                  background: "linear-gradient(180deg, transparent 0%, rgba(255, 157, 35, 0.2) 48%, rgba(255, 157, 35, 0.3) 50%, rgba(255, 157, 35, 0.2) 52%, transparent 100%)"
+                  background: "linear-gradient(180deg, transparent 0%, rgba(247, 168, 53, 0.2) 48%, rgba(247, 168, 53, 0.3) 50%, rgba(247, 168, 53, 0.2) 52%, transparent 100%)"
                 }}
               />
             </div>
@@ -982,7 +982,7 @@ export default function BlackberryOS5Dashboard() {
           className="px-8 pt-5 pb-7"
           style={{
             background: "linear-gradient(180deg, rgba(12,12,12,0.85) 0%, rgba(8,8,8,0.95) 50%, rgba(4,4,4,0.98) 100%)",
-            boxShadow: "inset 0 3px 10px rgba(0,0,0,0.7), 0 -1px 0 rgba(255,157,35,0.2), inset 0 0 40px rgba(0,0,0,0.4)",
+            boxShadow: "inset 0 3px 10px rgba(0,0,0,0.7), 0 -1px 0 rgba(247, 168, 53,0.2), inset 0 0 40px rgba(0,0,0,0.4)",
             backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E\")",
           }}
         >
@@ -1001,7 +1001,7 @@ export default function BlackberryOS5Dashboard() {
                   background: "linear-gradient(145deg, #141414 0%, #0f0f0f 25%, #0a0a0a 50%, #060606 75%, #000000 100%)",
                   borderColor: poweredOn ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.25)",
                   boxShadow: poweredOn
-                    ? "3px 3px 8px rgba(0,0,0,0.8), inset 0 1px 3px rgba(255,255,255,0.08), inset 0 0 8px rgba(0,0,0,0.9), inset 0 -1px 0 rgba(255,157,35,0.1)"
+                    ? "3px 3px 8px rgba(0,0,0,0.8), inset 0 1px 3px rgba(255,255,255,0.08), inset 0 0 8px rgba(0,0,0,0.9), inset 0 -1px 0 rgba(247, 168, 53,0.1)"
                     : "3px 3px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.05), inset 0 0 6px rgba(0,0,0,0.8)",
                   padding: "0",
                 }}
@@ -1218,7 +1218,7 @@ function BBBootSequence({ onComplete }: { onComplete: () => void }) {
               >
                 <div
                   className="text-2xl font-bold tracking-[0.25em] uppercase"
-                  style={{ color: '#ff9d23', fontFamily: "'argent-pixel-cf', var(--font-source-code)" }}
+                  style={{ color: '#F7A835', fontFamily: "'argent-pixel-cf', var(--font-source-code)" }}
                 >
                   HANDTOMOUSE
                 </div>
@@ -1237,7 +1237,7 @@ function BBBootSequence({ onComplete }: { onComplete: () => void }) {
                 className="w-48 h-[3px] bg-white/10 relative overflow-hidden"
               >
                 <div
-                  className="absolute inset-y-0 left-0 bg-[#ff9d23] transition-all"
+                  className="absolute inset-y-0 left-0 bg-[#F7A835] transition-all"
                   style={{ width: `${barWidth}%`, transitionDuration: '800ms', transitionTimingFunction: 'linear' }}
                 />
               </motion.div>
@@ -1765,7 +1765,7 @@ function AboutContent() {
           <button
             onClick={handleEmailClick}
             className={`hover:opacity-80 transition-all duration-1000 cursor-pointer block ${
-              !emailPulsed ? 'animate-pulse drop-shadow-[0_0_8px_rgba(255,157,35,0.6)]' : ''
+              !emailPulsed ? 'animate-pulse drop-shadow-[0_0_8px_rgba(247, 168, 53,0.6)]' : ''
             }`}
             style={{ color: ACCENT }}
           >
@@ -1848,7 +1848,7 @@ function HomeDockOverlay({
       onTouchEnd={handleTouchEnd}
     >
       {/* Bold-style bottom dock overlay */}
-      <div className="w-full max-w-[95%] sm:max-w-[90%] mx-auto rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(255,157,35,0.05),0_0_2px_rgba(255,157,35,0.3)]">
+      <div className="w-full max-w-[95%] sm:max-w-[90%] mx-auto rounded-none border border-white/20 bg-gradient-to-b from-black/60 via-black/55 to-black/50 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_80px_rgba(247, 168, 53,0.05),0_0_2px_rgba(247, 168, 53,0.3)]">
         {/* Hints at top of dock bar with gradient */}
         <div className="px-3 sm:px-4 pt-2 sm:pt-3 pb-2 sm:pb-2.5 text-center text-white/80 text-[11px] sm:text-[13px] border-b border-white/15 bg-gradient-to-b from-white/8 to-transparent tracking-widest" style={{ fontFamily: 'var(--font-source-code)' }}>
           {isTouchDevice ? (
@@ -1882,7 +1882,7 @@ function HomeDockOverlay({
               ].join(" ")}
               style={{
                 boxShadow: selectedDock === idx
-                  ? "0 0 0 2px rgba(255,157,35,0.3), 0 0 16px rgba(255,157,35,0.4), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)"
+                  ? "0 0 0 2px rgba(247, 168, 53,0.3), 0 0 16px rgba(247, 168, 53,0.4), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)"
                   : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)"
               }}
               onMouseEnter={() => setSelectedDock(idx)}
@@ -1898,7 +1898,7 @@ function HomeDockOverlay({
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     className={`h-16 w-16 sm:h-16 sm:w-16 md:h-20 md:w-20 transition-all duration-300 ${
                       selectedDock === idx
-                        ? "brightness-130 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)]"
+                        ? "brightness-130 drop-shadow-[0_0_12px_rgba(247, 168, 53,0.8)]"
                         : "brightness-100 group-hover:brightness-110"
                     }`}
                   >
@@ -1920,7 +1920,7 @@ function HomeDockOverlay({
                 </div>
               </div>
               {selectedDock === idx && (
-                <div className="pointer-events-none absolute inset-0 rounded-lg shadow-[inset_0_0_18px_rgba(255,157,35,0.2)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-lg shadow-[inset_0_0_18px_rgba(247, 168, 53,0.2)]" />
               )}
             </button>
           ))}
@@ -1952,8 +1952,8 @@ function MenuGrid({
             className={[
               "group relative flex flex-col items-center justify-center rounded-none border p-6 backdrop-blur-md",
               selected === idx
-                ? "ring-2 ring-[var(--accent)] border-[var(--accent)]/70 shadow-[0_0_0_2px_rgba(255,157,35,0.5),0_0_24px_rgba(255,157,35,0.5)] bg-gradient-to-b from-white/20 to-white/12"
-                : "border-white/15 bg-gradient-to-b from-white/10 to-white/6 hover:border-white/35 hover:shadow-[0_0_20px_rgba(255,157,35,0.4)] hover:from-white/14 hover:to-white/9",
+                ? "ring-2 ring-[var(--accent)] border-[var(--accent)]/70 shadow-[0_0_0_2px_rgba(247, 168, 53,0.5),0_0_24px_rgba(247, 168, 53,0.5)] bg-gradient-to-b from-white/20 to-white/12"
+                : "border-white/15 bg-gradient-to-b from-white/10 to-white/6 hover:border-white/35 hover:shadow-[0_0_20px_rgba(247, 168, 53,0.4)] hover:from-white/14 hover:to-white/9",
               "transition-all duration-300 active:scale-93",
             ].join(" ")}
             style={{
@@ -1961,7 +1961,7 @@ function MenuGrid({
               transformOrigin: "center",
               transform: selected === idx ? "scale(1.05)" : "scale(1)",
               boxShadow: selected === idx
-                ? "0 0 0 2px rgba(255,157,35,0.5), 0 0 32px rgba(255,157,35,0.65), 0 8px 18px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.12), inset 0 0 30px rgba(255,157,35,0.15)"
+                ? "0 0 0 2px rgba(247, 168, 53,0.5), 0 0 32px rgba(247, 168, 53,0.65), 0 8px 18px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.12), inset 0 0 30px rgba(247, 168, 53,0.15)"
                 : "0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 20px rgba(255,255,255,0.02)"
             }}
             onMouseEnter={() => setSelected(idx)}
@@ -1979,8 +1979,8 @@ function MenuGrid({
               transition={{ duration: 0.15, ease: "easeOut" }}
               className={`h-18 w-18 transition-all duration-300 ${
                 selected === idx
-                  ? "brightness-135 drop-shadow-[0_0_12px_rgba(255,157,35,0.8)] scale-115"
-                  : "brightness-100 group-hover:brightness-120 group-hover:drop-shadow-[0_0_8px_rgba(255,157,35,0.5)] group-hover:scale-108"
+                  ? "brightness-135 drop-shadow-[0_0_12px_rgba(247, 168, 53,0.8)] scale-115"
+                  : "brightness-100 group-hover:brightness-120 group-hover:drop-shadow-[0_0_8px_rgba(247, 168, 53,0.5)] group-hover:scale-108"
               }`}
               style={{ transformOrigin: "center" }}
             >
@@ -1994,14 +1994,14 @@ function MenuGrid({
                 fontFamily: 'var(--font-source-code)',
                 letterSpacing: "0.02em",
                 textShadow: selected === idx
-                  ? "0 0 8px rgba(255,157,35,0.6), 0 1px 2px rgba(0,0,0,0.8)"
+                  ? "0 0 8px rgba(247, 168, 53,0.6), 0 1px 2px rgba(0,0,0,0.8)"
                   : "0 1px 2px rgba(0,0,0,0.5)"
               }}
             >
               {app.name}
             </div>
             {selected === idx && (
-              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[var(--accent)]/60 shadow-[inset_0_0_30px_rgba(255,157,35,0.35)]" />
+              <div className="pointer-events-none absolute inset-0 rounded-none ring-1 ring-[var(--accent)]/60 shadow-[inset_0_0_30px_rgba(247, 168, 53,0.35)]" />
             )}
           </button>
         ))}

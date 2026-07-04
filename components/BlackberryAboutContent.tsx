@@ -62,9 +62,9 @@ function HookStrip({ data }: { data: AboutData }) {
             className="px-3 py-1 text-[11px] uppercase tracking-[0.12em] border"
             style={{
               fontFamily: '"argent-pixel-cf", sans-serif',
-              borderColor: "rgba(255,157,35,0.4)",
+              borderColor: "rgba(247, 168, 53,0.4)",
               color: ACCENT,
-              background: "rgba(255,157,35,0.06)",
+              background: "rgba(247, 168, 53,0.06)",
             }}
           >
             {badge}
@@ -112,7 +112,7 @@ function WhatWeDo({ data }: { data: AboutData }) {
       id="services"
       aria-label="Services"
       className="px-6 md:px-12 py-6 space-y-4 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.15)" }}
     >
       <motion.h2
         initial={{ opacity: 0, x: -10 }}
@@ -183,7 +183,7 @@ function ProofSection({
       id="proof"
       aria-label="Client proof"
       className="px-6 md:px-12 py-6 space-y-4 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.15)" }}
     >
       <motion.h2
         initial={{ opacity: 0, x: -10 }}
@@ -205,7 +205,7 @@ function ProofSection({
             viewport={{ once: true }}
             transition={{ delay: idx * 0.1, duration: 0.55 }}
             className="border-l-2 pl-4 py-2"
-            style={{ borderColor: "rgba(255,157,35,0.4)" }}
+            style={{ borderColor: "rgba(247, 168, 53,0.4)" }}
           >
             <div className="flex items-baseline justify-between gap-2">
               <span
@@ -216,7 +216,7 @@ function ProofSection({
               </span>
               <span
                 className="text-[11px] flex-shrink-0"
-                style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(255,157,35,0.6)" }}
+                style={{ fontFamily: '"argent-pixel-cf", sans-serif', color: "rgba(247, 168, 53,0.6)" }}
               >
                 {h.duration}
               </span>
@@ -230,7 +230,7 @@ function ProofSection({
             {h.quote && (
               <p
                 className="text-[12px] mt-1 italic"
-                style={{ color: "rgba(255,157,35,0.75)" }}
+                style={{ color: "rgba(247, 168, 53,0.75)" }}
               >
                 {h.quote}
               </p>
@@ -288,7 +288,7 @@ function ProcessSection({ data }: { data: AboutData }) {
       id="process"
       aria-label="Process"
       className="px-6 md:px-12 py-6 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.15)" }}
     >
       <button
         className="w-full flex items-center justify-between group"
@@ -334,7 +334,7 @@ function ProcessSection({ data }: { data: AboutData }) {
               animate={expanded ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: idx * 0.1, duration: 0.4 }}
               className="flex items-start gap-4 border-l-2 pl-4 py-2"
-              style={{ borderColor: "rgba(255,157,35,0.35)" }}
+              style={{ borderColor: "rgba(247, 168, 53,0.35)" }}
             >
               <span className="text-[18px] flex-shrink-0" style={{ color: ACCENT }}>
                 {step.num}
@@ -370,7 +370,7 @@ function BeliefsGrid({ data }: { data: AboutData }) {
       id="beliefs"
       aria-label="Beliefs"
       className="px-6 md:px-12 py-6 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.15)" }}
     >
       <motion.h2
         initial={{ opacity: 0, x: -10 }}
@@ -424,7 +424,7 @@ function DetailsSection({
       id="details"
       aria-label="Details"
       className="px-6 md:px-12 py-6 space-y-4 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.15)" }}
     >
       <motion.h2
         initial={{ opacity: 0, x: -10 }}
@@ -556,7 +556,7 @@ function DetailsSection({
             className="border-t pt-3 text-[13px] italic leading-snug"
             style={{
               borderColor: "rgba(255,255,255,0.08)",
-              color: "rgba(255,157,35,0.75)",
+              color: "rgba(247, 168, 53,0.75)",
               fontFamily: "var(--font-body)",
             }}
           >
@@ -652,7 +652,7 @@ function StatsSection({
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, transparent 0%, rgba(255,157,35,0.02) 50%, transparent 100%)",
+          background: "radial-gradient(circle at center, transparent 0%, rgba(247, 168, 53,0.02) 50%, transparent 100%)",
           opacity: 0.4,
         }}
       />
@@ -665,7 +665,7 @@ function StatsSection({
           width: 120,
           height: 120,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,157,35,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(247, 168, 53,0.07) 0%, transparent 70%)",
           x: springX,
           y: springY,
           translateX: "-50%",
@@ -697,7 +697,7 @@ function StatsSection({
                 y1={line.y1}
                 x2={line.x2}
                 y2={line.y2}
-                stroke="#ff9d23"
+                stroke="#F7A835"
                 strokeOpacity={isActive ? 0.35 : 0.12}
                 strokeDasharray="4 4"
                 strokeWidth="1"
@@ -734,7 +734,7 @@ function StatsSection({
           fontFamily: '"argent-pixel-cf", sans-serif',
           color: "var(--accent)",
           letterSpacing: "0.15em",
-          textShadow: "0 0 30px rgba(255,157,35,0.3), 0 0 60px rgba(255,157,35,0.1)",
+          textShadow: "0 0 30px rgba(247, 168, 53,0.3), 0 0 60px rgba(247, 168, 53,0.1)",
           position: "relative",
           zIndex: 2,
         }}
@@ -876,7 +876,7 @@ function ContactSignal({ data }: { data: AboutData }) {
       id="contact"
       aria-label="Contact"
       className="px-6 md:px-12 py-8 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.3)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.3)" }}
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -901,7 +901,7 @@ function ContactSignal({ data }: { data: AboutData }) {
 
         <motion.a
           href="/contact"
-          whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(255,157,35,0.6)` }}
+          whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(247, 168, 53,0.6)` }}
           whileTap={{ scale: 0.97 }}
           className="inline-block border-2 border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-[13px] font-bold text-black uppercase tracking-[0.1em] transition-all duration-300"
           style={{ fontFamily: '"argent-pixel-cf", sans-serif' }}
@@ -919,7 +919,7 @@ function NowBlock({ data }: { data: AboutData }) {
     <section
       id="now"
       className="px-6 md:px-12 py-6 border-t"
-      style={{ borderColor: "rgba(255,157,35,0.15)" }}
+      style={{ borderColor: "rgba(247, 168, 53,0.15)" }}
     >
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -1205,14 +1205,14 @@ export default function BlackberryAboutContent({
         initial={{ scaleX: 0 }}
         animate={{ scaleX: data ? 1 : 0.3 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        style={{ boxShadow: "0 0 8px rgba(255,157,35,0.6)" }}
+        style={{ boxShadow: "0 0 8px rgba(247, 168, 53,0.6)" }}
       />
 
       {/* Scroll Progress Gradient */}
       <div
         className="fixed inset-0 pointer-events-none transition-opacity duration-1000 ease-out"
         style={{
-          background: `radial-gradient(circle at 50% 50%, rgba(255,157,35,${scrollProgress * 0.0005}) 0%, transparent 70%)`,
+          background: `radial-gradient(circle at 50% 50%, rgba(247, 168, 53,${scrollProgress * 0.0005}) 0%, transparent 70%)`,
           opacity: Math.min(scrollProgress / 100, 0.5),
         }}
       />
@@ -1270,7 +1270,7 @@ export default function BlackberryAboutContent({
             <div
               className={`w-1.5 h-1.5 rounded-full border transition-all duration-300 ${
                 activeSection === s.id
-                  ? "bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_6px_rgba(255,157,35,0.8)]"
+                  ? "bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_6px_rgba(247, 168, 53,0.8)]"
                   : "bg-transparent border-[var(--accent)]/40 group-hover:border-[var(--accent)]"
               }`}
             />

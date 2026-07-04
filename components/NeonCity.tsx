@@ -25,11 +25,11 @@ const NeonCity: React.FC = () => {
 
     // Cached color calculations (computed once, huge performance gain)
     const root = document.documentElement;
-    let accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#ff9d23';
+    let accentHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#F7A835';
 
     // Ensure it's a hex color (remove any whitespace/invalid chars)
     if (!accentHex.startsWith('#')) {
-      accentHex = '#ff9d23';
+      accentHex = '#F7A835';
     }
 
     const hexToRgba = (hex: string, alpha: number) => {
@@ -246,7 +246,7 @@ const NeonCity: React.FC = () => {
     }> = [];
 
     const vehicleColors = [
-      { body: 'rgba(255, 157, 35, 1)', glow: 'rgba(255, 157, 35, 0.7)' }, // HTM Brand Orange
+      { body: 'rgba(247, 168, 53, 1)', glow: 'rgba(247, 168, 53, 0.7)' }, // HTM Brand Orange
       { body: 'rgba(0, 255, 255, 1)', glow: 'rgba(0, 255, 255, 0.6)' }, // Cyan
       { body: 'rgba(255, 0, 255, 1)', glow: 'rgba(255, 0, 255, 0.6)' }, // Magenta
       { body: 'rgba(255, 255, 0, 1)', glow: 'rgba(255, 255, 0, 0.6)' }, // Yellow

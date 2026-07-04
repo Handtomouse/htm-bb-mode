@@ -1,7 +1,7 @@
 import React from "react";
 
 // Accent colors
-export const ACCENT = "#ff9d23";
+export const ACCENT = "#F7A835";
 export const ACCENT_HOVER = "#FFB84D";
 
 // Typography
@@ -16,9 +16,9 @@ export const FONTS = {
 export const STAT_CARD_VARS = {
   '--card-padding': '32px',
   '--card-gap': '48px',
-  '--card-border': '1.5px solid rgba(255, 157, 35, 0.35)',
+  '--card-border': '1.5px solid rgba(247, 168, 53, 0.35)',
   '--card-radius': '1px',
-  '--card-shadow': '0 0 32px rgba(255, 157, 35, 0.15)',
+  '--card-shadow': '0 0 32px rgba(247, 168, 53, 0.15)',
   '--heading-mt': '0',
   '--heading-mb': '16px',
   '--body-mb': '24px',

@@ -81,7 +81,7 @@ export default function BlackberryPortfolioContent() {
         <h1
           className="text-[56px] md:text-[72px] font-light text-[var(--accent)] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
           style={{
-            textShadow: "0 0 40px rgba(255, 157, 35, 0.4)",
+            textShadow: "0 0 40px rgba(247, 168, 53, 0.4)",
           }}
         >
           Work
@@ -119,7 +119,7 @@ export default function BlackberryPortfolioContent() {
             style={
               filter === tag
                 ? {
-                    boxShadow: "0 0 20px rgba(255,157,35,0.3)",
+                    boxShadow: "0 0 20px rgba(247, 168, 53,0.3)",
                   }
                 : {}
             }
@@ -175,7 +175,7 @@ export default function BlackberryPortfolioContent() {
               className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 p-4 md:p-6 max-h-[85vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
               style={{
-                boxShadow: "0 0 20px rgba(255,157,35,0.2)",
+                boxShadow: "0 0 20px rgba(247, 168, 53,0.2)",
               }}
             >
               {/* Close button */}

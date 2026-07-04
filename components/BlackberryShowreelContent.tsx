@@ -120,7 +120,7 @@ function HTMBrandingAnimation() {
           height: 220,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(255,157,35,0.12) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(247, 168, 53,0.12) 0%, transparent 70%)",
           pointerEvents: "none",
           zIndex: 0,
         }}
@@ -154,7 +154,7 @@ function HTMBrandingAnimation() {
               style={{
                 fontFamily: "'argent-pixel-cf', 'VT323', monospace",
                 fontSize: "clamp(60px, 12vw, 100px)",
-                color: "#ff9d23",
+                color: "#F7A835",
                 display: "inline-block",
                 lineHeight: 1,
                 userSelect: "none",
@@ -256,7 +256,7 @@ function PlayerChrome({ children }: { children: React.ReactNode }) {
         {/* Play button */}
         <span
           style={{
-            color: "#ff9d23",
+            color: "#F7A835",
             fontSize: "16px",
             lineHeight: 1,
             userSelect: "none",
@@ -285,7 +285,7 @@ function PlayerChrome({ children }: { children: React.ReactNode }) {
               width: "8px",
               height: "8px",
               borderRadius: "50%",
-              background: "#ff9d23",
+              background: "#F7A835",
             }}
           />
         </div>
@@ -352,7 +352,7 @@ export default function BlackberryShowreelContent() {
       >
         <span
           style={{
-            color: "#ff9d23",
+            color: "#F7A835",
             fontSize: "10px",
             lineHeight: 1,
           }}

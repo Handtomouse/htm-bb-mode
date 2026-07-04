@@ -34,7 +34,7 @@ export function IconShowcase() {
   );
 
   const colorOptions: { value: IconColor; label: string; hex: string }[] = [
-    { value: "accent", label: "Accent", hex: "#ff9d23" },
+    { value: "accent", label: "Accent", hex: "#F7A835" },
     { value: "white", label: "White", hex: "#EDECEC" },
     { value: "grey", label: "Grey", hex: "#6b6b6b" },
     { value: "green", label: "Green", hex: "#94b039" },
@@ -51,7 +51,7 @@ export function IconShowcase() {
           style={{
             fontFamily: "var(--font-heading)",
             color: "var(--accent)",
-            textShadow: "0 0 20px rgba(255, 157, 35, 0.4)"
+            textShadow: "0 0 20px rgba(247, 168, 53, 0.4)"
           }}
         >
           ICON SYSTEM
@@ -122,13 +122,13 @@ export function IconShowcase() {
                     ? "var(--accent)"
                     : "rgba(255, 255, 255, 0.2)",
                   background: showFilter === filter
-                    ? "rgba(255, 157, 35, 0.1)"
+                    ? "rgba(247, 168, 53, 0.1)"
                     : "transparent",
                   color: showFilter === filter
                     ? "var(--accent)"
                     : "var(--ink)",
                   boxShadow: showFilter === filter
-                    ? "0 0 20px rgba(255, 157, 35, 0.3)"
+                    ? "0 0 20px rgba(247, 168, 53, 0.3)"
                     : "none"
                 }}
               >
@@ -163,13 +163,13 @@ export function IconShowcase() {
                     ? "var(--accent)"
                     : "rgba(255, 255, 255, 0.2)",
                   background: selectedVariant === variant
-                    ? "rgba(255, 157, 35, 0.1)"
+                    ? "rgba(247, 168, 53, 0.1)"
                     : "transparent",
                   color: selectedVariant === variant
                     ? "var(--accent)"
                     : "var(--ink)",
                   boxShadow: selectedVariant === variant
-                    ? "0 0 20px rgba(255, 157, 35, 0.3)"
+                    ? "0 0 20px rgba(247, 168, 53, 0.3)"
                     : "none"
                 }}
               >
@@ -202,13 +202,13 @@ export function IconShowcase() {
                     ? "var(--accent)"
                     : "rgba(255, 255, 255, 0.2)",
                   background: selectedColor === value
-                    ? "rgba(255, 157, 35, 0.1)"
+                    ? "rgba(247, 168, 53, 0.1)"
                     : "transparent",
                   color: selectedColor === value
                     ? "var(--accent)"
                     : "var(--ink)",
                   boxShadow: selectedColor === value
-                    ? "0 0 20px rgba(255, 157, 35, 0.3)"
+                    ? "0 0 20px rgba(247, 168, 53, 0.3)"
                     : "none"
                 }}
               >
@@ -292,7 +292,7 @@ export function IconShowcase() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.35)";
-              e.currentTarget.style.boxShadow = "0 0 20px rgba(255, 157, 35, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4)";
+              e.currentTarget.style.boxShadow = "0 0 20px rgba(247, 168, 53, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4)";
               e.currentTarget.style.background = "linear-gradient(to bottom, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.09))";
             }}
             onMouseLeave={(e) => {
@@ -308,7 +308,7 @@ export function IconShowcase() {
                 filter: "brightness(1) drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.filter = "brightness(1.2) drop-shadow(0 0 8px rgba(255, 157, 35, 0.5))";
+                e.currentTarget.style.filter = "brightness(1.2) drop-shadow(0 0 8px rgba(247, 168, 53, 0.5))";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.filter = "brightness(1) drop-shadow(0 2px 4px rgba(0,0,0,0.3))";
@@ -341,9 +341,9 @@ export function IconShowcase() {
                   className="text-xs uppercase tracking-wider px-2 py-0.5 rounded-none border"
                   style={{
                     fontFamily: "var(--font-body)",
-                    color: "rgba(255, 157, 35, 0.8)",
-                    borderColor: "rgba(255, 157, 35, 0.3)",
-                    background: "rgba(255, 157, 35, 0.1)",
+                    color: "rgba(247, 168, 53, 0.8)",
+                    borderColor: "rgba(247, 168, 53, 0.3)",
+                    background: "rgba(247, 168, 53, 0.1)",
                     fontSize: "10px"
                   }}
                 >

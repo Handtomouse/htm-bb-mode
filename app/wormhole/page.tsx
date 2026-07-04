@@ -570,7 +570,7 @@ export default function WormholePage() {
         const angle = (Math.PI * 2 * i) / particleCount;
         const speed = 3 + Math.random() * 4;
         const color = isHyperhyperspace ? 'rgba(255,255,255,0.9)' :
-                      (ludicrousSpeed ? 'rgba(255,157,35,0.9)' :
+                      (ludicrousSpeed ? 'rgba(247, 168, 53,0.9)' :
                       'rgba(100,149,237,0.9)');
 
         newParticles.push({
@@ -817,7 +817,7 @@ export default function WormholePage() {
       return '0 0 60px rgba(255, 255, 255, 0.8) inset, 0 0 120px rgba(255, 255, 255, 0.6) inset';
     }
     if (ludicrousSpeed) {
-      return '0 0 40px rgba(255, 157, 35, 0.6) inset, 0 0 80px rgba(255, 157, 35, 0.4) inset';
+      return '0 0 40px rgba(247, 168, 53, 0.6) inset, 0 0 80px rgba(247, 168, 53, 0.4) inset';
     }
     if (isWarping) {
       return '0 0 20px rgba(100, 149, 237, 0.5) inset, 0 0 40px rgba(100, 149, 237, 0.3) inset';
@@ -843,8 +843,8 @@ export default function WormholePage() {
             <div className="mb-8">
               <div className="text-7xl animate-luxury-pulse" style={{
                 color: "var(--accent)",
-                textShadow: "0 0 40px rgba(255, 157, 35, 0.6), 0 0 80px rgba(255, 157, 35, 0.4)",
-                filter: "drop-shadow(0 0 40px rgba(255, 157, 35, 0.6))"
+                textShadow: "0 0 40px rgba(247, 168, 53, 0.6), 0 0 80px rgba(247, 168, 53, 0.4)",
+                filter: "drop-shadow(0 0 40px rgba(247, 168, 53, 0.6))"
               }}>
                 ✦
               </div>
@@ -888,7 +888,7 @@ export default function WormholePage() {
           style={{
             background: `
               radial-gradient(ellipse at 70% 30%, rgba(0, 206, 209, 0.14), transparent 48%),
-              radial-gradient(ellipse at 30% 80%, rgba(255, 157, 35, 0.12), transparent 52%),
+              radial-gradient(ellipse at 30% 80%, rgba(247, 168, 53, 0.12), transparent 52%),
               radial-gradient(ellipse at 90% 50%, rgba(255, 105, 180, 0.1), transparent 45%)
             `,
             animation: "nebula-rotate-medium 40s linear infinite reverse",
@@ -957,7 +957,7 @@ export default function WormholePage() {
             style={{
               background: `repeating-linear-gradient(90deg,
                 transparent 0px,
-                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(255,157,35,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
+                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
                 transparent 2px,
                 transparent ${isHyperhyperspace ? '8px' : (ludicrousSpeed ? '12px' : '18px')})`,
               animation: 'speed-line-right 0.5s linear infinite',
@@ -970,7 +970,7 @@ export default function WormholePage() {
             style={{
               background: `repeating-linear-gradient(270deg,
                 transparent 0px,
-                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(255,157,35,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
+                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
                 transparent 2px,
                 transparent ${isHyperhyperspace ? '8px' : (ludicrousSpeed ? '12px' : '18px')})`,
               animation: 'speed-line-left 0.5s linear infinite',
@@ -983,7 +983,7 @@ export default function WormholePage() {
             style={{
               background: `repeating-linear-gradient(180deg,
                 transparent 0px,
-                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(255,157,35,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
+                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
                 transparent 2px,
                 transparent ${isHyperhyperspace ? '8px' : (ludicrousSpeed ? '12px' : '18px')})`,
               animation: 'speed-line-down 0.5s linear infinite',
@@ -996,7 +996,7 @@ export default function WormholePage() {
             style={{
               background: `repeating-linear-gradient(0deg,
                 transparent 0px,
-                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(255,157,35,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
+                ${isHyperhyperspace ? 'rgba(255,255,255,0.4)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.3)' : 'rgba(100,149,237,0.2)')} 1px,
                 transparent 2px,
                 transparent ${isHyperhyperspace ? '8px' : (ludicrousSpeed ? '12px' : '18px')})`,
               animation: 'speed-line-up 0.5s linear infinite',
@@ -1279,7 +1279,7 @@ export default function WormholePage() {
                 height: `${(i + 1) * (isHyperhyperspace ? 200 : (ludicrousSpeed ? 150 : 100))}px`,
                 borderRadius: '50%',
                 background: `radial-gradient(circle, transparent ${60 + i * 2}%, ${
-                  isHyperhyperspace ? 'rgba(255,255,255,0.15)' : (ludicrousSpeed ? 'rgba(255,157,35,0.12)' : 'rgba(100,149,237,0.1)')
+                  isHyperhyperspace ? 'rgba(255,255,255,0.15)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.12)' : 'rgba(100,149,237,0.1)')
                 } ${62 + i * 2}%, transparent ${64 + i * 2}%)`,
                 animation: 'radial-blur-pulse 2s ease-out infinite',
                 animationDelay: `${i * 0.1}s`,
@@ -1322,7 +1322,7 @@ export default function WormholePage() {
         {/* Top Bar - backdrop-blur removed for performance */}
         <div className="absolute top-0 left-0 right-0 flex items-center justify-between" style={{
           fontFamily: "var(--font-sans)",
-          borderBottom: "1px solid rgba(255, 157, 35, 0.1)",
+          borderBottom: "1px solid rgba(247, 168, 53, 0.1)",
           background: "rgba(11, 11, 11, 0.5)",
           padding: "var(--space-8) var(--space-10)"
         }}>
@@ -1350,8 +1350,8 @@ export default function WormholePage() {
                 transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(255, 157, 35, 0.4)";
-                e.currentTarget.style.background = "rgba(255, 157, 35, 0.1)";
+                e.currentTarget.style.borderColor = "rgba(247, 168, 53, 0.4)";
+                e.currentTarget.style.background = "rgba(247, 168, 53, 0.1)";
                 e.currentTarget.style.color = "var(--accent)";
               }}
               onMouseLeave={(e) => {
@@ -1376,8 +1376,8 @@ export default function WormholePage() {
                 transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(255, 157, 35, 0.4)";
-                e.currentTarget.style.background = "rgba(255, 157, 35, 0.1)";
+                e.currentTarget.style.borderColor = "rgba(247, 168, 53, 0.4)";
+                e.currentTarget.style.background = "rgba(247, 168, 53, 0.1)";
                 e.currentTarget.style.color = "var(--accent)";
               }}
               onMouseLeave={(e) => {
@@ -1395,9 +1395,9 @@ export default function WormholePage() {
         {showCategoryFilter && (
           <div className="absolute right-0 backdrop-blur-xl pointer-events-auto animate-luxury-fade-in z-50" style={{
             background: "rgba(11, 11, 11, 0.95)",
-            border: "1px solid rgba(255, 157, 35, 0.2)",
+            border: "1px solid rgba(247, 168, 53, 0.2)",
             borderRadius: "var(--radius)",
-            boxShadow: "0 0 40px rgba(255, 157, 35, 0.15)",
+            boxShadow: "0 0 40px rgba(247, 168, 53, 0.15)",
             top: "calc(var(--space-8) * 2 + 48px)",
             marginRight: "var(--space-10)",
             padding: "var(--space-8)",
@@ -1606,7 +1606,7 @@ export default function WormholePage() {
                           : "linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.05))",
                         color: isSelected ? "var(--ink)" : "var(--muted)",
                         boxShadow: isSelected
-                          ? "0 0 0 2px rgba(255,157,35,0.3), 0 0 16px rgba(255,157,35,0.4), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)"
+                          ? "0 0 0 2px rgba(247, 168, 53,0.3), 0 0 16px rgba(247, 168, 53,0.4), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)"
                           : "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)",
                         padding: "var(--space-4) var(--space-6)"
                       }}
@@ -1614,7 +1614,7 @@ export default function WormholePage() {
                       <span
                         className={`mr-2 inline-block transition-all duration-300${isSelected ? ' animate-category-icon-pulse' : ''}`}
                         style={{
-                          filter: isSelected ? 'drop-shadow(0 0 8px rgba(255,157,35,0.6))' : 'none',
+                          filter: isSelected ? 'drop-shadow(0 0 8px rgba(247, 168, 53,0.6))' : 'none',
                           transform: isSelected ? 'scale(1.15)' : 'scale(1)'
                         }}
                       >
@@ -1637,8 +1637,8 @@ export default function WormholePage() {
                   background: "linear-gradient(to right, var(--accent), var(--accent-hover))",
                   color: "var(--bg)",
                   borderRadius: "var(--radius)",
-                  border: "2px solid rgba(255, 157, 35, 0.5)",
-                  boxShadow: "0 0 50px rgba(255, 157, 35, 0.5), 0 0 100px rgba(255, 157, 35, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                  border: "2px solid rgba(247, 168, 53, 0.5)",
+                  boxShadow: "0 0 50px rgba(247, 168, 53, 0.5), 0 0 100px rgba(247, 168, 53, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                   padding: "var(--space-8) var(--space-24)"
                 }}
               >
@@ -1675,15 +1675,15 @@ export default function WormholePage() {
           }}>
             <div className="w-full backdrop-blur-xl shadow-2xl" style={{
               background: "rgba(11, 11, 11, 0.6)",
-              border: "1px solid rgba(255, 157, 35, 0.2)",
-              boxShadow: "0 0 60px rgba(255, 157, 35, 0.15), inset 0 1px 0 rgba(255, 157, 35, 0.1)",
+              border: "1px solid rgba(247, 168, 53, 0.2)",
+              boxShadow: "0 0 60px rgba(247, 168, 53, 0.15), inset 0 1px 0 rgba(247, 168, 53, 0.1)",
               maxWidth: "480px",
               margin: "0 var(--space-6)",
               borderRadius: "var(--radius)"
             }}>
               {/* Header */}
               <div style={{
-                borderBottom: "1px solid rgba(255, 157, 35, 0.1)",
+                borderBottom: "1px solid rgba(247, 168, 53, 0.1)",
                 padding: "var(--space-6) var(--space-8) var(--space-5)"
               }}>
                 <div className="text-center">
@@ -1691,7 +1691,7 @@ export default function WormholePage() {
                     fontSize: "2.5rem",
                     marginBottom: "var(--space-4)",
                     color: "var(--accent)",
-                    textShadow: "0 0 20px rgba(255, 157, 35, 0.3)"
+                    textShadow: "0 0 20px rgba(247, 168, 53, 0.3)"
                   }}>✦</div>
                   <h2 style={{
                     fontFamily: "var(--font-heading)",
@@ -1735,8 +1735,8 @@ export default function WormholePage() {
                 </p>
 
                 <div style={{
-                  background: "linear-gradient(to bottom right, rgba(255, 157, 35, 0.05), transparent)",
-                  border: "1px solid rgba(255, 157, 35, 0.1)",
+                  background: "linear-gradient(to bottom right, rgba(247, 168, 53, 0.05), transparent)",
+                  border: "1px solid rgba(247, 168, 53, 0.1)",
                   borderRadius: "var(--radius)",
                   padding: "var(--space-5)",
                   marginBottom: "var(--space-8)"
@@ -1850,7 +1850,7 @@ export default function WormholePage() {
                       : "rgba(255, 255, 255, 0.1)",
                     color: acceptedRisk ? "var(--bg)" : "rgba(255, 255, 255, 0.3)",
                     cursor: acceptedRisk ? "pointer" : "not-allowed",
-                    boxShadow: acceptedRisk ? "0 0 30px rgba(255, 157, 35, 0.3)" : "none",
+                    boxShadow: acceptedRisk ? "0 0 30px rgba(247, 168, 53, 0.3)" : "none",
                     borderRadius: "var(--radius-sm)",
                     padding: "var(--space-3) var(--space-5)"
                   }}
@@ -1880,7 +1880,7 @@ export default function WormholePage() {
               {/* Destination Preview Emoji Teaser */}
               {countdown > 0 && currentDestination && (
                 <div className="text-8xl animate-flip-in" style={{
-                  filter: "drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))",
+                  filter: "drop-shadow(0 0 30px rgba(247, 168, 53, 0.6))",
                   animation: "flip-reveal 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
                   marginBottom: "var(--space-10)"
                 }}>
@@ -1900,7 +1900,7 @@ export default function WormholePage() {
                 style={{
                   fontFamily: "var(--font-heading)",
                   color: "var(--accent)",
-                  filter: `drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))`,
+                  filter: `drop-shadow(0 0 30px rgba(247, 168, 53, 0.6))`,
                   animation: countdown === 0 ? 'countdown-zero 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)' : 'countdown-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
                   transformOrigin: 'center',
                   marginBottom: "var(--space-16)",
@@ -1914,7 +1914,7 @@ export default function WormholePage() {
                 style={{
                   fontFamily: "var(--font-sans)",
                   letterSpacing: "0.05em",
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 157, 35, 0.9) 100%)",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 168, 53, 0.9) 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   textShadow: "0 0 30px rgba(255, 255, 255, 0.3)",
@@ -1934,12 +1934,12 @@ export default function WormholePage() {
 
               {/* Destination Preview Card */}
               {currentDestination && (
-                <div className="mt-6 mx-auto max-w-md bg-black/60 backdrop-blur-md rounded-lg p-5 animate-luxury-fade-in" style={{ border: "1px solid rgba(255, 157, 35, 0.2)" }}>
+                <div className="mt-6 mx-auto max-w-md bg-black/60 backdrop-blur-md rounded-lg p-5 animate-luxury-fade-in" style={{ border: "1px solid rgba(247, 168, 53, 0.2)" }}>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-white/50 text-xs uppercase tracking-widest" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.1em" }}>
                       Destination
                     </span>
-                    <span className="px-2 py-1 text-xs rounded" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em", background: "rgba(255, 157, 35, 0.2)", color: "var(--accent)" }}>
+                    <span className="px-2 py-1 text-xs rounded" style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em", background: "rgba(247, 168, 53, 0.2)", color: "var(--accent)" }}>
                       {currentDestination.category}
                     </span>
                   </div>
@@ -1969,13 +1969,13 @@ export default function WormholePage() {
               ENTERING HYPERSPACE...
             </p>
             <div className="w-96 h-2 bg-white/10 rounded-full overflow-hidden" style={{
-              boxShadow: "0 0 20px rgba(255, 157, 35, 0.3)"
+              boxShadow: "0 0 20px rgba(247, 168, 53, 0.3)"
             }}>
               <div
                 className="h-full bg-gradient-to-r to-white animate-hyperspace-progress"
                 style={{
                   background: "linear-gradient(to right, var(--accent), white)",
-                  boxShadow: "0 0 30px rgba(255, 157, 35, 0.8)"
+                  boxShadow: "0 0 30px rgba(247, 168, 53, 0.8)"
                 }}
               />
             </div>
@@ -1987,15 +1987,15 @@ export default function WormholePage() {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[100] animate-luxury-fade-in">
             <div className="relative px-16 py-12 bg-black/80 backdrop-blur-2xl rounded-2xl" style={{
               border: "4px solid var(--accent)",
-              boxShadow: "0 0 100px rgba(255, 157, 35, 0.8), 0 0 200px rgba(255, 157, 35, 0.6), inset 0 0 100px rgba(255, 157, 35, 0.2)"
+              boxShadow: "0 0 100px rgba(247, 168, 53, 0.8), 0 0 200px rgba(247, 168, 53, 0.6), inset 0 0 100px rgba(247, 168, 53, 0.2)"
             }}>
               <div className="text-center animate-shake">
                 <p className="font-heading text-8xl mb-4" style={{
                   background: "linear-gradient(135deg, var(--accent) 0%, var(--accent) 50%, #FF0080 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
-                  textShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 120px rgba(255, 157, 35, 1)",
-                  filter: "drop-shadow(0 0 80px rgba(255, 157, 35, 1)) drop-shadow(0 0 40px rgba(255, 255, 255, 1))",
+                  textShadow: "0 0 80px rgba(255, 255, 255, 1), 0 0 120px rgba(247, 168, 53, 1)",
+                  filter: "drop-shadow(0 0 80px rgba(247, 168, 53, 1)) drop-shadow(0 0 40px rgba(255, 255, 255, 1))",
                   animation: "rainbow 1s linear infinite"
                 }}>
                   LUDICROUS SPEED
@@ -2016,11 +2016,11 @@ export default function WormholePage() {
         {(isWarping || ludicrousSpeed || isHyperhyperspace) && (
           <div className="fixed top-8 right-8 z-50 pointer-events-none">
             <div className="backdrop-blur-md bg-black/40 border-2 rounded-none p-4" style={{
-              borderColor: isHyperhyperspace ? 'rgba(255,255,255,0.6)' : (ludicrousSpeed ? 'rgba(255,157,35,0.6)' : 'rgba(100,149,237,0.6)'),
+              borderColor: isHyperhyperspace ? 'rgba(255,255,255,0.6)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.6)' : 'rgba(100,149,237,0.6)'),
               boxShadow: isHyperhyperspace
                 ? '0 0 30px rgba(255,255,255,0.4), inset 0 0 20px rgba(255,255,255,0.1)'
                 : (ludicrousSpeed
-                  ? '0 0 30px rgba(255,157,35,0.4), inset 0 0 20px rgba(255,157,35,0.1)'
+                  ? '0 0 30px rgba(247, 168, 53,0.4), inset 0 0 20px rgba(247, 168, 53,0.1)'
                   : '0 0 30px rgba(100,149,237,0.4), inset 0 0 20px rgba(100,149,237,0.1)')
             }}>
               <div className="text-center">
@@ -2033,7 +2033,7 @@ export default function WormholePage() {
                 <div className="text-2xl font-bold mb-3" style={{
                   fontFamily: 'var(--font-heading)',
                   color: isHyperhyperspace ? '#fff' : (ludicrousSpeed ? 'var(--accent)' : '#6495ed'),
-                  textShadow: `0 0 10px ${isHyperhyperspace ? 'rgba(255,255,255,0.8)' : (ludicrousSpeed ? 'rgba(255,157,35,0.8)' : 'rgba(100,149,237,0.8)')}`
+                  textShadow: `0 0 10px ${isHyperhyperspace ? 'rgba(255,255,255,0.8)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.8)' : 'rgba(100,149,237,0.8)')}`
                 }}>
                   {isHyperhyperspace ? 'HYPER²' : (ludicrousSpeed ? 'LUDICROUS' : 'WARP')}
                 </div>
@@ -2048,7 +2048,7 @@ export default function WormholePage() {
                         : (ludicrousSpeed
                           ? 'linear-gradient(90deg, #6495ed, var(--accent))'
                           : '#6495ed'),
-                      boxShadow: `0 0 10px ${isHyperhyperspace ? 'rgba(255,255,255,0.6)' : (ludicrousSpeed ? 'rgba(255,157,35,0.6)' : 'rgba(100,149,237,0.6)')}`
+                      boxShadow: `0 0 10px ${isHyperhyperspace ? 'rgba(255,255,255,0.6)' : (ludicrousSpeed ? 'rgba(247, 168, 53,0.6)' : 'rgba(100,149,237,0.6)')}`
                     }}
                   />
                 </div>
@@ -2081,8 +2081,8 @@ export default function WormholePage() {
                 backgroundSize: "400% 100%",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                textShadow: "0 0 80px rgba(255, 157, 35, 1)",
-                filter: "drop-shadow(0 0 80px rgba(255, 157, 35, 1)) drop-shadow(0 0 120px rgba(100, 149, 237, 0.8))",
+                textShadow: "0 0 80px rgba(247, 168, 53, 1)",
+                filter: "drop-shadow(0 0 80px rgba(247, 168, 53, 1)) drop-shadow(0 0 120px rgba(100, 149, 237, 0.8))",
                 animation: "rainbow 1.5s linear infinite"
               }}>
                 ✦ COSMIC MODE ACTIVATED ✦
@@ -2097,8 +2097,8 @@ export default function WormholePage() {
                     className="font-mono text-sm px-2 py-1"
                     style={{
                       color: "var(--accent)",
-                      border: "1px solid rgba(255, 157, 35, 0.4)",
-                      background: "rgba(255, 157, 35, 0.1)",
+                      border: "1px solid rgba(247, 168, 53, 0.4)",
+                      background: "rgba(247, 168, 53, 0.1)",
                       animation: `fade-pulse ${0.5 + i * 0.1}s ease-in-out infinite`
                     }}
                   >
@@ -2162,7 +2162,7 @@ export default function WormholePage() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = "var(--accent)";
-                    e.currentTarget.style.textDecorationColor = "rgba(255, 157, 35, 0.4)";
+                    e.currentTarget.style.textDecorationColor = "rgba(247, 168, 53, 0.4)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
@@ -2180,7 +2180,7 @@ export default function WormholePage() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = "var(--accent)";
-                    e.currentTarget.style.textDecorationColor = "rgba(255, 157, 35, 0.4)";
+                    e.currentTarget.style.textDecorationColor = "rgba(247, 168, 53, 0.4)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
@@ -2200,8 +2200,8 @@ export default function WormholePage() {
         {/* Journey History Dropdown */}
         {showHistory && journeyHistory.length > 0 && (
           <div className="absolute bg-black/90 backdrop-blur-xl max-w-md pointer-events-auto animate-luxury-fade-in" style={{
-            border: "1px solid rgba(255, 157, 35, 0.2)",
-            boxShadow: "0 0 40px rgba(255, 157, 35, 0.15)",
+            border: "1px solid rgba(247, 168, 53, 0.2)",
+            boxShadow: "0 0 40px rgba(247, 168, 53, 0.15)",
             padding: "var(--space-8)",
             bottom: "calc(var(--space-8) * 2 + 48px)",
             left: "var(--space-10)",
@@ -2231,9 +2231,9 @@ export default function WormholePage() {
                       transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(255, 157, 35, 0.5)";
-                      e.currentTarget.style.background = "rgba(255, 157, 35, 0.1)";
-                      e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(255, 157, 35, 0.2)";
+                      e.currentTarget.style.borderColor = "rgba(247, 168, 53, 0.5)";
+                      e.currentTarget.style.background = "rgba(247, 168, 53, 0.1)";
+                      e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(247, 168, 53, 0.2)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
@@ -2272,8 +2272,8 @@ export default function WormholePage() {
         {/* Journey Stats Dashboard */}
         {showStats && journeyHistory.length > 0 && (
           <div className="absolute bg-black/90 backdrop-blur-xl w-80 pointer-events-auto animate-luxury-fade-in" style={{
-            border: "1px solid rgba(255, 157, 35, 0.2)",
-            boxShadow: "0 0 40px rgba(255, 157, 35, 0.15)",
+            border: "1px solid rgba(247, 168, 53, 0.2)",
+            boxShadow: "0 0 40px rgba(247, 168, 53, 0.15)",
             padding: "var(--space-8)",
             bottom: "calc(var(--space-8) * 2 + 48px)",
             right: "var(--space-10)",
@@ -2298,7 +2298,7 @@ export default function WormholePage() {
 
               {/* Current Streak */}
               {streak > 0 && (
-                <div className="flex items-center justify-between p-3" style={{ background: "linear-gradient(to right, rgba(255, 157, 35, 0.1), transparent)", border: "1px solid rgba(255, 157, 35, 0.2)" }}>
+                <div className="flex items-center justify-between p-3" style={{ background: "linear-gradient(to right, rgba(247, 168, 53, 0.1), transparent)", border: "1px solid rgba(247, 168, 53, 0.2)" }}>
                   <span className="text-xs text-white/60" style={{ letterSpacing: "0.05em" }}>Current Streak</span>
                   <span className="text-2xl font-heading" style={{ color: "var(--accent)" }}>{streak} 🔥</span>
                 </div>
@@ -2458,10 +2458,10 @@ export default function WormholePage() {
 
         @keyframes button-pulse {
           0%, 100% {
-            box-shadow: 0 0 50px rgba(255, 157, 35, 0.5), 0 0 100px rgba(255, 157, 35, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 50px rgba(247, 168, 53, 0.5), 0 0 100px rgba(247, 168, 53, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
           }
           50% {
-            box-shadow: 0 0 80px rgba(255, 157, 35, 0.8), 0 0 150px rgba(255, 157, 35, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 80px rgba(247, 168, 53, 0.8), 0 0 150px rgba(247, 168, 53, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
           }
         }
         .animate-button-pulse {
@@ -2511,11 +2511,11 @@ export default function WormholePage() {
           background: rgba(255, 255, 255, 0.05);
         }
         .scrollbar-luxury::-webkit-scrollbar-thumb {
-          background: rgba(255, 157, 35, 0.3);
+          background: rgba(247, 168, 53, 0.3);
           border-radius: 3px;
         }
         .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 157, 35, 0.5);
+          background: rgba(247, 168, 53, 0.5);
         }
 
         /* Slider styling */

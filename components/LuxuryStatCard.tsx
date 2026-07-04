@@ -272,8 +272,8 @@ export default function LuxuryStatCard({
   const priorityStyle = priority
     ? {
         transform: "scale(1.05)",
-        borderColor: "rgba(255, 157, 35, 0.3)",
-        boxShadow: "0 0 24px rgba(255, 157, 35, 0.15)",
+        borderColor: "rgba(247, 168, 53, 0.3)",
+        boxShadow: "0 0 24px rgba(247, 168, 53, 0.15)",
       }
     : {};
 
@@ -282,7 +282,7 @@ export default function LuxuryStatCard({
     isSpotlit && !isHovered
       ? {
           boxShadow:
-            "0 0 40px rgba(255,157,35,0.35), 0 0 80px rgba(255,157,35,0.1)",
+            "0 0 40px rgba(247, 168, 53,0.35), 0 0 80px rgba(247, 168, 53,0.1)",
         }
       : {};
 
@@ -336,7 +336,7 @@ export default function LuxuryStatCard({
             width: 3,
             height: 3,
             borderRadius: "50%",
-            background: "#ff9d23",
+            background: "#F7A835",
             pointerEvents: "none",
             zIndex: 20,
           }}
@@ -391,7 +391,7 @@ export default function LuxuryStatCard({
             border: "var(--card-border)",
             borderRadius: "var(--card-radius)",
             boxShadow: isHovered
-              ? `0 0 14px rgba(255,157,35,0.25), var(--card-shadow)`
+              ? `0 0 14px rgba(247, 168, 53,0.25), var(--card-shadow)`
               : `var(--card-shadow)`,
             background: isHovered
               ? "rgba(0,0,0,0.85)"
@@ -409,7 +409,7 @@ export default function LuxuryStatCard({
               transition={{ duration: 0.2 }}
               style={{
                 background:
-                  "linear-gradient(225deg, rgba(255,157,35,0.3) 0%, transparent 50%)",
+                  "linear-gradient(225deg, rgba(247, 168, 53,0.3) 0%, transparent 50%)",
                 clipPath: "polygon(100% 0, 100% 100%, 0 0)",
               }}
             />
@@ -424,8 +424,8 @@ export default function LuxuryStatCard({
                 className="absolute bottom-full left-0 right-0 mb-2 z-50"
                 style={{
                   background: "#131313",
-                  border: "1px solid #ff9d23",
-                  borderLeft: "3px solid #ff9d23",
+                  border: "1px solid #F7A835",
+                  borderLeft: "3px solid #F7A835",
                   padding: "8px 12px",
                   fontSize: "11px",
                   fontFamily: "Roboto Mono, monospace",
@@ -444,8 +444,8 @@ export default function LuxuryStatCard({
               style={{
                 letterSpacing: "-0.04em",
                 filter: isHovered
-                  ? "drop-shadow(0 0 28px rgba(255,157,35,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
-                  : "drop-shadow(0 0 14px rgba(255,157,35,0.2)) drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
+                  ? "drop-shadow(0 0 28px rgba(247, 168, 53,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
+                  : "drop-shadow(0 0 14px rgba(247, 168, 53,0.2)) drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
                 willChange: "transform",
               }}
               animate={{
@@ -469,9 +469,9 @@ export default function LuxuryStatCard({
                     transform: "translateX(-50%)",
                     fontSize: "10px",
                     fontFamily: "Roboto Mono, monospace",
-                    color: "#ff9d23",
+                    color: "#F7A835",
                     background: "#131313",
-                    border: "1px solid #ff9d23",
+                    border: "1px solid #F7A835",
                     padding: "2px 8px",
                     whiteSpace: "nowrap",
                     letterSpacing: "0.1em",
@@ -567,7 +567,7 @@ export default function LuxuryStatCard({
                   <polyline
                     ref={sparklineRef}
                     points={buildSparklinePoints(trend)}
-                    stroke="#ff9d23"
+                    stroke="#F7A835"
                     strokeOpacity="0.5"
                     fill="none"
                     strokeWidth="1.5"
@@ -623,9 +623,9 @@ export default function LuxuryStatCard({
                 alignItems: "center",
                 padding: "0 8px",
                 fontSize: "10px",
-                background: "rgba(255,157,35,0.15)",
-                color: "rgba(255,157,35,0.8)",
-                border: "0.5px solid rgba(255,157,35,0.3)",
+                background: "rgba(247, 168, 53,0.15)",
+                color: "rgba(247, 168, 53,0.8)",
+                border: "0.5px solid rgba(247, 168, 53,0.3)",
                 borderRadius: "2px",
                 fontWeight: 600,
                 textTransform: "uppercase",
@@ -644,9 +644,9 @@ export default function LuxuryStatCard({
               exit={{ opacity: 0 }}
               className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] px-3 py-1.5 rounded uppercase tracking-wider"
               style={{
-                background: "rgba(255,157,35,0.2)",
+                background: "rgba(247, 168, 53,0.2)",
                 color: "var(--accent)",
-                border: "1px solid rgba(255,157,35,0.4)",
+                border: "1px solid rgba(247, 168, 53,0.4)",
                 fontWeight: 600,
               }}
             >
@@ -665,7 +665,7 @@ export default function LuxuryStatCard({
                 left: 0,
                 right: 0,
                 background: "rgba(0,0,0,0.92)",
-                borderTop: "1px solid rgba(255,157,35,0.3)",
+                borderTop: "1px solid rgba(247, 168, 53,0.3)",
                 padding: "10px 12px",
               }}
               onClick={(e) => e.stopPropagation()}
@@ -681,7 +681,7 @@ export default function LuxuryStatCard({
                   letterSpacing: "0.08em",
                 }}
               >
-                <span style={{ color: "#ff9d23", fontWeight: 700 }}>
+                <span style={{ color: "#F7A835", fontWeight: 700 }}>
                   YOU: {value}
                 </span>
                 <div
@@ -689,8 +689,8 @@ export default function LuxuryStatCard({
                   style={{
                     flex: 1,
                     height: "20px",
-                    background: "rgba(255,157,35,0.1)",
-                    border: "1px solid rgba(255,157,35,0.25)",
+                    background: "rgba(247, 168, 53,0.1)",
+                    border: "1px solid rgba(247, 168, 53,0.25)",
                     borderRadius: "2px",
                     position: "relative",
                     overflow: "hidden",
@@ -707,7 +707,7 @@ export default function LuxuryStatCard({
                       transform: "translate(-50%,-50%)",
                       width: "12px",
                       height: "12px",
-                      background: "#ff9d23",
+                      background: "#F7A835",
                       borderRadius: "2px",
                       cursor: "grab",
                       zIndex: 2,
@@ -755,7 +755,7 @@ export default function LuxuryStatCard({
             borderRadius: "var(--card-radius)",
             boxShadow: "var(--card-shadow)",
             background:
-              "radial-gradient(circle at center, rgba(255,157,35,0.10) 0%, rgba(0,0,0,0.85) 100%)",
+              "radial-gradient(circle at center, rgba(247, 168, 53,0.10) 0%, rgba(0,0,0,0.85) 100%)",
           }}
         >
           <motion.div
@@ -792,7 +792,7 @@ export default function LuxuryStatCard({
                   transition={{ delay: 0.3, duration: 0.3 }}
                   style={{
                     background:
-                      "linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,157,35,0.2))",
+                      "linear-gradient(135deg, rgba(255,215,0,0.2), rgba(247, 168, 53,0.2))",
                     color: "#ffd700",
                     border: "1px solid rgba(255,215,0,0.4)",
                     fontWeight: 700,

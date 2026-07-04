@@ -18,7 +18,7 @@ export default function NotFound() {
       <div style={{
         fontFamily: 'VT323, monospace',
         fontSize: 'clamp(80px, 20vw, 140px)',
-        color: '#ff9d23',
+        color: '#F7A835',
         lineHeight: 1,
         marginBottom: '8px'
       }}>
@@ -50,7 +50,7 @@ export default function NotFound() {
       <div style={{
         width: '120px',
         height: '1px',
-        background: 'linear-gradient(to right, transparent, #ff9d23, transparent)',
+        background: 'linear-gradient(to right, transparent, #F7A835, transparent)',
         marginBottom: '48px',
         opacity: 0.5
       }} />
@@ -62,7 +62,7 @@ export default function NotFound() {
         fontSize: '11px',
         letterSpacing: '0.15em',
         color: '#0b0b0b',
-        background: '#ff9d23',
+        background: '#F7A835',
         padding: '10px 24px',
         textDecoration: 'none',
         transition: 'background 0.2s'

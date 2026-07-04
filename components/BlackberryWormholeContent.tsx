@@ -644,7 +644,7 @@ export default function BlackberryWormholeContent() {
             <div style={{
               fontSize: "3rem",
               color: "var(--accent)",
-              textShadow: "0 0 40px rgba(255, 157, 35, 0.6)",
+              textShadow: "0 0 40px rgba(247, 168, 53, 0.6)",
               animation: "pulse 2s ease-in-out infinite"
             }}>
               ✦
@@ -673,7 +673,7 @@ export default function BlackberryWormholeContent() {
           className="absolute inset-0 opacity-20"
           style={{
             background: `
-              radial-gradient(ellipse at 15% 25%, rgba(255, 157, 35, 0.15), transparent 45%),
+              radial-gradient(ellipse at 15% 25%, rgba(247, 168, 53, 0.15), transparent 45%),
               radial-gradient(ellipse at 85% 75%, rgba(100, 149, 237, 0.18), transparent 50%)
             `,
             animation: "nebula-rotate-slow 60s linear infinite",
@@ -933,7 +933,7 @@ export default function BlackberryWormholeContent() {
             {countdown > 0 && currentDestination && (
               <div style={{
                 fontSize: "4rem",
-                filter: "drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))",
+                filter: "drop-shadow(0 0 30px rgba(247, 168, 53, 0.6))",
                 animation: "flip-reveal 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
                 marginBottom: "2rem"
               }}>
@@ -953,7 +953,7 @@ export default function BlackberryWormholeContent() {
                 fontFamily: "system-ui",
                 fontSize: "8rem",
                 color: "var(--accent)",
-                filter: "drop-shadow(0 0 30px rgba(255, 157, 35, 0.6))",
+                filter: "drop-shadow(0 0 30px rgba(247, 168, 53, 0.6))",
                 animation: countdown === 0 ? 'countdown-zero 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)' : 'countdown-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
                 transformOrigin: 'center',
                 marginBottom: "2rem",
@@ -995,8 +995,8 @@ export default function BlackberryWormholeContent() {
         }}>
           <div className="w-full backdrop-blur-xl" style={{
             background: "rgba(11, 11, 11, 0.6)",
-            border: "1px solid rgba(255, 157, 35, 0.2)",
-            boxShadow: "0 0 60px rgba(255, 157, 35, 0.15)",
+            border: "1px solid rgba(247, 168, 53, 0.2)",
+            boxShadow: "0 0 60px rgba(247, 168, 53, 0.15)",
             maxWidth: "400px",
             margin: "0 1rem",
             borderRadius: "12px",
@@ -1007,7 +1007,7 @@ export default function BlackberryWormholeContent() {
                 fontSize: "2rem",
                 marginBottom: "1rem",
                 color: "var(--accent)",
-                textShadow: "0 0 20px rgba(255, 157, 35, 0.3)"
+                textShadow: "0 0 20px rgba(247, 168, 53, 0.3)"
               }}>✦</div>
               <h2 style={{
                 fontFamily: "system-ui",
@@ -1042,8 +1042,8 @@ export default function BlackberryWormholeContent() {
               </p>
 
               <div style={{
-                background: "rgba(255, 157, 35, 0.05)",
-                border: "1px solid rgba(255, 157, 35, 0.1)",
+                background: "rgba(247, 168, 53, 0.05)",
+                border: "1px solid rgba(247, 168, 53, 0.1)",
                 borderRadius: "8px",
                 padding: "1rem",
                 marginBottom: "1rem"
@@ -1147,7 +1147,7 @@ export default function BlackberryWormholeContent() {
                     : "rgba(255, 255, 255, 0.1)",
                   color: acceptedRisk ? "#0b0b0b" : "rgba(255, 255, 255, 0.3)",
                   cursor: acceptedRisk ? "pointer" : "not-allowed",
-                  boxShadow: acceptedRisk ? "0 0 30px rgba(255, 157, 35, 0.3)" : "none",
+                  boxShadow: acceptedRisk ? "0 0 30px rgba(247, 168, 53, 0.3)" : "none",
                   borderRadius: "6px",
                   padding: "0.5rem 1rem",
                   fontWeight: "600"
@@ -1207,13 +1207,13 @@ export default function BlackberryWormholeContent() {
                     border: `1px solid ${isSelected ? "var(--accent)" : "rgba(255, 255, 255, 0.2)"}`,
                     borderRadius: "8px",
                     padding: "0.5rem 0.75rem",
-                    boxShadow: isSelected ? "0 0 20px rgba(255, 157, 35, 0.3)" : "none",
-                    filter: isSelected ? "drop-shadow(0 0 10px rgba(255, 157, 35, 0.5))" : "none"
+                    boxShadow: isSelected ? "0 0 20px rgba(247, 168, 53, 0.3)" : "none",
+                    filter: isSelected ? "drop-shadow(0 0 10px rgba(247, 168, 53, 0.5))" : "none"
                   }}
                   onMouseEnter={(e) => {
                     if (!isSelected) {
-                      e.currentTarget.style.boxShadow = "0 0 15px rgba(255, 157, 35, 0.2)";
-                      e.currentTarget.style.filter = "drop-shadow(0 0 5px rgba(255, 157, 35, 0.3))";
+                      e.currentTarget.style.boxShadow = "0 0 15px rgba(247, 168, 53, 0.2)";
+                      e.currentTarget.style.filter = "drop-shadow(0 0 5px rgba(247, 168, 53, 0.3))";
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -1241,7 +1241,7 @@ export default function BlackberryWormholeContent() {
                 fontWeight: "700",
                 background: "linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%)",
                 color: "#0b0b0b",
-                boxShadow: "0 0 40px rgba(255, 157, 35, 0.5)",
+                boxShadow: "0 0 40px rgba(247, 168, 53, 0.5)",
                 borderRadius: "12px",
                 padding: "0.75rem 1.5rem",
                 border: "2px solid var(--accent)",
@@ -1364,10 +1364,10 @@ export default function BlackberryWormholeContent() {
         }
         @keyframes button-pulse {
           0%, 100% {
-            box-shadow: 0 0 40px rgba(255, 157, 35, 0.5);
+            box-shadow: 0 0 40px rgba(247, 168, 53, 0.5);
           }
           50% {
-            box-shadow: 0 0 60px rgba(255, 157, 35, 0.7);
+            box-shadow: 0 0 60px rgba(247, 168, 53, 0.7);
           }
         }
         @keyframes emoji-rotate {

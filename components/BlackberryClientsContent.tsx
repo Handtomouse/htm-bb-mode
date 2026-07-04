@@ -131,7 +131,7 @@ export default function BlackberryClientsContent() {
         <h1
           className="text-[56px] md:text-[72px] font-light text-[var(--accent)] mb-8 leading-[0.9] uppercase tracking-[0.15em]"
           style={{
-            textShadow: '0 0 40px rgba(255, 157, 35, 0.4)',
+            textShadow: '0 0 40px rgba(247, 168, 53, 0.4)',
           }}
         >
           Clients
