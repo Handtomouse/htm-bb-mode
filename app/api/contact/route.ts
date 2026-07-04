@@ -40,7 +40,7 @@ function validatePayload(body: ContactPayload): { ok: true } | { ok: false; erro
     return { ok: false, error: "Spam detected" };
   }
 
-  // Timer check (minimum 7 seconds)
+  // Timer check (minimum 4 seconds)
   if (body.startedAt && Number.isFinite(body.startedAt)) {
     const delta = Date.now() - Number(body.startedAt);
     if (delta < 4000) {
@@ -151,11 +151,10 @@ export async function POST(request: NextRequest) {
 
       // TODO: Save to database for backup/analytics
 
-      // Log submission (remove in production or send to proper logging service)
-      console.log("Contact form submission (with files):", {
-        ...payload,
+      // Log receipt only; payload contains PII and must not hit stdout
+      console.log("Contact form submission received (with files):", {
+        mode: payload.mode,
         filesCount: files.length,
-        fileNames: files.map((f) => f.name),
       });
 
       return NextResponse.json(
@@ -196,8 +195,8 @@ export async function POST(request: NextRequest) {
 
       // TODO: Save to database for backup/analytics
 
-      // Log submission (remove in production or send to proper logging service)
-      console.log("Contact form submission:", payload);
+      // Log receipt only; payload contains PII and must not hit stdout
+      console.log("Contact form submission received:", { mode: payload.mode });
 
       return NextResponse.json(
         {
