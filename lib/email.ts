@@ -70,9 +70,6 @@ export async function sendContactNotification(
       </div>
 
       ${
-        mode === "brief"
-          ? `
-      ${
         budget
           ? `<div class="field">
         <div class="label">Budget</div>
@@ -107,9 +104,6 @@ export async function sendContactNotification(
         <div class="label">How they heard about us</div>
         <div class="value">${referral}</div>
       </div>`
-          : ""
-      }
-      `
           : ""
       }
 

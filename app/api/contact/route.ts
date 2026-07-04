@@ -43,7 +43,7 @@ function validatePayload(body: ContactPayload): { ok: true } | { ok: false; erro
   // Timer check (minimum 7 seconds)
   if (body.startedAt && Number.isFinite(body.startedAt)) {
     const delta = Date.now() - Number(body.startedAt);
-    if (delta < 7000) {
+    if (delta < 4000) {
       return { ok: false, error: "Too fast. Please wait a few seconds and try again." };
     }
   }
