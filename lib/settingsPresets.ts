@@ -29,6 +29,7 @@ export const PRESETS: Preset[] = [
       volume: 0,
       trackingEnabled: false,
       analyticsEnabled: false,
+      timeFormat: "12hr",
     },
   },
   {
@@ -49,6 +50,7 @@ export const PRESETS: Preset[] = [
       volume: 100,
       trackingEnabled: false,
       analyticsEnabled: false,
+      timeFormat: "12hr",
     },
   },
   {
@@ -69,6 +71,7 @@ export const PRESETS: Preset[] = [
       volume: 0,
       trackingEnabled: false,
       analyticsEnabled: false,
+      timeFormat: "12hr",
     },
   },
   {
@@ -89,6 +92,7 @@ export const PRESETS: Preset[] = [
       volume: 80,
       trackingEnabled: false,
       analyticsEnabled: true,
+      timeFormat: "12hr",
     },
   },
   {
@@ -109,6 +113,7 @@ export const PRESETS: Preset[] = [
       volume: 70,
       trackingEnabled: false,
       analyticsEnabled: false,
+      timeFormat: "12hr",
     },
   },
 ];

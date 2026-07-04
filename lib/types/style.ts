@@ -9,7 +9,7 @@
 // ============================================
 
 export type AccentColor = "#F7A835";
-export type AccentHoverColor = "#FFB84D";
+export type AccentHoverColor = "#FF9D23";
 
 export type BaseColor =
   | "#0b0b0b"  // --bg

@@ -41,8 +41,12 @@ function applyAccentColor(color: string) {
   // Update primary accent color
   root.style.setProperty("--accent", color);
 
-  // Update hover variant (15% lighter)
-  const hoverColor = lightenColor(color, 15);
+  // Canon accent pairs with canon hover (HTM Bright); custom accents get a
+  // computed 15% lighter hover
+  const CANON_ACCENT = "#f7a835";
+  const CANON_HOVER = "#FF9D23";
+  const hoverColor =
+    color.toLowerCase() === CANON_ACCENT ? CANON_HOVER : lightenColor(color, 15);
   root.style.setProperty("--accent-hover", hoverColor);
 }
 

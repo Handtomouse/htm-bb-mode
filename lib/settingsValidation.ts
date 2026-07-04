@@ -2,7 +2,7 @@
 
 import type { Settings } from "./hooks";
 
-export const SETTINGS_VERSION = 1;
+export const SETTINGS_VERSION = 2;
 
 export interface SettingsWithVersion extends Settings {
   _version?: number;
@@ -91,6 +91,18 @@ export function migrateSettings(raw: any): SettingsWithVersion {
   // Migration v0 -> v1: No changes yet, just add version
   if (version < 1) {
     // Future migrations go here
+  }
+
+  // Migration v1 -> v2: brand canon swap. Persisted legacy accents would
+  // otherwise override the canon --accent via SettingsProvider forever.
+  if (version < 2) {
+    const legacyAccents = ["#ff9d23", "#f4a259", "#ffb84d"];
+    if (
+      typeof settings.accentColor === "string" &&
+      legacyAccents.includes(settings.accentColor.toLowerCase())
+    ) {
+      settings.accentColor = "#F7A835";
+    }
   }
 
   // Validate and return

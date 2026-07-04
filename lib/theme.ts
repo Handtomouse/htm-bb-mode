@@ -3,7 +3,7 @@
  */
 
 export const ACCENT = "#F7A835";
-export const ACCENT_HOVER = "#FFB84D";
+export const ACCENT_HOVER = "#FF9D23";
 export const ACCENT_DARK = "#F7A835";
 
 export const SPACING = {
