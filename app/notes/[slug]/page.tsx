@@ -29,7 +29,7 @@ function renderBody(body: string) {
       return (
         <h2
           key={idx}
-          className="mt-8 mb-3 border-l-4 border-[#ff9d23] pl-4 font-mono text-sm font-medium uppercase tracking-widest text-[#EDECEC]"
+          className="mt-8 mb-3 border-l-4 border-[#F7A835] pl-4 font-mono text-sm font-medium uppercase tracking-widest text-[#EDECEC]"
         >
           {heading}
         </h2>
@@ -50,15 +50,16 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default function PostPage({ params }: { params: { slug: string } }) {
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = posts.find((p) => p.slug === slug);
 
   if (!post) {
     return (
       <div className="mx-auto max-w-4xl p-6">
         <Link
           href="/notes"
-          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#ff9d23]"
+          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#F7A835]"
         >
           ← NOTES
         </Link>
@@ -77,7 +78,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       <div className="mb-8">
         <Link
           href="/notes"
-          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#ff9d23]"
+          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#F7A835]"
         >
           ← NOTES
         </Link>
@@ -112,7 +113,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       </header>
 
       {/* Divider */}
-      <div className="mb-8 h-px w-full bg-[#ff9d23]" />
+      <div className="mb-8 h-px w-full bg-[#F7A835]" />
 
       {/* Body */}
       <article className="max-w-[65ch]">
@@ -134,7 +135,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
               <Link
                 key={related.slug}
                 href={`/notes/${related.slug}`}
-                className="block border border-[#2A2A2A] p-4 no-underline transition-all duration-150 hover:border-[#ff9d23]"
+                className="block border border-[#2A2A2A] p-4 no-underline transition-all duration-150 hover:border-[#F7A835]"
               >
                 <div className="mb-1 font-mono text-sm font-medium uppercase tracking-wider text-[#EDECEC]">
                   {related.title}
@@ -165,7 +166,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       <div className="mt-12 border-t border-[#2A2A2A] pt-6">
         <Link
           href="/notes"
-          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#ff9d23]"
+          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#F7A835]"
         >
           ← Back to all notes
         </Link>
