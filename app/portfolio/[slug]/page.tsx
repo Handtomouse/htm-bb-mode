@@ -1,10 +1,8 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ProjectImagePlaceholder from "@/components/ProjectImagePlaceholder";
+import projectsData from "@/public/data/projects.json";
 
 interface Project {
   slug: string;
@@ -21,27 +19,28 @@ interface Project {
   external?: { url: string };
 }
 
-export default function ProjectPage() {
-  const params = useParams();
-  const [project, setProject] = useState<Project | null>(null);
+const projects: Project[] = projectsData as Project[];
 
-  useEffect(() => {
-    fetch("/data/projects.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((p: Project) => p.slug === params.slug);
-        setProject(found || null);
-      });
-  }, [params.slug]);
+export function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
+  if (!project) return {};
+  return {
+    title: `${project.title} | Portfolio`,
+    description: project.description ?? `${project.client} • ${project.year}`,
+  };
+}
+
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
 
   if (!project) {
-    return (
-      <div className="mx-auto max-w-6xl p-6">
-        <div className="py-12 text-center text-[var(--muted)]">
-          Loading...
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   return (
