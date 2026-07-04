@@ -140,7 +140,7 @@ export default function RootLayout({
                 "@type": "Person",
                 "name": "Nate Don",
                 "jobTitle": "Creative Director",
-                "email": "hello@handtomouse.com"
+                "email": "hello@handtomouse.org"
               },
               "sameAs": [
                 "https://www.instagram.com/handtomouse_studio"
