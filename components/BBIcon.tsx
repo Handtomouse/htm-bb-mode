@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * BBIcon - Unified BlackBerry Luxury Icon System
  *
@@ -7,9 +9,16 @@
  * - solid: Bold filled shapes (CTAs/emphasis)
  */
 
-import React from 'react';
-import { IconName, IconVariant, getIconSVG, getIconMetadata } from '@/lib/icon-registry';
+import React, { useEffect, useState } from 'react';
+import type { IconName, IconVariant } from '@/lib/icon-registry';
+import { ICON_REGISTRY_CORE, ICON_METADATA_CORE } from '@/lib/icon-registry-core';
 import styles from './BBIcon.module.css';
+
+// The full 1.15MB registry is only needed for long-tail icons (showcase and
+// comparison pages). Production surfaces resolve from the 25KB core subset;
+// anything else dynamic-imports the full registry once and caches it here.
+type FullRegistry = typeof import('@/lib/icon-registry');
+let fullRegistryCache: FullRegistry | null = null;
 
 export interface BBIconProps {
   /** Icon name (autocomplete supported) */
@@ -47,15 +56,33 @@ export function BBIcon({
   ariaLabel,
   onClick
 }: BBIconProps) {
-  // Get icon metadata for smart defaults
-  const metadata = getIconMetadata(name);
+  const [full, setFull] = useState<FullRegistry | null>(fullRegistryCache);
+
+  // Get icon metadata for smart defaults (core first, full registry fallback)
+  const metadata =
+    ICON_METADATA_CORE.find((m) => m.name === name) || full?.getIconMetadata(name);
   const selectedVariant = variant || metadata?.defaultVariant || 'outline';
 
   // Get SVG content
-  const svgContent = getIconSVG(name, selectedVariant);
+  const coreSvg = ICON_REGISTRY_CORE[selectedVariant]?.[name];
+  const svgContent = coreSvg ?? (full ? full.getIconSVG(name, selectedVariant) : '');
+
+  // Long-tail icon: pull in the full registry on demand
+  useEffect(() => {
+    if (!coreSvg && !fullRegistryCache) {
+      import('@/lib/icon-registry').then((mod) => {
+        fullRegistryCache = mod;
+        setFull(mod);
+      });
+    } else if (!coreSvg && fullRegistryCache && !full) {
+      setFull(fullRegistryCache);
+    }
+  }, [coreSvg, full]);
 
   if (!svgContent) {
-    console.warn(`BBIcon: Icon "${name}" not found`);
+    if (full) {
+      console.warn(`BBIcon: Icon "${name}" not found`);
+    }
     return null;
   }
 
