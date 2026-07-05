@@ -16,11 +16,19 @@ import type { Point3D, Point2D, Vehicle, FlyingVehicle, ColorCache, CameraState,
 
 interface NeonCityProps {
   settings?: Partial<NeonCitySettings>;
+  /** Freeze the render loop (e.g. while an app modal covers the scene) */
+  paused?: boolean;
 }
 
-const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings }) => {
+const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings, paused = false }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Ref-mirror of the paused prop so the render loop reads it without
+  // re-subscribing the whole canvas effect
+  const pausedRef = useRef(paused);
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
   const [settings, setSettings] = useState<NeonCitySettings>({ ...DEFAULT_SETTINGS, ...userSettings });
 
   useEffect(() => {
@@ -499,6 +507,12 @@ const NeonCityOptimized: React.FC<NeonCityProps> = ({ settings: userSettings }) 
     let lastTime = performance.now();
 
     const render = (now: number) => {
+      // Skip work while paused (app covering the scene) or tab hidden;
+      // keep the loop alive at rAF cadence so it resumes instantly
+      if (pausedRef.current || document.hidden) {
+        frameId = requestAnimationFrame(render);
+        return;
+      }
       // FPS throttling
       if (fpsInterval > 0) {
         const elapsed = now - lastFrameTime;

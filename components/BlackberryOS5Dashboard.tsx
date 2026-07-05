@@ -1,7 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, usePathname } from "next/navigation";
+
+// Fixed-position overlays must escape ResponsiveStage's transform: scale()
+// wrapper (a transformed ancestor becomes the containing block for fixed
+// descendants, mis-positioning them on mobile). Portal them to <body>.
+function BodyPortal({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return createPortal(children, document.body);
+}
 import { useSettings, useHapticFeedback } from "@/lib/hooks";
 import BBTrackpad from "./BBTrackpad";
 import { BBSkeletonCard } from "./BBSkeleton";
@@ -680,7 +691,7 @@ export default function BlackberryOS5Dashboard() {
               willChange: "filter, opacity"
             }}
           >
-            <NeonCity />
+            <NeonCity paused={mode === "menu" || openApp !== null} />
           </div>
 
           {/* Radial Pulse - Center outward */}
@@ -1036,6 +1047,7 @@ export default function BlackberryOS5Dashboard() {
 
       {/* Context menu */}
       {showContext && openAppIndex === null && poweredOn && (
+        <BodyPortal>
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end justify-start p-4">
           <div className="w-48 rounded-none border border-white/15 bg-black/80 text-white shadow-xl overflow-hidden">
             <div className="px-3 py-2 text-[14px] font-bold border-b border-white/10 text-blue-400">Menu</div>
@@ -1057,10 +1069,12 @@ export default function BlackberryOS5Dashboard() {
             </div>
           </div>
         </div>
+        </BodyPortal>
       )}
 
       {/* App window (fallback if no path) */}
       {openAppIndex !== null && poweredOn && (
+        <BodyPortal>
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-sm rounded-none border border-white/15 bg-black/85 text-white shadow-2xl">
             <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 text-[14px]">
@@ -1078,10 +1092,12 @@ export default function BlackberryOS5Dashboard() {
             </div>
           </div>
         </div>
+        </BodyPortal>
       )}
 
       {/* Keyboard Shortcuts Overlay */}
       {showKeyboardHelp && poweredOn && !isLocked && (
+        <BodyPortal>
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50" onClick={() => setShowKeyboardHelp(false)}>
           <div className="w-full max-w-md rounded-sm border border-white/20 bg-black/90 text-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
@@ -1114,11 +1130,13 @@ export default function BlackberryOS5Dashboard() {
             </div>
           </div>
         </div>
+        </BodyPortal>
       )}
 
       {/* Toast */}
       <AnimatePresence>
         {toast && (
+          <BodyPortal>
           <motion.div
             initial={prefersReducedMotion ? { opacity: 0 } : { y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -1171,6 +1189,7 @@ export default function BlackberryOS5Dashboard() {
               </div>
             </div>
           </motion.div>
+          </BodyPortal>
         )}
       </AnimatePresence>
     </ResponsiveStage>
@@ -1274,6 +1293,33 @@ function AppContent({ appId, prefersReducedMotion = false }: { appId: string; pr
   const [loading, setLoading] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
 
+  // Dialog focus management: move focus in on open, restore on close,
+  // and keep Tab cycling inside the panel (role=dialog implies all three)
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    dialogRef.current?.focus();
+    return () => previouslyFocused?.focus?.();
+  }, []);
+  const trapTab = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== "Tab") return;
+    const root = dialogRef.current;
+    if (!root) return;
+    const focusables = root.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     setFadeIn(false);
@@ -1323,6 +1369,9 @@ function AppContent({ appId, prefersReducedMotion = false }: { appId: string; pr
   return (
     <motion.div
       key={appId}
+      ref={dialogRef}
+      tabIndex={-1}
+      onKeyDown={trapTab}
       role="dialog"
       aria-modal="true"
       aria-label={`${appId} app`}
@@ -1607,11 +1656,13 @@ function AboutContent() {
 
       {/* Idle overlay */}
       {showIdleOverlay && (
+        <BodyPortal>
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 animate-fade-in">
           <div className="text-[var(--accent)] text-2xl font-bold animate-pulse" style={{ fontFamily: "var(--font-handjet)" }}>
             Thinking…
           </div>
         </div>
+        </BodyPortal>
       )}
 
       <div className="grid grid-cols-[1fr_minmax(0,90%)_1fr] w-full h-full">
