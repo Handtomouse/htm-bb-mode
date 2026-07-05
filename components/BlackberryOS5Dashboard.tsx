@@ -1320,6 +1320,9 @@ function AppContent({ appId, prefersReducedMotion = false }: { appId: string; pr
   return (
     <motion.div
       key={appId}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${appId} app`}
       initial={prefersReducedMotion ? { opacity: 1 } : { x: "100%", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={prefersReducedMotion ? { opacity: 0 } : { x: "-100%", opacity: 0 }}

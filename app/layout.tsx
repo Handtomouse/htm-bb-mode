@@ -57,10 +57,10 @@ export const metadata = {
     description: "Everyone's chasing new — we chase different. Independent creative direction and cultural strategy from Sydney.",
     images: [
       {
-        url: "/logos/HTM-LOGO-ICON-01.svg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "HandToMouse Logo"
+        alt: "HandToMouse BB Mode"
       }
     ]
   },
@@ -69,7 +69,7 @@ export const metadata = {
     title: "HandToMouse — BB Mode",
     description: "Everyone's chasing new — we chase different.",
     creator: "@handtomouse",
-    images: ["/logos/HTM-LOGO-ICON-01.svg"]
+    images: ["/og-image.png"]
   },
   robots: {
     index: true,

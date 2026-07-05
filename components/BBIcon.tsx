@@ -96,6 +96,10 @@ export function BBIcon({
     className
   ].filter(Boolean).join(' ');
 
+  // Icons with no explicit label and no click handler are decorative:
+  // hide them from assistive tech instead of announcing raw icon names
+  const isDecorative = !ariaLabel && !onClick;
+
   return (
     <span
       className={classes}
@@ -103,7 +107,8 @@ export function BBIcon({
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      aria-label={ariaLabel || name}
+      aria-hidden={isDecorative || undefined}
+      aria-label={isDecorative ? undefined : ariaLabel || name}
       dangerouslySetInnerHTML={{ __html: svgContent }}
     />
   );
