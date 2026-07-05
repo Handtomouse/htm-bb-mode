@@ -743,7 +743,8 @@ export default function BlackberryOS5Dashboard() {
                   {openApp !== null && (
                     <>
                       <span className="font-extrabold text-[var(--accent)] truncate max-w-[80px] sm:max-w-[120px] md:max-w-none" style={{ fontFamily: 'var(--font-source-code)' }}>
-                        {apps.find(a => a.path?.includes(openApp))?.name || openApp.toUpperCase()}
+                        {/* Name match first: Message and Notes share the /notes path */}
+                        {apps.find(a => a.name.toLowerCase() === openApp)?.name || apps.find(a => a.path?.includes(openApp))?.name || openApp.toUpperCase()}
                       </span>
                       <span className="text-[#E0E0E0]/30">•</span>
                     </>
