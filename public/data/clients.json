@@ -34,8 +34,12 @@
     "tagline": "Retirement planning made simple",
     "website": "https://www.allianzretireplus.com.au",
     "yearStarted": 2020,
-    "results": "Simplified retirement planning with intuitive calculator driving 35% increase in inquiries",
-    "deliverables": ["Website", "Retirement Calculator", "Content Strategy", "SEO Optimization"]
+    "deliverables": [
+      "Website",
+      "Retirement Calculator",
+      "Content Strategy",
+      "SEO Optimization"
+    ]
   },
   {
     "name": "Arc Factory",
@@ -54,8 +58,12 @@
     "tagline": "Digital banking innovation",
     "website": "https://www.bankwest.com.au",
     "yearStarted": 2018,
-    "results": "Launched mobile banking platform with 250,000+ downloads in first 6 months",
-    "deliverables": ["Mobile App", "UX Design", "API Integration", "Security Audit"],
+    "deliverables": [
+      "Mobile App",
+      "UX Design",
+      "API Integration",
+      "Security Audit"
+    ],
     "logo": "/images/clients/bankwest.png"
   },
   {
@@ -120,8 +128,11 @@
     "status": "active",
     "tagline": "Italian luxury performance",
     "yearStarted": 2021,
-    "results": "Created premium digital showroom experience with VR configurator",
-    "deliverables": ["Website", "VR Experience", "CRM Integration"],
+    "deliverables": [
+      "Website",
+      "VR Experience",
+      "CRM Integration"
+    ],
     "logo": "/images/clients/ferrari.png"
   },
   {
@@ -142,8 +153,12 @@
     "tagline": "Industry super for health and community",
     "website": "https://www.hesta.com.au",
     "yearStarted": 2019,
-    "results": "Achieved 40% increase in member engagement and 28% growth in online account registrations",
-    "deliverables": ["Brand Strategy", "Website Redesign", "Digital Campaign", "Member Portal"],
+    "deliverables": [
+      "Brand Strategy",
+      "Website Redesign",
+      "Digital Campaign",
+      "Member Portal"
+    ],
     "logo": "/images/clients/hesta.png"
   },
   {
@@ -243,8 +258,12 @@
     "status": "completed",
     "tagline": "Customer relationship platform",
     "yearStarted": 2017,
-    "results": "Delivered enterprise integration platform serving 15,000+ users across APAC",
-    "deliverables": ["Integration Platform", "Custom Components", "Training Program", "Documentation"],
+    "deliverables": [
+      "Integration Platform",
+      "Custom Components",
+      "Training Program",
+      "Documentation"
+    ],
     "logo": "/images/clients/salesforce.png"
   },
   {
