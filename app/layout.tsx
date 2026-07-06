@@ -143,7 +143,7 @@ export default function RootLayout({
                 "email": "hello@handtomouse.org"
               },
               "sameAs": [
-                "https://www.instagram.com/handtomouse_studio"
+                "https://www.instagram.com/handtomouse.studio"
               ]
             })
           }}

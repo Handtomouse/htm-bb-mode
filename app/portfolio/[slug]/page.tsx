@@ -21,6 +21,8 @@ interface Project {
 
 const projects: Project[] = projectsData as Project[];
 
+const BASE_URL = "https://htm-bb-mode.vercel.app";
+
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
 }
@@ -43,8 +45,37 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     notFound();
   }
 
+  const creativeWorkSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.description ?? `${project.client} • ${project.year}`,
+    dateCreated: String(project.year),
+    keywords: project.tags.join(", "),
+    url: `${BASE_URL}/portfolio/${project.slug}`,
+    creator: { "@type": "Organization", name: "Hand To Mouse", url: BASE_URL },
+    about: project.client,
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Portfolio", item: `${BASE_URL}/portfolio` },
+      { "@type": "ListItem", position: 3, name: project.title, item: `${BASE_URL}/portfolio/${project.slug}` },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-6xl p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Back */}
       <Link
         href="/portfolio"

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import postsData from "@/public/data/posts.json";
 
 interface Post {
@@ -11,6 +12,8 @@ interface Post {
 }
 
 const posts: Post[] = postsData;
+
+const BASE_URL = "https://htm-bb-mode.vercel.app";
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
@@ -50,30 +53,75 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = posts.find((p) => p.slug === slug);
+  if (!post) return {};
+  const url = `${BASE_URL}/notes/${post.slug}`;
+  return {
+    title: `${post.title} | HandToMouse Notes`,
+    description: post.excerpt,
+    keywords: post.tags,
+    alternates: { canonical: url },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url,
+      type: "article",
+      publishedTime: post.date,
+      tags: post.tags,
+      images: [`${BASE_URL}/og-image.png`],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [`${BASE_URL}/og-image.png`],
+    },
+  };
+}
+
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = posts.find((p) => p.slug === slug);
 
   if (!post) {
-    return (
-      <div className="mx-auto max-w-4xl p-6">
-        <Link
-          href="/notes"
-          className="font-mono text-xs uppercase tracking-widest text-[#9A9A9A] no-underline transition-colors duration-150 hover:text-[#F7A835]"
-        >
-          ← NOTES
-        </Link>
-        <div className="mt-16 font-mono text-sm text-[#9A9A9A]">
-          Post not found.
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   const relatedPosts = posts.filter((p) => p.slug !== post.slug).slice(0, 2);
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    keywords: post.tags.join(", "),
+    url: `${BASE_URL}/notes/${post.slug}`,
+    author: { "@type": "Person", name: "Nate Don" },
+    publisher: { "@type": "Organization", name: "Hand To Mouse", url: BASE_URL },
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Notes", item: `${BASE_URL}/notes` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${BASE_URL}/notes/${post.slug}` },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-4xl p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Back button */}
       <div className="mb-8">
         <Link
