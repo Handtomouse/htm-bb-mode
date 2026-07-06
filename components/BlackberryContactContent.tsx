@@ -234,7 +234,16 @@ export default function BlackberryContactContent() {
 
       if (!res.ok) {
         const j = await res.json().catch(() => ({} as Record<string, unknown>));
-        throw new Error((j?.error as string) || `Failed with ${res.status}`);
+        // Friendly, actionable messages per failure class; always offer the
+        // direct email as a fallback so a failed send is never a dead end
+        const fallback = " You can also email hello@handtomouse.org directly.";
+        if (res.status === 429) {
+          throw new Error("Too many attempts in a short window. Wait a minute and try again." + fallback);
+        }
+        if (res.status >= 500) {
+          throw new Error("Something broke on our end. Please try again in a moment." + fallback);
+        }
+        throw new Error(((j?.error as string) || "Couldn't send that.") + fallback);
       }
 
       // Fire confetti
@@ -278,10 +287,13 @@ export default function BlackberryContactContent() {
 
       setSubmitted(true);
     } catch (err: unknown) {
+      // A thrown TypeError here is almost always a dropped network request
       const msg =
-        err instanceof Error
-          ? err.message
-          : "Couldn't send just now. Please try again.";
+        err instanceof TypeError
+          ? "Network dropped mid-send. Check your connection and try again. You can also email hello@handtomouse.org directly."
+          : err instanceof Error
+            ? err.message
+            : "Couldn't send just now. Please try again. You can also email hello@handtomouse.org directly.";
       setError(msg);
     } finally {
       setSubmitting(false);

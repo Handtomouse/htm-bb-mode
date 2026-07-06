@@ -91,8 +91,23 @@ function SnakeGame() {
   const [direction, setDirection] = useState<Direction>("right");
   const [nextDirection, setNextDirection] = useState<Direction>("right");
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Load persisted high score once
+  useEffect(() => {
+    const stored = Number(localStorage.getItem("htm-snake-highscore") || 0);
+    if (stored > 0) setHighScore(stored);
+  }, []);
+
+  // Persist a new high score at game over
+  useEffect(() => {
+    if (gameOver && score > highScore) {
+      setHighScore(score);
+      localStorage.setItem("htm-snake-highscore", String(score));
+    }
+  }, [gameOver, score, highScore]);
 
   const generateFood = (snakeBody: Position[]) => {
     let newFood: Position;
@@ -213,8 +228,9 @@ function SnakeGame() {
   return (
     <div>
       <div className="mb-3 flex items-center justify-between border border-white/10 bg-black/30 p-2 text-xs text-white">
-        <div>
-          Score: <span className="text-[var(--accent)]">{score}</span>
+        <div className="flex gap-4">
+          <span>Score: <span className="text-[var(--accent)]">{score}</span></span>
+          <span className="text-white/50">Best: <span className="text-white/70">{Math.max(highScore, score)}</span></span>
         </div>
         <button
           onClick={() => {
@@ -359,30 +375,29 @@ function MemoryGame() {
   const handleCardClick = (index: number) => {
     if (flippedIndices.length >= 2 || cards[index].flipped || cards[index].matched) return;
 
-    const newCards = [...cards];
-    newCards[index].flipped = true;
-    setCards(newCards);
+    // Immutable update: map produces fresh card objects, never mutating shared refs
+    setCards((prev) => prev.map((c, i) => (i === index ? { ...c, flipped: true } : c)));
 
     const newFlipped = [...flippedIndices, index];
     setFlippedIndices(newFlipped);
 
     if (newFlipped.length === 2) {
-      setMoves(moves + 1);
+      setMoves((m) => m + 1);
       const [first, second] = newFlipped;
-      if (newCards[first].symbol === newCards[second].symbol) {
-        newCards[first].matched = true;
-        newCards[second].matched = true;
-        setCards(newCards);
+      if (cards[first].symbol === cards[second].symbol) {
+        setCards((prev) => {
+          const next = prev.map((c, i) =>
+            i === first || i === second ? { ...c, matched: true } : c
+          );
+          if (next.every((c) => c.matched)) setCompleted(true);
+          return next;
+        });
         setFlippedIndices([]);
-
-        if (newCards.every((c) => c.matched)) {
-          setCompleted(true);
-        }
       } else {
         setTimeout(() => {
-          newCards[first].flipped = false;
-          newCards[second].flipped = false;
-          setCards(newCards);
+          setCards((prev) =>
+            prev.map((c, i) => (i === first || i === second ? { ...c, flipped: false } : c))
+          );
           setFlippedIndices([]);
         }, 1000);
       }
@@ -480,8 +495,38 @@ function TicTacToeGame() {
   };
 
   const getAIMove = (squares: (string | null)[]): number => {
-    const available = squares.map((s, i) => (s === null ? i : null)).filter((i) => i !== null) as number[];
-    return available[Math.floor(Math.random() * available.length)];
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6],
+    ];
+    const available = squares
+      .map((s, i) => (s === null ? i : null))
+      .filter((i): i is number => i !== null);
+
+    // Find a cell that completes a line for `mark` this turn
+    const findWinning = (mark: string): number | null => {
+      for (const [a, b, c] of lines) {
+        const trio = [squares[a], squares[b], squares[c]];
+        const marks = trio.filter((v) => v === mark).length;
+        const empties = trio.filter((v) => v === null).length;
+        if (marks === 2 && empties === 1) {
+          return [a, b, c][trio.indexOf(null)];
+        }
+      }
+      return null;
+    };
+
+    // 1. Win if possible, 2. block the player, 3. take center,
+    // 4. take a corner, 5. any cell
+    const win = findWinning("O");
+    if (win !== null) return win;
+    const block = findWinning("X");
+    if (block !== null) return block;
+    if (squares[4] === null) return 4;
+    const corners = [0, 2, 6, 8].filter((i) => squares[i] === null);
+    if (corners.length) return corners[0];
+    return available[0];
   };
 
   useEffect(() => {
